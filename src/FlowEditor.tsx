@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { FlowContent, FlowOperation, FlowRange } from "scribing";
 import { FlowContentView } from "./FlowContentView";
 import { BeforeInputEvent } from "./internal/before-input-event";
@@ -146,11 +146,14 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         mapFlowRangeArrayToDomSelection(selection, domSelection, rootRef.current);
     }, [documentHasFocus, rootRef.current, selection]);   
     
-    // TODO: CSS class!
+    const css = useMemo((): CSSProperties => ({
+        outline: "none",
+    }), []);
 
     return (
         <div 
             ref={rootRef}
+            style={css}
             contentEditable={isSupported}
             suppressContentEditableWarning={true}
             children={<FlowContentView content={content}/>}
