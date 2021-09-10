@@ -1,6 +1,6 @@
 import { arrayType } from "paratype";
 import { RefObject, useLayoutEffect } from "react";
-import { FlowContent, FlowNode, FlowRange } from "scribing";
+import { FlowContent, FlowNode, FlowRange, TextRun } from "scribing";
 
 /** @internal */
 export const flowRangeArrayEquals = arrayType(FlowRange.classType).frozen().equals;
@@ -98,15 +98,119 @@ export const mapDomLocationToFlow = (
     offset: number,
     rootElement: HTMLElement,
 ): number | null => {
-    throw new Error("TODO");
+    if (node.nodeType === Node.TEXT_NODE) {
+        while (node.previousSibling) {
+            node = node.previousSibling;
+            if (node.nodeType === Node.TEXT_NODE) {
+                offset += node.textContent?.length || 0;
+            }
+        }
+
+        if (node.parentNode === null) {
+            return null;
+        }
+
+        node = node.parentNode;
+    }
+
+    const nodeSize = getFlowSizeFromDomNode(node);
+    offset = Math.max(0, Math.min(nodeSize, offset));
+
+    while (node !== rootElement) {
+        if (WEAK_ROOT_MAP.has(node)) {
+            return null;
+        }
+
+        while (node.previousSibling) {
+            node = node.previousSibling;
+            offset += getFlowSizeFromDomNode(node);
+        }
+
+        if (node.parentNode === null) {
+            return null;
+        }
+
+        node = node.parentNode;
+    }
+
+    return offset;
 };
+
+/** @internal */
+export interface DomLocation {
+    container: Node;
+    offset: number;
+}
 
 /** @internal */
 export const mapFlowPositionToDomLocation = (
     position: number,
     rootElement: HTMLElement,
-): { container: Node, offset: number } | null => {
-    throw new Error("TODO");
+): DomLocation | null => {
+    const { childNodes } = rootElement;
+    return mapFlowPositionToDomLocationInChildList(position, childNodes);
+};
+
+const mapFlowPositionToDomLocationInChildList = (
+    position: number,
+    childNodes: NodeListOf<ChildNode>,
+): DomLocation | null => {
+    for (let i = 0; i < childNodes.length; ++i) {
+        const node = childNodes.item(i);
+        const size = getFlowSizeFromDomNode(node);
+        if (position > size) {
+            position -= size;
+        } else {
+            return mapFlowPositionToDomLocationInNode(position, node);
+        }
+    }
+    return null;    
+};
+
+const mapFlowPositionToDomLocationInNode = (
+    position: number,
+    node: Node,
+): DomLocation | null => {
+    if (position < 0) {
+        return null;
+    }
+
+    if (WEAK_ROOT_MAP.has(node)) {
+        return null;
+    }
+
+    if (WEAK_NODE_MAP.get(node) instanceof TextRun) {
+        const { childNodes } = node;
+        let result: DomLocation = { container: node, offset: 0 };
+        for (let i = 0; i < childNodes.length; ++i) {
+            const child = childNodes.item(i);
+            if (child.nodeType === Node.TEXT_NODE) {
+                const size = node.textContent?.length || 0;
+                result = { container: node, offset: Math.min(size, position) };
+                if (position <= size) {
+                    break;
+                } else {
+                    position -= size;
+                }
+            }
+        }
+        return result;
+    }
+
+    return mapFlowPositionToDomLocationInChildList(position, node.childNodes);
+};
+
+/** @internal */
+export const getFlowSizeFromDomNode = (node: Node): number => {
+    const mapped = WEAK_NODE_MAP.get(node);
+    
+    if (mapped) {
+        return mapped.size;
+    }
+
+    let result = 0;
+    node.childNodes.forEach(child => result += getFlowSizeFromDomNode(child));
+    return result;
 };
 
 /** @internal */
