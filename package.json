@@ -14,7 +14,9 @@
     "lint": "eslint src test",
     "lint:fix": "eslint src test --fix",
     "test": "jest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -36,12 +38,17 @@
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
+    "@storybook/addon-actions": "^6.3.8",
+    "@storybook/addon-essentials": "^6.3.8",
+    "@storybook/addon-links": "^6.3.8",
+    "@storybook/react": "^6.3.8",
     "@types/jest": "^26.0.24",
     "@types/react": "^17.0.20",
     "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "babel-jest": "^27.1.1",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.31.0",
     "jest": "^27.0.6",
     "paratype": "^0.6.7",
@@ -61,5 +68,6 @@
     "react": "17.x",
     "react-dom": "17.x",
     "scribing": "0.x"
-  }
+  },
+  "dependencies": {}
 }
