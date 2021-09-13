@@ -114,5 +114,5 @@ const INPUT_HANDLERS: Record<string, InputHandler> = {
 
 const insertContent = (selection: readonly FlowRange[], content: FlowContent) => FlowBatch.fromArray([
     ...selection.filter(range => !range.isCollapsed).map(range => new RemoveRange({ range })),
-    ...selection.map(range => new InsertContent({ position: range.focus, content: content })),
+    ...selection.map(range => new InsertContent({ position: range.first, content: content })),
 ]);
