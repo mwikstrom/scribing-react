@@ -1,3 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FlowEditor can render without props 1`] = `<div />`;
+exports[`FlowEditor can render without props 1`] = `
+<div
+  contentEditable={false}
+  style={
+    Object {
+      "outline": "none",
+    }
+  }
+  suppressContentEditableWarning={true}
+>
+  <p
+    className="scribing-para-type-normal"
+    style={
+      Object {
+        "direction": undefined,
+        "lineHeight": undefined,
+        "textAlign": undefined,
+      }
+    }
+  >
+    <span
+      className="scribing-para-break"
+    >
+      ¶
+    </span>
+  </p>
+</div>
+`;
