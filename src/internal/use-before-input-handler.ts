@@ -1,5 +1,15 @@
 import { MutableRefObject } from "react";
-import { FlowBatch, FlowContent, FlowOperation, FlowRange, FormatText, InsertContent, RemoveRange, TextStyle, TextStyleProps } from "scribing";
+import { 
+    FlowBatch, 
+    FlowContent, 
+    FlowOperation, 
+    FlowRange, 
+    FormatText, 
+    InsertContent, 
+    RemoveRange, 
+    TextStyle, 
+    TextStyleProps 
+} from "scribing";
 import { BeforeInputEvent, getContentFromInputEvent } from "./before-input-event";
 import { mapDomRangeToFlow } from "./dom-mapping";
 import { useNativeEventHandler } from "./use-native-event-handler";
