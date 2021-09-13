@@ -1,5 +1,5 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowContent, FlowOperation, FlowRange } from "scribing";
+import { FlowContent, FlowOperation, FlowRange, ParagraphBreak, TextRun, TextStyle } from "scribing";
 import { FlowContentView } from "./FlowContentView";
 import { BeforeInputEvent } from "./internal/before-input-event";
 import { 
@@ -42,7 +42,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Extract props
     const {
         content: controlledContent,
-        defaultContent = new FlowContent(),
+        defaultContent = getDefaultContent(),
         selection: controlledSelection,
         defaultSelection = [],
         autoFocus,
@@ -176,3 +176,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         />
     );
 };
+
+const getDefaultContent = (): FlowContent => {
+    if (!DEFAULT_CONTENT) {
+        DEFAULT_CONTENT = new FlowContent({
+            nodes: Object.freeze([
+                new ParagraphBreak(),
+            ])
+        });
+    }
+    return DEFAULT_CONTENT;
+};
+
+let DEFAULT_CONTENT: FlowContent | undefined;
