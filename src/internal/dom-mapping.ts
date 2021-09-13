@@ -111,10 +111,16 @@ export const mapDomLocationToFlow = (
         }
 
         node = node.parentNode;
+    } else if (offset > 0) {
+        const { childNodes } = node;
+        if (offset >= childNodes.length) {
+            const nodeSize = getFlowSizeFromDomNode(node);
+            offset = nodeSize;
+        } else {
+            node = node.childNodes.item(offset);
+            offset = 0;
+        }
     }
-
-    const nodeSize = getFlowSizeFromDomNode(node);
-    offset = Math.max(0, Math.min(nodeSize, offset));
 
     while (node !== rootElement) {
         if (WEAK_ROOT_MAP.has(node)) {
