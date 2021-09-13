@@ -23,8 +23,13 @@ export interface FlowEditorProps {
     selection?: readonly FlowRange[];
     defaultSelection?: readonly FlowRange[];
     autoFocus?: boolean;
-    onContentChange?: (content: FlowContent, operation: FlowOperation) => void;
-    onSelectionChange?: (selection: readonly FlowRange[]) => void;
+    onChange?: (
+        newContent: FlowContent, 
+        newSelection: readonly FlowRange[],
+        operation: FlowOperation | null, 
+        oldContent: FlowContent,
+        oldSelection: readonly FlowRange[]
+    ) => boolean | undefined;
 }
 
 /**
@@ -41,8 +46,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         selection: controlledSelection,
         defaultSelection = [],
         autoFocus,
-        onContentChange,
-        onSelectionChange,
+        onChange,
     } = props;
     
     // Setup controlled/uncontrolled content state
@@ -86,13 +90,26 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useRootMapping(rootRef, content);
 
     // Apply flow operations
-    const handleOperation = useCallback((operation: FlowOperation): void => {
-        const updated = operation.applyTo(content);
-        setContent(updated);
-        if (onContentChange) {
-            onContentChange(updated, operation);
+    const handleOperation = useCallback((operation: FlowOperation): boolean => {
+        const newContent = operation.applyToContent(content);
+        const newSelection: FlowRange[] = [];
+        
+        for (const range of selection) {
+            const updated = operation.updateSelection(range, true);
+            if (updated !== null) {
+                newSelection.push(updated);
+            }
         }
-    }, [content, onContentChange]);
+
+        if (onChange && onChange(newContent, newSelection, operation, content, selection) === false) {
+            return false;
+        }
+
+        setContent(newContent);
+        setSelection(newSelection);
+        
+        return true;
+    }, [content, selection, onChange]);
 
     // Handle native "beforeinput"
     useBeforeInputHandler(rootRef, content, handleOperation);
@@ -117,11 +134,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        setSelection(mapped);
-        if (onSelectionChange) {
-            onSelectionChange(mapped);
+        if (!onChange || onChange(content, mapped, null, content, selection) !== false) {
+            setSelection(mapped);
         }
-    }, [rootRef.current]);
+    }, [rootRef.current, onChange, content, selection]);
     
     // Keep DOM selection in sync with editor selection
     useLayoutEffect(() => {

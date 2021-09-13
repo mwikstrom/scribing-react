@@ -17,13 +17,9 @@ export const getInsertionContent = (event: BeforeInputEvent): FlowContent | null
 
     if (inputType === "insertParagraph") {
         nodes.push(new ParagraphBreak());
-    }
-
-    if (inputType === "insertLineBreak") {
+    } else if (inputType === "insertLineBreak") {
         nodes.push(new LineBreak());
-    }
-
-    if (
+    } else if (
         inputType !== "insertFromPaste" &&
         inputType !== "insertFromPasteAsQuotation" &&
         inputType !== "insertFromDrop" &&

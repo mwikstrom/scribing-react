@@ -1,5 +1,5 @@
 import { MutableRefObject } from "react";
-import { FlowContent, FlowOperation, FlowRange, InsertContent, RemoveRange } from "scribing";
+import { FlowBatch, FlowContent, FlowOperation, FlowRange, InsertContent, RemoveRange } from "scribing";
 import { BeforeInputEvent, getInsertionContent } from "./before-input-event";
 import { mapDomRangeToFlow } from "./dom-mapping";
 import { useNativeEventHandler } from "./use-native-event-handler";
@@ -56,7 +56,7 @@ export const useBeforeInputHandler = (
         );
     }
 
-    const operation = FlowOperation.fromArray(operationArray);
+    const operation = FlowBatch.fromArray(operationArray);
     if (operation !== null) {
         handleOperation(operation);
     }
