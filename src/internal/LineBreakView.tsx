@@ -15,7 +15,7 @@ export const LineBreakView: FC<LineBreakViewProps> = props => {
         <span
             ref={rootRef}
             className="scribing-line-break"
-            children={<>¶<br/></>}
+            children={<>↵<br/></>}
         />
     );
 };
