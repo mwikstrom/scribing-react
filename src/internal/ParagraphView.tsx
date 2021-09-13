@@ -11,7 +11,7 @@ export interface ParagraphViewProps {
 
 export const ParagraphView: FC<ParagraphViewProps> = props => {
     const { nodes, style } = props;
-    const { type } = style;
+    const { type = "normal" } = style;
     const css = useMemo(() => getParagraphCssProperties(style), [style]);
     const Component = getParagraphComponent(type);
     return (
