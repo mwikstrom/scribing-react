@@ -44,7 +44,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         content: controlledContent,
         defaultContent = getDefaultContent(),
         selection: controlledSelection,
-        defaultSelection = [],
+        defaultSelection = DEFAULT_SELECTION,
         autoFocus,
         onChange,
     } = props;
@@ -189,3 +189,4 @@ const getDefaultContent = (): FlowContent => {
 };
 
 let DEFAULT_CONTENT: FlowContent | undefined;
+const DEFAULT_SELECTION: readonly FlowRange[] = Object.freeze([]);
