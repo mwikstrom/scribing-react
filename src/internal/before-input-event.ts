@@ -10,7 +10,7 @@ export interface BeforeInputEvent extends Event {
 }
 
 /** @internal */
-export const getInsertionContent = (event: BeforeInputEvent): FlowContent | null => {
+export const getContentFromInputEvent = (event: BeforeInputEvent): FlowContent | null => {
     const { inputType, dataTransfer } = event;
     let { data } = event;
     const nodes: FlowNode[] = [];

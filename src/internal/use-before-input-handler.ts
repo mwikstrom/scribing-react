@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
-import { FlowBatch, FlowContent, FlowOperation, FlowRange, InsertContent, RemoveRange } from "scribing";
-import { BeforeInputEvent, getInsertionContent } from "./before-input-event";
+import { FlowBatch, FlowContent, FlowOperation, FlowRange, FormatText, InsertContent, RemoveRange, TextStyle, TextStyleProps } from "scribing";
+import { BeforeInputEvent, getContentFromInputEvent } from "./before-input-event";
 import { mapDomRangeToFlow } from "./dom-mapping";
 import { useNativeEventHandler } from "./use-native-event-handler";
 
@@ -33,31 +33,76 @@ export const useBeforeInputHandler = (
         flowRanges.push(mapped);
     }
 
-    const operationArray: FlowOperation[] = [];
-    const insertionContent = getInsertionContent(event);
+    const handler = INPUT_HANDLERS[inputType];
 
-    if (
-        insertionContent ||
-        inputType === "deleteContentBackward" ||
-        inputType === "deleteContentForward" ||
-        inputType === "deleteContent" ||
-        inputType === "deleteByCut" ||
-        inputType === "deleteByDrag"
-    ) {
-        const maybeFlipped = inputType === "deleteContentBackward" ? flowRanges.map(r => r.reverse()) : flowRanges;
-        operationArray.push(...maybeFlipped.filter(r => !r.isCollapsed).map(r => new RemoveRange({ range: r })));
-    } else {
+    if (!handler) {
         console.warn(`Unsupported input type: ${inputType}`);
+        return;
     }
 
-    if (insertionContent) {        
-        operationArray.push(...flowRanges.map(
-            r => new InsertContent({ position: r.focus, content: insertionContent }))
-        );
-    }
+    const operation = handler(flowRanges, event, content);
 
-    const operation = FlowBatch.fromArray(operationArray);
     if (operation !== null) {
         handleOperation(operation);
     }
 }, [rootRef.current, content, handleOperation]);
+
+type InputHandler = (selection: FlowRange[], event: BeforeInputEvent, content: FlowContent) => FlowOperation | null;
+
+const genericInsertHandler: InputHandler = (selection, event) => {
+    const content = getContentFromInputEvent(event);
+    if (content === null) {
+        return null;
+    } else {
+        return insertContent(selection, content);
+    }
+};
+
+const genericRemoveHandler: InputHandler = selection => FlowBatch.fromArray(
+    selection.filter(range => !range.isCollapsed).map(range => new RemoveRange({ range })),
+);
+
+const deleteContentBackward: InputHandler = (selection, ...rest) => genericRemoveHandler(
+    selection.map(range => range.reverse()),
+    ...rest
+);
+
+const makeTextStyleToggle = (key: keyof TextStyleProps): InputHandler => (selection, _, content) => FlowBatch.fromArray(
+    selection.map(range => {
+        // TODO: Need support for ambient style
+        const current = content.peek(range.focus).getTextStyle() ?? TextStyle.empty;
+        if (current.get(key) === true) {
+            return new FormatText({ range, style: TextStyle.empty.set(key, false) });
+        } else {
+            return new FormatText({ range, style: TextStyle.empty.set(key, true) });
+        }
+    })
+);
+
+const INPUT_HANDLERS: Record<string, InputHandler> = {
+    deleteContentBackward,
+    deleteContentForward: genericRemoveHandler,
+    deleteContent: genericRemoveHandler,
+    // TODO: deleteByCut: genericRemoveHandler,
+    // TODO: deleteByDrag: genericRemoveHandler,
+    formatBold: makeTextStyleToggle("bold"),
+    formatItalic: makeTextStyleToggle("italic"),
+    formatUnderline: makeTextStyleToggle("underline"),
+    formatStrikeThrough: makeTextStyleToggle("strike"),
+    insertCompositionText: genericInsertHandler,
+    insertFromComposition: genericInsertHandler,
+    insertFromDrop: genericInsertHandler,
+    insertFromPaste: genericInsertHandler,
+    // TODO: insertFromPasteAsQuotation: genericInsertHandler,
+    insertFromYank: genericInsertHandler,
+    insertLineBreak: genericInsertHandler,
+    insertParagraph: genericInsertHandler,
+    insertReplacementText: genericInsertHandler,
+    insertText: genericInsertHandler,
+    insertTranspose: genericInsertHandler,
+};
+
+const insertContent = (selection: readonly FlowRange[], content: FlowContent) => FlowBatch.fromArray([
+    ...selection.filter(range => !range.isCollapsed).map(range => new RemoveRange({ range })),
+    ...selection.map(range => new InsertContent({ position: range.focus, content: content })),
+]);
