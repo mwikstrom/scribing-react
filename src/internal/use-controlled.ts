@@ -37,17 +37,17 @@ export const useControlled = <T>(
                 `An attempt was made to switch whether the '${controlledPropName}' property of `,
                 `component '${componentName}' is controlled or not. You must decide whether the `,
                 "component shall be controlled or not before the first render of the component.",
-            ].join("\n"));
+            ].join());
         }
     }, [shouldBeControlled]);
 
     useEffect(() => {
         if (!isControlled && defaultValue !== initialValue) {
-            console.log([
+            console.error([
                 `An attempt was made to change value of the '${defaultPropName}' property of `,
-                `component ${componentName} after being initialized. To make the component controlled `,
+                `component '${componentName}' after being initialized. To make the component controlled `,
                 `you should instead use the '${controlledPropName} property.`,
-            ].join("\n"));
+            ].join());
         }
     }, [defaultValue]);
     
