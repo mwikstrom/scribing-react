@@ -186,7 +186,7 @@ const mapFlowPositionToDomLocationInNode = (
             const child = childNodes.item(i);
             if (child.nodeType === Node.TEXT_NODE) {
                 const size = node.textContent?.length || 0;
-                result = { container: node, offset: Math.min(size, position) };
+                result = { container: child, offset: Math.min(size, position) };
                 if (position <= size) {
                     break;
                 } else {
