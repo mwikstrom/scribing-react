@@ -15,6 +15,7 @@ export const ParagraphBreakView: FC<ParagraphBreakViewProps> = props => {
         <span
             ref={rootRef}
             className="scribing-para-break"
+            contentEditable={false}
             children="¶"
         />
     );
