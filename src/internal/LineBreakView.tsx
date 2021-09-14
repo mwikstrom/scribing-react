@@ -18,7 +18,6 @@ export const LineBreakView: FC<LineBreakViewProps> = props => {
         <span
             ref={rootRef}
             className={classes.root}
-            contentEditable={false}
             children="↵"
         />
     );

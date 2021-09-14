@@ -18,7 +18,6 @@ export const ParagraphBreakView: FC<ParagraphBreakViewProps> = props => {
         <span
             ref={rootRef}
             className={classes.root}
-            contentEditable={false}
             children="¶"
         />
     );
