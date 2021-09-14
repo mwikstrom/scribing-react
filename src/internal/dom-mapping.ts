@@ -207,7 +207,7 @@ const mapFlowPositionToDomLocationInChildList = (
             position -= size;
         } else {
             const mapped = mapFlowPositionToDomLocationInNode(position, node);
-            if (!mapped && position === size) {
+            if (!mapped && position === size && (i + 1) < childNodes.length) {
                 return { container, offset: i + 1 };
             } else {
                 return mapped;

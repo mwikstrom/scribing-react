@@ -1,5 +1,5 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowContent, FlowOperation, FlowRange, ParagraphBreak, TextRun } from "scribing";
+import { FlowContent, FlowOperation, FlowRange, ParagraphBreak } from "scribing";
 import { FlowContentView } from "./FlowContentView";
 import { BeforeInputEvent } from "./internal/before-input-event";
 import { 
@@ -183,9 +183,6 @@ const getDefaultContent = (): FlowContent => {
     if (!DEFAULT_CONTENT) {
         DEFAULT_CONTENT = new FlowContent({
             nodes: Object.freeze([
-                TextRun.fromData("Hello"),
-                new ParagraphBreak(),
-                TextRun.fromData("world"),
                 new ParagraphBreak(),
             ])
         });
