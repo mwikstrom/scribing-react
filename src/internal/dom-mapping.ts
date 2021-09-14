@@ -68,7 +68,7 @@ export const mapFlowRangeToDomRange = (
 
 /** @internal */
 export const mapDomRangeToFlow = (
-    domRange: StaticRange,
+    domRange: AbstractRange,
     rootElement: HTMLElement,
 ): FlowRange | null => {
     const { startContainer, startOffset, collapsed } = domRange;
