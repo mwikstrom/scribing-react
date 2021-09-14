@@ -14,9 +14,11 @@ export const mapDomSelectionToFlowRangeArray = (
 
     for (let i = 0; i < domSelection.rangeCount; ++i) {
         const domRange = domSelection.getRangeAt(i);
-        const mapped = mapDomRangeToFlow(domRange, rootElement);
-        if (mapped) {
-            result.push(mapped);
+        if (rootElement.contains(domRange.startContainer) && rootElement.contains(domRange.endContainer)) {
+            const mapped = mapDomRangeToFlow(domRange, rootElement);
+            if (mapped) {
+                result.push(mapped);
+            }
         }
     }
 
