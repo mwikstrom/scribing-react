@@ -14,7 +14,7 @@ export const mapDomSelectionToFlowRangeArray = (
 
     for (let i = 0; i < domSelection.rangeCount; ++i) {
         const domRange = domSelection.getRangeAt(i);
-        if (rootElement.contains(domRange.startContainer) && rootElement.contains(domRange.endContainer)) {
+        if (rootElementContainsDomRange(rootElement, domRange)) {
             const mapped = mapDomRangeToFlow(domRange, rootElement);
             if (mapped) {
                 result.push(mapped);
@@ -25,47 +25,80 @@ export const mapDomSelectionToFlowRangeArray = (
     return Object.freeze(result);
 };
 
+const rootElementContainsDomRange = (rootElement: HTMLElement, { commonAncestorContainer }: Range): boolean => (
+    commonAncestorContainer === rootElement || 
+    rootElement.contains(commonAncestorContainer)
+);
+
 /** @internal */
-export const mapFlowRangeArrayToDomSelection = (
+export const applyFlowRangeArrayToDomSelection = (
     array: readonly FlowRange[],
     domSelection: Selection,
     rootElement: HTMLElement,
 ): void => {
-    domSelection.removeAllRanges();
-    for (const item of array) {
-        const mapped = mapFlowRangeToDomRange(item, rootElement);
-        if (mapped) {
-            domSelection.addRange(mapped);
+    const toBeMapped = array
+        .map(flowRange => mapFlowRangeToDomRange(flowRange, rootElement))
+        .filter(range => range !== null) as DomRange[];
+    const unmappedRanges: Range[] = [];
+    
+    for (let domIndex = 0; domIndex < domSelection.rangeCount; ++domIndex) {
+        const domRange = domSelection.getRangeAt(domIndex);
+        if (rootElementContainsDomRange(rootElement, domRange)) {
+            const flowIndex = toBeMapped.findIndex(mapped => areEqualDomRanges(mapped, domRange));
+            if (flowIndex >= 0) {
+                toBeMapped.splice(flowIndex, 1);
+            } else {
+                unmappedRanges.push(domRange);
+            }
         }
     }
+
+    for (const range of toBeMapped) {
+        let domRange = unmappedRanges.shift();
+        const isNew = !domRange;
+        if (!domRange) {
+            domRange = new Range();
+        }
+        domRange.setStart(range.start.container, range.start.offset);
+        domRange.setEnd(range.end.container, range.end.offset);
+        if (isNew) {
+            domSelection.addRange(domRange);
+        }
+    }
+
+    for (const domRange of unmappedRanges) {
+        domSelection.removeRange(domRange);
+    }
 };
+
+const areEqualDomRanges = (mapped: DomRange, dom: AbstractRange): boolean => (
+    mapped.start.container === dom.startContainer &&
+    mapped.start.offset === dom.startOffset &&
+    mapped.end.container === dom.endContainer &&
+    mapped.end.offset === dom.endOffset
+);
 
 /** @internal */
 export const mapFlowRangeToDomRange = (
     flowRange: FlowRange,
     rootElement: HTMLElement,
-): Range | null => {
+): DomRange | null => {
     const { anchor, focus, isCollapsed } = flowRange;
-    const mappedStart = mapFlowPositionToDomLocation(anchor, rootElement);
-    if (!mappedStart) {
+    const start = mapFlowPositionToDomLocation(anchor, rootElement);
+    if (!start) {
         return null;
     }
 
-    let mappedRange: Range | null = new Range();
-    mappedRange.setStart(mappedStart.container, mappedStart.offset);
-
     if (isCollapsed) {
-        mappedRange.setEnd(mappedStart.container, mappedStart.offset);        
-    } else {
-        const mappedEnd = mapFlowPositionToDomLocation(focus, rootElement);
-        if (!mappedEnd) {
-            mappedRange = null;
-        } else {
-            mappedRange.setEnd(mappedEnd.container, mappedEnd.offset);
-        }
+        return { start, end: start };
     }
 
-    return mappedRange;
+    const end = mapFlowPositionToDomLocation(focus, rootElement);
+    if (!end) {
+        return null;
+    }
+
+    return { start, end };
 };
 
 /** @internal */
@@ -145,6 +178,12 @@ export const mapDomLocationToFlow = (
 };
 
 /** @internal */
+export interface DomRange {
+    start: DomLocation;
+    end: DomLocation;
+}
+
+/** @internal */
 export interface DomLocation {
     container: Node;
     offset: number;
@@ -154,22 +193,25 @@ export interface DomLocation {
 export const mapFlowPositionToDomLocation = (
     position: number,
     rootElement: HTMLElement,
-): DomLocation | null => {
-    const { childNodes } = rootElement;
-    return mapFlowPositionToDomLocationInChildList(position, childNodes);
-};
+): DomLocation | null => mapFlowPositionToDomLocationInChildList(position, rootElement);
 
 const mapFlowPositionToDomLocationInChildList = (
     position: number,
-    childNodes: NodeListOf<ChildNode>,
+    container: Node,
 ): DomLocation | null => {
+    const { childNodes } = container;
     for (let i = 0; i < childNodes.length; ++i) {
         const node = childNodes.item(i);
         const size = getFlowSizeFromDomNode(node);
         if (position > size) {
             position -= size;
         } else {
-            return mapFlowPositionToDomLocationInNode(position, node);
+            const mapped = mapFlowPositionToDomLocationInNode(position, node);
+            if (!mapped && position === size) {
+                return { container, offset: i + 1 };
+            } else {
+                return mapped;
+            }
         }
     }
     return null;    
@@ -205,7 +247,7 @@ const mapFlowPositionToDomLocationInNode = (
         return result;
     }
 
-    return mapFlowPositionToDomLocationInChildList(position, node.childNodes);
+    return mapFlowPositionToDomLocationInChildList(position, node);
 };
 
 /** @internal */

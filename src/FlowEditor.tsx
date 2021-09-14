@@ -1,11 +1,11 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowContent, FlowOperation, FlowRange, ParagraphBreak } from "scribing";
+import { FlowContent, FlowOperation, FlowRange, ParagraphBreak, TextRun } from "scribing";
 import { FlowContentView } from "./FlowContentView";
 import { BeforeInputEvent } from "./internal/before-input-event";
 import { 
     flowRangeArrayEquals, 
     mapDomSelectionToFlowRangeArray, 
-    mapFlowRangeArrayToDomSelection, 
+    applyFlowRangeArrayToDomSelection, 
     useRootMapping
 } from "./internal/dom-mapping";
 import { useBeforeInputHandler } from "./internal/use-before-input-handler";
@@ -131,7 +131,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             
         const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
         if (flowRangeArrayEquals(selection, mapped)) {
-            return;
+            // TODO: RE-ENABLE
+            // return;
         }
 
         if (!onChange || onChange(content, mapped, null, content, selection) !== false) {
@@ -156,10 +157,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
         if (flowRangeArrayEquals(selection, mapped)) {
-            return;            
+            // TODO: RE-ENABLE
+            //return;            
         }
 
-        mapFlowRangeArrayToDomSelection(selection, domSelection, rootRef.current);
+        applyFlowRangeArrayToDomSelection(selection, domSelection, rootRef.current);
     }, [documentHasFocus, rootRef.current, selection]);   
     
     const css = useMemo((): CSSProperties => ({
@@ -181,6 +183,9 @@ const getDefaultContent = (): FlowContent => {
     if (!DEFAULT_CONTENT) {
         DEFAULT_CONTENT = new FlowContent({
             nodes: Object.freeze([
+                TextRun.fromData("Hello"),
+                new ParagraphBreak(),
+                TextRun.fromData("world"),
                 new ParagraphBreak(),
             ])
         });
@@ -189,4 +194,4 @@ const getDefaultContent = (): FlowContent => {
 };
 
 let DEFAULT_CONTENT: FlowContent | undefined;
-const DEFAULT_SELECTION: readonly FlowRange[] = Object.freeze([]);
+const DEFAULT_SELECTION: readonly FlowRange[] = Object.freeze([FlowRange.at(0)]);
