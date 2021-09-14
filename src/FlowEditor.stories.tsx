@@ -1,14 +1,28 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "./FlowEditor";
+import { FlowEditorProps } from ".";
 
 export default {
     title: "FlowEditor",
     component: FlowEditor,
 } as ComponentMeta<typeof FlowEditor>;
   
-const Template: ComponentStory<typeof FlowEditor> = (args) => <FlowEditor {...args} />;
+const Template: ComponentStory<typeof FlowEditor> = args => <FlowEditor {...args} />;
 
 export const Uncontrolled = Template.bind({});
 Uncontrolled.args = {};
 
+export const WithSelectionPrintOut: ComponentStory<typeof FlowEditor> = args => {
+    const [printOut, setPrintOut] = useState("");
+    const onChange = useCallback<Exclude<FlowEditorProps["onChange"], undefined>>((_, newSelection) => {
+        setPrintOut(newSelection.map(range => `${range.anchor} -> ${range.focus}`).join("; "));
+        return true;
+    }, [setPrintOut]);
+    return (
+        <>
+            <div>Selection: {printOut}</div>
+            <FlowEditor {...args} onChange={onChange}/>
+        </>
+    );
+};
