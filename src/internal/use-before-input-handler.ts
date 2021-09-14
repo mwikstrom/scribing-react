@@ -35,7 +35,6 @@ export const useBeforeInputHandler = (
         const mapped = mapDomRangeToFlow(domRange, rootRef.current);
 
         if (!mapped) {
-            // tslint:disable-next-line:no-console
             console.warn("Discarding input because target DOM range could not be mapped to content");
             return;
         }
