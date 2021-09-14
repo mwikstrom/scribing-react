@@ -1,42 +1,87 @@
 import React, { FC, useMemo } from "react";
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
-import { FlowNode, ParagraphStyle, ParagraphStyleProps } from "scribing";
+import { FlowNode, LineBreak, ParagraphBreak, ParagraphStyleProps } from "scribing";
 import { getParagraphCssProperties } from "./para-css";
-import { ParagraphElementView } from "./ParagraphElementView";
 import { makeJssId } from "./make-jss-id";
+import { LineView, LineViewProps } from "./LineView";
 
 /** @internal */
 export interface ParagraphViewProps {
-    nodes: FlowNode[];
-    style: ParagraphStyle;
+    children: FlowNode[];
+    breakNode: ParagraphBreak | null;
 }
 
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { nodes, style } = props;
-    const { type = "normal" } = style;
-    const css = useMemo(() => getParagraphCssProperties(style), [style]);
+    const { children, breakNode } = props;
+    const typeClass = useMemo(() => {
+        if (breakNode instanceof ParagraphBreak) {
+            return breakNode.style.type ?? "normal";
+        } else {
+            return "trailing";
+        }
+    }, [breakNode]);
+    const css = useMemo(() => {
+        if (breakNode instanceof ParagraphBreak) {
+            return getParagraphCssProperties(breakNode.style);
+        } else {
+            return {};
+        }
+    }, [breakNode]);
     const classes = useStyles();
-    const Component = getParagraphComponent(type);
+    const lineArray = useMemo(() => splitToLines(children), [children]);
+    const Component = getParagraphComponent(typeClass);
     return (
         <Component
             style={css}
-            className={clsx(classes.root, classes[type])}
-            children={nodes.map(n => <ParagraphElementView key={n.transientKey} node={n}/>)}
+            className={clsx(classes.root, classes[typeClass])}
+            children={lineArray.map(line => <LineView {...line}/>)}
         />
     );
 };
 
-const getParagraphComponent = (type: ParagraphStyleProps["type"] = "normal") => (
-    type === "normal" ? "p" :
-        type === "title" || type === "subtitle" ? "div" :
-            type
-);
+interface Line extends LineViewProps {
+    key: string;
+}
 
-type ParagraphTypeClasses = Exclude<ParagraphStyleProps["type"], undefined>;
+const splitToLines = (source: readonly FlowNode[]): Line[] => {
+    const result: Line[] = [];
+    let children: FlowNode[] = [];
+
+    for (const node of source) {
+        children.push(node);
+        if (node instanceof LineBreak) {
+            const { transientKey: key } = node;
+            result.push({ key, children });
+            children = [];
+        }
+    }
+
+    if (children.length > 0) {
+        const key = "$trailing-line";
+        result.push({ key, children });
+    }
+
+    return result;
+};
+
+
+const getParagraphComponent = (type: ParagraphTypeClasses) => {
+    switch (type) {
+    case "normal": return "p";
+    case "trailing": return "p";
+    case "title": return "div";
+    case "subtitle": return "div";
+    default: return type;
+    }
+};
+
+type ParagraphTypeClasses = Exclude<ParagraphStyleProps["type"], undefined> | "trailing";
+
 const useStyles = createUseStyles<"root" | ParagraphTypeClasses>({
     root: {},
     normal: {},
+    trailing: {},
     title: {},
     subtitle: {},
     h1: {},
@@ -46,5 +91,5 @@ const useStyles = createUseStyles<"root" | ParagraphTypeClasses>({
     h5: {},
     h6: {}
 }, {
-    generateId: makeJssId("Paragraph"),
+    generateId: makeJssId("Para"),
 });

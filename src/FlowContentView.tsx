@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { FlowContent, FlowNode, ParagraphStyle } from "scribing";
+import React, { FC, useMemo } from "react";
+import { FlowContent, FlowNode, ParagraphBreak } from "scribing";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
 
 /**
@@ -16,8 +16,8 @@ export interface FlowContentViewProps {
  */
 export const FlowContentView: FC<FlowContentViewProps> = props => {
     const { content: { nodes } } = props;
-    const paraArray = splitToParagraphs(nodes);
-    return <>{paraArray.map(para => <ParagraphView {...para}/>)}</>;
+    const paragraphArray = useMemo(() => splitToParagraphs(nodes), [nodes]);
+    return <>{paragraphArray.map(para => <ParagraphView {...para}/>)}</>;
 };
 
 interface Paragraph extends ParagraphViewProps {
@@ -26,22 +26,20 @@ interface Paragraph extends ParagraphViewProps {
 
 const splitToParagraphs = (source: readonly FlowNode[]): Paragraph[] => {
     const result: Paragraph[] = [];
-    let nodes: FlowNode[] = [];
+    let children: FlowNode[] = [];
 
     for (const node of source) {
-        nodes.push(node);
-        const style = node.getParagraphStyle();
-        if (style !== null) {
+        children.push(node);
+        if (node instanceof ParagraphBreak) {
             const { transientKey: key } = node;
-            result.push({ nodes, style, key });
-            nodes = [];
+            result.push({ key, children, breakNode: node });
+            children = [];
         }
     }
 
-    if (nodes.length > 0) {
-        const style = ParagraphStyle.empty;
+    if (children.length > 0) {
         const key = "$trailing-para";
-        result.push({ nodes, style, key });
+        result.push({ key, children, breakNode: null });
     }
 
     return result;

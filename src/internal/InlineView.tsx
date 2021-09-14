@@ -6,11 +6,11 @@ import { TextRunView } from "./TextRunView";
 import { UnsupportedElementView } from "./UnsupportedElementView";
 
 /** @internal */
-export interface ParagraphElementViewProps {
+export interface InlineViewProps {
     node: FlowNode;
 }
 
-export const ParagraphElementView: FC<ParagraphElementViewProps> = props => {
+export const InlineView: FC<InlineViewProps> = props => {
     const { node } = props;
     if (node instanceof LineBreak) {
         return <LineBreakView node={node}/>;
