@@ -131,8 +131,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             
         const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
         if (flowRangeArrayEquals(selection, mapped)) {
-            // TODO: RE-ENABLE
-            // return;
+            return;
         }
 
         if (!onChange || onChange(content, mapped, null, content, selection) !== false) {
@@ -157,8 +156,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
         if (flowRangeArrayEquals(selection, mapped)) {
-            // TODO: RE-ENABLE
-            //return;            
+            return;            
         }
 
         applyFlowRangeArrayToDomSelection(selection, domSelection, rootRef.current);
