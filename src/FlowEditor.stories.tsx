@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "./FlowEditor";
 import { FlowEditorProps } from ".";
-import { FlowContent, TextRun, TextStyle, ParagraphBreak } from "scribing";
+import { FlowContent, TextRun, TextStyle, ParagraphBreak, LineBreak } from "scribing";
 
 export default {
     title: "FlowEditor",
@@ -30,7 +30,8 @@ export const WithSelectionPrintOut: ComponentStory<typeof FlowEditor> = args => 
 WithSelectionPrintOut.args = {
     defaultContent: new FlowContent({
         nodes: Object.freeze([
-            TextRun.fromData("Hello "),
+            TextRun.fromData("Hello"),
+            new LineBreak(),
             TextRun.fromData({ text: "there", style: new TextStyle({ italic: true }) }),
             new ParagraphBreak(),
             TextRun.fromData("world"),
