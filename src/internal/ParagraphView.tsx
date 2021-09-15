@@ -5,6 +5,7 @@ import { FlowNode, ParagraphBreak, ParagraphStyleProps } from "scribing";
 import { getParagraphCssProperties } from "./para-css";
 import { makeJssId } from "./make-jss-id";
 import { FlowNodeView } from "./FlowNodeView";
+import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 
 /** @internal */
 export interface ParagraphViewProps {
@@ -14,6 +15,7 @@ export interface ParagraphViewProps {
 
 export const ParagraphView: FC<ParagraphViewProps> = props => {
     const { children, breakNode } = props;
+    const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const typeClass = useMemo(() => {
         if (breakNode instanceof ParagraphBreak) {
             return breakNode.style.type ?? "normal";
@@ -30,11 +32,17 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     }, [breakNode]);
     const classes = useStyles();
     const Component = getParagraphComponent(typeClass);
+    const keyRenderer = keyManager.createRenderer();
     return (
         <Component
             style={css}
             className={clsx(classes.root, classes[typeClass])}
-            children={children.map(child => <FlowNodeView key={child.transientKey} node={child}/>)}
+            children={children.map(child => (
+                <FlowNodeView
+                    key={keyRenderer.getNodeKey(child)}
+                    node={child}
+                />
+            ))}
         />
     );
 };
