@@ -11,9 +11,7 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         baseline,
     } = style;
 
-    const css: CSSProperties = {
-        whiteSpace: "pre"
-    };
+    const css: CSSProperties = {};
 
     if (typeof bold === "boolean") {
         css.fontWeight = bold ? "bold" : "normal";
