@@ -18,7 +18,7 @@ export const LineBreakView: FC<LineBreakViewProps> = props => {
         <span
             ref={rootRef}
             className={classes.root}
-            children="↵"
+            children={"↵\n"}
         />
     );
 };
@@ -26,6 +26,7 @@ export const LineBreakView: FC<LineBreakViewProps> = props => {
 const useStyles = createUseStyles({
     root: {
         opacity: 0.5,
+        whiteSpace: "pre",
     },
 }, {
     generateId: makeJssId("LineBreak"),

@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from "react";
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
-import { FlowNode, LineBreak, ParagraphBreak, ParagraphStyleProps } from "scribing";
+import { FlowNode, ParagraphBreak, ParagraphStyleProps } from "scribing";
 import { getParagraphCssProperties } from "./para-css";
 import { makeJssId } from "./make-jss-id";
-import { LineView, LineViewProps } from "./LineView";
+import { FlowNodeView } from "./FlowNodeView";
 
 /** @internal */
 export interface ParagraphViewProps {
@@ -29,42 +29,15 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         }
     }, [breakNode]);
     const classes = useStyles();
-    const lineArray = useMemo(() => splitToLines(children), [children]);
     const Component = getParagraphComponent(typeClass);
     return (
         <Component
             style={css}
             className={clsx(classes.root, classes[typeClass])}
-            children={lineArray.map(line => <LineView {...line}/>)}
+            children={children.map(child => <FlowNodeView key={child.transientKey} node={child}/>)}
         />
     );
 };
-
-interface Line extends LineViewProps {
-    key: string;
-}
-
-const splitToLines = (source: readonly FlowNode[]): Line[] => {
-    const result: Line[] = [];
-    let children: FlowNode[] = [];
-
-    for (const node of source) {
-        children.push(node);
-        if (node instanceof LineBreak) {
-            const { transientKey: key } = node;
-            result.push({ key, children });
-            children = [];
-        }
-    }
-
-    if (children.length > 0) {
-        const key = "$trailing-line";
-        result.push({ key, children });
-    }
-
-    return result;
-};
-
 
 const getParagraphComponent = (type: ParagraphTypeClasses) => {
     switch (type) {
