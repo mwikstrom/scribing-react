@@ -1,5 +1,4 @@
-import { useRef } from "@storybook/addons";
-import React, { FC, useLayoutEffect } from "react";
+import React, { FC, useLayoutEffect, useRef } from "react";
 import { FlowNodeComponentProps } from "./FlowNodeComponent";
 import { useFlowNodeComponent } from "./internal/hooks/use-flow-node-component";
 import { setupFlowNodeMapping } from "./internal/mapping/flow-node";
