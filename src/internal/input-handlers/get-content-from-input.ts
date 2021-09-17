@@ -1,16 +1,7 @@
 import { FlowContent, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
 
 /** @internal */
-export interface BeforeInputEvent extends Event {
-    readonly data: string | null;
-    readonly dataTransfer: DataTransfer | null;
-    readonly inputType: string;
-    readonly isComposing: boolean;
-    getTargetRanges(): readonly StaticRange[];
-}
-
-/** @internal */
-export const getContentFromInputEvent = (event: BeforeInputEvent): FlowContent | null => {
+export const getContentFromInput = (event: InputEvent): FlowContent | null => {
     const { inputType, dataTransfer } = event;
     let { data } = event;
     const nodes: FlowNode[] = [];

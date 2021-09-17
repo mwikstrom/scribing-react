@@ -1,34 +1,27 @@
-import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowContent, FlowOperation, FlowRange, ParagraphBreak } from "scribing";
-import { FlowContentView } from "./FlowContentView";
-import { BeforeInputEvent } from "./internal/before-input-event";
-import { 
-    flowRangeArrayEquals, 
-    mapDomSelectionToFlowRangeArray, 
-    applyFlowRangeArrayToDomSelection, 
-    useRootMapping
-} from "./internal/dom-mapping";
-import { useBeforeInputHandler } from "./internal/use-before-input-handler";
-import { useControlled } from "./internal/use-controlled";
-import { useDocumentHasFocus } from "./internal/use-document-has-focus";
-import { useNativeEventHandler } from "./internal/use-native-event-handler";
+import React, { CSSProperties, FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { FlowEditorState, FlowOperation, FlowSelection } from "scribing";
+import { FlowView } from "./FlowView";
+import { useControllable } from "./internal/hooks/use-controlled";
+import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
+import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
+import { mapDomSelectionToFlow } from "./internal/mapping/dom-selection-to-flow";
+import { mapFlowSelectionToDom } from "./internal/mapping/flow-selection-to-dom";
+import { getInputHandler } from "./internal/input-handlers";
+import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
+import { isEditingSupported } from "./internal/utils/is-editing-supported";
 
 /**
  * Component props for {@link FlowEditor}
  * @public
  */
 export interface FlowEditorProps {
-    content?: FlowContent;
-    defaultContent?: FlowContent;
-    selection?: readonly FlowRange[];
-    defaultSelection?: readonly FlowRange[];
+    state?: FlowEditorState;
+    defaultState?: FlowEditorState;
     autoFocus?: boolean;
-    onChange?: (
-        newContent: FlowContent, 
-        newSelection: readonly FlowRange[],
-        operation: FlowOperation | null, 
-        oldContent: FlowContent,
-        oldSelection: readonly FlowRange[]
+    onStateChange?: (
+        after: FlowEditorState,
+        change: FlowOperation | null,
+        before: FlowEditorState,
     ) => boolean | undefined;
 }
 
@@ -37,107 +30,100 @@ export interface FlowEditorProps {
  * @public
  */
 export const FlowEditor: FC<FlowEditorProps> = props => {
-    const componentName = "FlowEditor";
-   
     // Extract props
     const {
-        content: controlledContent,
-        defaultContent = getDefaultContent(),
-        selection: controlledSelection,
-        defaultSelection = DEFAULT_SELECTION,
+        state: controlledState,
+        defaultState = FlowEditorState.empty,
         autoFocus,
-        onChange,
+        onStateChange,
     } = props;
     
-    // Setup controlled/uncontrolled content state
-    const [content, setContent] = useControlled({
-        componentName,
-        controlledPropName: "content",
-        controlledValue: controlledContent,
-        defaultPropName: "defaultContent",
-        defaultValue: defaultContent,
-    });
-
-    // Setup controlled/uncontrolled selection state
-    const [selection, setSelection] = useControlled({
-        componentName,
-        controlledPropName: "selection",
-        controlledValue: controlledSelection,
-        defaultPropName: "defaultSelection",
-        defaultValue: defaultSelection,
+    // Setup controlled/uncontrolled state
+    const [state, setState] = useControllable({
+        componentName: FlowEditor.name,
+        controlledPropName: "state",
+        controlledValue: controlledState,
+        defaultPropName: "defaultState",
+        defaultValue: defaultState,
     });
 
     // Determine whether editing is supported
-    const isSupported = useMemo(() => {
-        if (
-            window.InputEvent && 
-            typeof (InputEvent.prototype as unknown as BeforeInputEvent).getTargetRanges === "function"
-        ) {
-            return true;
-        } else {
-            console.error("Editing is not supported in your browser :-(");
-            return false;
-        }
-    }, []);
+    const editable = useMemo(isEditingSupported, []);
 
     // Setup ref for the editing host element
     const rootRef = useRef<HTMLDivElement | null>(null);
+    const { current: editingHost } = rootRef;
+
+    // Keep editing host mapping in sync
+    useLayoutEffect(() => {
+        if (editingHost) {
+            return setupEditingHostMapping(editingHost, state);
+        }
+    }, [editingHost, state]);
 
     // Keep track of whether the browser document is focused
     const documentHasFocus = useDocumentHasFocus();
 
-    // Register root mapping
-    useRootMapping(rootRef, content);
-
-    // Apply flow operations
-    const handleOperation = useCallback((operation: FlowOperation): boolean => {
-        const newContent = operation.applyToContent(content);
-        const newSelection: FlowRange[] = [];
-        
-        for (const range of selection) {
-            const updated = operation.updateSelection(range, true);
-            if (updated !== null) {
-                newSelection.push(updated);
-            }
-        }
-
-        if (onChange && onChange(newContent, newSelection, operation, content, selection) === false) {
-            return false;
-        }
-
-        setContent(newContent);
-        setSelection(newSelection);
-        
-        return true;
-    }, [content, selection, onChange]);
-
-    // Handle native "beforeinput"
-    useBeforeInputHandler(rootRef, content, handleOperation);
-
     // Apply auto focus
     useEffect(() => {
-        if (rootRef.current && autoFocus) {
-            rootRef.current.focus();
+        if (editingHost && autoFocus) {
+            editingHost.focus();
         }
-    }, [autoFocus, rootRef.current]);
+    }, [autoFocus, editingHost]);
+    
+    // Handle native "beforeinput"
+    useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
+        const { inputType } = event;
+        event.preventDefault();
+
+        const inputHandler = getInputHandler(inputType);
+        if (!inputHandler) {
+            console.warn(`Unsupported input type: ${inputType}`);
+            return;
+        }
+
+        const operation = inputHandler(event, state);
+        if (!operation) {
+            return;
+        }
+
+        const after = state.applyMine(operation);
+        if (state.equals(after)) {
+            return;
+        }
+        
+        if (onStateChange && onStateChange(after, operation, state) === false) {
+            return;
+        }
+
+        setState(after);
+    }, [state, onStateChange]);
 
     // Handle native "selectionchange"
     useNativeEventHandler(document, "selectionchange", () => {
         const domSelection = document.getSelection();
 
-        if (!rootRef.current || !domSelection) {
-            return;
-        }
-            
-        const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
-        if (flowRangeArrayEquals(selection, mapped)) {
+        if (!editingHost) {
             return;
         }
 
-        if (!onChange || onChange(content, mapped, null, content, selection) !== false) {
-            setSelection(mapped);
+        const mapped = mapDomSelectionToFlow(domSelection, editingHost);
+        const changed = mapped ?
+            !FlowSelection.classType.equals(mapped, state.selection) :
+            state.selection !== null;
+        
+        if (!changed) {
+            return;
         }
-    }, [rootRef.current, onChange, content, selection]);
+
+        const after = state.set("selection", mapped);
+
+        if (onStateChange && !onStateChange(after, null, state)) {
+            return;
+        }
+
+        setState(after);
+    }, [editingHost, state, onStateChange]);
     
     // Keep DOM selection in sync with editor selection
     useLayoutEffect(() => {
@@ -146,21 +132,25 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         if (
             !documentHasFocus || 
-            !rootRef.current || 
+            !editingHost || 
             !activeElement || 
-            !rootRef.current.contains(activeElement) || 
+            !editingHost.contains(activeElement) || 
             !domSelection
         ) {
             return;
         }
 
-        const mapped = mapDomSelectionToFlowRangeArray(domSelection, rootRef.current);
-        if (flowRangeArrayEquals(selection, mapped)) {
-            return;            
+        const mapped = mapDomSelectionToFlow(domSelection, editingHost);
+        const changed = mapped ?
+            !FlowSelection.classType.equals(mapped, state.selection) :
+            state.selection !== null;
+        
+        if (!changed) {
+            return;
         }
 
-        applyFlowRangeArrayToDomSelection(selection, domSelection, rootRef.current);
-    }, [documentHasFocus, rootRef.current, selection]);   
+        mapFlowSelectionToDom(state.selection, editingHost, domSelection);
+    }, [editingHost, state, documentHasFocus]);
     
     const css = useMemo((): CSSProperties => ({
         outline: "none",
@@ -170,23 +160,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <div 
             ref={rootRef}
             style={css}
-            contentEditable={isSupported}
+            contentEditable={editable}
             suppressContentEditableWarning={true}
-            children={<FlowContentView content={content}/>}
+            children={<FlowView content={state.content}/>}
         />
     );
 };
-
-const getDefaultContent = (): FlowContent => {
-    if (!DEFAULT_CONTENT) {
-        DEFAULT_CONTENT = new FlowContent({
-            nodes: Object.freeze([
-                new ParagraphBreak(),
-            ])
-        });
-    }
-    return DEFAULT_CONTENT;
-};
-
-let DEFAULT_CONTENT: FlowContent | undefined;
-const DEFAULT_SELECTION: readonly FlowRange[] = Object.freeze([FlowRange.at(0)]);

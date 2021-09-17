@@ -3,5 +3,5 @@
  * @packageDocumentation
  */
 
-export * from "./FlowContentView";
+export * from "./FlowView";
 export * from "./FlowEditor";

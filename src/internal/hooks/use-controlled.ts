@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /** @internal */
-export interface UseControlledOptions<T> {
+export interface UseControllableOptions<T> {
     componentName: string;
     controlledPropName: string;
     controlledValue: T | undefined;
@@ -10,8 +10,8 @@ export interface UseControlledOptions<T> {
 }
 
 /** @internal */
-export const useControlled = <T>(
-    options: UseControlledOptions<T>
+export const useControllable = <T>(
+    options: UseControllableOptions<T>
 ): [T, (newValue: T) => void] => {
     const {
         componentName,
@@ -34,22 +34,26 @@ export const useControlled = <T>(
     useEffect(() => {
         if (isControlled !== shouldBeControlled) {
             console.error([
-                `An attempt was made to switch whether the '${controlledPropName}' property of `,
-                `component '${componentName}' is controlled or not. You must decide whether the `,
-                "component shall be controlled or not before the first render of the component.",
-            ].join());
+                `Property '${controlledPropName}' of component '${componentName}'`,
+                "cannot change to or from 'undefined' after initialization."
+            ].join(" "));
         }
     }, [shouldBeControlled]);
 
     useEffect(() => {
         if (!isControlled && defaultValue !== initialValue) {
             console.error([
-                `An attempt was made to change value of the '${defaultPropName}' property of `,
-                `component '${componentName}' after being initialized. To make the component controlled `,
-                `you should instead use the '${controlledPropName} property.`,
-            ].join());
+                `Property '${defaultPropName}' of component '${componentName}'`,
+                "cannot change after initialization."
+            ].join(" "));
         }
     }, [defaultValue]);
+
+    useLayoutEffect(() => {
+        if (isControlled && controlledValue !== void(0)) {
+            setValue(controlledValue);
+        }
+    }, [isControlled, controlledValue]);
     
     return [value, setValueIfUncontrolled];
 };

@@ -21,10 +21,6 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         css.fontStyle = italic ? "italic" : "normal";
     }
 
-    // TODO: Better handling of text decorations.
-    // Must be able to support case when for example underline is false AND
-    // strike is implied by parent
-
     const decorations: string[] = [];
     if (underline === true) {
         decorations.push("underline");
@@ -38,7 +34,7 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
 
     if (baseline === "normal") {
         css.verticalAlign = "baseline";
-    } else {
+    } else if (baseline !== void(0)) {
         css.verticalAlign = baseline;
     }
 

@@ -6,13 +6,13 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
     const {
         alignment: textAlign,
         direction,
-        line_spacing,
+        lineSpacing,
     } = style;
 
     const css: CSSProperties = {
         textAlign,
         direction,
-        lineHeight: lineSpacingToLineHeight(line_spacing),
+        lineHeight: lineSpacingToLineHeight(lineSpacing),
     };
 
     return css;
