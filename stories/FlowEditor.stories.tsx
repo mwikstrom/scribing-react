@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { FlowEditor } from "../FlowEditor";
-import { FlowEditorProps } from "..";
+import { FlowEditor } from "../src/FlowEditor";
+import { FlowEditorProps } from "../src";
 import { FlowContent, TextRun, TextStyle, ParagraphBreak, LineBreak, RangeSelection, FlowEditorState } from "scribing";
 
 export default {
