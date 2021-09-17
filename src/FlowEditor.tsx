@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { FlowEditorState, FlowOperation, FlowSelection, TextStyle } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
@@ -9,6 +9,8 @@ import { mapFlowSelectionToDom } from "./internal/mapping/flow-selection-to-dom"
 import { getInputHandler } from "./internal/input-handlers";
 import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
 import { isEditingSupported } from "./internal/utils/is-editing-supported";
+import { createUseStyles } from "react-jss";
+import { makeJssId } from "./internal/utils/make-jss-id";
 
 /**
  * Component props for {@link FlowEditor}
@@ -166,17 +168,23 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
     }, [editingHost, state, documentHasFocus]);
     
-    const css = useMemo((): CSSProperties => ({
-        outline: "none",
-    }), []);
+    const classes = useStyles();
 
     return (
         <div 
             ref={rootRef}
-            style={css}
+            className={classes.root}
             contentEditable={editable}
             suppressContentEditableWarning={true}
             children={<FlowView content={state.content}/>}
         />
     );
 };
+
+const useStyles = createUseStyles({
+    root: {
+        outline: "none",
+    },
+}, {
+    generateId: makeJssId("FlowEditor"),
+});
