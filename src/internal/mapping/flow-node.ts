@@ -4,14 +4,7 @@ import { FlowNode } from "scribing";
 export const setupFlowNodeMapping = (
     dom: HTMLElement,
     flow: FlowNode,
-): (() => void) => {
-    MAP.set(dom, flow);
-    return () => {
-        if (MAP.get(dom) === flow) {
-            MAP.delete(dom);
-        }
-    };
-};
+): void => void(MAP.set(dom, flow));
 
 /** @internal */
 export const getMappedFlowNode = (node: Node): FlowNode | null => MAP.get(node) ?? null;

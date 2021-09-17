@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect, useRef } from "react";
+import React, { FC } from "react";
 import { FlowNodeComponentProps } from "./FlowNodeComponent";
 import { useFlowNodeComponent } from "./internal/hooks/use-flow-node-component";
 import { setupFlowNodeMapping } from "./internal/mapping/flow-node";
@@ -6,12 +6,10 @@ import { setupFlowNodeMapping } from "./internal/mapping/flow-node";
 export const FlowNodeView: FC<Omit<FlowNodeComponentProps, "ref">> = props => {
     const { node, map } = props;
     const Component = useFlowNodeComponent(node, map);
-    const ref = useRef<HTMLElement | null>(null);
-    const { current: dom } = ref;
-    useLayoutEffect(() => {
+    const ref = (dom: HTMLElement | null) => {
         if (dom) {
-            return setupFlowNodeMapping(dom, node);
+            setupFlowNodeMapping(dom, node);
         }
-    }, [dom, node]);
+    };
     return <Component ref={ref} {...props}/>;
 };

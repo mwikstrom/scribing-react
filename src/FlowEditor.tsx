@@ -57,7 +57,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Keep editing host mapping in sync
     useLayoutEffect(() => {
         if (editingHost) {
-            return setupEditingHostMapping(editingHost, state);
+            setupEditingHostMapping(editingHost, state);
         }
     }, [editingHost, state]);
 

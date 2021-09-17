@@ -4,14 +4,7 @@ import { FlowEditorState } from "scribing";
 export const setupEditingHostMapping = (
     host: HTMLElement,
     state: FlowEditorState,
-): (() => void) => {
-    MAP.set(host, state);
-    return () => {
-        if (MAP.get(host) === state) {
-            MAP.delete(host);
-        }
-    };
-};
+): void => void(MAP.set(host, state));
 
 /** @internal */
 export const isMappedEditingHost = (node: Node): boolean => MAP.has(node);
