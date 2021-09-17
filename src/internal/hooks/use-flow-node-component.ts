@@ -1,27 +1,24 @@
 import { useMemo } from "react";
 import { FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
 import { FlowNodeComponent, FlowNodeComponentMap } from "../../FlowNodeComponent";
-import { LineBreakView } from "../../LineBreakView";
-import { ParagraphBreakView } from "../../ParagraphBreakView";
-import { TextRunView } from "../../TextRunView";
-import { UnknownNodeView } from "../../UnknownNodeView";
+import { DefaultFlowNodeComponents } from "../DefaultFlowNodeComponents";
 
 /** @internal */
 export const useFlowNodeComponent = (
     node: FlowNode,
-    map: Partial<Readonly<FlowNodeComponentMap>>,
+    components: Partial<Readonly<FlowNodeComponentMap>>,
 ): FlowNodeComponent => useMemo(() => {
     const key = getFlowNodeComponentKey(node);
-    let mapped = map[key] as FlowNodeComponent | undefined;
+    let mapped = components[key] as FlowNodeComponent | undefined;
     if (!mapped) {
-        mapped = defaultMap[key] as FlowNodeComponent;
+        mapped = DefaultFlowNodeComponents[key] as FlowNodeComponent;
     }
     return mapped;
-}, [node, map]);
+}, [node, components]);
 
-const getFlowNodeComponentKey = (node: FlowNode): keyof FlowNodeComponentMap => {
+const getFlowNodeComponentKey = (node: FlowNode): Exclude<keyof FlowNodeComponentMap, "paragraph"> => {
     if (node instanceof TextRun) {
-        return "textRun";
+        return "text";
     } else if (node instanceof LineBreak) {
         return "lineBreak";
     } else if (node instanceof ParagraphBreak) {
@@ -30,10 +27,3 @@ const getFlowNodeComponentKey = (node: FlowNode): keyof FlowNodeComponentMap => 
         return "fallback";
     }
 };
-
-const defaultMap: Readonly<FlowNodeComponentMap> = Object.freeze({
-    textRun: TextRunView,
-    lineBreak: LineBreakView,
-    paragraphBreak: ParagraphBreakView,
-    fallback: UnknownNodeView,
-});

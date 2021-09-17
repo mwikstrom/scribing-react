@@ -11,7 +11,7 @@ import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
 export interface FlowViewProps {
     content: FlowContent;
     theme?: FlowTheme;
-    map?: Partial<Readonly<FlowNodeComponentMap>>;
+    components?: Partial<Readonly<FlowNodeComponentMap>>;
 }
 
 /**
@@ -22,9 +22,9 @@ export const FlowView: FC<FlowViewProps> = props => {
     const { 
         content: { nodes },
         theme = DefaultFlowTheme.instance,
-        map = {},
+        components = {},
     } = props;
-    const forwardProps = { theme, map };
+    const forwardProps = { theme, components };
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const paragraphArray = useMemo(() => splitToParagraphs(nodes), [nodes, keyManager]);
     const keyRenderer = keyManager.createRenderer();

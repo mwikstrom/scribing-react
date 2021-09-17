@@ -7,6 +7,8 @@ import { makeJssId } from "./utils/make-jss-id";
 import { FlowNodeView } from "../FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
+import { DefaultFlowNodeComponents } from "./DefaultFlowNodeComponents";
+import { FlowNodeComponentMap, ParagraphComponent } from "..";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -16,7 +18,7 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children, breakNode, theme: outerTheme, ...restProps } = props;
+    const { children, breakNode, theme: outerTheme, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const innerTheme = useMemo(() => outerTheme.getParagraphTheme(variant), [outerTheme, variant]);
@@ -30,8 +32,8 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     );
     const css = useMemo(() => getParagraphCssProperties(mergedStyle), [mergedStyle]);
     const classes = useStyles();
-    const Component = getParagraphComponent(variant);
-    const forwardProps = { theme: innerTheme, ...restProps };
+    const Component = getParagraphComponent(variant, components);
+    const forwardProps = { theme: innerTheme, components, ...restProps };
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component
@@ -48,18 +50,14 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     );
 };
 
-const getParagraphComponent = (type: ParagraphVariantClasses) => {
-    switch (type) {
-    case "h1":
-    case "h2":
-    case "h3":
-    case "h4":
-    case "h5":
-    case "h6":
-        return type;
-    
-    default:
-        return "p";
+const getParagraphComponent = (
+    variant: ParagraphStyleVariant,
+    components?: Partial<FlowNodeComponentMap>
+): ParagraphComponent => {
+    if (components && components.paragraph) {
+        return components.paragraph(variant);
+    } else {
+        return DefaultFlowNodeComponents.paragraph(variant);
     }
 };
 

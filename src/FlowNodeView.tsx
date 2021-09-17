@@ -4,8 +4,8 @@ import { useFlowNodeComponent } from "./internal/hooks/use-flow-node-component";
 import { setupFlowNodeMapping } from "./internal/mapping/flow-node";
 
 export const FlowNodeView: FC<Omit<FlowNodeComponentProps, "ref">> = props => {
-    const { node, map } = props;
-    const Component = useFlowNodeComponent(node, map);
+    const { node, components } = props;
+    const Component = useFlowNodeComponent(node, components);
     const ref = (dom: HTMLElement | null) => {
         if (dom) {
             setupFlowNodeMapping(dom, node);

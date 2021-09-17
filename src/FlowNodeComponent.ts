@@ -1,5 +1,5 @@
-import { FC, forwardRef, ForwardRefRenderFunction, Ref } from "react";
-import { FlowNode, FlowTheme, LineBreak, ParagraphBreak, TextRun } from "scribing";
+import { CSSProperties, FC, forwardRef, ForwardRefRenderFunction, ReactNode, Ref } from "react";
+import { FlowNode, FlowTheme, LineBreak, ParagraphBreak, ParagraphStyleVariant, TextRun } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
@@ -7,14 +7,26 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: Ref<HTMLElement>;
     theme: FlowTheme;
-    map: Partial<Readonly<FlowNodeComponentMap>>;
+    components: Partial<Readonly<FlowNodeComponentMap>>;
 }
 
 export interface FlowNodeComponentMap {
-    textRun: FlowNodeComponent<TextRun>;
+    text: FlowNodeComponent<TextRun>;
     lineBreak: FlowNodeComponent<LineBreak>;
     paragraphBreak: FlowNodeComponent<ParagraphBreak>;
+    paragraph: (variant: ParagraphStyleVariant) => ParagraphComponent;
     fallback: FlowNodeComponent;
+}
+
+export type ParagraphComponent = (
+    "div" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" |
+    FC<ParagraphComponentProps>
+);
+
+export interface ParagraphComponentProps {
+    style: CSSProperties;
+    className: string;
+    children: ReactNode;
 }
 
 export const flowNode = <T extends FlowNode>(
