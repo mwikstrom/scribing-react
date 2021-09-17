@@ -3,10 +3,10 @@ import { createUseStyles } from "react-jss";
 import { TextRun } from "scribing";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
-import { FlowNodeComponent } from "./FlowNodeComponent";
+import { flowNode } from "./FlowNodeComponent";
 
-export const TextRunView: FlowNodeComponent<TextRun> = props => {
-    const { node, ref, theme } = props;
+export const TextRunView = flowNode<TextRun>((props, ref) => {
+    const { node, theme } = props;
     const { text, style } = node;
     const css = useMemo(
         () => getTextCssProperties(theme.getAmbientTextStyle().merge(style)),
@@ -21,7 +21,7 @@ export const TextRunView: FlowNodeComponent<TextRun> = props => {
             children={text}
         />
     );
-};
+});
 
 const useStyles = createUseStyles({
     root: {

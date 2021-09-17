@@ -1,8 +1,7 @@
 import React from "react";
-import { FlowNodeComponent } from "./FlowNodeComponent";
+import { flowNode } from "./FlowNodeComponent";
 
-export const UnknownNodeView: FlowNodeComponent = props => {
-    const { ref } = props;
+export const UnknownNodeView = flowNode((_, ref) => {
     return (
         <span
             ref={ref}
@@ -10,4 +9,4 @@ export const UnknownNodeView: FlowNodeComponent = props => {
             children="\uFFFC"
         />
     );
-};
+});

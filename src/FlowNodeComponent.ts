@@ -1,4 +1,4 @@
-import { FC, Ref } from "react";
+import { FC, forwardRef, ForwardRefRenderFunction, Ref } from "react";
 import { FlowNode, FlowTheme, LineBreak, ParagraphBreak, TextRun } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
@@ -16,3 +16,7 @@ export interface FlowNodeComponentMap {
     paragraphBreak: FlowNodeComponent<ParagraphBreak>;
     fallback: FlowNodeComponent;
 }
+
+export const flowNode = <T extends FlowNode>(
+    render: ForwardRefRenderFunction<HTMLElement, Omit<FlowNodeComponentProps<T>, "ref">>
+): FlowNodeComponent<T> => forwardRef(render);

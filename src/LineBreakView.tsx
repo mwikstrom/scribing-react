@@ -1,11 +1,10 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 import { LineBreak } from "scribing";
-import { FlowNodeComponent } from "./FlowNodeComponent";
+import { flowNode } from "./FlowNodeComponent";
 import { makeJssId } from "./internal/utils/make-jss-id";
 
-export const LineBreakView: FlowNodeComponent<LineBreak> = props => {
-    const { ref } = props;
+export const LineBreakView = flowNode<LineBreak>((_, ref) => {
     const classes = useStyles();
     return (
         <span
@@ -14,7 +13,7 @@ export const LineBreakView: FlowNodeComponent<LineBreak> = props => {
             children={"↵\n"}
         />
     );
-};
+});
 
 const useStyles = createUseStyles({
     root: {

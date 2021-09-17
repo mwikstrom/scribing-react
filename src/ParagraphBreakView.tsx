@@ -1,11 +1,10 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 import { ParagraphBreak } from "scribing";
-import { FlowNodeComponent } from "./FlowNodeComponent";
+import { flowNode } from "./FlowNodeComponent";
 import { makeJssId } from "./internal/utils/make-jss-id";
 
-export const ParagraphBreakView: FlowNodeComponent<ParagraphBreak> = props => {
-    const { ref } = props;
+export const ParagraphBreakView = flowNode<ParagraphBreak>((_, ref) => {
     const classes = useStyles();
     return (
         <span
@@ -14,7 +13,7 @@ export const ParagraphBreakView: FlowNodeComponent<ParagraphBreak> = props => {
             children="¶"
         />
     );
-};
+});
 
 const useStyles = createUseStyles({
     root: {
