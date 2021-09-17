@@ -85,12 +85,20 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         // It's safe to assume that editing host is not null, because otherwise
         // this event handler wouldn't be invoked.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const operation = inputHandler(event, editingHost!, state);
-        if (!operation) {
+        const result = inputHandler(event, editingHost!, state);
+        let after: FlowEditorState;
+        let operation: FlowOperation | null;
+
+        if (result instanceof FlowOperation) {
+            operation = result;
+            after = state.applyMine(operation);
+        } else if (result instanceof FlowEditorState) {
+            operation = null;
+            after = result;
+        } else {
             return;
         }
 
-        const after = state.applyMine(operation);
         if (state.equals(after)) {
             return;
         }

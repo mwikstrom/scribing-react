@@ -5,4 +5,4 @@ export type InputHandler = (
     event: InputEvent,
     host: HTMLElement,
     state: FlowEditorState,
-) => FlowOperation | null;
+) => FlowOperation | FlowEditorState | null;

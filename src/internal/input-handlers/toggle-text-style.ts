@@ -12,11 +12,15 @@ export const toggleTextStyle = (
     if (selection === null) {
         return null;
     }
-    
+
     const current = selection.getUniformTextStyle(content, theme).get(key);
     const apply = TextStyle.empty.set(key, !current);
 
-    return selection.formatText(apply);
+    if (selection.isCollapsed) {
+        return state.set("caret", state.caret.merge(apply));
+    } else {
+        return selection.formatText(apply);
+    }
 };
 
 type BooleanTextStyleKeys = {
