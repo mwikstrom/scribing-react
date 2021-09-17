@@ -79,5 +79,5 @@ const useStyles = createUseStyles<"root" | ParagraphVariantClasses>({
     h5: {},
     h6: {}
 }, {
-    generateId: makeJssId("Para"),
+    generateId: makeJssId("Paragraph"),
 });
