@@ -1,7 +1,7 @@
-import { FlowContent, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
+import { FlowContent, FlowNode, LineBreak, ParagraphBreak, TextRun, TextStyle } from "scribing";
 
 /** @internal */
-export const getContentFromInput = (event: InputEvent): FlowContent | null => {
+export const getContentFromInput = (event: InputEvent, caret: TextStyle): FlowContent | null => {
     const { inputType, dataTransfer } = event;
     let { data } = event;
     const nodes: FlowNode[] = [];
@@ -38,7 +38,7 @@ export const getContentFromInput = (event: InputEvent): FlowContent | null => {
     
     if (data !== null) {
         // TODO: Split plain text into line breaks and paragraph breaks
-        nodes.push(TextRun.fromData(data));
+        nodes.push(TextRun.fromData({ text: data, style: caret }));
     }
 
     if (nodes.length === 0) {

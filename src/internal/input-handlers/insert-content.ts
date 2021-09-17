@@ -3,8 +3,9 @@ import { getSelectionFromInput } from "./get-selection-from-input";
 import { InputHandler } from "./InputHandler";
 
 /** @internal */
-export const insertContent: InputHandler = (event, host) => {
-    const content = getContentFromInput(event);
+export const insertContent: InputHandler = (event, host, state) => {
+    const { caret } = state;
+    const content = getContentFromInput(event, caret);
     if (content === null) {
         return null;
     }
