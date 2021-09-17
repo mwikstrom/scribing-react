@@ -1,5 +1,5 @@
 import React, { CSSProperties, FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowEditorState, FlowOperation, FlowSelection } from "scribing";
+import { FlowEditorState, FlowOperation, FlowSelection, TextStyle } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
@@ -82,7 +82,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        const operation = inputHandler(event, state);
+        // It's safe to assume that editing host is not null, because otherwise
+        // this event handler wouldn't be invoked.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const operation = inputHandler(event, editingHost!, state);
         if (!operation) {
             return;
         }
@@ -97,7 +100,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         setState(after);
-    }, [state, onStateChange]);
+    }, [state, editingHost, onStateChange]);
 
     // Handle native "selectionchange"
     useNativeEventHandler(document, "selectionchange", () => {
@@ -109,14 +112,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
         const changed = mapped ?
-            !FlowSelection.classType.equals(mapped, state.selection) :
+            !FlowSelection.baseType.equals(mapped, state.selection) :
             state.selection !== null;
         
         if (!changed) {
             return;
         }
 
-        const after = state.set("selection", mapped);
+        const after = state.merge({
+            selection: mapped,
+            caret: TextStyle.empty,
+        });
 
         if (onStateChange && !onStateChange(after, null, state)) {
             return;
@@ -142,7 +148,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
         const changed = mapped ?
-            !FlowSelection.classType.equals(mapped, state.selection) :
+            !FlowSelection.baseType.equals(mapped, state.selection) :
             state.selection !== null;
         
         if (!changed) {

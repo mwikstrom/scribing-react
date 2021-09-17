@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../FlowEditor";
 import { FlowEditorProps } from "..";
-import { FlowContent, TextRun, TextStyle, ParagraphBreak, LineBreak } from "scribing";
+import { FlowContent, TextRun, TextStyle, ParagraphBreak, LineBreak, RangeSelection, FlowEditorState } from "scribing";
 
 export default {
     title: "FlowEditor",
@@ -16,19 +16,19 @@ Uncontrolled.args = {};
 
 export const WithSelectionPrintOut: ComponentStory<typeof FlowEditor> = args => {
     const [printOut, setPrintOut] = useState("");
-    const onChange = useCallback<Exclude<FlowEditorProps["onChange"], undefined>>((_, newSelection) => {
-        setPrintOut(newSelection.map(range => `${range.anchor} -> ${range.focus}`).join("; "));
+    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(state => {
+        setPrintOut(getPrintOut(state));
         return true;
     }, [setPrintOut]);
     return (
         <>
             <div>Selection: {printOut}</div>
-            <FlowEditor {...args} onChange={onChange}/>
+            <FlowEditor {...args} onStateChange={onStateChange}/>
         </>
     );
 };
 WithSelectionPrintOut.args = {
-    defaultContent: new FlowContent({
+    defaultState: FlowEditorState.empty.set("content", new FlowContent({
         nodes: Object.freeze([
             TextRun.fromData("Hello"),
             new LineBreak(),
@@ -37,5 +37,25 @@ WithSelectionPrintOut.args = {
             TextRun.fromData("world"),
             new ParagraphBreak(),
         ])
-    })
+    }))
+};
+
+const getPrintOut = (state: FlowEditorState): string => {
+    const { selection } = state;
+
+    if (selection === null) {
+        return "(none)";
+    }
+
+    if (selection instanceof RangeSelection) {        
+        const { range: { isCollapsed, anchor, focus } } = selection;
+        
+        if (isCollapsed) {
+            return String(anchor);
+        }
+
+        return `${anchor} ➔ ${focus}`;
+    }
+
+    return "?";
 };
