@@ -23,4 +23,3 @@ const useStyles = createUseStyles({
 }, {
     generateId: makeJssId("LineBreak"),
 });
-
