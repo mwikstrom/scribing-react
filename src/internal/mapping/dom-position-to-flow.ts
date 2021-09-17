@@ -30,7 +30,7 @@ export const mapDomPositionToFlow = (
             const nodeSize = getFlowSizeFromDomNode(node);
             offset = nodeSize;
         } else {
-            node = node.childNodes.item(offset);
+            node = childNodes.item(offset);
             offset = 0;
         }
     }
