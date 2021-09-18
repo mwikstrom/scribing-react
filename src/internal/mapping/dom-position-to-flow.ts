@@ -1,5 +1,6 @@
+import { TextRun } from "scribing";
 import { isMappedEditingHost } from "./flow-editing-host";
-import { getFlowSizeFromDomNode } from "./flow-node";
+import { getFlowSizeFromDomNode, getMappedFlowNode } from "./flow-node";
 
 /** @internal */
 export const mapDomPositionToFlow = (
@@ -12,18 +13,24 @@ export const mapDomPositionToFlow = (
     }
 
     if (node.nodeType === Node.TEXT_NODE) {
-        while (node.previousSibling) {
-            node = node.previousSibling;
-            if (node.nodeType === Node.TEXT_NODE) {
-                offset += node.textContent?.length || 0;
-            }
-        }
+        const { parentNode } = node;
 
-        if (node.parentNode === null) {
+        if (parentNode === null) {
             return null;
         }
 
-        node = node.parentNode;
+        if (getMappedFlowNode(parentNode) instanceof TextRun) {
+            while (node.previousSibling) {
+                node = node.previousSibling;
+                if (node.nodeType === Node.TEXT_NODE) {
+                    offset += node.textContent?.length || 0;
+                }
+            }
+        } else {
+            offset = 0;
+        }
+
+        node = parentNode;
     } else if (offset > 0) {
         const { childNodes } = node;
         if (offset >= childNodes.length) {
