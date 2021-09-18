@@ -26,11 +26,16 @@ export const mapDomPositionToFlow = (
                     offset += node.textContent?.length || 0;
                 }
             }
+            node = parentNode;
         } else {
-            offset = 0;
+            node = parentNode;
+            if (offset > 0) {
+                offset = 0;
+                if (node.nextSibling) {
+                    node = node.nextSibling;
+                }
+            }
         }
-
-        node = parentNode;
     } else if (offset > 0) {
         const { childNodes } = node;
         if (offset >= childNodes.length) {
