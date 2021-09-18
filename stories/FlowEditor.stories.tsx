@@ -52,9 +52,11 @@ const getPrintOut = (state: FlowEditorState): string => {
         
         if (isCollapsed) {
             return String(anchor);
+        } else if (anchor > focus) {
+            return `${focus} ← ${anchor}`;
+        } else {
+            return `${anchor} → ${focus}`;
         }
-
-        return `${anchor} ➔ ${focus}`;
     }
 
     return "?";
