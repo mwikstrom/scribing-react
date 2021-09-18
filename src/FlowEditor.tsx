@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowEditorState, FlowOperation, FlowSelection, TextStyle } from "scribing";
+import { FlowEditorState, FlowOperation, FlowSelection, FlowTheme, TextStyle } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
@@ -11,6 +11,7 @@ import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
 import { isEditingSupported } from "./internal/utils/is-editing-supported";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
+import { FlowNodeComponentMap } from "./FlowNodeComponent";
 
 /**
  * Component props for {@link FlowEditor}
@@ -20,6 +21,8 @@ export interface FlowEditorProps {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
+    theme?: FlowTheme;
+    components?: Partial<Readonly<FlowNodeComponentMap>>;
     onStateChange?: (
         after: FlowEditorState,
         change: FlowOperation | null,
@@ -38,6 +41,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         autoFocus,
         onStateChange,
+        theme,
+        components,        
     } = props;
     
     // Setup controlled/uncontrolled state
@@ -169,9 +174,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, documentHasFocus]);
     
     const classes = useStyles();
+    const forwardProps = { theme, components };
 
     return (
         <div 
+            {...forwardProps}
             ref={rootRef}
             className={classes.root}
             contentEditable={editable}
