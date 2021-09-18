@@ -4,10 +4,6 @@ import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
 import { 
     FlowContent,
-    TextRun,
-    TextStyle,
-    ParagraphBreak,
-    LineBreak,
     FlowRangeSelection,
     FlowEditorState
 } from "scribing";
@@ -17,12 +13,7 @@ export default {
     component: FlowEditor,
 } as ComponentMeta<typeof FlowEditor>;
   
-const Template: ComponentStory<typeof FlowEditor> = args => <FlowEditor {...args} />;
-
-export const Uncontrolled = Template.bind({});
-Uncontrolled.args = {};
-
-export const WithSelectionPrintOut: ComponentStory<typeof FlowEditor> = args => {
+const Template: ComponentStory<typeof FlowEditor> = args => {
     const [printOut, setPrintOut] = useState("");
     const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(state => {
         setPrintOut(getPrintOut(state));
@@ -35,17 +26,38 @@ export const WithSelectionPrintOut: ComponentStory<typeof FlowEditor> = args => 
         </>
     );
 };
-WithSelectionPrintOut.args = {
-    defaultState: FlowEditorState.empty.set("content", new FlowContent({
-        nodes: Object.freeze([
-            TextRun.fromData("Hello"),
-            new LineBreak(),
-            TextRun.fromData({ text: "there", style: new TextStyle({ italic: true }) }),
-            new ParagraphBreak(),
-            TextRun.fromData("world"),
-            new ParagraphBreak(),
-        ])
-    }))
+
+export const Empty = Template.bind({});
+Empty.args = {};
+
+export const TextOnly = Template.bind({});
+TextOnly.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Hello world!"
+    ])),
+};
+
+export const TwoParas = Template.bind({});
+TwoParas.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Hello",
+        { break: "line" },
+        { text: "there", style: { italic: true } },
+        { break: "para" },
+        "world",
+        { break: "para" },
+    ])),
+};
+
+export const TrailingPara = Template.bind({});
+TrailingPara.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Hello",
+        { break: "line" },
+        { text: "there", style: { italic: true } },
+        { break: "para" },
+        "world",
+    ])),
 };
 
 const getPrintOut = (state: FlowEditorState): string => {
