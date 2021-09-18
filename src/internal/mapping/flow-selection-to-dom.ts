@@ -1,4 +1,4 @@
-import { FlowSelection, RangeSelection } from "scribing";
+import { FlowSelection, FlowRangeSelection } from "scribing";
 import { mapFlowPositionToDom } from "./flow-position-to-dom";
 
 /** @internal */
@@ -7,7 +7,7 @@ export function mapFlowSelectionToDom(
     editingHost: HTMLElement,
     domSelection: Selection,
 ): void {
-    if (flowSelection instanceof RangeSelection) {
+    if (flowSelection instanceof FlowRangeSelection) {
         const { range } = flowSelection;
         const domAnchor = mapFlowPositionToDom(range.anchor, editingHost);
         const domFocus = range.isCollapsed ? domAnchor : mapFlowPositionToDom(range.focus, editingHost);

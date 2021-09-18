@@ -2,7 +2,15 @@ import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
-import { FlowContent, TextRun, TextStyle, ParagraphBreak, LineBreak, RangeSelection, FlowEditorState } from "scribing";
+import { 
+    FlowContent,
+    TextRun,
+    TextStyle,
+    ParagraphBreak,
+    LineBreak,
+    FlowRangeSelection,
+    FlowEditorState
+} from "scribing";
 
 export default {
     title: "FlowEditor",
@@ -47,7 +55,7 @@ const getPrintOut = (state: FlowEditorState): string => {
         return "(none)";
     }
 
-    if (selection instanceof RangeSelection) {        
+    if (selection instanceof FlowRangeSelection) {        
         const { range: { isCollapsed, anchor, focus } } = selection;
         
         if (isCollapsed) {

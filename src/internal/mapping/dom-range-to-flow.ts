@@ -1,4 +1,4 @@
-import { FlowRange, FlowSelection, RangeSelection } from "scribing";
+import { FlowRange, FlowSelection, FlowRangeSelection } from "scribing";
 import { mapDomPositionToFlow } from "./dom-position-to-flow";
 
 /** @internal */
@@ -28,5 +28,5 @@ export function mapDomRangeToFlow(
         range = range.reverse();
     }
 
-    return new RangeSelection({ range });
+    return new FlowRangeSelection({ range });
 }
