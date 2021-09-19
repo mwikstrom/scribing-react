@@ -149,7 +149,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, onStateChange]);
     
     // Keep DOM selection in sync with editor selection
-    const { selection } = state;
     useLayoutEffect(() => {
         const { activeElement } = document;
         const domSelection = document.getSelection();
@@ -166,15 +165,15 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
         const different = mapped ?
-            !FlowSelection.baseType.equals(mapped, selection) :
-            selection !== null;
+            !FlowSelection.baseType.equals(mapped, state.selection) :
+            state.selection !== null;
         
         if (!different) {
             return;
         }
 
-        mapFlowSelectionToDom(selection, editingHost, domSelection);
-    }, [editingHost, selection, documentHasFocus]);
+        mapFlowSelectionToDom(state.selection, editingHost, domSelection);
+    }, [editingHost, state, documentHasFocus]);
     
     const classes = useStyles();
     const forwardProps = { theme, components, style };
