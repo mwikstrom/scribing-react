@@ -10,6 +10,9 @@ export const setupFlowNodeMapping = (
 export const getMappedFlowNode = (node: Node): FlowNode | null => MAP.get(node) ?? null;
 
 /** @internal */
+export const isMappedFlowNode = (node: Node): boolean => MAP.has(node);
+
+/** @internal */
 export const getFlowSizeFromDomNode = (node: Node): number => {
     const mapped = getMappedFlowNode(node);
     
