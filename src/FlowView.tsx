@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, ParagraphBreak } from "scribing";
+import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
 import { FlowNodeComponentMap } from "./FlowNodeComponent";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
@@ -50,9 +50,12 @@ const splitToParagraphs = (source: readonly FlowNode[]): Pick<ParagraphViewProps
         }
     }
 
-    if (children.length > 0 || result.length === 0) {
-        result.push({ children, breakNode: null });
+    // Append a virtual text node in the trailing para
+    if (children.length === 0) {
+        children.push(TextRun.fromData(""));
     }
+
+    result.push({ children, breakNode: null });
 
     return result;
 };

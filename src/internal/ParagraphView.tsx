@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from "react";
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
-import { FlowNode, ParagraphBreak, ParagraphStyle, ParagraphStyleVariant } from "scribing";
+import { FlowNode, LineBreak, ParagraphBreak, ParagraphStyle, ParagraphStyleVariant, TextRun } from "scribing";
 import { getParagraphCssProperties } from "./utils/paragraph-style-to-css";
 import { makeJssId } from "./utils/make-jss-id";
 import { FlowNodeView } from "../FlowNodeView";
@@ -35,11 +35,13 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const Component = getParagraphComponent(variant, components);
     const forwardProps = { theme: innerTheme, components, ...restProps };
     const keyRenderer = keyManager.createRenderer();
+    const adjustedChildren = children.length === 0 || children[children.length - 1] instanceof LineBreak ?
+        [...children, TextRun.fromData(" ")] : children;
     return (
         <Component
             style={css}
             className={clsx(classes.root, classes[variant])}
-            children={children.map(child => (
+            children={adjustedChildren.map(child => (
                 <FlowNodeView
                     key={keyRenderer.getNodeKey(child)}
                     node={child}
