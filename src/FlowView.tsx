@@ -50,7 +50,7 @@ const splitToParagraphs = (source: readonly FlowNode[]): Pick<ParagraphViewProps
         }
     }
 
-    if (children.length > 0) {
+    if (children.length > 0 || result.length === 0) {
         result.push({ children, breakNode: null });
     }
 
