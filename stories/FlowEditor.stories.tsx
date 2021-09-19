@@ -1,12 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { CSSProperties, useCallback, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
-import { 
-    FlowContent,
-    FlowRangeSelection,
-    FlowEditorState
-} from "scribing";
+import { FlowContent, FlowEditorState } from "scribing";
 
 export default {
     title: "FlowEditor",
@@ -14,16 +10,38 @@ export default {
 } as ComponentMeta<typeof FlowEditor>;
   
 const Template: ComponentStory<typeof FlowEditor> = args => {
-    const [printOut, setPrintOut] = useState("");
-    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(state => {
-        setPrintOut(getPrintOut(state));
-        return true;
-    }, [setPrintOut]);
+    const [state, setState] = useState(args.defaultState ?? FlowEditorState.empty);
+    const jsonState = useMemo(
+        () => JSON.stringify(FlowEditorState.dataType.toJsonValue(state.toData()), undefined, " "),
+        [state]
+    );
+    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(
+        state => void(setState(state)),
+        [setState]
+    );
+    const wrapperStyle = useMemo<CSSProperties>(() => ({
+        display: "flex",
+        flexDirection: "row",
+        height: "calc(100vh - 2rem - 2px)",
+        border: "1px solid #888",
+    }), []);
+    const editorStyle = useMemo<CSSProperties>(() => ({
+        flex: 0.5,
+        overflow: "auto",
+        padding: 10,
+    }), []);
+    const jsonStyle = useMemo<CSSProperties>(() => ({
+        flex: 0.5,
+        overflow: "auto",
+        borderLeft: "1px solid #888",
+        padding: 10,
+        margin: 0,
+    }), []);
     return (
-        <>
-            <div>Selection: {printOut}</div>
-            <FlowEditor {...args} onStateChange={onStateChange}/>
-        </>
+        <div style={wrapperStyle}>
+            <FlowEditor {...args} style={editorStyle} onStateChange={onStateChange}/>
+            <pre style={jsonStyle}>{jsonState}</pre>
+        </div>
     );
 };
 
@@ -58,26 +76,4 @@ TrailingPara.args = {
         { break: "para" },
         "world",
     ])),
-};
-
-const getPrintOut = (state: FlowEditorState): string => {
-    const { selection } = state;
-
-    if (selection === null) {
-        return "(none)";
-    }
-
-    if (selection instanceof FlowRangeSelection) {        
-        const { range: { isCollapsed, anchor, focus } } = selection;
-        
-        if (isCollapsed) {
-            return String(anchor);
-        } else if (anchor > focus) {
-            return `${focus} ← ${anchor}`;
-        } else {
-            return `${anchor} → ${focus}`;
-        }
-    }
-
-    return "?";
 };

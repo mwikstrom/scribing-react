@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { CSSProperties, FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { FlowEditorState, FlowOperation, FlowSelection, FlowTheme, TextStyle } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
@@ -23,6 +23,7 @@ export interface FlowEditorProps {
     autoFocus?: boolean;
     theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
+    style?: CSSProperties;
     onStateChange?: (
         after: FlowEditorState,
         change: FlowOperation | null,
@@ -42,7 +43,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         autoFocus,
         onStateChange,
         theme,
-        components,        
+        components,
+        style,
     } = props;
     
     // Setup controlled/uncontrolled state
@@ -174,7 +176,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, documentHasFocus]);
     
     const classes = useStyles();
-    const forwardProps = { theme, components };
+    const forwardProps = { theme, components, style };
 
     return (
         <div 
