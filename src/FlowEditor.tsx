@@ -28,7 +28,7 @@ export interface FlowEditorProps {
         after: FlowEditorState,
         change: FlowOperation | null,
         before: FlowEditorState,
-    ) => boolean | undefined;
+    ) => void;
 }
 
 /**
@@ -112,8 +112,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
         
-        if (onStateChange && onStateChange(after, operation, state) === false) {
-            return;
+        if (onStateChange) {
+            onStateChange(after, operation, state);
         }
 
         setState(after);
@@ -141,14 +141,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             caret: TextStyle.empty,
         });
 
-        if (onStateChange && !onStateChange(after, null, state)) {
-            return;
+        console.log("new selection:", after.selection);
+
+        if (onStateChange) {
+            onStateChange(after, null, state);
         }
 
         setState(after);
     }, [editingHost, state, onStateChange]);
     
     // Keep DOM selection in sync with editor selection
+    const { selection } = state;
     useLayoutEffect(() => {
         const { activeElement } = document;
         const domSelection = document.getSelection();
@@ -164,16 +167,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
-        const changed = mapped ?
-            !FlowSelection.baseType.equals(mapped, state.selection) :
-            state.selection !== null;
+        const different = mapped ?
+            !FlowSelection.baseType.equals(mapped, selection) :
+            selection !== null;
         
-        if (!changed) {
+        if (!different) {
             return;
         }
 
-        mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state, documentHasFocus]);
+        mapFlowSelectionToDom(selection, editingHost, domSelection);
+    }, [editingHost, selection, documentHasFocus]);
     
     const classes = useStyles();
     const forwardProps = { theme, components, style };
