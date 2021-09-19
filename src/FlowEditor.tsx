@@ -141,8 +141,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             caret: TextStyle.empty,
         });
 
-        console.log("new selection:", after.selection);
-
         if (onStateChange) {
             onStateChange(after, null, state);
         }
