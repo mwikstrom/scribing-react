@@ -13,7 +13,12 @@ export const toggleTextStyle = (
         return null;
     }
 
-    const current = selection.getUniformTextStyle(content, theme).get(key);
+    let style = selection.getUniformTextStyle(content, theme);
+    if (selection.isCollapsed) {
+        style = style.merge(state.caret);
+    }
+
+    const current = style.get(key);
     const apply = TextStyle.empty.set(key, !current);
 
     if (selection.isCollapsed) {

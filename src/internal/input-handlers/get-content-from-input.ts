@@ -9,7 +9,7 @@ export const getContentFromInput = (event: InputEvent, caret: TextStyle): FlowCo
     if (inputType === "insertParagraph") {
         nodes.push(new ParagraphBreak());
     } else if (inputType === "insertLineBreak") {
-        nodes.push(new LineBreak());
+        nodes.push(new LineBreak({ style: caret }));
     } else if (
         inputType !== "insertFromPaste" &&
         inputType !== "insertFromPasteAsQuotation" &&
