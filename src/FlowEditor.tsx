@@ -193,7 +193,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 const useStyles = createUseStyles({
     root: {
         outline: "none",
-        padding: "0 0.75rem"
+        padding: "0 0.75rem",
     },
 }, {
     generateId: makeJssId("FlowEditor"),
