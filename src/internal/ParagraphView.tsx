@@ -66,7 +66,7 @@ type ParagraphVariantClasses = Exclude<ParagraphStyleVariant, undefined>;
 
 const useStyles = createUseStyles<"root" | ParagraphVariantClasses>({
     root: {
-        minHeight: "1em",
+        minHeight: "1rem",
     },
     normal: {},
     preamble: {},
