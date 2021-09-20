@@ -24,9 +24,9 @@ export const FlowView: FC<FlowViewProps> = props => {
         theme = DefaultFlowTheme.instance,
         components = {},
     } = props;
-    const forwardProps = { theme, components };
+    const forwardProps = { components };
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
-    const paragraphArray = useMemo(() => splitToParagraphs(nodes), [nodes, keyManager]);
+    const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(paraProps => (
         <ParagraphView 
@@ -38,14 +38,21 @@ export const FlowView: FC<FlowViewProps> = props => {
     return <>{children}</>;
 };
 
-const splitToParagraphs = (source: readonly FlowNode[]): Pick<ParagraphViewProps, "breakNode" | "children">[] => {
-    const result: Pick<ParagraphViewProps, "breakNode" | "children">[] = [];
+const splitToParagraphs = (
+    source: readonly FlowNode[],
+    theme: FlowTheme,
+): Pick<ParagraphViewProps, "breakNode" | "children" | "theme">[] => {
+    const result: Pick<ParagraphViewProps, "breakNode" | "children" | "theme">[] = [];
     let children: FlowNode[] = [];
 
     for (const node of source) {
         children.push(node);
         if (node instanceof ParagraphBreak) {
-            result.push({ children, breakNode: node });
+            result.push({
+                children,
+                breakNode: node,
+                theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
+            });
             children = [];
         }
     }
@@ -55,7 +62,11 @@ const splitToParagraphs = (source: readonly FlowNode[]): Pick<ParagraphViewProps
         children.push(TextRun.fromData(""));
     }
 
-    result.push({ children, breakNode: null });
+    result.push({
+        children,
+        breakNode: null,
+        theme: theme.getParagraphTheme("normal"),
+    });
 
     return result;
 };

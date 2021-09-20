@@ -18,22 +18,21 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children, breakNode, theme: outerTheme, components, ...restProps } = props;
+    const { children, breakNode, theme, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
-    const innerTheme = useMemo(() => outerTheme.getParagraphTheme(variant), [outerTheme, variant]);
     const givenStyle = useMemo(
         () => breakNode instanceof ParagraphBreak ? breakNode.style : ParagraphStyle.empty, 
         [breakNode]
     );
     const mergedStyle = useMemo(
-        () => innerTheme.getAmbientParagraphStyle().merge(givenStyle),
-        [givenStyle, innerTheme]
+        () => theme.getAmbientParagraphStyle().merge(givenStyle),
+        [givenStyle, theme]
     );
     const css = useMemo(() => getParagraphCssProperties(mergedStyle), [mergedStyle]);
     const classes = useStyles();
     const Component = getParagraphComponent(variant, components);
-    const forwardProps = { theme: innerTheme, components, ...restProps };
+    const forwardProps = { theme, components, ...restProps };
     const keyRenderer = keyManager.createRenderer();
     const adjustedChildren = children.length === 0 || children[children.length - 1] instanceof LineBreak ?
         [...children, TextRun.fromData(" ")] : children;

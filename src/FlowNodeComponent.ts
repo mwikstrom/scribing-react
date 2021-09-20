@@ -1,12 +1,12 @@
 import { CSSProperties, FC, forwardRef, ForwardRefRenderFunction, ReactNode, Ref } from "react";
-import { FlowNode, FlowTheme, LineBreak, ParagraphBreak, ParagraphStyleVariant, TextRun } from "scribing";
+import { FlowNode, ParagraphTheme, LineBreak, ParagraphBreak, ParagraphStyleVariant, TextRun } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
 export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: Ref<HTMLElement>;
-    theme: FlowTheme;
+    theme: ParagraphTheme;
     components: Partial<Readonly<FlowNodeComponentMap>>;
 }
 
