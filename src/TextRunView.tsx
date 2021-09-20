@@ -9,10 +9,13 @@ import { flowNode } from "./FlowNodeComponent";
 export const TextRunView = flowNode<TextRun>((props, ref) => {
     const { node, theme } = props;
     const { text, style: givenStyle } = node;
-    const mergedStyle = useMemo(
-        () => theme.getAmbientTextStyle().merge(givenStyle),
-        [givenStyle, theme]
-    );
+    const mergedStyle = useMemo(() => {
+        let ambient = theme.getAmbientTextStyle();
+        if (givenStyle.link) {
+            ambient = ambient.merge(theme.getLinkStyle());
+        }
+        return ambient.merge(givenStyle);
+    }, [givenStyle, theme]);
     const css = useMemo(
         () => getTextCssProperties(mergedStyle),
         [mergedStyle]
