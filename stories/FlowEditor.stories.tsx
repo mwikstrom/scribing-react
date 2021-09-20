@@ -28,7 +28,6 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
     const editorStyle = useMemo<CSSProperties>(() => ({
         flex: 0.5,
         overflow: "auto",
-        padding: 10,
     }), []);
     const jsonStyle = useMemo<CSSProperties>(() => ({
         flex: 0.5,
