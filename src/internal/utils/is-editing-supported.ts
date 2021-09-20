@@ -4,7 +4,7 @@ export function isEditingSupported(): boolean {
             typeof InputEvent.prototype.getTargetRanges === "function"
         );
 
-        if (!CACHE) {
+        if (!CACHE && !navigator.userAgent.includes("jsdom")) {
             console.error("Editing is not supported in this environment :-(");
         }
     }
