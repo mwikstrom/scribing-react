@@ -2,28 +2,31 @@
 
 exports[`FlowEditor can render without props 1`] = `
 <div
+  className="Scribing-FlowEditor-root"
   contentEditable={false}
-  style={
-    Object {
-      "outline": "none",
-    }
-  }
   suppressContentEditableWarning={true}
 >
   <p
-    className="scribing-para-type-normal"
+    className="Scribing-Paragraph-root Scribing-Paragraph-normal"
     style={
       Object {
-        "direction": undefined,
-        "lineHeight": undefined,
-        "textAlign": undefined,
+        "direction": "ltr",
+        "lineHeight": "100%",
+        "textAlign": "start",
       }
     }
   >
     <span
-      className="scribing-para-break"
+      className="Scribing-TextRun-root"
+      style={
+        Object {
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+          "verticalAlign": "baseline",
+        }
+      }
     >
-      ¶
+      
     </span>
   </p>
 </div>
