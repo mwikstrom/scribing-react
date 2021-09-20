@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 import { TextStyle } from "scribing";
+import { toRem } from "./css-values";
 
 /** @internal */
 export const getTextCssProperties = (style: TextStyle): CSSProperties => {
@@ -45,5 +46,3 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
 
     return css;
 };
-
-const toRem = (value: number): string => `${value / 100}rem`;

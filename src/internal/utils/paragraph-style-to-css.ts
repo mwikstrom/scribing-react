@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 import { ParagraphStyle } from "scribing";
+import { toPercent, toRem } from "./css-values";
 
 /** @internal */
 export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties => {
@@ -35,6 +36,3 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
 
     return css;
 };
-
-const toPercent = (value: number): string => `${value}%`;
-const toRem = (value: number): string => `${value / 100}rem`;
