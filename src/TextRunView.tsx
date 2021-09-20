@@ -37,54 +37,23 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
     );
 });
 
-type FontFamilyClasses = (
-    "fontFamilyBody" |
-    "fontFamilyHeading" |
-    "fontFamilyMonospace"
-);
+type FontFamilyClasses = `${Exclude<TextStyleProps["fontFamily"], undefined>}Font`;
 
-type ColorClasses = (
-    "colorDefault" |
-    "colorPrimary" |
-    "colorSecondary" |
-    "colorWarning" |
-    "colorError" |
-    "colorInformation" |
-    "colorSuccess" |
-    "colorSubtle"
-);
+type ColorClasses = `${Exclude<TextStyleProps["color"], undefined>}Color`;
 
 const getFontFamilyRule = (value: TextStyleProps["fontFamily"]): FontFamilyClasses | undefined => {
-    if (value === "monospace") {
-        return "fontFamilyMonospace";
-    } else if (value === "body") {
-        return "fontFamilyBody";
-    } else if (value === "heading") {
-        return "fontFamilyHeading";
+    if (value) {
+        return `${value}Font`;
     } else {
-        return void(0);
+        return undefined;
     }
 };
 
 const getColorRule = (value: TextStyleProps["color"]): ColorClasses | undefined => {
-    if (value === "error") {
-        return "colorError";
-    } else if (value === "default") {
-        return "colorDefault";
-    } else if (value === "information") {
-        return "colorInformation";
-    } else if (value === "primary") {
-        return "colorPrimary";
-    } else if (value === "secondary") {
-        return "colorSecondary";
-    } else if (value === "success") {
-        return "colorSuccess";
-    } else if (value === "subtle") {
-        return "colorSubtle";
-    } else if (value === "warning") {
-        return "colorWarning";
+    if (value) {
+        return `${value}Color`;
     } else {
-        return void(0);
+        return undefined;
     }
 };
 
@@ -105,37 +74,37 @@ const useStyles = createUseStyles<"root" | FontFamilyClasses | ColorClasses>({
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
-    fontFamilyBody: {
+    bodyFont: {
         fontFamily: systemFont,
     },
-    fontFamilyHeading: {
+    headingFont: {
         fontFamily: systemFont,
     },
-    fontFamilyMonospace: {
+    monospaceFont: {
         fontFamily: "monospace",
     },
-    colorDefault: {
+    defaultColor: {
         color: "#212121",
     },
-    colorPrimary: {
+    primaryColor: {
         color: "#304ffe",
     },
-    colorSecondary: {
+    secondaryColor: {
         color: "#8e24aa",
     },
-    colorWarning: {
+    warningColor: {
         color: "#ef6c00",
     },
-    colorError: {
+    errorColor: {
         color: "#c62828",
     },
-    colorInformation: {
+    informationColor: {
         color: "#0277bd",
     },
-    colorSuccess: {
+    successColor: {
         color: "#2e7d32",
     },
-    colorSubtle: {
+    subtleColor: {
         color: "#9e9e9e",
     }
 }, {
