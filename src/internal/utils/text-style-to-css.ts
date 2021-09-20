@@ -9,6 +9,7 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         underline,
         strike,
         baseline,
+        fontSize,        
     } = style;
 
     const css: CSSProperties = {};
@@ -38,6 +39,11 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         css.verticalAlign = baseline;
     }
 
+    if (typeof fontSize === "number") {
+        css.fontSize = toRem(fontSize);
+    }
+
     return css;
 };
 
+const toRem = (value: number): string => `${value / 100}rem`;

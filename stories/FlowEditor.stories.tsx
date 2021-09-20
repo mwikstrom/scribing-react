@@ -76,3 +76,38 @@ TrailingPara.args = {
         "world",
     ])),
 };
+
+export const Rich = Template.bind({});
+Rich.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Title",
+        { break: "para", style: { variant: "title" } },
+        "Subtitle",
+        { break: "para", style: { variant: "subtitle" } },
+        "A preamble text",
+        { break: "para", style: { variant: "preamble" } },
+        "Normal text",
+        { break: "para" },
+        "Heading level 2",
+        { break: "para", style: { variant: "h2" } },
+        "Normal text",
+        { break: "para" },
+        "Some code",
+        { break: "para", style: { variant: "code" } },
+        "Let's try colors: ",
+        { text: "primary", style: { color: "primary" } }, 
+        " ",
+        { text: "secondary", style: { color: "secondary" } }, 
+        " ",
+        { text: "subtle", style: { color: "subtle" } }, 
+        " ",
+        { text: "warning", style: { color: "warning" } }, 
+        " ",
+        { text: "error", style: { color: "error" } }, 
+        " ",
+        { text: "information", style: { color: "information" } }, 
+        " ",
+        { text: "success", style: { color: "success" } }, 
+        " ",
+    ])),
+};
