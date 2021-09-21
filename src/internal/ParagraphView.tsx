@@ -17,6 +17,7 @@ import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
+import { ListMarker } from "./ListMarker";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -52,10 +53,19 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const nodesWithLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
     const keyRenderer = keyManager.createRenderer();
     return (
-        <Component
-            className={className}
-            style={css}
-            children={nodesWithLinks.map(nodeOrLinkProps => (
+        <Component className={className} style={css}>
+            {(style.listLevel ?? 0) > 0 && (
+                <ListMarker
+                    level={style.listLevel}
+                    kind={style.listMarker}
+                    hide={style.hideListMarker}
+                    counter={style.listCounter}
+                    prefix={style.listCounterPrefix}
+                    suffix={style.listCounterSuffix}
+                    style={theme.getAmbientTextStyle()}
+                />
+            )}
+            {nodesWithLinks.map(nodeOrLinkProps => (
                 nodeOrLinkProps instanceof FlowNode ? (
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps)}
@@ -71,7 +81,7 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
                     />
                 )
             ))}
-        />
+        </Component>
     );
 };
 

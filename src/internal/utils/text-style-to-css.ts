@@ -41,7 +41,7 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
     }
 
     if (typeof fontSize === "number") {
-        css.fontSize = toRem(fontSize);
+        css.fontSize = toRem(fontSize/100);
     }
 
     return css;

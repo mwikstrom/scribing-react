@@ -1,26 +1,26 @@
 import { Classes, Styles } from "jss";
 import { ParagraphStyle, ParagraphStyleProps } from "scribing";
+import { toRem } from "./css-values";
 
 /** @internal */
 export type ParagraphVariantRule = Exclude<ParagraphStyleProps["variant"], undefined>;
 
 /** @internal */
 export type ParagraphListLevelRule = (
-    "listLevel1" |
-    "listLevel2" |
-    "listLevel3" |
-    "listLevel4" |
-    "listLevel5" |
-    "listLevel6" |
-    "listLevel7" |
-    "listLevel8" |
-    "listLevel9"
+    "li1" |
+    "li2" |
+    "li3" |
+    "li4" |
+    "li5" |
+    "li6" |
+    "li7" |
+    "li8" |
+    "li9"
 );
 
 /** @internal */
 export type ParagraphListRule = (
-    "listItem" |
-    "hiddenListMarker" |
+    "li" |
     ParagraphListLevelRule
 );
 
@@ -32,6 +32,12 @@ export type ParagraphStyles = Styles<ParagraphStyleRule>;
 
 /** @internal */
 export type ParagraphStyleClasses = Classes<ParagraphStyleRule>;
+
+/** @internal */
+export const LIST_LEVEL_INDENT_SIZE = 1.5;
+
+/** @internal */
+export const listIndent = (level: number): string => toRem(level * LIST_LEVEL_INDENT_SIZE);
 
 /** @internal */
 export const PARAGRAPH_STYLE_CLASSES: ParagraphStyles = {
@@ -46,55 +52,33 @@ export const PARAGRAPH_STYLE_CLASSES: ParagraphStyles = {
     h4: {},
     h5: {},
     h6: {},
-    listItem: {
-        display: "list-item",  
-        listStylePosition: "outside",
-        "&::marker": {
-            whiteSpace: "pre",
-        },
+    li: {},
+    li1: {
+        marginLeft: listIndent(1),
     },
-    hiddenListMarker: {
-        listStyleType: "none",
-        counterIncrement: "none",
+    li2: {
+        marginLeft: listIndent(2),
     },
-    listLevel1: {
-        marginLeft: "1.5rem",
-        counterIncrement: "list1",
-        "&::marker": {
-            content: "counter(list1, decimal) '.  '"
-        },
+    li3: {
+        marginLeft: listIndent(3),
     },
-    listLevel2: {
-        marginLeft: "3rem",
-        counterIncrement: "list2",
+    li4: {
+        marginLeft: listIndent(4),
     },
-    listLevel3: {
-        marginLeft: "4.5rem",
-        counterIncrement: "list3",
+    li5: {
+        marginLeft: listIndent(5),
     },
-    listLevel4: {
-        marginLeft: "6rem",
-        counterIncrement: "list4",
+    li6: {
+        marginLeft: listIndent(6),
     },
-    listLevel5: {
-        marginLeft: "7.5rem",
-        counterIncrement: "list5",
+    li7: {
+        marginLeft: listIndent(7),
     },
-    listLevel6: {
-        marginLeft: "9rem",
-        counterIncrement: "list6",
+    li8: {
+        marginLeft: listIndent(8),
     },
-    listLevel7: {
-        marginLeft: "11.5rem",
-        counterIncrement: "list7",
-    },
-    listLevel8: {
-        marginLeft: "13rem",
-        counterIncrement: "list8",
-    },
-    listLevel9: {
-        marginLeft: "14.5rem",
-        counterIncrement: "list9",
+    li9: {
+        marginLeft: listIndent(9),
     },
 };
 
@@ -106,16 +90,12 @@ export const getParagraphStyleClassNames = (
     const { 
         variant = "normal",
         listLevel = 0,
-        hideListMarker = false,
     } = style;
     const result = [classes[variant]];
 
     if (listLevel > 0) {
-        result.push(classes.listItem);
+        result.push(classes.li);
         result.push(classes[getListLevelRule(listLevel)]);
-        if (hideListMarker) {
-            result.push(classes.hiddenListMarker);
-        }
     }
 
     return result;
@@ -123,5 +103,5 @@ export const getParagraphStyleClassNames = (
 
 export const getListLevelRule = (level: number): ParagraphListLevelRule => {
     const normalized = level as (1|2|3|4|5|6|7|8|9);
-    return `listLevel${normalized}` as const;
+    return `li${normalized}` as const;
 };

@@ -27,11 +27,11 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
     }
 
     if (typeof spaceAbove === "number") {
-        css.marginTop = toRem(spaceAbove);
+        css.marginTop = toRem(spaceAbove/100);
     }
 
     if (typeof spaceBelow === "number") {
-        css.marginBottom = toRem(spaceBelow);
+        css.marginBottom = toRem(spaceBelow/100);
     }
 
     return css;
