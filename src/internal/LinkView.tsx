@@ -67,6 +67,7 @@ export const LinkView: FC<LinkViewProps> = props => {
 
 const useStyles = createUseStyles({
     root: {
+        textDecoration: "none",
     },
     editable: {
         cursor: "text",
