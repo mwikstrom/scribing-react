@@ -5,10 +5,10 @@ import { InputHandler } from "./InputHandler";
 /** @internal */
 export const deleteContent: InputHandler = (event, host, state) => {
     const { inputType } = event;
-    const { content } = state;
+    const { content: target } = state;
     const selection = getSelectionFromInput(event, host);
     const options: RemoveFlowSelectionOptions = {
-        content,
+        target,
         whenCollapsed: (
             inputType === "deleteContentBackward" ? "removeBackward" :
                 inputType === "deleteContentForward" ? "removeForward" : "noop"
