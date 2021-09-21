@@ -23,7 +23,7 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
     }
 
     if (typeof lineSpacing === "number") {
-        css.lineHeight = toPercent(lineSpacing);
+        css.lineHeight = toPercent(lineSpacing * 1.5);
     }
 
     if (typeof spaceAbove === "number") {
