@@ -1,15 +1,22 @@
 import React, { FC, useMemo } from "react";
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
-import { FlowNode, LineBreak, ParagraphBreak, ParagraphStyle, ParagraphStyleVariant, TextRun } from "scribing";
+import { 
+    FlowNode, 
+    InlineNode, 
+    Interaction, 
+    LineBreak, 
+    ParagraphBreak, 
+    ParagraphStyle, 
+    TextRun
+} from "scribing";
 import { getParagraphCssProperties } from "./utils/paragraph-style-to-css";
 import { makeJssId } from "./utils/make-jss-id";
 import { FlowNodeView } from "../FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
-import { DefaultFlowNodeComponents } from "./DefaultFlowNodeComponents";
-import { FlowNodeComponentMap, ParagraphComponent } from "..";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
+import { LinkView, LinkViewProps } from "./LinkView";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -19,7 +26,7 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children, breakNode, theme, components, ...restProps } = props;
+    const { children: childNodes, breakNode, theme, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -36,35 +43,36 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         () => clsx(classes.root, ...getParagraphStyleClassNames(style, classes)),
         [style, classes]
     );
-    const Component = getParagraphComponent(variant, components);
+    const Component = components.paragraph(variant);
     const forwardProps = { theme, components, ...restProps };
+    const adjustedNodes = useMemo(() => (
+        childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
+            [...childNodes, TextRun.fromData(" ")] : childNodes
+    ), [childNodes]);
+    const nodesWithLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
     const keyRenderer = keyManager.createRenderer();
-    const adjustedChildren = children.length === 0 || children[children.length - 1] instanceof LineBreak ?
-        [...children, TextRun.fromData(" ")] : children;
     return (
         <Component
             className={className}
             style={css}
-            children={adjustedChildren.map(child => (
-                <FlowNodeView
-                    key={keyRenderer.getNodeKey(child)}
-                    node={child}
-                    {...forwardProps}
-                />
+            children={nodesWithLinks.map(nodeOrLinkProps => (
+                nodeOrLinkProps instanceof FlowNode ? (
+                    <FlowNodeView
+                        key={keyRenderer.getNodeKey(nodeOrLinkProps)}
+                        node={nodeOrLinkProps}
+                        {...forwardProps}
+                    />
+                ) : (
+                    <LinkView
+                        key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
+                        children={nodeOrLinkProps.children}
+                        link={nodeOrLinkProps.link}
+                        {...forwardProps}
+                    />
+                )
             ))}
         />
     );
-};
-
-const getParagraphComponent = (
-    variant: ParagraphStyleVariant,
-    components?: Partial<FlowNodeComponentMap>
-): ParagraphComponent => {
-    if (components && components.paragraph) {
-        return components.paragraph(variant);
-    } else {
-        return DefaultFlowNodeComponents.paragraph(variant);
-    }
 };
 
 const useStyles = createUseStyles({
@@ -75,3 +83,43 @@ const useStyles = createUseStyles({
 }, {
     generateId: makeJssId("Paragraph"),
 });
+
+type SplitLinkProps = Pick<LinkViewProps, "children" | "link"> & { firstNode: FlowNode };
+
+const splitToLinks = (nodes: readonly FlowNode[]): (FlowNode | SplitLinkProps)[] => {
+    const result: (FlowNode | SplitLinkProps)[] = [];
+    let linkProps: SplitLinkProps | null = null;
+    
+    for (const node of nodes) {
+        if (node instanceof InlineNode) {
+            const { style: { link = null } } = node;
+            if (link) {
+                if (linkProps && !Interaction.baseType.equals(link, linkProps.link)) {
+                    result.push(linkProps);
+                    linkProps = null;
+                }
+
+                if (!linkProps) {
+                    linkProps = {
+                        children: [],
+                        link,
+                        firstNode: node,
+                    };
+                }
+
+                linkProps.children.push(node);
+                continue;
+            } else if (linkProps) {
+                result.push(linkProps);
+                linkProps = null;
+            }
+        }
+        result.push(node);
+    }
+
+    if (linkProps) {
+        result.push(linkProps);
+    }
+
+    return result;
+};

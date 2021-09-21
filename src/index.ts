@@ -4,6 +4,8 @@
  */
 
 export * from "./FlowNodeComponent";
+export * from "./DefaultFlowNodeComponents";
+export * from "./DefaultFlowNodeLocalization";
 export * from "./TextRunView";
 export * from "./LineBreakView";
 export * from "./ParagraphBreakView";

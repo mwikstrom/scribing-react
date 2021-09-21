@@ -1,9 +1,9 @@
 import { ParagraphStyleVariant } from "scribing";
-import { FlowNodeComponentMap, ParagraphComponent } from "../FlowNodeComponent";
-import { LineBreakView } from "../LineBreakView";
-import { ParagraphBreakView } from "../ParagraphBreakView";
-import { TextRunView } from "../TextRunView";
-import { UnknownNodeView } from "../UnknownNodeView";
+import { FlowNodeComponentMap, ParagraphComponent } from "./FlowNodeComponent";
+import { LineBreakView } from "./LineBreakView";
+import { ParagraphBreakView } from "./ParagraphBreakView";
+import { TextRunView } from "./TextRunView";
+import { UnknownNodeView } from "./UnknownNodeView";
 
 const getParagraphComponent = (variant: ParagraphStyleVariant): ParagraphComponent => {
     switch (variant) {
@@ -20,11 +20,12 @@ const getParagraphComponent = (variant: ParagraphStyleVariant): ParagraphCompone
     }
 };
 
-/** @internal */
+/** @public */
 export const DefaultFlowNodeComponents: Readonly<FlowNodeComponentMap> = Object.freeze({
     text: TextRunView,
     lineBreak: LineBreakView,
     paragraphBreak: ParagraphBreakView,
     paragraph: getParagraphComponent,
-    fallback: UnknownNodeView,    
+    link: "a",
+    fallback: UnknownNodeView,
 });

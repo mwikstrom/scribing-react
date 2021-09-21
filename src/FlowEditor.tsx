@@ -185,7 +185,14 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             className={classes.root}
             contentEditable={editable}
             suppressContentEditableWarning={true}
-            children={<FlowView content={state.content}/>}
+            children={
+                <FlowView
+                    content={state.content}
+                    theme={theme}
+                    components={components}
+                    editable={editable}
+                />
+            }
         />
     );
 };

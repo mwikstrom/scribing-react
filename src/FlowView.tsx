@@ -1,6 +1,8 @@
 import React, { FC, useMemo } from "react";
 import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
-import { FlowNodeComponentMap } from "./FlowNodeComponent";
+import { DefaultFlowNodeComponents } from ".";
+import { DefaultFlowNodeLocalization } from "./DefaultFlowNodeLocalization";
+import { FlowNodeComponentMap, FlowNodeLocalization } from "./FlowNodeComponent";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
 
@@ -12,6 +14,8 @@ export interface FlowViewProps {
     content: FlowContent;
     theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
+    localization?: Partial<Readonly<FlowNodeLocalization>>;
+    editable?: boolean;
 }
 
 /**
@@ -22,9 +26,13 @@ export const FlowView: FC<FlowViewProps> = props => {
     const { 
         content: { nodes },
         theme = DefaultFlowTheme.instance,
-        components = {},
+        components: partialComponents = {},
+        localization: partialLocalization = {},
+        editable = false,
     } = props;
-    const forwardProps = { components };
+    const components = { ...DefaultFlowNodeComponents, ...partialComponents };
+    const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };
+    const forwardProps = { components, localization, editable };
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const keyRenderer = keyManager.createRenderer();
