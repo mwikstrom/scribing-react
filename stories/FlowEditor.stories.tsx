@@ -105,7 +105,7 @@ Rich.args = {
         "Numeric bullet 5",
         { break: "para", style: { listLevel: 3 } },
         "Inside numeric bullet 5",
-        { break: "para", style: { listLevel: 3, insideList: true } },
+        { break: "para", style: { listLevel: 3, hideListMarker: true } },
         "Numeric bullet 6",
         { break: "para", style: { listLevel: 4 } },
         "Numeric bullet 7",
