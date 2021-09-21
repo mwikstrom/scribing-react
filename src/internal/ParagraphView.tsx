@@ -118,6 +118,9 @@ const splitToLinks = (nodes: readonly FlowNode[]): (FlowNode | SplitLinkProps)[]
                 result.push(linkProps);
                 linkProps = null;
             }
+        } else if (linkProps) {
+            result.push(linkProps);
+            linkProps = null;
         }
         result.push(node);
     }
