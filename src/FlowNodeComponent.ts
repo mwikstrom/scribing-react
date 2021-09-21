@@ -41,7 +41,7 @@ export type LinkComponent = "a" | FC<LinkComponentProps>;
 export interface LinkComponentProps {
     className: string;
     children: ReactNode;
-    href: string | undefined;
+    href: string;
     title: string | undefined;
     onClick: MouseEventHandler;
     onMouseEnter: MouseEventHandler;
