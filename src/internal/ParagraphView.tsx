@@ -17,17 +17,18 @@ import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
-import { ListMarker } from "./ListMarker";
+import { getListMarkerClass } from "./utils/list-marker";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
     children: FlowNode[];
     breakNode: ParagraphBreak | null;
+    prevBreak: ParagraphBreak | null;
 }
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, theme, components, ...restProps } = props;
+    const { children: childNodes, breakNode, prevBreak, theme, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -40,10 +41,15 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     );
     const css = useMemo(() => getParagraphCssProperties(style), [style]);
     const classes = useStyles();
-    const className = useMemo(
-        () => clsx(classes.root, ...getParagraphStyleClassNames(style, classes)),
-        [style, classes]
+    const listMarkerClass = useMemo(
+        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak),
+        [style, theme, prevBreak]
     );
+    const className = useMemo(() => clsx(
+        classes.root,
+        listMarkerClass,
+        ...getParagraphStyleClassNames(style, classes),
+    ), [style, classes]);
     const Component = components.paragraph(variant);
     const forwardProps = { theme, components, ...restProps };
     const adjustedNodes = useMemo(() => (
@@ -54,17 +60,6 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
-            {(style.listLevel ?? 0) > 0 && (
-                <ListMarker
-                    level={style.listLevel}
-                    kind={style.listMarker}
-                    hide={style.hideListMarker}
-                    counter={style.listCounter}
-                    prefix={style.listCounterPrefix}
-                    suffix={style.listCounterSuffix}
-                    style={theme.getAmbientTextStyle()}
-                />
-            )}
             {nodesWithLinks.map(nodeOrLinkProps => (
                 nodeOrLinkProps instanceof FlowNode ? (
                     <FlowNodeView

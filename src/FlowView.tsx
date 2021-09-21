@@ -49,8 +49,9 @@ export const FlowView: FC<FlowViewProps> = props => {
 const splitToParagraphs = (
     source: readonly FlowNode[],
     theme: FlowTheme,
-): Pick<ParagraphViewProps, "breakNode" | "children" | "theme">[] => {
-    const result: Pick<ParagraphViewProps, "breakNode" | "children" | "theme">[] = [];
+): Pick<ParagraphViewProps, "breakNode" | "children" | "theme" | "prevBreak">[] => {
+    const result: Pick<ParagraphViewProps, "breakNode" | "children" | "theme" | "prevBreak">[] = [];
+    let prevBreak: ParagraphBreak | null = null;
     let children: FlowNode[] = [];
 
     for (const node of source) {
@@ -59,8 +60,10 @@ const splitToParagraphs = (
             result.push({
                 children,
                 breakNode: node,
+                prevBreak,
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
             });
+            prevBreak = node;
             children = [];
         }
     }
@@ -73,6 +76,7 @@ const splitToParagraphs = (
     result.push({
         children,
         breakNode: null,
+        prevBreak,
         theme: theme.getParagraphTheme("normal"),
     });
 

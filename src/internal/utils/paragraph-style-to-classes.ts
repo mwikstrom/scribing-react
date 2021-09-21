@@ -52,7 +52,9 @@ export const PARAGRAPH_STYLE_CLASSES: ParagraphStyles = {
     h4: {},
     h5: {},
     h6: {},
-    li: {},
+    li: {
+        display: "list-item",
+    },
     li1: {
         marginLeft: listIndent(1),
     },

@@ -1,4 +1,5 @@
 import { Classes, Styles } from "jss";
+import { CSSProperties } from "react";
 import { TextStyle, TextStyleProps } from "scribing";
 import { SYSTEM_FONT } from "./system-font";
 
@@ -12,7 +13,7 @@ export type ColorRule = `${Exclude<TextStyleProps["color"], undefined>}Color`;
 export type TextStyleRule = FontFamilyRule | ColorRule;
 
 /** @internal */
-export type TextStyles = Styles<TextStyleRule>;
+export type TextStyles = Record<TextStyleRule, CSSProperties>;
 
 /** @internal */
 export type TextStyleClasses = Classes<TextStyleRule>;
@@ -58,10 +59,27 @@ export const TEXT_STYLE_CLASSES: TextStyles = {
 export const getTextStyleClassNames = (
     style: TextStyle,
     classes: TextStyleClasses
-): (string | undefined)[] => [
-    pickClassName(getFontFamilyRule(style.fontFamily), classes),
-    pickClassName(getColorRule(style.color), classes),
+): (string | undefined)[] => getTextStyleRules(style).map(rule => pickClassName(rule, classes));
+
+/** @internal */
+export const getTextStyleRules = (
+    style: TextStyle,
+): (TextStyleRule  | undefined)[] => [
+    getFontFamilyRule(style.fontFamily),
+    getColorRule(style.color),
 ];
+
+
+/** @internal */
+export const getTextStyleClassProperites = (style: TextStyle): CSSProperties => {
+    let result: CSSProperties = {};
+    for (const rule of getTextStyleRules(style)) {
+        if (rule) {
+            result = { ...result, ...TEXT_STYLE_CLASSES[rule] };
+        }
+    }
+    return result;
+};
 
 const pickClassName = (rule: TextStyleRule | undefined, classes: TextStyleClasses): string | undefined => (
     typeof rule === "string" ? classes[rule] : undefined
