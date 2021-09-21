@@ -42,6 +42,7 @@ export interface LinkComponentProps {
     className: string;
     children: ReactNode;
     href?: string;
+    title?: string;
     onClick?: MouseEventHandler;
     onMouseEnter?: MouseEventHandler;
     onMouseLeave?: MouseEventHandler;
