@@ -41,11 +41,11 @@ export type LinkComponent = "a" | FC<LinkComponentProps>;
 export interface LinkComponentProps {
     className: string;
     children: ReactNode;
-    href?: string;
-    title?: string;
-    onClick?: MouseEventHandler;
-    onMouseEnter?: MouseEventHandler;
-    onMouseLeave?: MouseEventHandler;
+    href: string | undefined;
+    title: string | undefined;
+    onClick: MouseEventHandler;
+    onMouseEnter: MouseEventHandler;
+    onMouseLeave: MouseEventHandler;
 }
 
 export const flowNode = <T extends FlowNode>(
