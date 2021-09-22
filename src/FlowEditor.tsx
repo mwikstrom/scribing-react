@@ -1,5 +1,13 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowEditorState, FlowOperation, FlowSelection, FlowTheme, TargetOptions, TextStyle } from "scribing";
+import { 
+    FlowEditorState, 
+    FlowOperation, 
+    FlowSelection, 
+    FlowTheme, 
+    ParagraphStyle, 
+    TargetOptions, 
+    TextStyle
+} from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
@@ -118,6 +126,32 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 };
                 const delta = e.shiftKey ? -1 : 1;
                 const operation = state.selection.incrementListLevel(options, delta);
+                applyChange(operation);
+            }
+        }
+
+        // CTRL + 0 to CTRL + 9 changes paragraph style variant
+        if (e.key >= "0" && e.key <= "9" && e.ctrlKey) {
+            e.preventDefault();
+            if (state.selection) {
+                const variant = ([
+                    "normal",   // CTRL + 0
+                    "h1",       // CTRL + 1
+                    "h2",       // CTRL + 2
+                    "h3",       // CTRL + 3
+                    "h4",       // CTRL + 4
+                    "h5",       // CTRL + 5
+                    "h6",       // CTRL + 6
+                    "title",    // CTRL + 7
+                    "code",     // CTRL + 8
+                    "preamble", // CTRL + 9
+                ] as const)[e.key.charCodeAt(0) - "0".charCodeAt(0)];
+                const options: TargetOptions = {
+                    target: state.content,
+                    theme: state.theme,
+                };
+                const style = ParagraphStyle.empty.set("variant", variant);
+                const operation = state.selection.formatParagraph(style, options);
                 applyChange(operation);
             }
         }
