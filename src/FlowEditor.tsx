@@ -4,6 +4,7 @@ import {
     FlowOperation, 
     FlowSelection, 
     FlowTheme, 
+    ParagraphBreak,
     ParagraphStyle, 
     TargetOptions, 
     TextStyle
@@ -116,6 +117,46 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Handle keyboard input
     const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+        // Handle case when moving caret right to avoid ending up after a paragraph break
+        if (e.key === "ArrowRight" && state.selection && state.selection.isCollapsed) {
+            const newSelection = state.selection.transformRanges((range, options = {}) => {
+                const { target } = options;
+                if (target) {
+                    const cursor = target.peek(range.last);
+                    if (cursor.node instanceof ParagraphBreak) {
+                        return range.translate(1);
+                    }
+                }
+                return null;
+            }, { target: state.content });
+
+            if (newSelection) {
+                e.preventDefault();
+                applyChange(state.set("selection", newSelection));
+                return;
+            }
+        }
+
+        // Handle case when moving caret left to avoid ending up after a paragraph break
+        if (e.key === "ArrowLeft" && state.selection && state.selection.isCollapsed) {
+            const newSelection = state.selection.transformRanges((range, options = {}) => {
+                const { target } = options;
+                if (target) {
+                    const cursor = target.peek(range.first);
+                    if (cursor.offset === 0 && cursor.moveToStartOfPreviousNode()?.node instanceof ParagraphBreak) {
+                        return range.translate(-1);
+                    }
+                }
+                return null;
+            }, { target: state.content });
+
+            if (newSelection) {
+                e.preventDefault();
+                applyChange(state.set("selection", newSelection));
+                return;
+            }
+        }
+
         // Tab is used to increase/decreate list level
         if (e.key === "Tab") {
             e.preventDefault();
@@ -129,6 +170,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 const operation = state.selection.incrementListLevel(options, delta);
                 applyChange(operation);
             }
+            
+            return;
         }
 
         // CTRL + 0 to CTRL + 9 changes paragraph style variant
@@ -155,6 +198,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 const operation = state.selection.formatParagraph(style, options);
                 applyChange(operation);
             }
+
+            return;
         }
 
         // ALT + 0 to ALT + 9 changes list marker kind
@@ -181,6 +226,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 const operation = state.selection.formatParagraph(style, options);
                 applyChange(operation);
             }
+
+            return;
         }
     }, [state]);    
     
