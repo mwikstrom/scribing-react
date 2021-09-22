@@ -255,8 +255,23 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             e.preventDefault();
             applyChange(state.toggleFormttingSymbols());
             return;
+        }
+
+        // CTRL + Z undoes last operation
+        if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey && !e.altKey) {
+            e.preventDefault();
+            applyChange(state.undo());
             return;
         }
+
+        // CTRL + Y redoes last undone operation
+        if (e.code === "KeyY" && e.ctrlKey && !e.shiftKey && !e.altKey) {
+            e.preventDefault();
+            applyChange(state.redo());
+            return;
+        }
+
+        console.log(e);
     }, [state]);
     
     // Handle native "beforeinput"
