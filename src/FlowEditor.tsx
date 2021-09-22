@@ -1,5 +1,5 @@
-import React, { CSSProperties, FC, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { FlowEditorState, FlowOperation, FlowSelection, FlowTheme, TextStyle } from "scribing";
+import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { FlowEditorState, FlowOperation, FlowSelection, FlowTheme, TargetOptions, TextStyle } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
@@ -79,22 +79,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             editingHost.focus();
         }
     }, [autoFocus, editingHost]);
-    
-    // Handle native "beforeinput"
-    useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
-        const { inputType } = event;
-        event.preventDefault();
 
-        const inputHandler = getInputHandler(inputType);
-        if (!inputHandler) {
-            console.warn(`Unsupported input type: ${inputType}`);
-            return;
-        }
-
-        // It's safe to assume that editing host is not null, because otherwise
-        // this event handler wouldn't be invoked.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const result = inputHandler(event, editingHost!, state);
+    // Handle new state or operation
+    const applyChange = useCallback((result: FlowOperation | FlowEditorState | null) => {
         let after: FlowEditorState;
         let operation: FlowOperation | null;
 
@@ -117,7 +104,42 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         setState(after);
-    }, [state, editingHost, onStateChange]);
+    }, [state, onStateChange]);
+
+    // Handle keyboard input
+    const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+        // Tab is used to increase/decreate list level
+        if (e.key === "Tab") {
+            e.preventDefault();
+            if (state.selection) {
+                const options: TargetOptions = {
+                    target: state.content,
+                    theme: state.theme,
+                };
+                const delta = e.shiftKey ? -1 : 1;
+                const operation = state.selection.incrementListLevel(options, delta);
+                applyChange(operation);
+            }
+        }
+    }, [state]);    
+    
+    // Handle native "beforeinput"
+    useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
+        const { inputType } = event;
+        event.preventDefault();
+
+        const inputHandler = getInputHandler(inputType);
+        if (!inputHandler) {
+            console.warn(`Unsupported input type: ${inputType}`);
+            return;
+        }
+
+        // It's safe to assume that editing host is not null, because otherwise
+        // this event handler wouldn't be invoked.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const result = inputHandler(event, editingHost!, state);
+        applyChange(result);
+    }, [state, editingHost, applyChange]);
 
     // Handle native "selectionchange"
     useNativeEventHandler(document, "selectionchange", () => {
@@ -185,6 +207,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             className={classes.root}
             contentEditable={editable}
             suppressContentEditableWarning={true}
+            onKeyDown={onKeyDown}
             children={
                 <FlowView
                     content={state.content}
