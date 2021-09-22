@@ -274,8 +274,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             setFormattingMarks(!formattingMarks);
             return;
         }
-
-        console.log(e);
     }, [state, formattingMarks, setFormattingMarks, onToggleFormattingMarks]);    
     
     // Handle native "beforeinput"
