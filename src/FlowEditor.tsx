@@ -29,8 +29,6 @@ import { FlowNodeComponentMap } from "./FlowNodeComponent";
 export interface FlowEditorProps {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
-    formattingMarks?: boolean;
-    defaultFormattingMarks?: boolean;
     autoFocus?: boolean;
     theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
@@ -40,7 +38,6 @@ export interface FlowEditorProps {
         change: FlowOperation | null,
         before: FlowEditorState,
     ) => void;
-    onToggleFormattingMarks?: (value: boolean) => void;
 }
 
 /**
@@ -53,9 +50,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         state: controlledState,
         defaultState = FlowEditorState.empty,
         onStateChange,
-        formattingMarks: controlledFormattingMarks,
-        defaultFormattingMarks = false,
-        onToggleFormattingMarks,
         autoFocus,
         theme,
         components,
@@ -69,15 +63,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         controlledValue: controlledState,
         defaultPropName: "defaultState",
         defaultValue: defaultState,
-    });
-
-    // Setup controller/uncontrolled formatting marks
-    const [formattingMarks, setFormattingMarks] = useControllable({
-        componentName: FlowEditor.name,
-        controlledPropName: "formattingMarks",
-        controlledValue: controlledFormattingMarks,
-        defaultPropName: "defaultFormattingMarks",
-        defaultValue: defaultFormattingMarks,
     });
 
     // Determine whether editing is supported
@@ -268,13 +253,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         // CTRL + SHIFT + 8 toggles formatting marks (just like in Word)
         if (e.code === "Digit8" && e.ctrlKey && e.shiftKey && !e.altKey) {
             e.preventDefault();
-            if (onToggleFormattingMarks) {
-                onToggleFormattingMarks(!formattingMarks);
-            }
-            setFormattingMarks(!formattingMarks);
+            applyChange(state.toggleFormttingSymbols());
+            return;
             return;
         }
-    }, [state, formattingMarks, setFormattingMarks, onToggleFormattingMarks]);    
+    }, [state]);
     
     // Handle native "beforeinput"
     useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
@@ -367,7 +350,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     theme={theme}
                     components={components}
                     editable={editable}
-                    formattingMarks={formattingMarks}
+                    formattingSymbols={state.formattingSymbols}
                 />
             }
         />

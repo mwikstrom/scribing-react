@@ -8,7 +8,7 @@ import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/tex
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 
 export const LineBreakView = flowNode<LineBreak>((props, ref) => {
-    const { node, theme, formattingMarks } = props;
+    const { node, theme, formattingSymbols } = props;
     const { style: givenStyle } = node;
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -28,7 +28,7 @@ export const LineBreakView = flowNode<LineBreak>((props, ref) => {
             ref={ref}
             className={className}
             style={css}
-            children={formattingMarks ? "↵\n" : "\n"}
+            children={formattingSymbols ? "↵\n" : "\n"}
         />
     );
 });
