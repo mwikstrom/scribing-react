@@ -182,12 +182,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             e.preventDefault();
 
             if (state.selection && !e.ctrlKey && !e.altKey) {
-                const options: TargetOptions = {
-                    target: state.content,
-                    theme: state.theme,
-                };
                 const delta = e.shiftKey ? -1 : 1;
-                const operation = state.selection.incrementListLevel(options, delta);
+                const operation = state.selection.incrementListLevel(state.content, delta);
                 applyChange(operation);
             }
             
