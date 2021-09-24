@@ -77,6 +77,20 @@ TrailingPara.args = {
     ])),
 };
 
+export const Button = Template.bind({});
+Button.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Let's try a button:",
+        { break: "para" },
+        { button: [
+            "Hello ",
+            { text: "world", style: { italic: true } },
+            "!",
+        ]},        
+        { break: "para" },
+    ])),
+};
+
 export const Rich = Template.bind({});
 Rich.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([

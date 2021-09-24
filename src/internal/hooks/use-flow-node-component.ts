@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
+import { FlowButton, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
 import { FlowNodeComponent, FlowNodeComponentMap } from "../../FlowNodeComponent";
 
 /** @internal */
@@ -11,16 +11,18 @@ export const useFlowNodeComponent = (
     return components[key] as FlowNodeComponent;
 }, [node, components]);
 
-type FlowNodeComponentKey = "text" | "lineBreak" | "paragraphBreak" | "fallback";
+type FlowNodeComponentKey = "textRunView" | "lineBreakView" | "paragraphBreakView" | "buttonView" | "fallbackView";
 
 const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
     if (node instanceof TextRun) {
-        return "text";
+        return "textRunView";
     } else if (node instanceof LineBreak) {
-        return "lineBreak";
+        return "lineBreakView";
     } else if (node instanceof ParagraphBreak) {
-        return "paragraphBreak";
+        return "paragraphBreakView";
+    } else if (node instanceof FlowButton) {
+        return "buttonView";
     } else {
-        return "fallback";
+        return "fallbackView";
     }
 };

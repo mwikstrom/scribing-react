@@ -1,5 +1,13 @@
 import { CSSProperties, FC, forwardRef, ForwardRefRenderFunction, MouseEventHandler, ReactNode, Ref } from "react";
-import { FlowNode, ParagraphTheme, LineBreak, ParagraphBreak, ParagraphStyleVariant, TextRun } from "scribing";
+import { 
+    FlowNode, 
+    ParagraphTheme, 
+    LineBreak, 
+    ParagraphBreak, 
+    ParagraphStyleVariant, 
+    TextRun, 
+    FlowButton
+} from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
@@ -14,12 +22,14 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
 }
 
 export interface FlowNodeComponentMap {
-    text: FlowNodeComponent<TextRun>;
-    lineBreak: FlowNodeComponent<LineBreak>;
-    paragraphBreak: FlowNodeComponent<ParagraphBreak>;
+    textRunView: FlowNodeComponent<TextRun>;
+    lineBreakView: FlowNodeComponent<LineBreak>;
+    paragraphBreakView: FlowNodeComponent<ParagraphBreak>;
     paragraph: (variant: ParagraphStyleVariant) => ParagraphComponent;
     link: LinkComponent;
-    fallback: FlowNodeComponent;
+    button: ButtonComponent;
+    buttonView: FlowNodeComponent<FlowButton>;
+    fallbackView: FlowNodeComponent;
 }
 
 export interface FlowNodeLocalization {
@@ -43,7 +53,18 @@ export interface LinkComponentProps {
     className: string;
     children: ReactNode;
     href: string;
-    title: string | undefined;
+    title?: string; // TODO: REMOVE THIS
+    onClick: MouseEventHandler;
+    onMouseEnter: MouseEventHandler;
+    onMouseLeave: MouseEventHandler;
+}
+
+export type ButtonComponent = "button" | FC<ButtonComponentProps>;
+
+export interface ButtonComponentProps {
+    className: string;
+    children: ReactNode;
+    ref: Ref<HTMLElement>;
     onClick: MouseEventHandler;
     onMouseEnter: MouseEventHandler;
     onMouseLeave: MouseEventHandler;

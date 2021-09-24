@@ -1,4 +1,5 @@
 import { ParagraphStyleVariant } from "scribing";
+import { FlowButtonView } from "./FlowButtonView";
 import { FlowNodeComponentMap, ParagraphComponent } from "./FlowNodeComponent";
 import { LineBreakView } from "./LineBreakView";
 import { ParagraphBreakView } from "./ParagraphBreakView";
@@ -22,10 +23,12 @@ const getParagraphComponent = (variant: ParagraphStyleVariant): ParagraphCompone
 
 /** @public */
 export const DefaultFlowNodeComponents: Readonly<FlowNodeComponentMap> = Object.freeze({
-    text: TextRunView,
-    lineBreak: LineBreakView,
-    paragraphBreak: ParagraphBreakView,
+    textRunView: TextRunView,
+    lineBreakView: LineBreakView,
+    paragraphBreakView: ParagraphBreakView,
     paragraph: getParagraphComponent,
     link: "a",
-    fallback: UnknownNodeView,
+    buttonView: FlowButtonView,
+    button: "button",
+    fallbackView: UnknownNodeView,
 });
