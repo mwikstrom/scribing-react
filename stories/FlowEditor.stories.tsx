@@ -88,6 +88,8 @@ Button.args = {
             "!",
         ]},        
         { break: "para" },
+        "The end.",
+        { break: "para" },
     ])),
 };
 

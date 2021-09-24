@@ -266,8 +266,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             applyChange(state.redo());
             return;
         }
-
-        console.log(e);
     }, [state]);
     
     // Handle native "beforeinput"

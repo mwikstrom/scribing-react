@@ -23,7 +23,6 @@ export const FlowButtonView = flowNode<FlowButton>((props, ref) => {
         }
     }, [editable]);
     const clickable = !editable || (hover && ctrlKey);
-    React.useEffect(() => console.log("CTRL", ctrlKey, "HOVER", hover), [ctrlKey, hover]);
     return (
         <Component 
             ref={ref as any} // TODO: FIX any
