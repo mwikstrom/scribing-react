@@ -1,5 +1,6 @@
-import { FlowRange, FlowSelection, FlowRangeSelection } from "scribing";
+import { FlowSelection } from "scribing";
 import { mapDomPositionToFlow } from "./dom-position-to-flow";
+import { createFlowSelection, getCommonFlowPath } from "./dom-selection-to-flow";
 
 /** @internal */
 export function mapDomRangeToFlow(
@@ -10,23 +11,32 @@ export function mapDomRangeToFlow(
     if (domRange === null) {
         return null;
     }
-    const { startContainer, startOffset } = domRange;
-    const anchor = mapDomPositionToFlow(startContainer, startOffset, editingHost);
-    if (anchor === null) {
+    const { startContainer, startOffset, collapsed } = domRange;
+    const anchorPath = mapDomPositionToFlow(startContainer, startOffset, editingHost);
+    if (anchorPath === null) {
         return null;
+    }
+
+    if (collapsed) {
+        return createFlowSelection(anchorPath);
     }
     
     const { endContainer, endOffset } = domRange;
-    const focus = domRange.collapsed ? anchor : mapDomPositionToFlow(endContainer, endOffset, editingHost);
-    if (focus === null) {
+    const focusPath = mapDomPositionToFlow(endContainer, endOffset, editingHost);
+    if (focusPath === null) {
         return null;
     }
 
-    let range = new FlowRange({ focus, anchor });
+    const {
+        commonAnchorPath,
+        leafFocusDistance,
+    } = getCommonFlowPath(anchorPath, focusPath);
+
+    let flowSelection: FlowSelection | null = createFlowSelection(commonAnchorPath, leafFocusDistance);
 
     if (backward) {
-        range = range.reverse();
+        flowSelection = flowSelection.transformRanges(range => range.reverse());
     }
 
-    return new FlowRangeSelection({ range });
+    return flowSelection;
 }

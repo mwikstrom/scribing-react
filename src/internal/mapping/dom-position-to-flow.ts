@@ -1,13 +1,17 @@
 import { TextRun } from "scribing";
+import { getMappedFlowAxis, NestedFlowPosition } from "./flow-axis";
 import { isMappedEditingHost } from "./flow-editing-host";
 import { getFlowSizeFromDomNode, getMappedFlowNode, isMappedFlowNode } from "./flow-node";
+
+/** @internal */
+export type FlowPath = [number, ...NestedFlowPosition[]];
 
 /** @internal */
 export const mapDomPositionToFlow = (
     node: Node | null,
     offset: number,
     editingHost: HTMLElement,
-): number | null => {
+): FlowPath | null => {
     // A null node can't be mapped
     if (node === null) {
         return null;
@@ -96,6 +100,8 @@ export const mapDomPositionToFlow = (
         }
     }
 
+    const nested: NestedFlowPosition[] = [];
+
     // Now, at this point we've normalized the offset (and node selection) so
     // that the offset is a mapped flow position within that node. All we need
     // to do know is to traverse the DOM tree left/upward and accumulate the
@@ -113,6 +119,16 @@ export const mapDomPositionToFlow = (
             offset += getFlowSizeFromDomNode(node);
         }
 
+        // Detect if we're traversing through a nested flow
+        const outerAxis = getMappedFlowAxis(node);
+        if (outerAxis) {
+            nested.unshift({
+                innerPosition: offset,
+                outerAxis,
+            });
+            offset = 0;
+        }
+
         // Move up, we should reach the editing host...
         if (node.parentNode === null) {
             return null;
@@ -121,5 +137,5 @@ export const mapDomPositionToFlow = (
         node = node.parentNode;
     }
 
-    return offset;
+    return [offset, ...nested];
 };

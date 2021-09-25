@@ -1,4 +1,13 @@
-import { CSSProperties, FC, forwardRef, ForwardRefRenderFunction, MouseEventHandler, ReactNode, Ref } from "react";
+import { 
+    CSSProperties, 
+    FC, 
+    forwardRef, 
+    ForwardRefRenderFunction, 
+    MouseEventHandler, 
+    ReactElement, 
+    ReactNode, 
+    RefCallback 
+} from "react";
 import { 
     FlowNode, 
     ParagraphTheme, 
@@ -13,7 +22,7 @@ export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeCompon
 
 export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
-    ref: Ref<HTMLElement>;
+    ref: RefCallback<HTMLElement>;
     theme: ParagraphTheme;
     components: Readonly<FlowNodeComponentMap>;
     localization: Readonly<FlowNodeLocalization>;
@@ -64,12 +73,14 @@ export type ButtonComponent = "button" | FC<ButtonComponentProps>;
 export interface ButtonComponentProps {
     className: string;
     children: ReactNode;
-    ref: Ref<HTMLElement>;
+    ref: RefCallback<HTMLElement>;
     onClick: MouseEventHandler;
     onMouseEnter: MouseEventHandler;
     onMouseLeave: MouseEventHandler;
 }
 
 export const flowNode = <T extends FlowNode>(
-    render: ForwardRefRenderFunction<HTMLElement, Omit<FlowNodeComponentProps<T>, "ref">>
-): FlowNodeComponent<T> => forwardRef(render);
+    render: (props: Omit<FlowNodeComponentProps<T>, "ref">, ref: RefCallback<HTMLElement>) => (ReactElement | null),
+): FlowNodeComponent<T> => forwardRef(
+    render as ForwardRefRenderFunction<HTMLElement, Omit<FlowNodeComponentProps<T>, "ref">>
+) as FlowNodeComponent<T>;
