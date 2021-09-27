@@ -66,6 +66,14 @@ class FlowButtonContentAxis extends FlowAxis {
             content: innerSelection,
         });
     }
+
+    getInnerSelection(outer: NestedFlowSelection): FlowSelection | null {
+        if (outer instanceof FlowButtonSelection) {
+            return outer.content;
+        } else {
+            return null;
+        }
+    }
 }
 
 // TODO: FIX !important rules -- should be part of theme?

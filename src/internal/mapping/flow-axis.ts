@@ -14,6 +14,8 @@ export abstract class FlowAxis {
         outerPosition: number,
         innerSelection: FlowSelection,
     ): NestedFlowSelection;
+
+    abstract getInnerSelection(outer: NestedFlowSelection): FlowSelection | null;
 }
 
 /** @internal */
