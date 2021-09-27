@@ -93,6 +93,20 @@ Button.args = {
     ])),
 };
 
+export const InlineButton = Template.bind({});
+InlineButton.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Let's try an inline button: ",
+        { button: [
+            "Hello ",
+            { text: "world", style: { italic: true } },
+            "!",
+        ]},        
+        " The end.",
+        { break: "para" },
+    ])),
+};
+
 export const Rich = Template.bind({});
 Rich.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
