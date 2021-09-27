@@ -340,7 +340,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state, documentHasFocus]);
+    }, [editingHost, state.selection, documentHasFocus]);
     
     const classes = useStyles();
     const forwardProps = { theme, components, style };
