@@ -13,15 +13,19 @@ export const ParagraphBreakView = flowNode<ParagraphBreak>((props, ref) => {
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
     const className = useMemo(
-        () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
-        [style, classes]
+        () => clsx(
+            classes.root,
+            !formattingSymbols && classes.hidden, 
+            ...getTextStyleClassNames(style, classes)
+        ),
+        [style, formattingSymbols, classes]
     );
     return (
         <span
             ref={ref}
             className={className}
             style={css}
-            children={formattingSymbols ? "¶" : null}
+            children={"¶"}
         />
     );
 });
@@ -30,6 +34,9 @@ const useStyles = createUseStyles({
     ...TEXT_STYLE_CLASSES,
     root: {
         opacity: 0.5,
+    },
+    hidden: {
+        opacity: 0,
     },
 }, {
     generateId: makeJssId("ParagraphBreak"),
