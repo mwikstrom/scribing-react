@@ -113,12 +113,6 @@ export const mapDomPositionToFlow = (
             return null;
         }
 
-        // Move left as long as we can and sum up the flow space
-        while (node.previousSibling) {
-            node = node.previousSibling;
-            offset += getFlowSizeFromDomNode(node);
-        }
-
         // Detect if we're traversing through a nested flow
         const outerAxis = getMappedFlowAxis(node);
         if (outerAxis) {
@@ -127,6 +121,12 @@ export const mapDomPositionToFlow = (
                 outerAxis,
             });
             offset = 0;
+        }
+
+        // Move left as long as we can and sum up the flow space
+        while (node.previousSibling) {
+            node = node.previousSibling;
+            offset += getFlowSizeFromDomNode(node);
         }
 
         // Move up, we should reach the editing host...
