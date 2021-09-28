@@ -208,3 +208,14 @@ Rich.args = {
         " ",
     ])),
 };
+
+export const Counter = Template.bind({});
+Counter.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Counter value is: ",
+        { dynamic: "value || 0" },
+        ". ",
+        { button: ["Increment"], action: { script: "++value" } },
+        { break: "para" },
+    ])),
+};
