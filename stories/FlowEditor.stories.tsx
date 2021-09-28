@@ -2,7 +2,7 @@ import React, { CSSProperties, useCallback, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
-import { FlowContent, FlowEditorState } from "scribing";
+import { FlowContent, FlowEditorState, FlowSelection } from "scribing";
 
 export default {
     title: "FlowEditor",
@@ -52,6 +52,18 @@ TextOnly.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Hello world!"
     ])),
+};
+
+export const TextOnlyWithInitialSelection = Template.bind({});
+TextOnlyWithInitialSelection.args = {
+    defaultState: FlowEditorState.empty.merge({
+        content: FlowContent.fromJsonValue([
+            "Hello world!"
+        ]),
+        selection: FlowSelection.fromJsonValue({
+            range: [6, 11]
+        }),
+    }),
 };
 
 export const TwoParas = Template.bind({});
