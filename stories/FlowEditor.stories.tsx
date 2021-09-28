@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useMemo, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
@@ -11,10 +11,14 @@ export default {
   
 const Template: ComponentStory<typeof FlowEditor> = args => {
     const [state, setState] = useState(args.defaultState ?? FlowEditorState.empty);
-    const jsonState = useMemo(
-        () => JSON.stringify(FlowEditorState.dataType.toJsonValue(state.toData()), undefined, " "),
-        [state]
-    );
+    const [jsonState, setJsonState] = useState("");
+    useEffect(() => {
+        const timerId = setTimeout(
+            () => setJsonState(JSON.stringify(FlowEditorState.dataType.toJsonValue(state.toData()), undefined, " ")),
+            100
+        );
+        return () => clearTimeout(timerId);
+    }, [state]);
     const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(
         state => void(setState(state)),
         [setState]
