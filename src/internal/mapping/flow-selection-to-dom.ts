@@ -19,8 +19,21 @@ export function mapFlowSelectionToDom(
             break;
         }
 
+        const { node, offset } = parent;
+
+        if (node.nodeType !== Node.TEXT_NODE) {
+            container = node.childNodes.item(offset);
+        } else if (node.parentNode === null) {
+            break;
+        } else {
+            container = node.parentNode;
+        }
+
+        while (!isMappedFlowNode(container) && getMappedFlowAxis(container) === null && container.parentNode !== null) {
+            container = container.parentNode;
+        }
+
         let inner: FlowSelection | null = null;
-        container = parent.node.childNodes.item(parent.offset);
         for (const [node, axis] of findAllAxisNodes(container)) {
             inner = axis.getInnerSelection(flowSelection);
             if (inner) {
