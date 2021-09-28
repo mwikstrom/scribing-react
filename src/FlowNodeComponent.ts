@@ -15,7 +15,8 @@ import {
     ParagraphBreak, 
     ParagraphStyleVariant, 
     TextRun, 
-    FlowButton
+    FlowButton,
+    DynamicText
 } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
@@ -38,6 +39,7 @@ export interface FlowNodeComponentMap {
     link: LinkComponent;
     button: ButtonComponent;
     buttonView: FlowNodeComponent<FlowButton>;
+    dynamicTextView: FlowNodeComponent<DynamicText>;
     fallbackView: FlowNodeComponent;
 }
 

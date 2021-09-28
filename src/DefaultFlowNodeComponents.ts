@@ -1,4 +1,5 @@
 import { ParagraphStyleVariant } from "scribing";
+import { DynamicTextView } from "./DynamicTextView";
 import { FlowButtonView } from "./FlowButtonView";
 import { FlowNodeComponentMap, ParagraphComponent } from "./FlowNodeComponent";
 import { LineBreakView } from "./LineBreakView";
@@ -30,5 +31,6 @@ export const DefaultFlowNodeComponents: Readonly<FlowNodeComponentMap> = Object.
     link: "a",
     buttonView: FlowButtonView,
     button: "button",
+    dynamicTextView: DynamicTextView,
     fallbackView: UnknownNodeView,
 });

@@ -7,6 +7,7 @@ export * from "./FlowNodeComponent";
 export * from "./DefaultFlowNodeComponents";
 export * from "./DefaultFlowNodeLocalization";
 export * from "./TextRunView";
+export * from "./DynamicTextView";
 export * from "./LineBreakView";
 export * from "./ParagraphBreakView";
 export * from "./UnknownNodeView";
