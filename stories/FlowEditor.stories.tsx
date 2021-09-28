@@ -66,6 +66,19 @@ TextOnlyWithInitialSelection.args = {
     }),
 };
 
+export const TextOnlyWithInitialSelectionAndAutoFocus = Template.bind({});
+TextOnlyWithInitialSelectionAndAutoFocus.args = {
+    autoFocus: true,
+    defaultState: FlowEditorState.empty.merge({
+        content: FlowContent.fromJsonValue([
+            "Hello world!"
+        ]),
+        selection: FlowSelection.fromJsonValue({
+            range: [6, 11]
+        }),
+    }),
+};
+
 export const TwoParas = Template.bind({});
 TwoParas.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([

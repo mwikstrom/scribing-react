@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { 
     FlowEditorState, 
     FlowOperation, 
@@ -11,7 +11,6 @@ import {
 } from "scribing";
 import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
-import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
 import { mapDomSelectionToFlow } from "./internal/mapping/dom-selection-to-flow";
 import { mapFlowSelectionToDom } from "./internal/mapping/flow-selection-to-dom";
@@ -69,8 +68,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const editable = useMemo(isEditingSupported, []);
 
     // Setup ref for the editing host element
-    const rootRef = useRef<HTMLDivElement | null>(null);
-    const { current: editingHost } = rootRef;
+    const [editingHost, setEditingHost] = useState<HTMLElement | null>(null);
 
     // Keep editing host mapping in sync
     useLayoutEffect(() => {
@@ -78,9 +76,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             setupEditingHostMapping(editingHost, state);
         }
     }, [editingHost, state]);
-
-    // Keep track of whether the browser document is focused
-    const documentHasFocus = useDocumentHasFocus();
 
     // Apply auto focus
     useEffect(() => {
@@ -321,10 +316,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         const domSelection = document.getSelection();
 
         if (
-            !documentHasFocus || 
             !editingHost || 
             !activeElement || 
-            !editingHost.contains(activeElement) || 
+            !activeElement.contains(editingHost) || 
             !domSelection
         ) {
             return;
@@ -340,7 +334,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state, documentHasFocus]);
+    }, [editingHost, state, document.activeElement]);
     
     const classes = useStyles();
     const forwardProps = { theme, components, style };
@@ -348,7 +342,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     return (
         <div 
             {...forwardProps}
-            ref={rootRef}
+            ref={setEditingHost}
             className={classes.root}
             contentEditable={editable}
             suppressContentEditableWarning={true}
