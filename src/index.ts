@@ -14,4 +14,5 @@ export * from "./UnknownNodeView";
 export * from "./FlowNodeView";
 export * from "./FlowButtonView";
 export * from "./FlowView";
+export * from "./ScriptEnvironment";
 export * from "./FlowEditor";

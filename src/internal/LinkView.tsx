@@ -16,11 +16,11 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, localization, editable, ...restProps } = props;
+    const { children, link, components, localization, editable, interact, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const classes = useStyles();
     const Component = components.link ?? "a";
-    const forwardProps = { components, localization, editable, ...restProps };
+    const forwardProps = { components, localization, editable, interact, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     const clickable = !editable || (hover && ctrlKey);
@@ -34,13 +34,11 @@ export const LinkView: FC<LinkViewProps> = props => {
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
     const onClick = useCallback((e: React.MouseEvent) => {
-        if (editable) {
-            e.preventDefault();
-            if (e.ctrlKey && href) {
-                window.open(href, "_blank")?.focus();
-            }
+        e.preventDefault();
+        if (!editable || e.ctrlKey) {
+            interact(link);
         }
-    }, [editable, href]);
+    }, [editable, link, interact]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component

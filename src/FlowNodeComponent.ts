@@ -16,7 +16,8 @@ import {
     ParagraphStyleVariant, 
     TextRun, 
     FlowButton,
-    DynamicText
+    DynamicText,
+    Interaction
 } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
@@ -29,6 +30,8 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     localization: Readonly<FlowNodeLocalization>;
     editable: boolean;
     formattingSymbols: boolean;
+    evaluate: (expression: string) => unknown;
+    interact: (action: Interaction) => void | Promise<void>;
 }
 
 export interface FlowNodeComponentMap {

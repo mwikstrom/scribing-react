@@ -10,7 +10,8 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const { node, theme: paraTheme, ...forward } = props;
-    const { editable, components } = forward;
+    const { content, action } = node;
+    const { editable, components, interact } = forward;
     const { button: Component } = components;
     const theme = useMemo(() => paraTheme.getFlowTheme(), [paraTheme]);
     const classes = useStyles();
@@ -25,10 +26,11 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
     const onClick = useCallback((e: React.MouseEvent) => {
-        if (editable) {
-            e.preventDefault();
+        e.preventDefault();
+        if (action && (!editable || e.ctrlKey)) {
+            interact(action);
         }
-    }, [editable]);
+    }, [editable, action, interact]);
     const clickable = !editable || (hover && ctrlKey);
     return (
         <Component 
@@ -44,7 +46,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             children={(
                 <FlowView
                     {...forward}
-                    content={node.content}
+                    content={content}
                     theme={theme}
                 />
             )}
