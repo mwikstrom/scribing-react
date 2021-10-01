@@ -16,6 +16,11 @@ export interface FlowEditorProps
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [content?](./scribing-react.floweditorprops.content.md) | FlowContent | <i>(Optional)</i> |
-|  [selection?](./scribing-react.floweditorprops.selection.md) | FlowRange | <i>(Optional)</i> |
+|  [autoFocus?](./scribing-react.floweditorprops.autofocus.md) | boolean | <i>(Optional)</i> |
+|  [components?](./scribing-react.floweditorprops.components.md) | Partial&lt;Readonly&lt;[FlowNodeComponentMap](./scribing-react.flownodecomponentmap.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
+|  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | FlowEditorState | <i>(Optional)</i> |
+|  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (after: FlowEditorState, change: FlowOperation \| null, before: FlowEditorState) =&gt; void | <i>(Optional)</i> |
+|  [state?](./scribing-react.floweditorprops.state.md) | FlowEditorState | <i>(Optional)</i> |
+|  [style?](./scribing-react.floweditorprops.style.md) | CSSProperties | <i>(Optional)</i> |
+|  [theme?](./scribing-react.floweditorprops.theme.md) | FlowTheme | <i>(Optional)</i> |
 
