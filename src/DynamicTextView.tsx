@@ -1,14 +1,15 @@
 import clsx from "clsx";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { DynamicText } from "scribing";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
+import { useObservedScript } from "scripthost-react";
 
 export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
-    const { node, theme, evaluate } = props;
+    const { node, theme } = props;
     const { expression, style: givenStyle } = node;
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -19,32 +20,20 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
-    const rawValue = useMemo(() => evaluate(expression), [expression, evaluate]);
-    const [intermediateValue, setIntermediateValue] = useState(rawValue);
+    const evaluated = useObservedScript(expression);
     const value = useMemo(() => {
-        if (intermediateValue === void(0) || intermediateValue instanceof Promise) {
-            return "";
+        const { result, ready, failed } = evaluated;
+        if (ready && !failed) {
+            return String(result);
         } else {
-            return String(intermediateValue);
+            return "";
         }
-    }, [intermediateValue]);
-    const className = useMemo(
-        () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
-        [style, classes]
-    );
-
-    useEffect(() => {
-        if (intermediateValue instanceof Promise) {
-            let active = true;
-            intermediateValue.then(result => {
-                if (active) {
-                    setIntermediateValue(result);
-                }
-            });
-            return () => { active = false; };
-        }
-    }, [intermediateValue]);
-
+    }, [evaluated]);
+    const className = useMemo(() => clsx(
+        classes.root, 
+        evaluated.failed && classes.error,
+        ...getTextStyleClassNames(style, classes)
+    ), [style, classes, evaluated]);
     return (
         <span
             ref={ref}
@@ -61,6 +50,7 @@ const useStyles = createUseStyles({
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
+    error: {} // TODO: Style error
 }, {
     generateId: makeJssId("DynamicText"),
 });

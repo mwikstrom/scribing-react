@@ -2,24 +2,28 @@
 
 exports[`FlowEditor can render without props 1`] = `
 <div
-  className="Scribing-FlowEditor-root"
+  className="ScribingFlowEditor-root"
   contentEditable={false}
+  onKeyDown={[Function]}
   suppressContentEditableWarning={true}
 >
   <p
-    className="Scribing-Paragraph-root Scribing-Paragraph-normal"
+    className="ScribingParagraph-root ScribingParagraph-normal"
     style={
       Object {
         "direction": "ltr",
-        "lineHeight": "100%",
+        "lineHeight": "150%",
+        "marginBottom": "1rem",
+        "marginTop": "1rem",
         "textAlign": "start",
       }
     }
   >
     <span
-      className="Scribing-TextRun-root"
+      className="ScribingTextRun-root ScribingTextRun-bodyFont ScribingTextRun-defaultColor"
       style={
         Object {
+          "fontSize": "1rem",
           "fontStyle": "normal",
           "fontWeight": "normal",
           "verticalAlign": "baseline",

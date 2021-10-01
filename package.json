@@ -73,5 +73,10 @@
     "react-jss": "10.x",
     "scribing": "0.x"
   },
-  "dependencies": {}
+  "dependencies": {
+    "scripthost": "^0.3.0",
+    "scripthost-browser": "^0.1.0",
+    "scripthost-core": "^0.2.4",
+    "scripthost-react": "^0.1.1"
+  }
 }

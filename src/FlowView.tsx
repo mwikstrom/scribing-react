@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, Interaction, ParagraphBreak, TextRun } from "scribing";
+import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
 import { DefaultFlowNodeComponents } from ".";
 import { DefaultFlowNodeLocalization } from "./DefaultFlowNodeLocalization";
 import { FlowNodeComponentMap, FlowNodeLocalization } from "./FlowNodeComponent";
@@ -17,8 +17,6 @@ export interface FlowViewProps {
     localization?: Partial<Readonly<FlowNodeLocalization>>;
     editable?: boolean;
     formattingSymbols?: boolean;
-    evaluate?: (expression: string) => unknown;
-    interact?: (action: Interaction) => void | Promise<void>;
 }
 
 /**
@@ -33,14 +31,12 @@ export const FlowView: FC<FlowViewProps> = props => {
         localization: partialLocalization = {},
         editable = false,
         formattingSymbols = false,
-        evaluate = () => void(0),
-        interact = () => void(0),
     } = props;
-    const components = { ...DefaultFlowNodeComponents, ...partialComponents };
-    const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };
-    const forwardProps = { components, localization, editable, formattingSymbols, evaluate, interact };
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
+    const components = { ...DefaultFlowNodeComponents, ...partialComponents };
+    const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };
+    const forwardProps = { components, localization, editable, formattingSymbols };
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(paraProps => (
         <ParagraphView 

@@ -1,4 +1,4 @@
-import { Classes, Styles } from "jss";
+import { Classes } from "jss";
 import { CSSProperties } from "react";
 import { TextStyle, TextStyleProps } from "scribing";
 import { SYSTEM_FONT } from "./system-font";

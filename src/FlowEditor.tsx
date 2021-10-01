@@ -4,8 +4,6 @@ import {
     FlowOperation, 
     FlowSelection, 
     FlowTheme, 
-    Interaction, 
-    OpenUrl, 
     ParagraphBreak,
     ParagraphStyle, 
     TargetOptions, 
@@ -22,7 +20,6 @@ import { isEditingSupported } from "./internal/utils/is-editing-supported";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowNodeComponentMap } from "./FlowNodeComponent";
-import { EMPTY_SCRIPT_ENVIRONMENT, ScriptEnvironment } from "./ScriptEnvironment";
 
 /**
  * Component props for {@link FlowEditor}
@@ -31,8 +28,6 @@ import { EMPTY_SCRIPT_ENVIRONMENT, ScriptEnvironment } from "./ScriptEnvironment
 export interface FlowEditorProps {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
-    environment?: ScriptEnvironment;
-    defaultEnvironment?: ScriptEnvironment;
     autoFocus?: boolean;
     theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
@@ -42,7 +37,6 @@ export interface FlowEditorProps {
         change: FlowOperation | null,
         before: FlowEditorState,
     ) => void;
-    onEnvironmentChange?: (value: ScriptEnvironment) => void;
 }
 
 /**
@@ -55,13 +49,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         state: controlledState,
         defaultState = FlowEditorState.empty,
         onStateChange,
-        environment: controlledEnvironment,
-        defaultEnvironment = EMPTY_SCRIPT_ENVIRONMENT,
-        onEnvironmentChange,
         autoFocus,
         theme,
         components,
         style,
+        ...restProps
     } = props;
     
     // Setup controlled/uncontrolled state
@@ -71,15 +63,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         controlledValue: controlledState,
         defaultPropName: "defaultState",
         defaultValue: defaultState,
-    });
-
-    // Setup controlled/uncontrolled script environment
-    const [environment, setEnvironment] = useControllable({
-        componentName: FlowEditor.name,
-        controlledPropName: "environment",
-        controlledValue: controlledEnvironment,
-        defaultPropName: "defaultEnvironment",
-        defaultValue: defaultEnvironment,
     });
 
     // Determine whether editing is supported
@@ -353,21 +336,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
     }, [editingHost, state, document.activeElement]);
-
-    // Script evaluation
-    const evaluate = useCallback((expression: string): unknown => {
-        // TODO: Evaluate it!
-        return undefined;
-    }, [environment]);
-
-    // Script interaction
-    const interact = useCallback((action: Interaction): void | Promise<void> => {
-        if (action instanceof OpenUrl) {
-            window.open(action.url, "_blank");
-        } else { // TODO: RunScript
-            console.error("Unsupported interaction");
-        }
-    }, [environment, setEnvironment, onEnvironmentChange]);
     
     const classes = useStyles();
     const forwardProps = { theme, components, style };
@@ -382,13 +350,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             onKeyDown={onKeyDown}
             children={
                 <FlowView
+                    {...restProps}
                     content={state.content}
                     theme={theme}
                     components={components}
                     editable={editable}
                     formattingSymbols={state.formattingSymbols}
-                    evaluate={evaluate}
-                    interact={interact}
                 />
             }
         />

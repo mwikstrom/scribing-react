@@ -7,11 +7,12 @@ import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
 import { makeJssId } from "./internal/utils/make-jss-id";
+import { useInteractionInvoker } from "./useInteractionInvoker";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const { node, theme: paraTheme, ...forward } = props;
     const { content, action } = node;
-    const { editable, components, interact } = forward;
+    const { editable, components } = forward;
     const { button: Component } = components;
     const theme = useMemo(() => paraTheme.getFlowTheme(), [paraTheme]);
     const classes = useStyles();
@@ -25,12 +26,13 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     }, [outerRef]);
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
+    const invokeAction = useInteractionInvoker(action);
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
-        if (action && (!editable || e.ctrlKey)) {
-            interact(action);
+        if (!editable || e.ctrlKey) {
+            invokeAction();
         }
-    }, [editable, action, interact]);
+    }, [editable, invokeAction]);
     const clickable = !editable || (hover && ctrlKey);
     return (
         <Component 

@@ -7,6 +7,7 @@ import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import clsx from "clsx";
 import { useCtrlKey } from "./hooks/use-ctrl-key";
+import { useInteractionInvoker } from "../useInteractionInvoker";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -16,11 +17,11 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, localization, editable, interact, ...restProps } = props;
+    const { children, link, components, localization, editable, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const classes = useStyles();
     const Component = components.link ?? "a";
-    const forwardProps = { components, localization, editable, interact, ...restProps };
+    const forwardProps = { components, localization, editable, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     const clickable = !editable || (hover && ctrlKey);
@@ -33,12 +34,13 @@ export const LinkView: FC<LinkViewProps> = props => {
     }, [link]);
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
+    const invokeAction = useInteractionInvoker(link);
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         if (!editable || e.ctrlKey) {
-            interact(link);
+            invokeAction();
         }
-    }, [editable, link, interact]);
+    }, [editable, invokeAction]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component
