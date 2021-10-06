@@ -22,8 +22,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     const classes = useStyles();
     const evaluated = useObservedScript(expression);
     const value = useMemo(() => {
-        const { result, ready, failed } = evaluated;
-        if (ready && !failed) {
+        const { result, ready, error } = evaluated;
+        if (ready && error === null) {
             return String(result);
         } else {
             return "";
@@ -31,7 +31,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     }, [evaluated]);
     const className = useMemo(() => clsx(
         classes.root, 
-        evaluated.failed && classes.error,
+        !evaluated.ready && classes.pending,
+        evaluated.error !== null && classes.error,
         ...getTextStyleClassNames(style, classes)
     ), [style, classes, evaluated]);
     return (
@@ -50,7 +51,8 @@ const useStyles = createUseStyles({
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
-    error: {} // TODO: Style error
+    error: {}, // TODO: Style error
+    pending: {}, // TODO: Style pending
 }, {
     generateId: makeJssId("DynamicText"),
 });

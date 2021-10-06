@@ -215,7 +215,7 @@ Counter.args = {
         "Counter value is: ",
         { dynamic: "value || 0" },
         ". ",
-        { button: ["Increment"], action: { script: "++value" } },
+        { button: ["Increment"], action: { script: "value = (value || 0) + 1" } },
         { break: "para" },
     ])),
 };

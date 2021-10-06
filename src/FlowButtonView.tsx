@@ -31,6 +31,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
         e.preventDefault();
         if (!editable || e.ctrlKey) {
             invokeAction();
+            console.log("INVOKED IT!");
         }
     }, [editable, invokeAction]);
     const clickable = !editable || (hover && ctrlKey);

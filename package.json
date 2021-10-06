@@ -74,9 +74,9 @@
     "scribing": "0.x"
   },
   "dependencies": {
-    "scripthost": "^0.3.0",
-    "scripthost-browser": "^0.1.0",
+    "scripthost": "^0.3.5",
+    "scripthost-browser": "^0.1.8",
     "scripthost-core": "^0.2.4",
-    "scripthost-react": "^0.1.1"
+    "scripthost-react": "^0.1.2"
   }
 }
