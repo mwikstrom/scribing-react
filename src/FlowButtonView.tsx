@@ -1,7 +1,14 @@
 import clsx from "clsx";
 import React, { useCallback, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { FlowButton, FlowButtonSelection, FlowSelection, NestedFlowSelection } from "scribing";
+import {
+    FlowButton, 
+    FlowButtonSelection, 
+    FlowRange, 
+    FlowRangeSelection, 
+    FlowSelection, 
+    NestedFlowSelection 
+} from "scribing";
 import { useFlowComponentMap } from ".";
 import { useEditMode } from "./EditModeScope";
 import { flowNode } from "./FlowNodeComponent";
@@ -32,10 +39,12 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const innerSelection = useMemo(() => {
         if (outerSelection instanceof FlowButtonSelection && outerSelection.position === position) {
             return outerSelection.content;
+        } else if (outerSelection instanceof FlowRangeSelection && outerSelection.range.contains(position)) {
+            return new FlowRangeSelection({ range: FlowRange.at(0, content.size)});
         } else {
             return null;
         }
-    }, [position, outerSelection]);
+    }, [position, outerSelection, content]);
     const editMode = useEditMode();
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
