@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from "react";
 import { FlowContent, FlowNode, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
 import { DefaultFlowNodeComponents } from ".";
-import { DefaultFlowLocale } from "./FlowLocale";
 import { FlowNodeComponentMap } from "./FlowNodeComponent";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
