@@ -57,10 +57,10 @@ const splitToParagraphs = (
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
                 position,
             });
+            position += children.reduce((prev, child) => prev + child.size, 0);
             prevBreak = node;
             children = [];
-        }
-        position += node.size;
+        }        
     }
 
     // Append a virtual text node in the trailing para
