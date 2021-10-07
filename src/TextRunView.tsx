@@ -1,11 +1,10 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
-import { createUseStyles } from "react-jss";
 import { FlowRange, FlowRangeSelection, FlowSelection, TextRun } from "scribing";
-import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
-import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
+import { createUseFlowStyles } from "./internal/JssTheming";
+import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowSelection } from "./FlowSelectionScope";
 
@@ -36,16 +35,19 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
             children={segments.map(({key, value, selected}) => (
                 <span
                     key={key}
-                    className={clsx(classes.token, selected && classes.selected)}
                     children={value}
+                    className={clsx(
+                        classes.token, 
+                        selected && classes.activeSelection
+                    )}
                 />
             ))}
         />
     );
 });
 
-const useStyles = createUseStyles({
-    ...TEXT_STYLE_CLASSES,
+const useStyles = createUseFlowStyles("TextRun", ({palette}) => ({
+    ...textStyles(palette),
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
@@ -54,13 +56,11 @@ const useStyles = createUseStyles({
             color: "currentcolor",
         }
     },
-    selected: {
-        color: "white",
-        backgroundColor: "black",
+    activeSelection: {
+        color: palette.activeSelectionText,
+        backgroundColor: palette.activeSelection,
     },
-}, {
-    generateId: makeJssId("TextRun"),
-});
+}));
 
 interface SegmentProps {
     key: string;

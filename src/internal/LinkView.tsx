@@ -86,5 +86,5 @@ const useStyles = createUseStyles({
         cursor: "pointer",
     },
 }, {
-    generateId: makeJssId("Paragraph"),
+    generateId: makeJssId("Link"),
 });

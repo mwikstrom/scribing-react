@@ -1,5 +1,6 @@
 import jss, { JssStyle } from "jss";
 import { ListMarkerKind, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
+import { FlowPalette } from "../../FlowPalette";
 import { makeDynamicJssId } from "./make-jss-id";
 import { getTextStyleClassProperites } from "./text-style-to-classes";
 import { getTextCssProperties } from "./text-style-to-css";
@@ -9,6 +10,7 @@ export const getListMarkerClass = (
     para: ParagraphStyle,
     text: TextStyle,
     prev: ParagraphBreak | null,
+    palette: FlowPalette
 ): string | undefined => {
     const {
         listCounterPrefix: prefix = "",
@@ -27,7 +29,7 @@ export const getListMarkerClass = (
     const counterStyle = getListCounterStyle(kind, level);
     const marker: JssStyle = {
         ...getTextCssProperties(text),
-        ...getTextStyleClassProperites(text),
+        ...getTextStyleClassProperites(text, palette),
     };
     const li: JssStyle = {
         counterIncrement: hide ? "none" : getListCounterName(level),        

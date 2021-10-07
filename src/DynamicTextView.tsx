@@ -1,11 +1,10 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
-import { createUseStyles } from "react-jss";
 import { DynamicText } from "scribing";
-import { makeJssId } from "./internal/utils/make-jss-id";
+import { createUseFlowStyles } from "./internal/JssTheming";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
-import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
+import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 
@@ -48,13 +47,11 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     );
 });
 
-const useStyles = createUseStyles({
-    ...TEXT_STYLE_CLASSES,
+const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
+    ...textStyles(palette),
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
     error: {}, // TODO: Style error
     pending: {}, // TODO: Style pending
-}, {
-    generateId: makeJssId("DynamicText"),
-});
+}));

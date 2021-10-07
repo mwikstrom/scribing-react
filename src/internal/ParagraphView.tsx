@@ -19,7 +19,8 @@ import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/pa
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
 import { useParagraphTheme } from "../ParagraphThemeScope";
-import { useFlowComponentMap } from "..";
+import { useFlowComponentMap } from "../FlowComponentMapScope";
+import { useFlowPalette } from "../FlowPaletteScope";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -44,9 +45,10 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     );
     const css = useMemo(() => getParagraphCssProperties(style), [style]);
     const classes = useStyles();
+    const palette = useFlowPalette();
     const listMarkerClass = useMemo(
-        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak),
-        [style, theme, prevBreak]
+        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak, palette),
+        [style, theme, prevBreak, palette]
     );
     const className = useMemo(() => clsx(
         classes.root,
