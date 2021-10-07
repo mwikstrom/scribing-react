@@ -54,7 +54,7 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         ...getParagraphStyleClassNames(style, classes),
     ), [style, classes]);
     const components = useFlowComponentMap();
-    const Component = components.paragraph(variant);
+    const Component = components[variant];
     const adjustedNodes = useMemo(() => (
         childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
             [...childNodes, TextRun.fromData(" ")] : childNodes

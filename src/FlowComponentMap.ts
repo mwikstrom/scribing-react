@@ -22,27 +22,21 @@ import { TextRunView } from "./TextRunView";
 import { UnknownNodeView } from "./UnknownNodeView";
 
 /** @public */
-export const getDefaultParagraphComponent = (variant: ParagraphStyleVariant): ParagraphComponent => {
-    switch (variant) {
-    case "h1":
-    case "h2":
-    case "h3":
-    case "h4":
-    case "h5":
-    case "h6":
-        return variant;
-    
-    default:
-        return "p";
-    }
-};
-
-/** @public */
 export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze({
+    h1: "h1",
+    h2: "h2",
+    h3: "h3",
+    h4: "h4",
+    h5: "h5",
+    h6: "h6",
+    normal: "p",
+    code: "p",
+    title: "p",
+    subtitle: "p",
+    preamble: "p",
     textRunView: TextRunView,
     lineBreakView: LineBreakView,
     paragraphBreakView: ParagraphBreakView,
-    paragraph: getDefaultParagraphComponent,
     link: "a",
     buttonView: FlowButtonView,
     button: "button",
@@ -51,11 +45,10 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
 });
 
 /** @public */
-export interface FlowComponentMap {
+export interface FlowComponentMap extends Record<ParagraphStyleVariant, ParagraphComponent> {
     textRunView: FlowNodeComponent<TextRun>;
     lineBreakView: FlowNodeComponent<LineBreak>;
     paragraphBreakView: FlowNodeComponent<ParagraphBreak>;
-    paragraph: (variant: ParagraphStyleVariant) => ParagraphComponent;
     link: LinkComponent;
     button: ButtonComponent;
     buttonView: FlowNodeComponent<FlowButton>;
