@@ -19,6 +19,7 @@ import { isEditingSupported } from "./internal/utils/is-editing-supported";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowNodeComponentMap } from "./FlowNodeComponent";
+import { FlowEditModeScope } from "./FlowEditModeScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -346,13 +347,14 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             suppressContentEditableWarning={true}
             onKeyDown={onKeyDown}
             children={
-                <FlowView
-                    {...restProps}
-                    content={state.content}
-                    components={components}
-                    editMode={editMode}
-                    formattingMarks={state.formattingMarks}
-                />
+                <FlowEditModeScope mode={editMode}>
+                    <FlowView
+                        {...restProps}
+                        content={state.content}
+                        components={components}
+                        formattingMarks={state.formattingMarks}
+                    />
+                </FlowEditModeScope>
             }
         />
     );

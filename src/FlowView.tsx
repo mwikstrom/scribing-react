@@ -14,7 +14,6 @@ import { ParagraphThemeScope } from "./ParagraphThemeScope";
 export interface FlowViewProps {
     content: FlowContent;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
-    editMode?: boolean;
     formattingMarks?: boolean;
 }
 
@@ -26,14 +25,13 @@ export const FlowView: FC<FlowViewProps> = props => {
     const { 
         content: { nodes },
         components: partialComponents = {},
-        editMode = false,
         formattingMarks = false,
     } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const components = { ...DefaultFlowNodeComponents, ...partialComponents };
-    const forwardProps = { components, editMode, formattingMarks };
+    const forwardProps = { components, formattingMarks };
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
         <ParagraphThemeScope theme={paraTheme}>

@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useCtrlKey } from "./hooks/use-ctrl-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
 import { useFlowLocale } from "../FlowLocaleScope";
+import { useFlowEditMode } from "../FlowEditModeScope";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -18,14 +19,15 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, editMode, ...restProps } = props;
+    const { children, link, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const locale = useFlowLocale();
     const classes = useStyles();
     const Component = components.link ?? "a";
-    const forwardProps = { components, editMode, ...restProps };
+    const forwardProps = { components, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
+    const editMode = useFlowEditMode();
     const clickable = !editMode || (hover && ctrlKey);
     const href = useMemo(() => {
         if (link instanceof OpenUrl) {

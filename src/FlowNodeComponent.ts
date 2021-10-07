@@ -24,7 +24,6 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: RefCallback<HTMLElement>;
     components: Readonly<FlowNodeComponentMap>;
-    editMode: boolean;
     formattingMarks: boolean;
 }
 

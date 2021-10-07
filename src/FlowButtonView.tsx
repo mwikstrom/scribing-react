@@ -2,6 +2,7 @@ import clsx from "clsx";
 import React, { useCallback, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FlowButton, FlowButtonSelection, FlowSelection, NestedFlowSelection } from "scribing";
+import { useFlowEditMode } from "./FlowEditModeScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
@@ -12,7 +13,7 @@ import { useInteractionInvoker } from "./useInteractionInvoker";
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const { node, ...forward } = props;
     const { content, action } = node;
-    const { editMode, components } = forward;
+    const { components } = forward;
     const { button: Component } = components;
     const classes = useStyles();
     const [hover, setHover] = useState(false);
@@ -26,6 +27,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
     const invokeAction = useInteractionInvoker(action);
+    const editMode = useFlowEditMode();
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         if (!editMode || e.ctrlKey) {
