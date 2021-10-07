@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from "react";
-import { DefaultFlowTheme, FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
+import { FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
 import { DefaultFlowNodeComponents } from ".";
 import { DefaultFlowNodeLocalization } from "./DefaultFlowNodeLocalization";
 import { FlowNodeComponentMap, FlowNodeLocalization } from "./FlowNodeComponent";
+import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
 
@@ -12,7 +13,6 @@ import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
  */
 export interface FlowViewProps {
     content: FlowContent;
-    theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
     localization?: Partial<Readonly<FlowNodeLocalization>>;
     editMode?: boolean;
@@ -26,13 +26,13 @@ export interface FlowViewProps {
 export const FlowView: FC<FlowViewProps> = props => {
     const { 
         content: { nodes },
-        theme = DefaultFlowTheme.instance,
         components: partialComponents = {},
         localization: partialLocalization = {},
         editMode = false,
         formattingMarks = false,
     } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
+    const theme = useFlowTheme();
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const components = { ...DefaultFlowNodeComponents, ...partialComponents };
     const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };

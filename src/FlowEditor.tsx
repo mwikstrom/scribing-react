@@ -3,7 +3,6 @@ import {
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
-    FlowTheme, 
     ParagraphBreak,
     ParagraphStyle, 
     TargetOptions, 
@@ -29,7 +28,6 @@ export interface FlowEditorProps {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
-    theme?: FlowTheme;
     components?: Partial<Readonly<FlowNodeComponentMap>>;
     style?: CSSProperties;
     onStateChange?: (
@@ -50,7 +48,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         onStateChange,
         autoFocus,
-        theme,
         components,
         style,
         ...restProps
@@ -338,7 +335,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, document.activeElement]);
     
     const classes = useStyles();
-    const forwardProps = { theme, components, style };
+    const forwardProps = { components, style };
 
     return (
         <div 
@@ -352,7 +349,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 <FlowView
                     {...restProps}
                     content={state.content}
-                    theme={theme}
                     components={components}
                     editMode={editMode}
                     formattingMarks={state.formattingMarks}
