@@ -18,9 +18,11 @@ import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
 import { isEditingSupported } from "./internal/utils/is-editing-supported";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
-import { EditModeScope } from "./EditModeScope";
+import { EditMode, EditModeScope } from "./EditModeScope";
 import { FormattingMarksScope } from "./FormattingMarksScope";
 import { FlowSelectionScope } from "./FlowSelectionScope";
+import { useActiveElement } from "./internal/hooks/use-active-element";
+import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 
 /**
  * Component props for {@link FlowEditor}
@@ -61,11 +63,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultValue: defaultState,
     });
 
-    // Determine whether editing is supported
-    const editMode = useMemo(isEditingSupported, []);
-
     // Setup ref for the editing host element
     const [editingHost, setEditingHost] = useState<HTMLElement | null>(null);
+
+    // Keep track of the currently active element
+    const activeElement = useActiveElement();
+    const documentHasFocus = useDocumentHasFocus();
+
+    // Determine whether editing is supported
+    const editMode = useMemo<EditMode>(() => {
+        if (!isEditingSupported()) {
+            return false;
+        } else if (
+            editingHost && 
+            activeElement && 
+            documentHasFocus &&
+            activeElement.contains(editingHost)
+        ) {
+            return true;
+        } else {
+            return "inactive";
+        }
+    }, [activeElement, editingHost, documentHasFocus]);
 
     // Keep editing host mapping in sync
     useLayoutEffect(() => {
@@ -309,15 +328,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     
     // Keep DOM selection in sync with editor selection
     useLayoutEffect(() => {
-        const { activeElement } = document;
         const domSelection = document.getSelection();
 
-        if (
-            !editingHost || 
-            !activeElement || 
-            !activeElement.contains(editingHost) || 
-            !domSelection
-        ) {
+        if (!editingHost || !domSelection) {
             return;
         }
 
@@ -331,7 +344,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state, document.activeElement]);
+    }, [editingHost, state]);
     
     const classes = useStyles();
 
@@ -340,7 +353,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             ref={setEditingHost}
             className={classes.root}
             style={style}
-            contentEditable={editMode}
+            contentEditable={editMode !== false}
             suppressContentEditableWarning={true}
             onKeyDown={onKeyDown}
             children={

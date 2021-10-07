@@ -7,6 +7,7 @@ import { createUseFlowStyles } from "./internal/JssTheming";
 import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowSelection } from "./FlowSelectionScope";
+import { useEditMode } from "./EditModeScope";
 
 export const TextRunView = flowNode<TextRun>((props, ref) => {
     const { node, position } = props;
@@ -23,6 +24,7 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
+    const editMode = useEditMode();
     const className = useMemo(
         () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
         [style, classes]
@@ -38,7 +40,7 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
                     children={value}
                     className={clsx(
                         classes.token, 
-                        selected && classes.activeSelection
+                        selected && (editMode === true ? classes.activeSelection : classes.inactiveSelection)
                     )}
                 />
             ))}
@@ -59,6 +61,10 @@ const useStyles = createUseFlowStyles("TextRun", ({palette}) => ({
     activeSelection: {
         color: palette.activeSelectionText,
         backgroundColor: palette.activeSelection,
+    },
+    inactiveSelection: {
+        color: palette.inactiveSelectionText,
+        backgroundColor: palette.inactiveSelection,
     },
 }));
 

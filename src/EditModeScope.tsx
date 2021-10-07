@@ -3,8 +3,13 @@ import React, { createContext, FC, ReactNode, useContext } from "react";
 /**
  * @public
  */
+export type EditMode = true | false | "inactive";
+
+/**
+ * @public
+ */
 export interface EditModeScopeProps {
-    mode: boolean;
+    mode: EditMode;
     children?: ReactNode;
 }
 
@@ -24,8 +29,8 @@ export const EditModeScope: FC<EditModeScopeProps> = ({
 /**
  * @public
  */
-export function useEditMode(): boolean {
+export function useEditMode(): EditMode {
     return useContext(EditModeContext);
 }
 
-const EditModeContext = createContext(false);
+const EditModeContext = createContext<EditMode>(false);
