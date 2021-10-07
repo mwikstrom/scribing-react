@@ -3,7 +3,7 @@ import React, { createContext, FC, ReactNode, useContext } from "react";
 /**
  * @public
  */
-export interface FlowEditModeScopeProps {
+export interface EditModeScopeProps {
     mode: boolean;
     children?: ReactNode;
 }
@@ -11,11 +11,11 @@ export interface FlowEditModeScopeProps {
 /**
  * @public
  */
-export const FlowEditModeScope: FC<FlowEditModeScopeProps> = ({
+export const EditModeScope: FC<EditModeScopeProps> = ({
     mode,
     children,
 }) => (
-    <FlowEditModeContext.Provider
+    <EditModeContext.Provider
         value={mode}
         children={children}
     />
@@ -24,8 +24,8 @@ export const FlowEditModeScope: FC<FlowEditModeScopeProps> = ({
 /**
  * @public
  */
-export function useFlowEditMode(): boolean {
-    return useContext(FlowEditModeContext);
+export function useEditMode(): boolean {
+    return useContext(EditModeContext);
 }
 
-const FlowEditModeContext = createContext(false);
+const EditModeContext = createContext(false);

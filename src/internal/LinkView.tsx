@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { useCtrlKey } from "./hooks/use-ctrl-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
 import { useFlowLocale } from "../FlowLocaleScope";
-import { useFlowEditMode } from "../FlowEditModeScope";
+import { useEditMode } from "../EditModeScope";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -27,7 +27,7 @@ export const LinkView: FC<LinkViewProps> = props => {
     const forwardProps = { components, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
-    const editMode = useFlowEditMode();
+    const editMode = useEditMode();
     const clickable = !editMode || (hover && ctrlKey);
     const href = useMemo(() => {
         if (link instanceof OpenUrl) {
