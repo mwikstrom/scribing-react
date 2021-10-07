@@ -66,7 +66,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     });
 
     // Determine whether editing is supported
-    const editable = useMemo(isEditingSupported, []);
+    const editMode = useMemo(isEditingSupported, []);
 
     // Setup ref for the editing host element
     const [editingHost, setEditingHost] = useState<HTMLElement | null>(null);
@@ -345,7 +345,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             {...forwardProps}
             ref={setEditingHost}
             className={classes.root}
-            contentEditable={editable}
+            contentEditable={editMode}
             suppressContentEditableWarning={true}
             onKeyDown={onKeyDown}
             children={
@@ -354,7 +354,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     content={state.content}
                     theme={theme}
                     components={components}
-                    editable={editable}
+                    editMode={editMode}
                     formattingSymbols={state.formattingSymbols}
                 />
             }

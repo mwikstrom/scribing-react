@@ -12,7 +12,7 @@ import { useInteractionInvoker } from "./useInteractionInvoker";
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const { node, theme: paraTheme, ...forward } = props;
     const { content, action } = node;
-    const { editable, components } = forward;
+    const { editMode, components } = forward;
     const { button: Component } = components;
     const theme = useMemo(() => paraTheme.getFlowTheme(), [paraTheme]);
     const classes = useStyles();
@@ -29,11 +29,11 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const invokeAction = useInteractionInvoker(action);
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
-        if (!editable || e.ctrlKey) {
+        if (!editMode || e.ctrlKey) {
             invokeAction();
         }
-    }, [editable, invokeAction]);
-    const clickable = !editable || (hover && ctrlKey);
+    }, [editMode, invokeAction]);
+    const clickable = !editMode || (hover && ctrlKey);
     return (
         <Component 
             ref={ref}
@@ -42,7 +42,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             onMouseLeave={onMouseLeave}
             className={clsx(
                 classes.root,
-                editable && classes.editable,
+                editMode && classes.editable,
                 clickable && classes.clickable,
             )}
             children={(

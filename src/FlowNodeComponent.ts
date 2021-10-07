@@ -27,7 +27,7 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     theme: ParagraphTheme;
     components: Readonly<FlowNodeComponentMap>;
     localization: Readonly<FlowNodeLocalization>;
-    editable: boolean;
+    editMode: boolean;
     formattingSymbols: boolean;
 }
 

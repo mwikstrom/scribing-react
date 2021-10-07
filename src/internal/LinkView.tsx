@@ -17,14 +17,14 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, localization, editable, ...restProps } = props;
+    const { children, link, components, localization, editMode, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const classes = useStyles();
     const Component = components.link ?? "a";
-    const forwardProps = { components, localization, editable, ...restProps };
+    const forwardProps = { components, localization, editMode, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
-    const clickable = !editable || (hover && ctrlKey);
+    const clickable = !editMode || (hover && ctrlKey);
     const href = useMemo(() => {
         if (link instanceof OpenUrl) {
             return link.url;
@@ -37,10 +37,10 @@ export const LinkView: FC<LinkViewProps> = props => {
     const invokeAction = useInteractionInvoker(link);
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
-        if (!editable || e.ctrlKey) {
+        if (!editMode || e.ctrlKey) {
             invokeAction();
         }
-    }, [editable, invokeAction]);
+    }, [editMode, invokeAction]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component
@@ -48,10 +48,10 @@ export const LinkView: FC<LinkViewProps> = props => {
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            title={editable && !clickable ? localization.holdCtrlKeyToEnableLink : undefined}
+            title={editMode && !clickable ? localization.holdCtrlKeyToEnableLink : undefined}
             className={clsx(
                 classes.root,
-                editable && classes.editable,
+                editMode && classes.editable,
                 clickable && classes.clickable,
             )}
             children={children.map(child => (
