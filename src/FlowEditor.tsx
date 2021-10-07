@@ -20,6 +20,7 @@ import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowNodeComponentMap } from "./FlowNodeComponent";
 import { EditModeScope } from "./EditModeScope";
+import { FormattingMarksScope } from "./FormattingMarksScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -348,12 +349,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             onKeyDown={onKeyDown}
             children={
                 <EditModeScope mode={editMode}>
-                    <FlowView
-                        {...restProps}
-                        content={state.content}
-                        components={components}
-                        formattingMarks={state.formattingMarks}
-                    />
+                    <FormattingMarksScope show={state.formattingMarks}>
+                        <FlowView
+                            {...restProps}
+                            content={state.content}
+                            components={components}
+                        />
+                    </FormattingMarksScope>
                 </EditModeScope>
             }
         />

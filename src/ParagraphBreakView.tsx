@@ -3,17 +3,18 @@ import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { ParagraphBreak } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
+import { useFormattingMarks } from "./FormattingMarksScope";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 
-export const ParagraphBreakView = flowNode<ParagraphBreak>((props, ref) => {
-    const { formattingMarks } = props;
+export const ParagraphBreakView = flowNode<ParagraphBreak>((_, ref) => {
     const theme = useParagraphTheme();
     const style = theme.getAmbientTextStyle();
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
+    const formattingMarks = useFormattingMarks();
     const className = useMemo(
         () => clsx(
             classes.root,
