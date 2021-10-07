@@ -33,7 +33,6 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
             ref={ref}
             className={className}
             style={css}
-            title={String(position)}
             children={segments.map(({key, value, selected}) => (
                 <span
                     key={key}
