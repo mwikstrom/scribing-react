@@ -5,6 +5,5 @@ import { useNativeEventHandler } from "./use-native-event-handler";
 export const useActiveElement = (): Element | null => {
     const [activeElement, setActiveElement] = useState(document.activeElement);
     useNativeEventHandler(window, "blur", () => setActiveElement(document.activeElement), []);
-    console.log(activeElement);
     return activeElement;
 };
