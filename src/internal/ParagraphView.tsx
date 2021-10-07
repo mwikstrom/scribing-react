@@ -18,6 +18,7 @@ import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
+import { useParagraphTheme } from "../ParagraphThemeScope";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -28,13 +29,14 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, prevBreak, theme, components, ...restProps } = props;
+    const { children: childNodes, breakNode, prevBreak, components, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
         () => breakNode instanceof ParagraphBreak ? breakNode.style : ParagraphStyle.empty, 
         [breakNode]
     );
+    const theme = useParagraphTheme();
     const style = useMemo(
         () => theme.getAmbientParagraphStyle().merge(givenStyle),
         [givenStyle, theme]

@@ -6,10 +6,12 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
+import { useParagraphTheme } from "./ParagraphThemeScope";
 
 export const TextRunView = flowNode<TextRun>((props, ref) => {
-    const { node, theme } = props;
+    const { node } = props;    
     const { text, style: givenStyle } = node;
+    const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {

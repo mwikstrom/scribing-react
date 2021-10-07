@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FlowButton, FlowButtonSelection, FlowSelection, NestedFlowSelection } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
@@ -10,11 +10,10 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
-    const { node, theme: paraTheme, ...forward } = props;
+    const { node, ...forward } = props;
     const { content, action } = node;
     const { editMode, components } = forward;
     const { button: Component } = components;
-    const theme = useMemo(() => paraTheme.getFlowTheme(), [paraTheme]);
     const classes = useStyles();
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
@@ -49,7 +48,6 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
                 <FlowView
                     {...forward}
                     content={content}
-                    theme={theme}
                 />
             )}
         />

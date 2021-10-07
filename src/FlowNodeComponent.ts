@@ -10,7 +10,6 @@ import {
 } from "react";
 import { 
     FlowNode, 
-    ParagraphTheme, 
     LineBreak, 
     ParagraphBreak, 
     ParagraphStyleVariant, 
@@ -24,7 +23,6 @@ export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeCompon
 export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: RefCallback<HTMLElement>;
-    theme: ParagraphTheme;
     components: Readonly<FlowNodeComponentMap>;
     localization: Readonly<FlowNodeLocalization>;
     editMode: boolean;

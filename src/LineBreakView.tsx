@@ -6,10 +6,12 @@ import { flowNode } from "./FlowNodeComponent";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
+import { useParagraphTheme } from "./ParagraphThemeScope";
 
 export const LineBreakView = flowNode<LineBreak>((props, ref) => {
-    const { node, theme, formattingMarks } = props;
+    const { node, formattingMarks } = props;
     const { style: givenStyle } = node;
+    const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {

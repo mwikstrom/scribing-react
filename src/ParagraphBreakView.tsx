@@ -6,9 +6,11 @@ import { flowNode } from "./FlowNodeComponent";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
+import { useParagraphTheme } from "./ParagraphThemeScope";
 
 export const ParagraphBreakView = flowNode<ParagraphBreak>((props, ref) => {
-    const { theme, formattingMarks } = props;
+    const { formattingMarks } = props;
+    const theme = useParagraphTheme();
     const style = theme.getAmbientTextStyle();
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();

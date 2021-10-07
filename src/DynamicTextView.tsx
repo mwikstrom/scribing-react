@@ -7,10 +7,12 @@ import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
+import { useParagraphTheme } from "./ParagraphThemeScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
-    const { node, theme } = props;
+    const { node } = props;
     const { expression, style: givenStyle } = node;
+    const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {

@@ -1,11 +1,12 @@
 import React, { FC, useMemo } from "react";
-import { FlowContent, FlowNode, FlowTheme, ParagraphBreak, TextRun } from "scribing";
+import { FlowContent, FlowNode, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
 import { DefaultFlowNodeComponents } from ".";
 import { DefaultFlowNodeLocalization } from "./DefaultFlowNodeLocalization";
 import { FlowNodeComponentMap, FlowNodeLocalization } from "./FlowNodeComponent";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
+import { ParagraphThemeScope } from "./ParagraphThemeScope";
 
 /**
  * Component props for {@link FlowView}
@@ -38,21 +39,27 @@ export const FlowView: FC<FlowViewProps> = props => {
     const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };
     const forwardProps = { components, localization, editMode, formattingMarks };
     const keyRenderer = keyManager.createRenderer();
-    const children = paragraphArray.map(paraProps => (
-        <ParagraphView 
-            key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
-            {...paraProps}
-            {...forwardProps}
-        />
+    const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
+        <ParagraphThemeScope theme={paraTheme}>
+            <ParagraphView 
+                key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
+                {...paraProps}
+                {...forwardProps}
+            />
+        </ParagraphThemeScope>
     ));
     return <>{children}</>;
 };
 
+interface SplitParaProps extends Pick<ParagraphViewProps, "breakNode" | "children" | "prevBreak"> {
+    theme: ParagraphTheme;
+}
+
 const splitToParagraphs = (
     source: readonly FlowNode[],
     theme: FlowTheme,
-): Pick<ParagraphViewProps, "breakNode" | "children" | "theme" | "prevBreak">[] => {
-    const result: Pick<ParagraphViewProps, "breakNode" | "children" | "theme" | "prevBreak">[] = [];
+): SplitParaProps[] => {
+    const result: SplitParaProps[] = [];
     let prevBreak: ParagraphBreak | null = null;
     let children: FlowNode[] = [];
 
