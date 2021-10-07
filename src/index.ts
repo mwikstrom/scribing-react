@@ -5,7 +5,10 @@
 
 export * from "./FlowNodeComponent";
 export * from "./DefaultFlowNodeComponents";
-export * from "./DefaultFlowNodeLocalization";
+export * from "./FlowLocale";
+export * from "./FlowLocaleScope";
+export * from "./FlowThemeScope";
+export * from "./ParagraphThemeScope";
 export * from "./TextRunView";
 export * from "./DynamicTextView";
 export * from "./LineBreakView";

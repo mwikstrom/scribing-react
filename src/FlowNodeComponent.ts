@@ -24,7 +24,6 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: RefCallback<HTMLElement>;
     components: Readonly<FlowNodeComponentMap>;
-    localization: Readonly<FlowNodeLocalization>;
     editMode: boolean;
     formattingMarks: boolean;
 }
@@ -39,10 +38,6 @@ export interface FlowNodeComponentMap {
     buttonView: FlowNodeComponent<FlowButton>;
     dynamicTextView: FlowNodeComponent<DynamicText>;
     fallbackView: FlowNodeComponent;
-}
-
-export interface FlowNodeLocalization {
-    holdCtrlKeyToEnableLink: string;
 }
 
 export type ParagraphComponent = (

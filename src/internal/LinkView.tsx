@@ -8,6 +8,7 @@ import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import clsx from "clsx";
 import { useCtrlKey } from "./hooks/use-ctrl-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
+import { useFlowLocale } from "../FlowLocaleScope";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -17,11 +18,12 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, localization, editMode, ...restProps } = props;
+    const { children, link, components, editMode, ...restProps } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
+    const locale = useFlowLocale();
     const classes = useStyles();
     const Component = components.link ?? "a";
-    const forwardProps = { components, localization, editMode, ...restProps };
+    const forwardProps = { components, editMode, ...restProps };
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     const clickable = !editMode || (hover && ctrlKey);
@@ -48,7 +50,7 @@ export const LinkView: FC<LinkViewProps> = props => {
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            title={editMode && !clickable ? localization.holdCtrlKeyToEnableLink : undefined}
+            title={editMode && !clickable ? locale.holdCtrlKeyToEnableLink : undefined}
             className={clsx(
                 classes.root,
                 editMode && classes.editable,
