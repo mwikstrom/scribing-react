@@ -28,7 +28,7 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     components: Readonly<FlowNodeComponentMap>;
     localization: Readonly<FlowNodeLocalization>;
     editMode: boolean;
-    formattingSymbols: boolean;
+    formattingMarks: boolean;
 }
 
 export interface FlowNodeComponentMap {

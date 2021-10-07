@@ -245,7 +245,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         // CTRL + SHIFT + 8 toggles formatting marks (just like in Word)
         if (e.code === "Digit8" && e.ctrlKey && e.shiftKey && !e.altKey) {
             e.preventDefault();
-            applyChange(state.toggleFormttingSymbols());
+            applyChange(state.toggleFormattingMarks());
             return;
         }
 
@@ -355,7 +355,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     theme={theme}
                     components={components}
                     editMode={editMode}
-                    formattingSymbols={state.formattingSymbols}
+                    formattingMarks={state.formattingMarks}
                 />
             }
         />

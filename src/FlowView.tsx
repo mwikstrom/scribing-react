@@ -16,7 +16,7 @@ export interface FlowViewProps {
     components?: Partial<Readonly<FlowNodeComponentMap>>;
     localization?: Partial<Readonly<FlowNodeLocalization>>;
     editMode?: boolean;
-    formattingSymbols?: boolean;
+    formattingMarks?: boolean;
 }
 
 /**
@@ -30,13 +30,13 @@ export const FlowView: FC<FlowViewProps> = props => {
         components: partialComponents = {},
         localization: partialLocalization = {},
         editMode = false,
-        formattingSymbols = false,
+        formattingMarks = false,
     } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const components = { ...DefaultFlowNodeComponents, ...partialComponents };
     const localization = { ...DefaultFlowNodeLocalization, ...partialLocalization };
-    const forwardProps = { components, localization, editMode, formattingSymbols };
+    const forwardProps = { components, localization, editMode, formattingMarks };
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(paraProps => (
         <ParagraphView 

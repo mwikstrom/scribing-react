@@ -109,9 +109,9 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     // (undocumented)
     components: Readonly<FlowNodeComponentMap>;
     // (undocumented)
-    editable: boolean;
+    editMode: boolean;
     // (undocumented)
-    formattingSymbols: boolean;
+    formattingMarks: boolean;
     // (undocumented)
     localization: Readonly<FlowNodeLocalization>;
     // (undocumented)
@@ -141,9 +141,9 @@ export interface FlowViewProps {
     // (undocumented)
     content: FlowContent;
     // (undocumented)
-    editable?: boolean;
+    editMode?: boolean;
     // (undocumented)
-    formattingSymbols?: boolean;
+    formattingMarks?: boolean;
     // (undocumented)
     localization?: Partial<Readonly<FlowNodeLocalization>>;
     // (undocumented)

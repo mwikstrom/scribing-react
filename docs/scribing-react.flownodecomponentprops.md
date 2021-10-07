@@ -15,8 +15,8 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode>
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [components](./scribing-react.flownodecomponentprops.components.md) | Readonly&lt;[FlowNodeComponentMap](./scribing-react.flownodecomponentmap.md)<!-- -->&gt; |  |
-|  [editable](./scribing-react.flownodecomponentprops.editable.md) | boolean |  |
-|  [formattingSymbols](./scribing-react.flownodecomponentprops.formattingsymbols.md) | boolean |  |
+|  [editMode](./scribing-react.flownodecomponentprops.editmode.md) | boolean |  |
+|  [formattingMarks](./scribing-react.flownodecomponentprops.formattingmarks.md) | boolean |  |
 |  [localization](./scribing-react.flownodecomponentprops.localization.md) | Readonly&lt;[FlowNodeLocalization](./scribing-react.flownodelocalization.md)<!-- -->&gt; |  |
 |  [node](./scribing-react.flownodecomponentprops.node.md) | T |  |
 |  [ref](./scribing-react.flownodecomponentprops.ref.md) | RefCallback&lt;HTMLElement&gt; |  |

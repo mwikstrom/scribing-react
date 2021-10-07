@@ -8,17 +8,17 @@ import { getTextStyleClassNames, TEXT_STYLE_CLASSES } from "./internal/utils/tex
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 
 export const ParagraphBreakView = flowNode<ParagraphBreak>((props, ref) => {
-    const { theme, formattingSymbols } = props;
+    const { theme, formattingMarks } = props;
     const style = theme.getAmbientTextStyle();
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
     const className = useMemo(
         () => clsx(
             classes.root,
-            !formattingSymbols && classes.hidden, 
+            !formattingMarks && classes.hidden, 
             ...getTextStyleClassNames(style, classes)
         ),
-        [style, formattingSymbols, classes]
+        [style, formattingMarks, classes]
     );
     return (
         <span

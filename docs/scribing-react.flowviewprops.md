@@ -18,8 +18,8 @@ export interface FlowViewProps
 |  --- | --- | --- |
 |  [components?](./scribing-react.flowviewprops.components.md) | Partial&lt;Readonly&lt;[FlowNodeComponentMap](./scribing-react.flownodecomponentmap.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
 |  [content](./scribing-react.flowviewprops.content.md) | FlowContent |  |
-|  [editable?](./scribing-react.flowviewprops.editable.md) | boolean | <i>(Optional)</i> |
-|  [formattingSymbols?](./scribing-react.flowviewprops.formattingsymbols.md) | boolean | <i>(Optional)</i> |
+|  [editMode?](./scribing-react.flowviewprops.editmode.md) | boolean | <i>(Optional)</i> |
+|  [formattingMarks?](./scribing-react.flowviewprops.formattingmarks.md) | boolean | <i>(Optional)</i> |
 |  [localization?](./scribing-react.flowviewprops.localization.md) | Partial&lt;Readonly&lt;[FlowNodeLocalization](./scribing-react.flownodelocalization.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
 |  [theme?](./scribing-react.flowviewprops.theme.md) | FlowTheme | <i>(Optional)</i> |
 
