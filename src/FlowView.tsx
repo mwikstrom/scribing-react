@@ -1,7 +1,5 @@
 import React, { FC, useMemo } from "react";
 import { FlowContent, FlowNode, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
-import { DefaultFlowNodeComponents } from ".";
-import { FlowNodeComponentMap } from "./FlowNodeComponent";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
@@ -13,7 +11,6 @@ import { ParagraphThemeScope } from "./ParagraphThemeScope";
  */
 export interface FlowViewProps {
     content: FlowContent;
-    components?: Partial<Readonly<FlowNodeComponentMap>>;
 }
 
 /**
@@ -23,20 +20,16 @@ export interface FlowViewProps {
 export const FlowView: FC<FlowViewProps> = props => {
     const { 
         content: { nodes },
-        components: partialComponents = {},
     } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
-    const components = { ...DefaultFlowNodeComponents, ...partialComponents };
-    const forwardProps = { components };
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
         <ParagraphThemeScope theme={paraTheme}>
             <ParagraphView 
                 key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
                 {...paraProps}
-                {...forwardProps}
             />
         </ParagraphThemeScope>
     ));

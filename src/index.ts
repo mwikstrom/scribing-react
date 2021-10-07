@@ -4,10 +4,13 @@
  */
 
 export * from "./FlowNodeComponent";
-export * from "./DefaultFlowNodeComponents";
+export * from "./FlowComponentMap";
+export * from "./FlowComponentMapScope";
 export * from "./FlowLocale";
 export * from "./FlowLocaleScope";
 export * from "./FlowThemeScope";
+export * from "./EditModeScope";
+export * from "./FormattingMarksScope";
 export * from "./ParagraphThemeScope";
 export * from "./TextRunView";
 export * from "./DynamicTextView";

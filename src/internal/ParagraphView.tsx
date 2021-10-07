@@ -19,6 +19,7 @@ import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/pa
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
 import { useParagraphTheme } from "../ParagraphThemeScope";
+import { useFlowComponentMap } from "..";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -29,7 +30,7 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, prevBreak, components, ...restProps } = props;
+    const { children: childNodes, breakNode, prevBreak } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -52,8 +53,8 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         listMarkerClass,
         ...getParagraphStyleClassNames(style, classes),
     ), [style, classes]);
+    const components = useFlowComponentMap();
     const Component = components.paragraph(variant);
-    const forwardProps = { theme, components, ...restProps };
     const adjustedNodes = useMemo(() => (
         childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
             [...childNodes, TextRun.fromData(" ")] : childNodes
@@ -67,14 +68,12 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps)}
                         node={nodeOrLinkProps}
-                        {...forwardProps}
                     />
                 ) : (
                     <LinkView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
                         children={nodeOrLinkProps.children}
                         link={nodeOrLinkProps.link}
-                        {...forwardProps}
                     />
                 )
             ))}

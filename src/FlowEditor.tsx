@@ -18,7 +18,6 @@ import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
 import { isEditingSupported } from "./internal/utils/is-editing-supported";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
-import { FlowNodeComponentMap } from "./FlowNodeComponent";
 import { EditModeScope } from "./EditModeScope";
 import { FormattingMarksScope } from "./FormattingMarksScope";
 
@@ -30,7 +29,6 @@ export interface FlowEditorProps {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
-    components?: Partial<Readonly<FlowNodeComponentMap>>;
     style?: CSSProperties;
     onStateChange?: (
         after: FlowEditorState,
@@ -50,9 +48,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         onStateChange,
         autoFocus,
-        components,
         style,
-        ...restProps
     } = props;
     
     // Setup controlled/uncontrolled state
@@ -337,24 +333,19 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, document.activeElement]);
     
     const classes = useStyles();
-    const forwardProps = { components, style };
 
     return (
         <div 
-            {...forwardProps}
             ref={setEditingHost}
             className={classes.root}
+            style={style}
             contentEditable={editMode}
             suppressContentEditableWarning={true}
             onKeyDown={onKeyDown}
             children={
                 <EditModeScope mode={editMode}>
                     <FormattingMarksScope show={state.formattingMarks}>
-                        <FlowView
-                            {...restProps}
-                            content={state.content}
-                            components={components}
-                        />
+                        <FlowView content={state.content}/>
                     </FormattingMarksScope>
                 </EditModeScope>
             }

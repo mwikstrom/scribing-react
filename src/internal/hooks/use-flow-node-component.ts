@@ -1,15 +1,16 @@
 import { useMemo } from "react";
 import { DynamicText, FlowButton, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
-import { FlowNodeComponent, FlowNodeComponentMap } from "../../FlowNodeComponent";
+import { useFlowComponentMap } from "../..";
+import { FlowNodeComponent } from "../../FlowNodeComponent";
 
 /** @internal */
 export const useFlowNodeComponent = (
     node: FlowNode,
-    components: Readonly<FlowNodeComponentMap>,
 ): FlowNodeComponent => useMemo(() => {
     const key = getFlowNodeComponentKey(node);
+    const components = useFlowComponentMap();
     return components[key] as FlowNodeComponent;
-}, [node, components]);
+}, [node]);
 
 type FlowNodeComponentKey = (
     "textRunView" | 

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import React, { useCallback, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FlowButton, FlowButtonSelection, FlowSelection, NestedFlowSelection } from "scribing";
+import { useFlowComponentMap } from ".";
 import { useEditMode } from "./EditModeScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
@@ -11,10 +12,9 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
-    const { node, ...forward } = props;
+    const { node } = props;
     const { content, action } = node;
-    const { components } = forward;
-    const { button: Component } = components;
+    const { button: Component } = useFlowComponentMap();
     const classes = useStyles();
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
@@ -46,12 +46,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
                 editMode && classes.editable,
                 clickable && classes.clickable,
             )}
-            children={(
-                <FlowView
-                    {...forward}
-                    content={content}
-                />
-            )}
+            children={<FlowView content={content}/>}
         />
     );
 });

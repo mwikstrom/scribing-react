@@ -10,6 +10,7 @@ import { useCtrlKey } from "./hooks/use-ctrl-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "../EditModeScope";
+import { useFlowComponentMap } from "..";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -19,12 +20,11 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link, components, ...restProps } = props;
+    const { children, link } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const locale = useFlowLocale();
     const classes = useStyles();
-    const Component = components.link ?? "a";
-    const forwardProps = { components, ...restProps };
+    const { link: Component } = useFlowComponentMap();
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     const editMode = useEditMode();
@@ -62,7 +62,6 @@ export const LinkView: FC<LinkViewProps> = props => {
                 <FlowNodeView
                     key={keyRenderer.getNodeKey(child)}
                     node={child}
-                    {...forwardProps}
                 />
             ))}
         />
