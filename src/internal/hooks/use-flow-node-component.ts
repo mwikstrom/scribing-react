@@ -6,11 +6,13 @@ import { FlowNodeComponent } from "../../FlowNodeComponent";
 /** @internal */
 export const useFlowNodeComponent = (
     node: FlowNode,
-): FlowNodeComponent => useMemo(() => {
-    const key = getFlowNodeComponentKey(node);
+): FlowNodeComponent => {
     const components = useFlowComponentMap();
-    return components[key] as FlowNodeComponent;
-}, [node]);
+    return useMemo(() => {
+        const key = getFlowNodeComponentKey(node);
+        return components[key] as FlowNodeComponent;
+    }, [node, components]);
+};
 
 type FlowNodeComponentKey = (
     "textRunView" | 

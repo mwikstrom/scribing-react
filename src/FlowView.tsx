@@ -18,26 +18,24 @@ export interface FlowViewProps {
  * @public
  */
 export const FlowView: FC<FlowViewProps> = props => {
-    const { 
-        content: { nodes },
-    } = props;
+    const { content: { nodes } } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(() => splitToParagraphs(nodes, theme), [nodes, keyManager, theme]);
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
-        <ParagraphThemeScope theme={paraTheme}>
-            <ParagraphView 
-                key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
-                {...paraProps}
-            />
-        </ParagraphThemeScope>
+        <ParagraphThemeScope 
+            key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
+            theme={paraTheme}
+            children={<ParagraphView {...paraProps}/>}
+        />
     ));
     return <>{children}</>;
 };
 
 interface SplitParaProps extends Pick<ParagraphViewProps, "breakNode" | "children" | "prevBreak"> {
     theme: ParagraphTheme;
+    position: number;
 }
 
 const splitToParagraphs = (
@@ -45,6 +43,7 @@ const splitToParagraphs = (
     theme: FlowTheme,
 ): SplitParaProps[] => {
     const result: SplitParaProps[] = [];
+    let position = 0;
     let prevBreak: ParagraphBreak | null = null;
     let children: FlowNode[] = [];
 
@@ -56,10 +55,12 @@ const splitToParagraphs = (
                 breakNode: node,
                 prevBreak,
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
+                position,
             });
             prevBreak = node;
             children = [];
         }
+        position += node.size;
     }
 
     // Append a virtual text node in the trailing para
@@ -72,6 +73,7 @@ const splitToParagraphs = (
         breakNode: null,
         prevBreak,
         theme: theme.getParagraphTheme("normal"),
+        position,
     });
 
     return result;

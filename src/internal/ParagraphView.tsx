@@ -30,7 +30,7 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, prevBreak } = props;
+    const { children: childNodes, breakNode, prevBreak, position: start } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -59,21 +59,23 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
             [...childNodes, TextRun.fromData(" ")] : childNodes
     ), [childNodes]);
-    const nodesWithLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
+    const nodesWithLinks = useMemo(() => splitToLinks(start, adjustedNodes), [start, adjustedNodes]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
-            {nodesWithLinks.map(nodeOrLinkProps => (
+            {nodesWithLinks.map(({nodeOrLinkProps, position}) => (
                 nodeOrLinkProps instanceof FlowNode ? (
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps)}
                         node={nodeOrLinkProps}
+                        position={position}
                     />
                 ) : (
                     <LinkView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
                         children={nodeOrLinkProps.children}
                         link={nodeOrLinkProps.link}
+                        position={position}
                     />
                 )
             ))}
@@ -91,9 +93,14 @@ const useStyles = createUseStyles({
 });
 
 type SplitLinkProps = Pick<LinkViewProps, "children" | "link"> & { firstNode: FlowNode };
+interface SplitItem {
+    nodeOrLinkProps: FlowNode | SplitLinkProps;
+    position: number;
+}
 
-const splitToLinks = (nodes: readonly FlowNode[]): (FlowNode | SplitLinkProps)[] => {
-    const result: (FlowNode | SplitLinkProps)[] = [];
+const splitToLinks = (position: number, nodes: readonly FlowNode[]): SplitItem[] => {
+    const result: SplitItem[] = [];
+    let linkPosition = position;
     let linkProps: SplitLinkProps | null = null;
     
     for (const node of nodes) {
@@ -101,11 +108,15 @@ const splitToLinks = (nodes: readonly FlowNode[]): (FlowNode | SplitLinkProps)[]
             const { style: { link = null } } = node;
             if (link) {
                 if (linkProps && !Interaction.baseType.equals(link, linkProps.link)) {
-                    result.push(linkProps);
+                    result.push({
+                        nodeOrLinkProps: linkProps,
+                        position: linkPosition,
+                    });
                     linkProps = null;
                 }
 
                 if (!linkProps) {
+                    linkPosition = position;
                     linkProps = {
                         children: [],
                         link,
@@ -114,20 +125,38 @@ const splitToLinks = (nodes: readonly FlowNode[]): (FlowNode | SplitLinkProps)[]
                 }
 
                 linkProps.children.push(node);
-                continue;
             } else if (linkProps) {
-                result.push(linkProps);
+                result.push({
+                    nodeOrLinkProps: linkProps,
+                    position: linkPosition,
+                });
                 linkProps = null;
+            } else {
+                result.push({
+                    nodeOrLinkProps: node,
+                    position,
+                });
             }
         } else if (linkProps) {
-            result.push(linkProps);
+            result.push({
+                nodeOrLinkProps: linkProps,
+                position: linkPosition,
+            });
             linkProps = null;
+        } else {
+            result.push({
+                nodeOrLinkProps: node,
+                position,
+            });
         }
-        result.push(node);
+        position += node.size;
     }
 
     if (linkProps) {
-        result.push(linkProps);
+        result.push({
+            nodeOrLinkProps: linkProps,
+            position: linkPosition,
+        });
     }
 
     return result;

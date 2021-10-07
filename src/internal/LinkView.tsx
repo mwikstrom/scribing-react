@@ -20,7 +20,7 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children, link } = props;
+    const { children: childNodes, link } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const locale = useFlowLocale();
     const classes = useStyles();
@@ -46,6 +46,18 @@ export const LinkView: FC<LinkViewProps> = props => {
         }
     }, [editMode, invokeAction]);
     const keyRenderer = keyManager.createRenderer();
+    const children: ReturnType<typeof FlowNodeView>[] = [];
+    let position = props.position;
+    for (const child of childNodes) {
+        children.push(
+            <FlowNodeView
+                key={keyRenderer.getNodeKey(child)}
+                node={child}
+                position={position}
+            />
+        );
+        position += child.size;
+    }
     return (
         <Component
             href={href}
@@ -58,12 +70,7 @@ export const LinkView: FC<LinkViewProps> = props => {
                 editMode && classes.editable,
                 clickable && classes.clickable,
             )}
-            children={children.map(child => (
-                <FlowNodeView
-                    key={keyRenderer.getNodeKey(child)}
-                    node={child}
-                />
-            ))}
+            children={children}
         />
     );
 };
