@@ -55,7 +55,8 @@ export const LinkView: FC<LinkViewProps> = props => {
             title={editMode && !clickable ? locale.hold_ctrl_key_to_enable_interaction : undefined}
             className={clsx(
                 classes.root,
-                clickable ? classes.clickable : (editMode && classes.editable),
+                hover && classes.hover,
+                clickable ? classes.clickable : !!editMode && classes.editable,
             )}
             children={childNodes.map(child => (
                 <FlowNodeView
@@ -70,6 +71,9 @@ export const LinkView: FC<LinkViewProps> = props => {
 const useStyles = createUseStyles({
     root: {
         textDecoration: "none",
+    },
+    hover: {
+        backgroundColor: "yellow",
     },
     editable: {
         cursor: "text",

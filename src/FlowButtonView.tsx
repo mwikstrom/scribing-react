@@ -48,8 +48,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             onMouseLeave={onMouseLeave}
             className={clsx(
                 classes.root,
-                editMode && classes.editable,
-                clickable && classes.clickable,
+                clickable ? classes.clickable : !!editMode && classes.editable,
             )}
             children={<FlowView content={content}/>}
         />
