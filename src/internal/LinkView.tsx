@@ -55,8 +55,7 @@ export const LinkView: FC<LinkViewProps> = props => {
             title={editMode && !clickable ? locale.hold_ctrl_key_to_enable_interaction : undefined}
             className={clsx(
                 classes.root,
-                editMode && classes.editable,
-                clickable && classes.clickable,
+                clickable ? classes.clickable : (editMode && classes.editable),
             )}
             children={childNodes.map(child => (
                 <FlowNodeView
