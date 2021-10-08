@@ -31,7 +31,7 @@ export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & 
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, prevBreak, position: start } = props;
+    const { children: childNodes, breakNode, prevBreak } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -61,23 +61,21 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
             [...childNodes, TextRun.fromData(" ")] : childNodes
     ), [childNodes]);
-    const nodesWithLinks = useMemo(() => splitToLinks(start, adjustedNodes), [start, adjustedNodes]);
+    const nodesWithLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
-            {nodesWithLinks.map(({nodeOrLinkProps, position}) => (
+            {nodesWithLinks.map(nodeOrLinkProps => (
                 nodeOrLinkProps instanceof FlowNode ? (
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps)}
                         node={nodeOrLinkProps}
-                        position={position}
                     />
                 ) : (
                     <LinkView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
                         children={nodeOrLinkProps.children}
                         link={nodeOrLinkProps.link}
-                        position={position}
                     />
                 )
             ))}
@@ -95,71 +93,47 @@ const useStyles = createUseStyles({
 });
 
 type SplitLinkProps = Pick<LinkViewProps, "children" | "link"> & { firstNode: FlowNode };
-interface SplitItem {
-    nodeOrLinkProps: FlowNode | SplitLinkProps;
-    position: number;
-}
+type SplitItem = FlowNode | SplitLinkProps;
 
-const splitToLinks = (position: number, nodes: readonly FlowNode[]): SplitItem[] => {
+const splitToLinks = (nodes: readonly FlowNode[]): SplitItem[] => {
     const result: SplitItem[] = [];
-    let linkPosition = position;
     let linkProps: SplitLinkProps | null = null;
     
     for (const node of nodes) {
-        if (node instanceof InlineNode) {
-            const { style: { link = null } } = node;
-            if (link) {
-                if (linkProps && !Interaction.baseType.equals(link, linkProps.link)) {
-                    result.push({
-                        nodeOrLinkProps: linkProps,
-                        position: linkPosition,
-                    });
-                    linkProps = null;
-                }
+        const link = getLink(node);
 
-                if (!linkProps) {
-                    linkPosition = position;
-                    linkProps = {
-                        children: [],
-                        link,
-                        firstNode: node,
-                    };
-                }
-
-                linkProps.children.push(node);
-            } else if (linkProps) {
-                result.push({
-                    nodeOrLinkProps: linkProps,
-                    position: linkPosition,
-                });
+        if (link) {
+            if (linkProps && !Interaction.baseType.equals(link, linkProps.link)) {
+                result.push(linkProps);
                 linkProps = null;
-            } else {
-                result.push({
-                    nodeOrLinkProps: node,
-                    position,
-                });
             }
-        } else if (linkProps) {
-            result.push({
-                nodeOrLinkProps: linkProps,
-                position: linkPosition,
-            });
-            linkProps = null;
+
+            if (!linkProps) {
+                linkProps = {
+                    children: [],
+                    link,
+                    firstNode: node,
+                };
+            }
+
+            linkProps.children.push(node);
         } else {
-            result.push({
-                nodeOrLinkProps: node,
-                position,
-            });
-        }
-        position += node.size;
+            if (linkProps) {
+                result.push(linkProps);
+                linkProps = null;
+            }
+
+            result.push(node);
+        }       
     }
 
     if (linkProps) {
-        result.push({
-            nodeOrLinkProps: linkProps,
-            position: linkPosition,
-        });
+        result.push(linkProps);
     }
 
     return result;
 };
+
+const getLink = (node: FlowNode): Interaction | null => (
+    node instanceof InlineNode ? node.style.link ?? null : null
+);

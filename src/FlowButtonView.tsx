@@ -1,18 +1,15 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     FlowButton, 
     FlowButtonSelection, 
-    FlowRange, 
-    FlowRangeSelection, 
     FlowSelection, 
     NestedFlowSelection 
 } from "scribing";
 import { useFlowComponentMap } from ".";
 import { useEditMode } from "./EditModeScope";
 import { flowNode } from "./FlowNodeComponent";
-import { FlowSelectionScope, useFlowSelection } from "./FlowSelectionScope";
 import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
@@ -20,7 +17,7 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
-    const { node, position } = props;
+    const { node } = props;
     const { content, action } = node;
     const { button: Component } = useFlowComponentMap();
     const classes = useStyles();
@@ -35,16 +32,6 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
     const invokeAction = useInteractionInvoker(action);
-    const outerSelection = useFlowSelection();
-    const innerSelection = useMemo(() => {
-        if (outerSelection instanceof FlowButtonSelection && outerSelection.position === position) {
-            return outerSelection.content;
-        } else if (outerSelection instanceof FlowRangeSelection && outerSelection.range.contains(position)) {
-            return new FlowRangeSelection({ range: FlowRange.at(0, content.size)});
-        } else {
-            return null;
-        }
-    }, [position, outerSelection, content]);
     const editMode = useEditMode();
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -64,11 +51,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
                 editMode && classes.editable,
                 clickable && classes.clickable,
             )}
-            children={
-                <FlowSelectionScope selection={innerSelection}>
-                    <FlowView content={content}/>
-                </FlowSelectionScope>
-            }
+            children={<FlowView content={content}/>}
         />
     );
 });

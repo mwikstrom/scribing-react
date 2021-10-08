@@ -20,7 +20,6 @@ import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { EditMode, EditModeScope } from "./EditModeScope";
 import { FormattingMarksScope } from "./FormattingMarksScope";
-import { FlowSelectionScope } from "./FlowSelectionScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 
@@ -359,9 +358,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             children={
                 <EditModeScope mode={editMode}>
                     <FormattingMarksScope show={state.formattingMarks}>
-                        <FlowSelectionScope selection={state.selection}>
-                            <FlowView content={state.content}/>
-                        </FlowSelectionScope>
+                        <FlowView content={state.content}/>
                     </FormattingMarksScope>
                 </EditModeScope>
             }

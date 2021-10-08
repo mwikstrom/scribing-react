@@ -46,18 +46,6 @@ export const LinkView: FC<LinkViewProps> = props => {
         }
     }, [editMode, invokeAction]);
     const keyRenderer = keyManager.createRenderer();
-    const children: ReturnType<typeof FlowNodeView>[] = [];
-    let position = props.position;
-    for (const child of childNodes) {
-        children.push(
-            <FlowNodeView
-                key={keyRenderer.getNodeKey(child)}
-                node={child}
-                position={position}
-            />
-        );
-        position += child.size;
-    }
     return (
         <Component
             href={href}
@@ -70,7 +58,12 @@ export const LinkView: FC<LinkViewProps> = props => {
                 editMode && classes.editable,
                 clickable && classes.clickable,
             )}
-            children={children}
+            children={childNodes.map(child => (
+                <FlowNodeView
+                    key={keyRenderer.getNodeKey(child)}
+                    node={child}
+                />
+            ))}
         />
     );
 };
