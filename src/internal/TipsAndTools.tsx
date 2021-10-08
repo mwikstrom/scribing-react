@@ -123,9 +123,11 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
             background: "inherit",
         }
     },
-    arrowTop: {},
+    arrowTop: {
+        bottom: -4,
+    },
     arrowBottom: {
-        top: -8,
+        top: -4,
     },
 }));
 
