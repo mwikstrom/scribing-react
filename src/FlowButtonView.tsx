@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
     FlowButton, 
@@ -7,12 +7,14 @@ import {
     FlowSelection, 
     NestedFlowSelection 
 } from "scribing";
-import { useFlowComponentMap } from ".";
 import { useEditMode } from "./EditModeScope";
+import { useFlowComponentMap } from "./FlowComponentMapScope";
+import { useFlowLocale } from "./FlowLocaleScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
+import { useShowTip } from "./internal/TipsAndTools";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
@@ -23,23 +25,39 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const classes = useStyles();
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
+    
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
+        setRootElem(dom);
         if (dom) {
             setupFlowAxisMapping(dom, new FlowButtonContentAxis());
         }        
     }, [outerRef]);
+
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
-    const invokeAction = useInteractionInvoker(action);
+    
     const editMode = useEditMode();
+    const clickable = !editMode || (hover && ctrlKey);
+    const invokeAction = useInteractionInvoker(action);
+
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
-        if (!editMode || e.ctrlKey) {
+        if (clickable) {
             invokeAction();
         }
     }, [editMode, invokeAction]);
-    const clickable = !editMode || (hover && ctrlKey);
+    
+    const showTip = useShowTip();
+    const locale = useFlowLocale();
+    
+    useEffect(() => {
+        if (editMode && !clickable && rootElem && hover) {
+            return showTip(rootElem, locale.hold_ctrl_key_to_enable_interaction);
+        }
+    }, [!!editMode, clickable, rootElem, hover, locale]);
+
     return (
         <Component 
             ref={ref}
