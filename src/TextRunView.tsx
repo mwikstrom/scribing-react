@@ -11,7 +11,6 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
     const { node } = props;
     const { text, style: givenStyle } = node;
     const theme = useParagraphTheme();
-    const segments = useMemo(() => extractSegments(text), [text]);
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {
@@ -30,12 +29,7 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
             ref={ref}
             className={className}
             style={css}
-            children={segments.map(({key, value}) => (
-                <span
-                    key={key}
-                    children={value}
-                />
-            ))}
+            children={text}
         />
     );
 });
@@ -46,16 +40,3 @@ const useStyles = createUseFlowStyles("TextRun", ({palette}) => ({
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
 }));
-
-interface SegmentProps {
-    key: number;
-    value: string;
-}
-
-const extractSegments = (
-    text: string,
-): SegmentProps[] => {
-    const result: SegmentProps[] = [];
-    result.push({key: 0, value: text});
-    return result;
-};
