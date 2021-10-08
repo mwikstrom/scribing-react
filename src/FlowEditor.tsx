@@ -3,9 +3,6 @@ import {
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
-    ParagraphBreak,
-    ParagraphStyle, 
-    TargetOptions, 
     TextStyle
 } from "scribing";
 import { FlowView } from "./FlowView";
@@ -22,6 +19,7 @@ import { EditMode, EditModeScope } from "./EditModeScope";
 import { FormattingMarksScope } from "./FormattingMarksScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
+import { handleKeyEvent } from "./internal/key-handlers";
 
 /**
  * Component props for {@link FlowEditor}
@@ -127,154 +125,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Handle keyboard input
     const onKeyDown = useCallback((e: React.KeyboardEvent) => {
-        // Handle case when moving caret right to avoid ending up after a paragraph break
-        if (e.key === "ArrowRight" && state.selection && state.selection.isCollapsed) {
-            const newSelection = state.selection.transformRanges((range, options = {}) => {
-                const { target } = options;
-                if (target) {
-                    const cursor = target.peek(range.last);
-                    if (cursor.node instanceof ParagraphBreak) {
-                        return range.translate(1);
-                    }
-                }
-                return null;
-            }, { target: state.content });
-
-            if (newSelection) {
-                e.preventDefault();
-                applyChange(state.set("selection", newSelection));
-                return;
-            }
-        }
-
-        // Handle case when moving caret to end to avoid ending up after a paragraph break
-        if (e.key === "End" && !e.ctrlKey && !e.shiftKey && state.selection && state.selection.isCollapsed) {
-            const newSelection = state.selection.transformRanges((range, options = {}) => {
-                const { target } = options;
-                if (target) {
-                    const cursor = target.peek(range.last).findNodeForward(n => n instanceof ParagraphBreak);
-                    if (cursor?.node instanceof ParagraphBreak) {
-                        return range.translate(cursor.position - range.last);
-                    }
-                }
-                return null;
-            }, { target: state.content });
-
-            if (newSelection) {
-                e.preventDefault();
-                applyChange(state.set("selection", newSelection));
-                return;
-            }
-        }
-
-        // Handle case when moving caret left to avoid ending up after a paragraph break
-        if (e.key === "ArrowLeft" && state.selection && state.selection.isCollapsed) {
-            const newSelection = state.selection.transformRanges((range, options = {}) => {
-                const { target } = options;
-                if (target) {
-                    const cursor = target.peek(range.first);
-                    if (cursor.offset === 0 && cursor.moveToStartOfPreviousNode()?.node instanceof ParagraphBreak) {
-                        return range.translate(-1);
-                    }
-                }
-                return null;
-            }, { target: state.content });
-
-            if (newSelection) {
-                e.preventDefault();
-                applyChange(state.set("selection", newSelection));
-                return;
-            }
-        }
-
-        // Tab is used to increase/decreate list level
-        if (e.key === "Tab") {
-            e.preventDefault();
-
-            if (state.selection && !e.ctrlKey && !e.altKey) {
-                const delta = e.shiftKey ? -1 : 1;
-                const operation = state.selection.incrementListLevel(state.content, delta);
-                applyChange(operation);
-            }
-            
-            return;
-        }
-
-        // CTRL + 0 to CTRL + 9 changes paragraph style variant
-        if (e.key >= "0" && e.key <= "9" && e.ctrlKey && !e.shiftKey && !e.altKey) {
-            e.preventDefault();
-            if (state.selection) {
-                const variant = ([
-                    "normal",   // CTRL + 0
-                    "h1",       // CTRL + 1
-                    "h2",       // CTRL + 2
-                    "h3",       // CTRL + 3
-                    "h4",       // CTRL + 4
-                    "h5",       // CTRL + 5
-                    "h6",       // CTRL + 6
-                    "title",    // CTRL + 7
-                    "code",     // CTRL + 8
-                    "preamble", // CTRL + 9
-                ] as const)[e.key.charCodeAt(0) - "0".charCodeAt(0)];
-                const options: TargetOptions = {
-                    target: state.content,
-                    theme: state.theme,
-                };
-                const style = ParagraphStyle.empty.set("variant", variant);
-                const operation = state.selection.formatParagraph(style, options);
-                applyChange(operation);
-            }
-
-            return;
-        }
-
-        // ALT + 0 to ALT + 9 changes list marker kind
-        if (e.key >= "0" && e.key <= "9" && !e.ctrlKey && !e.shiftKey && e.altKey) {
-            e.preventDefault();
-            if (state.selection) {
-                const kind = ([
-                    "unordered",    // ALT + SHIFT + 0
-                    "ordered",      // ALT + SHIFT + 1
-                    "decimal",      // ALT + SHIFT + 2
-                    "lower-alpha",  // ALT + SHIFT + 3
-                    "upper-alpha",  // ALT + SHIFT + 4
-                    "lower-roman",  // ALT + SHIFT + 5
-                    "upper-roman",  // ALT + SHIFT + 6
-                    "disc",         // ALT + SHIFT + 7
-                    "circle",       // ALT + SHIFT + 8
-                    "square",       // ALT + SHIFT + 9
-                ] as const)[e.key.charCodeAt(0) - "0".charCodeAt(0)];
-                const options: TargetOptions = {
-                    target: state.content,
-                    theme: state.theme,
-                };
-                const style = ParagraphStyle.empty.set("listMarker", kind);
-                const operation = state.selection.formatParagraph(style, options);
-                applyChange(operation);
-            }
-
-            return;
-        }
-
-        // CTRL + SHIFT + 8 toggles formatting marks (just like in Word)
-        if (e.code === "Digit8" && e.ctrlKey && e.shiftKey && !e.altKey) {
-            e.preventDefault();
-            applyChange(state.toggleFormattingMarks());
-            return;
-        }
-
-        // CTRL + Z undoes last operation
-        if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey && !e.altKey) {
-            e.preventDefault();
-            applyChange(state.undo());
-            return;
-        }
-
-        // CTRL + Y redoes last undone operation
-        if (e.code === "KeyY" && e.ctrlKey && !e.shiftKey && !e.altKey) {
-            e.preventDefault();
-            applyChange(state.redo());
-            return;
+        const result = handleKeyEvent(e, state);
+        if (result) {
+            applyChange(result);
         }
     }, [state]);
     
