@@ -1,4 +1,5 @@
 import { VirtualElement } from "@popperjs/core";
+import clsx from "clsx";
 import React, { createContext, FC, useContext, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
 import { createUseFlowStyles } from "./JssTheming";
@@ -87,10 +88,11 @@ const Tooltip: FC<TooltipProps> = props => {
         ],
     });
     const classes = useStyles();
+    const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);
     return (
         <div ref={setPopper} className={classes.root} style={styles.popper} {...attributes.popper}>
             {message}
-            <div ref={setArrow} className={classes.arrow} style={styles.arrow}/>
+            <div ref={setArrow} className={arrowClassName} style={styles.arrow}/>
         </div>
     );
 };
@@ -113,7 +115,6 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
         background: "inherit",
         "&::before": {
             position: "absolute",
-            bottom: -4,
             width: 8,
             height: 8,
             visibility: "visible",
@@ -121,5 +122,22 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
             transform: "rotate(45deg)",
             background: "inherit",
         }
-    }
+    },
+    arrowTop: {},
+    arrowBottom: {
+        top: -8,
+    },
 }));
+
+const getArrowPlacementRule = (
+    attributes: Partial<Record<string, Record<string, string>>>,
+): "arrowTop" | "arrowBottom" => {
+    const { popper } = attributes;
+    if (popper) {
+        const { "data-popper-placement": placement } = popper;
+        if (placement === "bottom") {
+            return "arrowBottom";
+        }
+    }
+    return "arrowTop";
+};
