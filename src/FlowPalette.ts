@@ -9,6 +9,8 @@ export interface FlowPalette {
     information: string;
     success: string;
     subtle: string;
+    tooltip: string;
+    tooltipText: string;
 }
 
 /** @public */
@@ -22,4 +24,6 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     information: "#0277bd",
     success: "#2e7d32",
     subtle: "#9e9e9e",
+    tooltip: "#151515",
+    tooltipText: "#eaeaea",
 });
