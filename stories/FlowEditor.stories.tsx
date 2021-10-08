@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
     useEffect(() => {
         const timerId = setTimeout(
             () => setJsonState(JSON.stringify(FlowEditorState.dataType.toJsonValue(state.toData()), undefined, " ")),
-            100
+            250
         );
         return () => clearTimeout(timerId);
     }, [state]);
