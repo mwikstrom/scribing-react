@@ -1,9 +1,9 @@
 /** @public */
 export interface FlowLocale {
-    holdCtrlKeyToEnableLink: string;
+    hold_ctrl_key_to_enable_interaction: string;
 }
 
 /** @public */
 export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
-    holdCtrlKeyToEnableLink: "Hold CTRL key to enable link",
+    hold_ctrl_key_to_enable_interaction: "Hold CTRL key to enable interaction",
 });

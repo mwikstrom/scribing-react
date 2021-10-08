@@ -52,7 +52,7 @@ export const LinkView: FC<LinkViewProps> = props => {
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            title={editMode && !clickable ? locale.holdCtrlKeyToEnableLink : undefined}
+            title={editMode && !clickable ? locale.hold_ctrl_key_to_enable_interaction : undefined}
             className={clsx(
                 classes.root,
                 editMode && classes.editable,
