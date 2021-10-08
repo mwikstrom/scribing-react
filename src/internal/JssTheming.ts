@@ -1,4 +1,5 @@
 import { Classes } from "jss";
+import { useMemo } from "react";
 import { createUseStyles, Styles } from "react-jss";
 import { FlowPalette } from "../FlowPalette";
 import { useFlowPalette } from "../FlowPaletteScope";
@@ -16,9 +17,9 @@ export function createUseFlowStyles<C extends string>(
 ): () => Classes<C> {
     const generateId = makeJssId(component);
     const useStyles = createUseStyles<C, unknown, JssFlowTheme>(styles, { generateId });
-    return () => {
+    return function useFlowStyles() {
         const palette = useFlowPalette();
-        const theme: JssFlowTheme = { palette };
+        const theme = useMemo<JssFlowTheme>(() => ({ palette }), [palette]);
         return useStyles({ theme });
     };
 }
