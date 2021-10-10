@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
     FlowEditorState, 
     FlowOperation, 
@@ -21,6 +21,7 @@ import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
 import { TipsAndToolsScope } from "./internal/TipsAndTools";
+import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 
 /**
  * Component props for {@link FlowEditor}
@@ -98,13 +99,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [autoFocus, editingHost]);
 
     // Handle new state or operation
+    const pendingOperation = useRef<PendingOperation | null>(null);
+    const commitPendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const applyChange = useCallback((result: FlowOperation | FlowEditorState | null) => {
+        let base = state;
         let after: FlowEditorState;
         let operation: FlowOperation | null;
 
+        if (pendingOperation.current !== null) {
+            const complete = pendingOperation.current.complete(state);
+            if (complete !== null) {
+                base = base.applyMine(complete);
+            }
+
+            pendingOperation.current = null;
+            if (commitPendingTimeout.current !== null) {
+                clearTimeout(commitPendingTimeout.current);
+            }
+        }
+
         if (result instanceof FlowOperation) {
             operation = result;
-            after = state.applyMine(operation);
+            after = base.applyMine(operation);
         } else if (result instanceof FlowEditorState) {
             operation = null;
             after = result;
@@ -134,19 +150,32 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Handle native "beforeinput"
     useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
         const { inputType } = event;
-        event.preventDefault();
 
-        const inputHandler = getInputHandler(inputType);
-        if (!inputHandler) {
-            console.warn(`Unsupported input type: ${inputType}`);
-            return;
+        try {
+            const inputHandler = getInputHandler(inputType);
+            if (!inputHandler) {
+                console.warn(`Unsupported input type: ${inputType}`);
+                return;
+            }
+
+            // It's safe to assume that editing host is not null, because otherwise
+            // this event handler wouldn't be invoked.
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const result = inputHandler(event, editingHost!, state, pendingOperation.current);
+
+            if (result instanceof PendingOperation) {
+                if (commitPendingTimeout.current !== null) {
+                    clearTimeout(commitPendingTimeout.current);
+                }
+                commitPendingTimeout.current = setTimeout(() => applyChange(null), 250);
+            } else {
+                event.preventDefault();
+                applyChange(result);
+            }
+        } catch (err) {
+            event.preventDefault();
+            console.error("Input handler threw exception:", err);
         }
-
-        // It's safe to assume that editing host is not null, because otherwise
-        // this event handler wouldn't be invoked.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const result = inputHandler(event, editingHost!, state);
-        applyChange(result);
     }, [state, editingHost, applyChange]);
 
     // Handle native "selectionchange"

@@ -1,8 +1,11 @@
+import { MutableRefObject } from "react";
 import { FlowEditorState, FlowOperation } from "scribing";
+import { PendingOperation } from "./PendingOperation";
 
 /** @internal */
 export type InputHandler = (
     event: InputEvent,
     host: HTMLElement,
     state: FlowEditorState,
-) => FlowOperation | FlowEditorState | null;
+    pending: PendingOperation | null,
+) => FlowOperation | FlowEditorState | PendingOperation | null;
