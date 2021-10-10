@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- ctrl click link does not work anymore
 - escape to toggle tooltips
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error

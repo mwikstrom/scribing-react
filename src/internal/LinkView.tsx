@@ -43,11 +43,11 @@ export const LinkView: FC<LinkViewProps> = props => {
     const onClick = useCallback((e: React.MouseEvent) => {        
         if (!clickable) {
             e.preventDefault();
-        } else if (!href) {
+        } else if (!href || editMode) {
             e.preventDefault();
             invokeAction();
         }
-    }, [href, clickable, invokeAction]);
+    }, [href, clickable, editMode, invokeAction]);
     const showTip = useShowTip();
     const locale = useFlowLocale();
     useEffect(() => {
