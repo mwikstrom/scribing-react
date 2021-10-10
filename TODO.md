@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
-- caret style must be applied to pending op
+- pending must be applied before key handler
+- pending must transform applied op
 - escape to toggle tooltips
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error
