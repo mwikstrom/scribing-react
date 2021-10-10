@@ -17,6 +17,11 @@ export const insertText: InputHandler = (event, host, state, pending) => {
     // and also because it won't cause spell checker errors to flicker (since the
     // change is handled natively)
 
+    if (!state.caret.isEmpty) {
+        // Caret style is not empty, so this is a styled insert.
+        return defaultHandler();
+    }
+
     const { data } = event;
     if (typeof data !== "string" || !/^[\p{L}\p{N}\p{P} ]+$/u.test(data)) {
         // Insertion is not "basic text" -- cannot return pending operation
