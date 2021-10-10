@@ -102,16 +102,23 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const pendingOperation = useRef<PendingOperation | null>(null);
     const completePendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    // Keep track of undo stack shall be merged
+    const shouldMergeUndo = useRef(false);
+    const stopMergeUndoTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     // Handle new state or operation
     const applyChange = useCallback((result: FlowOperation | FlowEditorState | null) => {
+        const { current: mergeUndo } = shouldMergeUndo;
         let base = state;
         let after: FlowEditorState;
         let operation: FlowOperation | null;
+        let didApplyMine = false;
 
         if (pendingOperation.current !== null) {
             const complete = pendingOperation.current.complete(state, editingHost);            
             if (complete !== null) {
-                base = base.applyMine(complete);
+                base = base.applyMine(complete, { mergeUndo });
+                didApplyMine = true;
             }
 
             pendingOperation.current = null;
@@ -122,7 +129,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         if (result instanceof FlowOperation) {
             operation = result;
-            after = base.applyMine(operation);
+            after = base.applyMine(operation, { mergeUndo });
+            didApplyMine = true;
         } else if (result instanceof FlowEditorState) {
             operation = null;
             after = result;
@@ -140,6 +148,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         setState(after);
+
+        if (didApplyMine) {
+            shouldMergeUndo.current = true;
+
+            if (stopMergeUndoTimeout.current !== null) {
+                clearTimeout(stopMergeUndoTimeout.current);
+            }
+
+            // Keep merging undo stack until input has been idle for half a second
+            setTimeout(() => shouldMergeUndo.current = false, 500);
+        }
     }, [state, editingHost, onStateChange]);
 
     // Handle keyboard input

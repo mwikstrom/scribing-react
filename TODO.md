@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- caret style must be applied to pending op
 - escape to toggle tooltips
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error
@@ -15,7 +16,6 @@ SCRIBING TODO
 - Formatting paragraph break with zero opacity is not generally a good idea
 - MultiFlowSelection
 - Paratype: use actual name instead of "freezing"
-- Merge basic ops in undo/redo stack before slicing them out...
 - React jest snapshots for view comps
 - Review react exports
 - MUI lib
