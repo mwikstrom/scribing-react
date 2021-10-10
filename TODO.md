@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- toggle formatting marks key does not work anymore
 - ctrl click link does not work anymore
 - escape to toggle tooltips
 - dynamic text: states: not ready + error

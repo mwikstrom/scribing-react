@@ -1,4 +1,3 @@
-import { KeyboardEvent } from "react";
 import { FlowEditorState, FlowOperation } from "scribing";
 
 /** @internal */

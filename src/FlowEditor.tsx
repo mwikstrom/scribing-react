@@ -125,8 +125,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [state, onStateChange]);
 
     // Handle keyboard input
-    const onKeyDown = useCallback((e: React.KeyboardEvent) => {
-        const result = handleKeyEvent(e, state);
+    useNativeEventHandler(editingHost, "keydown", (event: KeyboardEvent) => {
+        const result = handleKeyEvent(event, state);
         if (result) {
             applyChange(result);
         }
@@ -208,7 +208,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             style={style}
             contentEditable={editMode !== false}
             suppressContentEditableWarning={true}
-            onKeyDown={onKeyDown}
             children={
                 <TipsAndToolsScope>
                     <EditModeScope mode={editMode}>
