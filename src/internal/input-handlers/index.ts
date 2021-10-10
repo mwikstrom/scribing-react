@@ -1,6 +1,7 @@
 import { deleteContent } from "./delete-content";
 import { InputHandler } from "./InputHandler";
 import { insertContent } from "./insert-content";
+import { insertText } from "./insert-text";
 import { toggleTextStyle } from "./toggle-text-style";
 
 /** @internal */
@@ -25,6 +26,6 @@ const HANDLERS: Partial<Record<string, InputHandler>> = {
     insertLineBreak: insertContent,
     insertParagraph: insertContent,
     insertReplacementText: insertContent,
-    insertText: insertContent,
+    insertText: insertText,
     insertTranspose: insertContent,
 };

@@ -61,7 +61,7 @@
     "react-test-renderer": "^16.14.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.56.3",
-    "scribing": "^0.4.30",
+    "scribing": "^0.4.31",
     "scripthost": "^0.3.5",
     "scripthost-browser": "^0.1.8",
     "scripthost-core": "^0.2.4",
@@ -72,17 +72,17 @@
     "typescript": "^4.3.5"
   },
   "peerDependencies": {
+    "@popperjs/core": "2.x",
     "clsx": "1.x",
     "paratype": "0.x",
     "react": "16.x || 17.x",
     "react-dom": "16.x || 17.x",
     "react-jss": "10.x",
+    "react-popper": "2.x",
     "scribing": "0.x",
     "scripthost": "0.x",
     "scripthost-browser": "0.x",
     "scripthost-core": "0.x",
-    "scripthost-react": "0.x",
-    "@popperjs/core": "2.x",
-    "react-popper": "2.x"
+    "scripthost-react": "0.x"
   }
 }

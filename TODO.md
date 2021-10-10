@@ -15,7 +15,6 @@ SCRIBING TODO
 - Formatting paragraph break with zero opacity is not generally a good idea
 - MultiFlowSelection
 - Paratype: use actual name instead of "freezing"
-- Perf: Handle basic text input with pass-through
 - Merge basic ops in undo/redo stack before slicing them out...
 - React jest snapshots for view comps
 - Review react exports

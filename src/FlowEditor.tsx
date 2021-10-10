@@ -48,9 +48,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const {
         state: controlledState,
         defaultState = FlowEditorState.empty,
-        onStateChange,
         autoFocus,
         style,
+        onStateChange,
     } = props;
     
     // Setup controlled/uncontrolled state
@@ -64,12 +64,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Keep track of editing host element
     const [editingHost, setEditingHostCore] = useState<HTMLElement | null>(null);
-    const setEditingHost = (elem: HTMLElement | null) => {
+    const setEditingHost = useCallback((elem: HTMLElement | null) => {
         setEditingHostCore(elem);
         if (elem) {
             setupEditingHostMapping(elem, state);
         }
-    };
+    }, [setEditingHostCore]);
 
     // Keep track of the currently active element
     const activeElement = useActiveElement();
@@ -98,23 +98,25 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [autoFocus, editingHost]);
 
-    // Handle new state or operation
+    // Keep track of pending operation
     const pendingOperation = useRef<PendingOperation | null>(null);
-    const commitPendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const completePendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Handle new state or operation
     const applyChange = useCallback((result: FlowOperation | FlowEditorState | null) => {
         let base = state;
         let after: FlowEditorState;
         let operation: FlowOperation | null;
 
         if (pendingOperation.current !== null) {
-            const complete = pendingOperation.current.complete(state);
+            const complete = pendingOperation.current.complete(state, editingHost);            
             if (complete !== null) {
                 base = base.applyMine(complete);
             }
 
             pendingOperation.current = null;
-            if (commitPendingTimeout.current !== null) {
-                clearTimeout(commitPendingTimeout.current);
+            if (completePendingTimeout.current !== null) {
+                clearTimeout(completePendingTimeout.current);
             }
         }
 
@@ -125,7 +127,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             operation = null;
             after = result;
         } else {
-            return;
+            operation = null;
+            after = base;
         }
 
         if (state.equals(after)) {
@@ -137,7 +140,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         setState(after);
-    }, [state, onStateChange]);
+    }, [state, editingHost, onStateChange]);
 
     // Handle keyboard input
     useNativeEventHandler(editingHost, "keydown", (event: KeyboardEvent) => {
@@ -164,10 +167,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             const result = inputHandler(event, editingHost!, state, pendingOperation.current);
 
             if (result instanceof PendingOperation) {
-                if (commitPendingTimeout.current !== null) {
-                    clearTimeout(commitPendingTimeout.current);
+                pendingOperation.current = result;
+
+                if (completePendingTimeout.current !== null) {
+                    clearTimeout(completePendingTimeout.current);
                 }
-                commitPendingTimeout.current = setTimeout(() => applyChange(null), 250);
+
+                completePendingTimeout.current = setTimeout(() => applyChange(null), 500);
             } else {
                 event.preventDefault();
                 applyChange(result);
@@ -182,7 +188,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useNativeEventHandler(document, "selectionchange", () => {
         const domSelection = document.getSelection();
 
-        if (!editingHost) {
+        if (!editingHost || pendingOperation.current !== null) {
             return;
         }
 
@@ -226,9 +232,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
     }, [editingHost, state]);
-    
-    const classes = useStyles();
 
+    const classes = useStyles();
     return (
         <div 
             ref={setEditingHost}
