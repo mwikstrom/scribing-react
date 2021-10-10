@@ -61,8 +61,14 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultValue: defaultState,
     });
 
-    // Setup ref for the editing host element
-    const [editingHost, setEditingHost] = useState<HTMLElement | null>(null);
+    // Keep track of editing host element
+    const [editingHost, setEditingHostCore] = useState<HTMLElement | null>(null);
+    const setEditingHost = (elem: HTMLElement | null) => {
+        setEditingHostCore(elem);
+        if (elem) {
+            setupEditingHostMapping(elem, state);
+        }
+    };
 
     // Keep track of the currently active element
     const activeElement = useActiveElement();
@@ -83,13 +89,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return "inactive";
         }
     }, [activeElement, editingHost, documentHasFocus]);
-
-    // Keep editing host mapping in sync
-    useLayoutEffect(() => {
-        if (editingHost) {
-            setupEditingHostMapping(editingHost, state);
-        }
-    }, [editingHost, state]);
 
     // Apply auto focus
     useEffect(() => {
