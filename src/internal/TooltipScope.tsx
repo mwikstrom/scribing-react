@@ -1,9 +1,9 @@
 import { VirtualElement } from "@popperjs/core";
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import { FlowSelection } from "scribing";
+import { FlowEditorCommands } from "./FlowEditorCommands";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
-import { Tooltip, TooltipProps } from "./Tooltip";
-import { TooltipManager } from "./TooltipManager";
+import { Tooltip } from "./Tooltip";
+import { TooltipData, TooltipManager } from "./TooltipManager";
 
 /** @internal */
 export interface TooltipScopeProps {
@@ -14,17 +14,26 @@ export interface TooltipScopeProps {
 /** @internal */
 export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) => {
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
-    const [active, setActive] = useState<TooltipProps | null>(manager.current || null);
+    const [active, setActive] = useState<TooltipData | null>(manager.current || null);
+    const [display, setDisplay] = useState<TooltipData | null>(active);
+    
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape") {
             setActive(null);
         }
     }, []);
+    
     useEffect(() => manager.sub(setActive), [manager]);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => setDisplay(active), 250);
+        return () => clearTimeout(timeout);
+    }, [active]);
+
     return (
         <TooltipContext.Provider value={manager}>
             {children}
-            {active && <Tooltip {...active}/>}
+            {display && <Tooltip active={display === active} {...display}/>}
         </TooltipContext.Provider>
     );
 };
@@ -74,12 +83,11 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     };
 }
 
-function showTools(this: TooltipSource, reference: VirtualElement, selection: FlowSelection): () => void {
+function showTools(this: TooltipSource, reference: VirtualElement, editor: FlowEditorCommands): () => void {
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        const text = `TOOLS @ ${JSON.stringify(selection.toJsonValue())}`;
-        manager.addOrUpdate(key, { reference, messages: [{ key, text }] });
+        manager.addOrUpdate(key, { reference, editor });
     }
     return () => {
         if (active) {

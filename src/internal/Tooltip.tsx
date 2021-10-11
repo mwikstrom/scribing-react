@@ -2,13 +2,20 @@ import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
 import React, { FC, useState } from "react";
 import { usePopper } from "react-popper";
+import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
+import { TooltipDivider } from "./TooltipDivider";
+import { TooltipMessage } from "./TooltipMessage";
+import { TooltipMessageList } from "./TooltipMessageList";
+import { TooltipToolbar } from "./TooltipToolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
 
 /** @internal */
 export interface TooltipProps {
     reference: VirtualElement,
-    messages: readonly TooltipMessageProps[];
+    active: boolean;
+    messages?: readonly TooltipMessageProps[];
+    editor?: FlowEditorCommands | null;
 }
 
 /** @internal */
@@ -19,7 +26,7 @@ export interface TooltipMessageProps {
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, messages } = props;
+    const { reference, active, messages = [], editor = null } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const { styles, attributes } = usePopper(reference, popper, {
@@ -33,19 +40,31 @@ export const Tooltip: FC<TooltipProps> = props => {
     const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);
     const popperProps = {
         ...attributes.popper,
-        className: classes.root,
+        className: clsx(classes.root, active && classes.active), 
         contentEditable: false,
         style: styles.popper,
     };
     return (
         <div ref={setPopper} {...popperProps}>
-            {messages.map(msg => <div key={msg.key}>{msg.text}</div>)}
+            {editor && (
+                <TooltipToolbar editor={editor}/>
+            )}
+            {editor && messages.length > 0 && (
+                <TooltipDivider/>
+            )}
+            {messages.length > 0 && (
+                <TooltipMessageList>
+                    {messages.map(msg => (
+                        <TooltipMessage {...msg}/>
+                    ))}
+                </TooltipMessageList>
+            )}            
             <div ref={setArrow} className={arrowClassName} style={styles.arrow}/>
         </div>
     );
 };
 
-const useStyles = createUseFlowStyles("ToolPopper", ({palette}) => ({
+const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
     root: {
         display: "inline-block",
         backgroundColor: palette.tooltip,
@@ -54,7 +73,12 @@ const useStyles = createUseFlowStyles("ToolPopper", ({palette}) => ({
         fontSize: "0.75rem",
         borderRadius: 4,
         padding: "0.5rem 1rem",
-        userSelect: "none"
+        userSelect: "none",
+        opacity: 0,
+        transition: "opacity ease-in-out 0.1s",
+    },
+    active: {
+        opacity: 1,
     },
     arrow: {
         position: "absolute",

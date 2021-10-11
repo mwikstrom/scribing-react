@@ -23,6 +23,7 @@ import { handleKeyEvent } from "./internal/key-handlers";
 import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 import { TooltipManager } from "./internal/TooltipManager";
+import { FlowEditorCommands } from "./internal/FlowEditorCommands";
 
 /**
  * Component props for {@link FlowEditor}
@@ -108,7 +109,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const stopMergeUndoTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Handle new state or operation
-    const applyChange = useCallback((result: FlowOperation | FlowEditorState | null) => {
+    const applyChange = useCallback((result: FlowOperation | FlowEditorState | null): FlowEditorState => {
         const { current: mergeUndo } = shouldMergeUndo;
         let base = state;
         let after: FlowEditorState;
@@ -141,7 +142,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         if (state.equals(after)) {
-            return;
+            return state;
         }
         
         if (onStateChange) {
@@ -160,6 +161,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             // Keep merging undo stack until input has been idle for half a second
             setTimeout(() => shouldMergeUndo.current = false, 500);
         }
+
+        return after;
     }, [state, editingHost, onStateChange]);
 
     // Handle keyboard input
@@ -263,10 +266,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             const range = domSelection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             if (rect.height > 0 || rect.width > 0) {
-                return showTools(range, state.selection);
+                return showTools(range, new FlowEditorCommands(state, applyChange));
             }
         }            
-    }, [state.selection, documentHasFocus]);
+    }, [state, documentHasFocus]);
 
     const classes = useStyles();
     return (

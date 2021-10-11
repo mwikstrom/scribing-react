@@ -3,10 +3,13 @@ import { TooltipMessageProps, TooltipProps } from "./Tooltip";
 import { PubSub } from "./utils/PubSub";
 
 /** @internal */
-export class TooltipManager extends PubSub<TooltipProps | null> {
-    #active = new Map<number, TooltipProps>();
+export type TooltipData = Omit<TooltipProps, "active">;
 
-    addOrUpdate(key: number, props: TooltipProps): void {
+/** @internal */
+export class TooltipManager extends PubSub<TooltipData | null> {
+    #active = new Map<number, TooltipData>();
+
+    addOrUpdate(key: number, props: TooltipData): void {
         const existing = this.#active.get(key);
         if (!areEqualTooltips(props, existing)) {
             this.#active.set(key, props);
@@ -68,17 +71,18 @@ const mergeRects = (first: DOMRect, second: DOMRect): DOMRect => new DOMRect(
     Math.max(first.height, second.height)
 );
 
-const createMergedTooltip = (array: readonly TooltipProps[]): TooltipProps => ({
+const createMergedTooltip = (array: readonly TooltipData[]): TooltipData => ({
     reference: {
         getBoundingClientRect() {
             const rects = array.map(item => item.reference.getBoundingClientRect());
             return rects.slice(1).reduce((prev, next) => mergeRects(prev, next), rects[0]);
         },
     },
-    messages: array.flatMap(item => item.messages),
+    messages: array.flatMap(item => item.messages || []),
+    editor: array.filter(item => !!item.editor).map(item => item.editor)[0] || null,
 });
 
-const areEqualTooltips = (first: TooltipProps, second: TooltipProps | undefined): boolean => {
+const areEqualTooltips = (first: TooltipData, second: TooltipData | undefined): boolean => {
     if (second === void(0)) {
         return false;
     }
@@ -89,7 +93,8 @@ const areEqualTooltips = (first: TooltipProps, second: TooltipProps | undefined)
 
     return (
         areEqualVirtualElements(first.reference, second.reference) &&
-        areEqualArrays(first.messages, second.messages, areEqualTooltipMessages)
+        areEqualArrays(first.messages || [], second.messages || [], areEqualTooltipMessages) &&
+        first.editor === second.editor
     );
 };
 
