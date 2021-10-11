@@ -9,12 +9,12 @@ import { SYSTEM_FONT } from "./utils/system-font";
 /** @internal */
 export const TipsAndToolsScope: FC = ({children}) => {
     const manager = useMemo(() => new TipsAndToolsManager(), []);
-    const [active, setActive] = useState<readonly TooltipProps[]>([]);
+    const [active, setActive] = useState<TooltipProps | null>(manager.current || null);
     useEffect(() => manager.sub(setActive), [manager]);
     return (
         <TipsAndToolsContext.Provider value={manager}>
             {children}
-            {active.map(props => <Tooltip {...props}/>)}
+            {active && <Tooltip {...active}/>}
         </TipsAndToolsContext.Provider>
     );
 };
@@ -52,26 +52,33 @@ let sourceKeyCounter = 0;
 const useTipsAndToolsManager = () => useContext(TipsAndToolsContext);
 const TipsAndToolsContext = createContext<TipsAndToolsManager | null>(null);
 
-class TipsAndToolsManager extends PubSub<readonly TooltipProps[]> {
+class TipsAndToolsManager extends PubSub<TooltipProps | null> {
     #active = new Map<number, TooltipProps>();
 
     addOrUpdate(key: number, reference: VirtualElement, message: string): void {
         const existing = this.#active.get(key);
         if (!existing || (existing.reference !== reference || existing.message !== message)) {
-            this.#active.set(key, Object.freeze({ key, reference, message }));
-            this.pub(Array.from(this.#active.values()));
+            this.#active.set(key, Object.freeze({ reference, message }));
+            this.#notify();
         }
     }
 
     remove(key: number): void {
         if (this.#active.delete(key)) {
-            this.pub(Array.from(this.#active.values()));
+            this.#notify();
         }
+    }
+
+    #notify() {
+        let last: TooltipProps | null = null;
+        for (const value of this.#active.values()) {
+            last = value;
+        }
+        this.pub(last);
     }
 }
 
 interface TooltipProps {
-    key: number;
     reference: VirtualElement,
     message: string;
 }
