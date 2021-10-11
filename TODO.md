@@ -4,7 +4,6 @@ SCRIBING TODO
 - pending must transform applied op
 - pending must transform selection
 - selection is broken after applying text/paragraph style
-- escape to toggle tooltips
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error
 - dynamic button: prevent default mouse down when ctrl clicking

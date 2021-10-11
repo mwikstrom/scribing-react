@@ -1,6 +1,7 @@
 import { VirtualElement } from "@popperjs/core";
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { FlowSelection } from "scribing";
+import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { Tooltip, TooltipProps } from "./Tooltip";
 import { TooltipManager } from "./TooltipManager";
 
@@ -14,6 +15,11 @@ export interface TooltipScopeProps {
 export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) => {
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
     const [active, setActive] = useState<TooltipProps | null>(manager.current || null);
+    useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+            setActive(null);
+        }
+    }, []);
     useEffect(() => manager.sub(setActive), [manager]);
     return (
         <TooltipContext.Provider value={manager}>
