@@ -2,6 +2,7 @@ SCRIBING TODO
 =============
 - pending must be applied before key handler
 - pending must transform applied op
+- pending must transform selection
 - escape to toggle tooltips
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error
