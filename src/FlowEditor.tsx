@@ -20,7 +20,7 @@ import { FormattingMarksScope } from "./FormattingMarksScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
-import { TipsAndToolsScope } from "./internal/TipsAndTools";
+import { TooltipScope } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 
 /**
@@ -261,13 +261,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             contentEditable={editMode !== false}
             suppressContentEditableWarning={true}
             children={
-                <TipsAndToolsScope>
+                <TooltipScope>
                     <EditModeScope mode={editMode}>
                         <FormattingMarksScope show={state.formattingMarks}>
                             <FlowView content={state.content}/>
                         </FormattingMarksScope>
                     </EditModeScope>
-                </TipsAndToolsScope>
+                </TooltipScope>
             }
         />
     );

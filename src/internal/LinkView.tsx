@@ -10,7 +10,7 @@ import { useCtrlKey } from "./hooks/use-ctrl-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "../EditModeScope";
-import { useShowTip } from "./TipsAndTools";
+import { useShowTip } from "./TooltipScope";
 import { useFlowComponentMap } from "../FlowComponentMapScope";
 
 /** @internal */

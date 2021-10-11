@@ -14,7 +14,7 @@ import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
-import { useShowTip } from "./internal/TipsAndTools";
+import { useShowTip } from "./internal/TooltipScope";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
