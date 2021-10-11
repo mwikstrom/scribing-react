@@ -27,7 +27,9 @@ export const TooltipToolbar: FC<TooltipToolbarProps> = ({editor}) => {
 };
 
 const useStyles = createUseFlowStyles("TooltipToolbar", () => ({
-    root: {},
+    root: {
+        padding: 4,
+    },
 }));
 
 const BoldButton: FC<TooltipToolbarProps> = ({editor}) => (

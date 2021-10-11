@@ -9,8 +9,7 @@ export const TooltipDivider: FC = () => {
 
 const useStyles = createUseFlowStyles("TooltipDivider", ({palette}) => ({
     root: {
-        marginTop: 4,
-        marginBottom: 4,
+        margin: "4px 8px",
         height: 1,
         backgroundColor: palette.tooltipText,
         opacity: 0.5,

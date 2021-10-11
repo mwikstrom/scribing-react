@@ -8,5 +8,7 @@ export const TooltipMessageList: FC = ({children}) => {
 };
 
 const useStyles = createUseFlowStyles("TooltipMessageList", () => ({
-    root: {},
+    root: {
+        padding: "0.5rem 1rem",
+    },
 }));

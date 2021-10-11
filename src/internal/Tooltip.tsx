@@ -72,7 +72,6 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
         fontFamily: SYSTEM_FONT,
         fontSize: "0.75rem",
         borderRadius: 4,
-        padding: "0.5rem 1rem",
         userSelect: "none",
         opacity: 0,
         transition: "opacity ease-in-out 0.1s",

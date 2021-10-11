@@ -26,6 +26,10 @@ const useStyles = createUseFlowStyles("TooltipToolButton", ({palette}) => ({
         display: "inline-block",
         padding: 4,
         cursor: "pointer",
+        width: 24,
+        height: 24,
+        borderRadius: 2,
+        margin: 1,
     },
     checked: {
         color: palette.activeToolText,
