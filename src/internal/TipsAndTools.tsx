@@ -9,12 +9,12 @@ import { SYSTEM_FONT } from "./utils/system-font";
 /** @internal */
 export const TipsAndToolsScope: FC = ({children}) => {
     const manager = useMemo(() => new TipsAndToolsManager(), []);
-    const [active, setActive] = useState<TooltipProps | null>(manager.current || null);
+    const [active, setActive] = useState<ToolPopperProps | null>(manager.current || null);
     useEffect(() => manager.sub(setActive), [manager]);
     return (
         <TipsAndToolsContext.Provider value={manager}>
             {children}
-            {active && <Tooltip {...active}/>}
+            {active && <ToolPopper {...active}/>}
         </TipsAndToolsContext.Provider>
     );
 };
@@ -52,8 +52,8 @@ let sourceKeyCounter = 0;
 const useTipsAndToolsManager = () => useContext(TipsAndToolsContext);
 const TipsAndToolsContext = createContext<TipsAndToolsManager | null>(null);
 
-class TipsAndToolsManager extends PubSub<TooltipProps | null> {
-    #active = new Map<number, TooltipProps>();
+class TipsAndToolsManager extends PubSub<ToolPopperProps | null> {
+    #active = new Map<number, ToolPopperProps>();
 
     addOrUpdate(key: number, reference: VirtualElement, message: string): void {
         const existing = this.#active.get(key);
@@ -70,7 +70,7 @@ class TipsAndToolsManager extends PubSub<TooltipProps | null> {
     }
 
     #notify() {
-        let last: TooltipProps | null = null;
+        let last: ToolPopperProps | null = null;
         for (const value of this.#active.values()) {
             last = value;
         }
@@ -78,12 +78,12 @@ class TipsAndToolsManager extends PubSub<TooltipProps | null> {
     }
 }
 
-interface TooltipProps {
+interface ToolPopperProps {
     reference: VirtualElement,
     message: string;
 }
 
-const Tooltip: FC<TooltipProps> = props => {
+const ToolPopper: FC<ToolPopperProps> = props => {
     const { reference, message } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
@@ -104,7 +104,7 @@ const Tooltip: FC<TooltipProps> = props => {
     );
 };
 
-const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
+const useStyles = createUseFlowStyles("ToolPopper", ({palette}) => ({
     root: {
         display: "inline-block",
         backgroundColor: palette.tooltip,
