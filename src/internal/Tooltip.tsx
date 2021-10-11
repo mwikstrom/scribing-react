@@ -8,12 +8,18 @@ import { SYSTEM_FONT } from "./utils/system-font";
 /** @internal */
 export interface TooltipProps {
     reference: VirtualElement,
-    message: string;
+    messages: readonly TooltipMessageProps[];
+}
+
+/** @internal */
+export interface TooltipMessageProps {
+    key: number | string;
+    text: string;
 }
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, message } = props;
+    const { reference, messages } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const { styles, attributes } = usePopper(reference, popper, {
@@ -25,9 +31,15 @@ export const Tooltip: FC<TooltipProps> = props => {
     });
     const classes = useStyles();
     const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);
+    const popperProps = {
+        ...attributes.popper,
+        className: classes.root,
+        contentEditable: false,
+        style: styles.popper,
+    };
     return (
-        <div ref={setPopper} className={classes.root} style={styles.popper} {...attributes.popper}>
-            {message}
+        <div ref={setPopper} {...popperProps}>
+            {messages.map(msg => <div key={msg.key}>{msg.text}</div>)}
             <div ref={setArrow} className={arrowClassName} style={styles.arrow}/>
         </div>
     );
@@ -42,6 +54,7 @@ const useStyles = createUseFlowStyles("ToolPopper", ({palette}) => ({
         fontSize: "0.75rem",
         borderRadius: 4,
         padding: "0.5rem 1rem",
+        userSelect: "none"
     },
     arrow: {
         position: "absolute",

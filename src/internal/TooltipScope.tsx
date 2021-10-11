@@ -56,7 +56,7 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        manager.addOrUpdate(key, reference, message);
+        manager.addOrUpdate(key, { reference, messages: [{ key, text: message }] });
     }
     return () => {
         if (active) {
@@ -72,7 +72,8 @@ function showTools(this: TooltipSource, reference: VirtualElement, selection: Fl
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        manager.addOrUpdate(key, reference, `TOOLS @ ${JSON.stringify(selection.toJsonValue())}`);
+        const text = `TOOLS @ ${JSON.stringify(selection.toJsonValue())}`;
+        manager.addOrUpdate(key, { reference, messages: [{ key, text }] });
     }
     return () => {
         if (active) {
