@@ -11,6 +11,8 @@ export interface FlowPalette {
     subtle: string;
     tooltip: string;
     tooltipText: string;
+    activeTool: string;
+    activeToolText: string;
 }
 
 /** @public */
@@ -26,4 +28,6 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     subtle: "#9e9e9e",
     tooltip: "#151515",
     tooltipText: "#eaeaea",
+    activeTool: "#333333",
+    activeToolText: "#ffffff",
 });
