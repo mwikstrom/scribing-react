@@ -20,16 +20,16 @@ export const TooltipScope: FC = ({children}) => {
 export function useShowTip(): OmitThisParameter<typeof showTip> {
     const manager = useTipsAndToolsManager();
     const key = useMemo(() => ++sourceKeyCounter, []);
-    const source = useMemo<TipsAndToolsSource>(() => ({ manager, key }), [manager, key]);
+    const source = useMemo<TooltipSource>(() => ({ manager, key }), [manager, key]);
     return showTip.bind(source);
 }
 
-interface TipsAndToolsSource {
+interface TooltipSource {
     manager: TooltipManager | null;
     key: number;
 }
 
-function showTip(this: TipsAndToolsSource, reference: VirtualElement, message: string): () => void {
+function showTip(this: TooltipSource, reference: VirtualElement, message: string): () => void {
     const { manager, key } = this;
     let active = true;
     if (manager) {
