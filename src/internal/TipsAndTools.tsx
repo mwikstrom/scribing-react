@@ -6,7 +6,7 @@ import { createUseFlowStyles } from "./JssTheming";
 import { PubSub } from "./utils/PubSub";
 import { SYSTEM_FONT } from "./utils/system-font";
 
-/** @public */
+/** @internal */
 export const TipsAndToolsScope: FC = ({children}) => {
     const manager = useMemo(() => new TipsAndToolsManager(), []);
     const [active, setActive] = useState<readonly TooltipProps[]>([]);
@@ -19,7 +19,7 @@ export const TipsAndToolsScope: FC = ({children}) => {
     );
 };
 
-/** @public */
+/** @internal */
 export function useShowTip(): OmitThisParameter<typeof showTip> {
     const manager = useTipsAndToolsManager();
     const key = useMemo(() => ++sourceKeyCounter, []);
