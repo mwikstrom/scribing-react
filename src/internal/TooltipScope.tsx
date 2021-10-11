@@ -1,11 +1,18 @@
 import { VirtualElement } from "@popperjs/core";
-import React, { createContext, FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { FlowSelection } from "scribing";
 import { Tooltip, TooltipProps } from "./Tooltip";
-import { PubSub } from "./utils/PubSub";
+import { TooltipManager } from "./TooltipManager";
 
 /** @internal */
-export const TooltipScope: FC = ({children}) => {
-    const manager = useMemo(() => new TooltipManager(), []);
+export interface TooltipScopeProps {
+    manager?: TooltipManager;
+    children?: ReactNode;
+}
+
+/** @internal */
+export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) => {
+    const manager = useMemo(() => given ?? new TooltipManager(), [given]);
     const [active, setActive] = useState<TooltipProps | null>(manager.current || null);
     useEffect(() => manager.sub(setActive), [manager]);
     return (
@@ -17,16 +24,32 @@ export const TooltipScope: FC = ({children}) => {
 };
 
 /** @internal */
-export function useShowTip(): OmitThisParameter<typeof showTip> {
-    const manager = useTipsAndToolsManager();
-    const key = useMemo(() => ++sourceKeyCounter, []);
-    const source = useMemo<TooltipSource>(() => ({ manager, key }), [manager, key]);
-    return showTip.bind(source);
+export function useShowTip(manager?: TooltipManager): OmitThisParameter<typeof showTip> {
+    return useBinding(showTip, manager);
+}
+
+/** @internal */
+export function useShowTools(manager?: TooltipManager): OmitThisParameter<typeof showTools> {
+    return useBinding(showTools, manager);
 }
 
 interface TooltipSource {
     manager: TooltipManager | null;
     key: number;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function useBinding<T extends Function>(
+    func: T,
+    manager: TooltipManager | null = null, 
+): OmitThisParameter<T> {
+    const managerFromContext = useTooltipManager();    
+    const key = useMemo(() => ++sourceKeyCounter, []);
+    if (manager === null) {
+        manager = managerFromContext;
+    }
+    const source = useMemo<TooltipSource>(() => ({ manager, key }), [manager, key]);
+    return func.bind(source);
 }
 
 function showTip(this: TooltipSource, reference: VirtualElement, message: string): () => void {
@@ -45,32 +68,22 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     };
 }
 
-let sourceKeyCounter = 0;
-const useTipsAndToolsManager = () => useContext(TooltipContext);
-const TooltipContext = createContext<TooltipManager | null>(null);
-
-class TooltipManager extends PubSub<TooltipProps | null> {
-    #active = new Map<number, TooltipProps>();
-
-    addOrUpdate(key: number, reference: VirtualElement, message: string): void {
-        const existing = this.#active.get(key);
-        if (!existing || (existing.reference !== reference || existing.message !== message)) {
-            this.#active.set(key, Object.freeze({ reference, message }));
-            this.#notify();
-        }
+function showTools(this: TooltipSource, reference: VirtualElement, selection: FlowSelection): () => void {
+    const { manager, key } = this;
+    let active = true;
+    if (manager) {
+        manager.addOrUpdate(key, reference, `TOOLS @ ${JSON.stringify(selection.toJsonValue())}`);
     }
-
-    remove(key: number): void {
-        if (this.#active.delete(key)) {
-            this.#notify();
+    return () => {
+        if (active) {
+            active = false;
+            if (manager) {
+                manager.remove(key);
+            }
         }
-    }
-
-    #notify() {
-        let last: TooltipProps | null = null;
-        for (const value of this.#active.values()) {
-            last = value;
-        }
-        this.pub(last);
-    }
+    };
 }
+
+let sourceKeyCounter = 0;
+const useTooltipManager = () => useContext(TooltipContext);
+const TooltipContext = createContext<TooltipManager | null>(null);

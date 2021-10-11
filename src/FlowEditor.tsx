@@ -20,8 +20,9 @@ import { FormattingMarksScope } from "./FormattingMarksScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
-import { TooltipScope } from "./internal/TooltipScope";
+import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
+import { TooltipManager } from "./internal/TooltipManager";
 
 /**
  * Component props for {@link FlowEditor}
@@ -205,12 +206,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Handle native "selectionchange"
     useNativeEventHandler(document, "selectionchange", () => {
-        const domSelection = document.getSelection();
-
         if (!editingHost || pendingOperation.current !== null) {
             return;
         }
 
+        const domSelection = document.getSelection();
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
         const changed = mapped ?
             !FlowSelection.baseType.equals(mapped, state.selection) :
@@ -250,7 +250,19 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state]);
+    }, [editingHost, state.selection]);
+
+    // Tooltip manager
+    const tooltipManager = useMemo(() => new TooltipManager(), []);
+
+    // Show contextual toolbar
+    const showTools = useShowTools(tooltipManager);
+    useEffect(() => {
+        const domSelection = document.getSelection();
+        if (domSelection && domSelection.rangeCount === 1 && state.selection) {
+            return showTools(domSelection.getRangeAt(0), state.selection);
+        }            
+    }, [state.selection]);
 
     const classes = useStyles();
     return (
@@ -261,7 +273,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             contentEditable={editMode !== false}
             suppressContentEditableWarning={true}
             children={
-                <TooltipScope>
+                <TooltipScope manager={tooltipManager}>
                     <EditModeScope mode={editMode}>
                         <FormattingMarksScope show={state.formattingMarks}>
                             <FlowView content={state.content}/>
