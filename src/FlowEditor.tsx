@@ -259,10 +259,14 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const showTools = useShowTools(tooltipManager);
     useEffect(() => {
         const domSelection = document.getSelection();
-        if (domSelection && domSelection.rangeCount === 1 && state.selection) {
-            return showTools(domSelection.getRangeAt(0), state.selection);
+        if (domSelection && domSelection.rangeCount === 1 && state.selection && documentHasFocus) {
+            const range = domSelection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            if (rect.height > 0 || rect.width > 0) {
+                return showTools(range, state.selection);
+            }
         }            
-    }, [state.selection]);
+    }, [state.selection, documentHasFocus]);
 
     const classes = useStyles();
     return (
