@@ -43,7 +43,7 @@ export class FlowEditorCommands {
         this.toggleTextStyle("underline");
     }
 
-    isStrike(): boolean | undefined {
+    isStricken(): boolean | undefined {
         return this.getTextStyle().get("strike");
     }
 
@@ -53,6 +53,40 @@ export class FlowEditorCommands {
 
     getBaselineOffset(): TextStyleProps["baseline"] {
         return this.getTextStyle().get("baseline");
+    }
+
+    isSubscript(): boolean | undefined {
+        const offset = this.getBaselineOffset();
+        if (offset === "sub") {
+            return true;
+        } else if (offset !== void(0)) {
+            return false;
+        }
+    }
+
+    isSuperscript(): boolean | undefined {
+        const offset = this.getBaselineOffset();
+        if (offset === "super") {
+            return true;
+        } else if (offset !== void(0)) {
+            return false;
+        }
+    }
+
+    toggleSubscript(): void {
+        if (this.isSubscript()) {
+            this.setBaselineOffset("normal");
+        } else {
+            this.setBaselineOffset("sub");
+        }
+    }
+
+    toggleSuperscript(): void {
+        if (this.isSuperscript()) {
+            this.setBaselineOffset("normal");
+        } else {
+            this.setBaselineOffset("super");
+        }
     }
 
     setBaselineOffset(value: Exclude<TextStyleProps["baseline"], undefined>): void {
