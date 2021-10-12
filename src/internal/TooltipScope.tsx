@@ -18,17 +18,21 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
     const [display, setDisplay] = useState<TooltipData | null>(active);
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-            manager.removeCurrent();
+        if (event.key === "Escape" && active !== null) {
+            manager.remove(active.key);
         }
-    }, []);
+    }, [active, manager]);
     
     useEffect(() => manager.sub(setActive), [manager]);
 
     useEffect(() => {
-        const timeout = setTimeout(() => setDisplay(active), 250);
-        return () => clearTimeout(timeout);
-    }, [active]);
+        if (active && display && active.key === display.key) {
+            setDisplay(active);
+        } else {
+            const timeout = setTimeout(() => setDisplay(active), 250);
+            return () => clearTimeout(timeout);
+        }
+    }, [active, display]);
 
     return (
         <TooltipContext.Provider value={manager}>
@@ -68,26 +72,22 @@ function useBinding<T extends Function>(
 }
 
 function showTip(this: TooltipSource, reference: VirtualElement, message: string): () => void {
-    const { manager, key } = this;
-    let active = true;
-    if (manager) {
-        manager.addOrUpdate(key, { reference, content: message });
-    }
-    return () => {
-        if (active) {
-            active = false;
-            if (manager) {
-                manager.remove(key);
-            }
-        }
-    };
+    return showContent.call(this, reference, message);
 }
 
 function showTools(this: TooltipSource, reference: VirtualElement, commands: FlowEditorCommands): () => void {
+    return showContent.call(this, reference, commands);
+}
+
+function showContent(
+    this: TooltipSource,
+    reference: VirtualElement,
+    content: string | FlowEditorCommands
+): () => void {
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        manager.addOrUpdate(key, { reference, content: commands });
+        manager.addOrUpdate({ key, reference, content });
     }
     return () => {
         if (active) {

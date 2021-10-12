@@ -10,6 +10,7 @@ import { SYSTEM_FONT } from "./utils/system-font";
 
 /** @internal */
 export interface TooltipProps {
+    key: number;
     reference: VirtualElement,
     active: boolean;
     content: string | FlowEditorCommands;

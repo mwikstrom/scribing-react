@@ -7,47 +7,36 @@ export type TooltipData = Omit<TooltipProps, "active">;
 
 /** @internal */
 export class TooltipManager extends PubSub<TooltipData | null> {
-    #active = new Map<number, TooltipData>();
-    #currentKey: number | null = null;
+    #map = new Map<number, TooltipData>();
 
-    addOrUpdate(key: number, props: TooltipData): void {
-        const existing = this.#active.get(key);
+    addOrUpdate(props: TooltipData): void {
+        const { key } = props;
+        const existing = this.#map.get(key);
         if (!areEqualTooltips(props, existing)) {
-            this.#active.set(key, props);
+            this.#map.set(key, props);
             this.#notify();
         }
     }
 
     remove(key: number): void {
-        if (this.#active.delete(key)) {
+        if (this.#map.delete(key)) {
             this.#notify();
         }
     }
 
-    removeCurrent(): void {
-        if (typeof this.#currentKey === "number") {
-            this.remove(this.#currentKey);
-        }
-    }
-
     #notify(): void {
-        const selected = this.#select();
-        this.#setCurrent(selected);
+        const active = this.#select();
+        this.pub(active);
     }
 
-    #setCurrent(key: number | null): void {
-        this.#currentKey = key;
-        this.pub((key !== null && this.#active.get(key)) || null);
-    }
-
-    #select(): number | null {
-        const array = Array.from(this.#active).reverse();
+    #select(): TooltipData | null {
+        const array = Array.from(this.#map.values()).reverse();
 
         if (array.length === 0) {
             return null;
         }
 
-        return array[0][0];
+        return array[0];
     }
 }
 
