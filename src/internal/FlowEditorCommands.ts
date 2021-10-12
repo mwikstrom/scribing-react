@@ -14,24 +14,72 @@ export class FlowEditorCommands {
         return this.getTextStyle().get("bold");
     }
 
-    isItalic(): boolean | undefined {
-        return this.getTextStyle().get("italic");
-    }
-
-    isUnderlined(): boolean | undefined {
-        return this.getTextStyle().get("underline");
-    }
-
     toggleBold(): void {
         this.toggleTextStyle("bold");
+    }
+
+    isItalic(): boolean | undefined {
+        return this.getTextStyle().get("italic");
     }
 
     toggleItalic(): void {
         this.toggleTextStyle("italic");
     }
 
+    isUnderlined(): boolean | undefined {
+        return this.getTextStyle().get("underline");
+    }
+
     toggleUnderline(): void {
         this.toggleTextStyle("underline");
+    }
+
+    isStrike(): boolean | undefined {
+        return this.getTextStyle().get("strike");
+    }
+
+    toggleStrike(): void {
+        this.toggleTextStyle("strike");
+    }
+
+    getBaselineOffset(): TextStyleProps["baseline"] {
+        return this.getTextStyle().get("baseline");
+    }
+
+    setBaselineOffset(value: Exclude<TextStyleProps["baseline"], undefined>): void {
+        this.formatText("baseline", value);
+    }
+
+    getFontFamily(): TextStyleProps["fontFamily"] {
+        return this.getTextStyle().get("fontFamily");
+    }
+    
+    setFontFamily(value: Exclude<TextStyleProps["fontFamily"], undefined>): void {
+        this.formatText("fontFamily", value);
+    }
+
+    getFontSize(): TextStyleProps["fontSize"] {
+        return this.getTextStyle().get("fontSize");
+    }
+
+    setFontSize(value: Exclude<TextStyleProps["fontSize"], undefined>): void {
+        this.formatText("fontSize", value);
+    }
+
+    getLink(): TextStyleProps["link"] {
+        return this.getTextStyle().get("link");
+    }
+
+    setLink(value: Exclude<TextStyleProps["link"], undefined>): void {
+        this.formatText("link", value);
+    }
+
+    getTextColor(): TextStyleProps["color"] {
+        return this.getTextStyle().get("color");
+    }
+
+    setTextColor(value: Exclude<TextStyleProps["color"], undefined>): void {
+        this.formatText("color", value);
     }
 
     toggleTextStyle(key: BooleanTextStyleKeys): void {
