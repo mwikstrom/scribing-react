@@ -34,6 +34,7 @@ export const Tooltip: FC<TooltipProps> = props => {
         modifiers: [
             { name: "arrow", options: { element: arrow } },
             { name: "offset", options: { offset: [0, 10] } },
+            { name: "computeStyles", options: { gpuAcceleration: false } },
         ],
     });
     const classes = useStyles();
