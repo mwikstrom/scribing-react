@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useMemo } from "react";
+import React, { MouseEvent, useCallback, useMemo } from "react";
 import { DynamicText } from "scribing";
 import { createUseFlowStyles } from "./internal/JssTheming";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
@@ -12,6 +12,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     const { node } = props;
     const { expression, style: givenStyle } = node;
     const theme = useParagraphTheme();
+    
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {
@@ -19,8 +20,10 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
         }
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
+    
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
+    
     const evaluated = useObservedScript(expression);
     const value = useMemo(() => {
         const { result, ready, error } = evaluated;
@@ -30,12 +33,21 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
             return "";
         }
     }, [evaluated]);
+
     const className = useMemo(() => clsx(
         classes.root, 
         !evaluated.ready && classes.pending,
         evaluated.error !== null && classes.error,
         ...getTextStyleClassNames(style, classes)
     ), [style, classes, evaluated]);
+
+    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
+        const domSelection = document.getSelection();
+        if (domSelection) {
+            domSelection.selectAllChildren(e.currentTarget);
+        }
+    }, []);
+
     return (
         <span
             ref={ref}
@@ -43,6 +55,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
             className={className}
             style={css}
             children={value}
+            onClick={onClick}
         />
     );
 });

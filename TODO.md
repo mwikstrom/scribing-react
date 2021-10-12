@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- click on dynamic text shall select the entire node
 - distinguish between tooltip and toolbar
 - pending must be applied before key handler
 - pending must transform applied op
