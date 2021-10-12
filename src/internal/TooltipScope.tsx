@@ -16,15 +16,44 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
     const [current, setCurrent] = useState<TooltipData | null>(manager.current || null);
     const [active, setActive] = useState<TooltipData | null>(current);
+    const [pending, setPending] = useState<TooltipData | null>(null);
     const [displayOne, setDisplayOne] = useState<TooltipData | null>(current);
     const [displayTwo, setDisplayTwo] = useState<TooltipData | null>(null);
+    const [deferToken, setDeferToken] = useState(0);
     const counter = useRef(0);    
+    const setDisplay = (data: TooltipData) => {
+        if (data.key === displayOne?.key) {
+            setDisplayOne(data);
+        } else if (data.key === displayTwo?.key) {
+            setDisplayTwo(data);
+        } else {
+            [setDisplayOne, setDisplayTwo][counter.current++ % 2](data);
+        }
+        setTimeout(() => setActive(data), 0);
+        setPending(null);
+    };
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape" && current !== null) {
-            manager.remove(current.key);
+            setActive(null);
         }
-    }, [current, manager]);
+
+        if (event.key === "." && event.ctrlKey) {
+            if (pending !== null) {
+                setDisplay(pending);
+            } else if (active === null && current?.content instanceof FlowEditorCommands) {
+                setDisplay(current);
+            }
+        } else {
+            setDeferToken(before => before + 1);
+        }
+    }, [current, pending, manager]);
+
+    useNativeEventHandler(window, "mousemove", () => {
+        if (pending !== null) {
+            setDeferToken(before => before + 1);
+        }
+    }, [pending]);
     
     useEffect(() => manager.sub(setCurrent), [manager]);
 
@@ -33,17 +62,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
             setActive(null);
             return;
         }
-
-        const setDisplay = () => {
-            if (current.key === displayOne?.key) {
-                setDisplayOne(current);
-            } else if (current.key === displayTwo?.key) {
-                setDisplayTwo(current);
-            } else {
-                [setDisplayOne, setDisplayTwo][counter.current++ % 2](current);
-            }
-            setTimeout(() => setActive(current), 0);
-        };
 
         if (
             current.content instanceof FlowEditorCommands && 
@@ -57,12 +75,18 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
             )
         ) {
             setActive(null);
-            const timeout = setTimeout(setDisplay, 1000);
-            return () => clearTimeout(timeout);
+            setPending(current);
         } else {
-            setDisplay();
+            setDisplay(current);
         }
     }, [current]);
+
+    useEffect(() => {
+        if (pending !== null) {
+            const timeout = setTimeout(() => setDisplay(pending), 3000);
+            return () => clearTimeout(timeout);
+        }
+    }, [pending, deferToken]);
 
     useEffect(() => {
         if (displayOne && displayOne !== active) {
