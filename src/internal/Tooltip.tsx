@@ -75,6 +75,7 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
         height: 8,
         visibility: "hidden",
         background: "inherit",
+        transition: "left ease-in-out 0.1s",
         "&::before": {
             position: "absolute",
             width: 8,
