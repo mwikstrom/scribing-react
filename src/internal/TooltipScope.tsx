@@ -29,7 +29,12 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
     useEffect(() => manager.sub(setCurrent), [manager]);
 
     useEffect(() => {
-        if (current !== null) {
+        if (current === null) {
+            setActive(null);
+            return;
+        }
+
+        const setDisplay = () => {
             if (current.key === displayOne?.key) {
                 setDisplayOne(current);
             } else if (current.key === displayTwo?.key) {
@@ -37,9 +42,26 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
             } else {
                 [setDisplayOne, setDisplayTwo][counter.current++ % 2](current);
             }
+            setTimeout(() => setActive(current), 0);
+        };
+
+        if (
+            current.content instanceof FlowEditorCommands && 
+            current.content.isCaret() &&
+            (
+                active === null ||
+                (
+                    active.content instanceof FlowEditorCommands &&
+                    !active.content.isCaret()
+                )
+            )
+        ) {
+            setActive(null);
+            const timeout = setTimeout(setDisplay, 1000);
+            return () => clearTimeout(timeout);
+        } else {
+            setDisplay();
         }
-        const timeout = setTimeout(() => setActive(current), 0);
-        return () => clearTimeout(timeout); 
     }, [current]);
 
     useEffect(() => {
