@@ -1,4 +1,13 @@
-import { FlowEditorState, FlowOperation, TargetOptions, TextStyle, TextStyleProps } from "scribing";
+import { 
+    FlowEditorState, 
+    FlowOperation, 
+    ParagraphStyle, 
+    ParagraphStyleProps, 
+    ParagraphStyleVariant, 
+    TargetOptions, 
+    TextStyle, 
+    TextStyleProps
+} from "scribing";
 
 /** @internal */
 export class FlowEditorCommands {
@@ -82,6 +91,47 @@ export class FlowEditorCommands {
         this.formatText("color", value);
     }
 
+    getTextAlignment(): ParagraphStyleProps["alignment"] {
+        return this.getParagraphStyle().get("alignment");
+    }
+
+    setTextAlignment(value: Exclude<ParagraphStyleProps["alignment"], undefined>): void {
+        this.formatParagraph("alignment", value);
+    }
+
+    getTextDirection(): ParagraphStyleProps["direction"] {
+        return this.getParagraphStyle().get("direction");
+    }
+
+    setTextDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void {
+        this.formatParagraph("direction", value);
+    }
+
+    getParagraphVariant(): ParagraphStyleVariant | undefined {
+        return this.getParagraphStyle().get("variant");
+    }
+
+    setParagraphVariant(value: ParagraphStyleVariant): void {
+        this.formatParagraph("variant", value);
+    }
+
+    getLineSpacing(): ParagraphStyleProps["lineSpacing"] {
+        return this.getParagraphStyle().get("lineSpacing");
+    }
+
+    setLineSpacing(value: Exclude<ParagraphStyleProps["lineSpacing"], undefined>): void {
+        this.formatParagraph("lineSpacing", value);
+    }    
+
+    // TODO: spaceAbove
+    // TODO: spaceBelow
+    // TODO: listLevel
+    // TODO: listMarker
+    // TODO: hideListMarker
+    // TODO: listCounter
+    // TODO: listCounterPrefix
+    // TODO: listCounterSuffix
+
     toggleTextStyle(key: BooleanTextStyleKeys): void {
         this.formatText(key, !this.getTextStyle().get(key));
     }
@@ -96,15 +146,32 @@ export class FlowEditorCommands {
         }
     }
 
+    getParagraphStyle(): ParagraphStyle {
+        const { selection, content, theme } = this.#state;
+        return selection === null ? ParagraphStyle.empty : selection.getUniformParagraphStyle(content, theme);
+    }
+
     formatText<K extends keyof TextStyleProps>(key: K, value: TextStyleProps[K]): void {
         const { selection, caret } = this.#state;
         if (selection) {
             if (selection.isCollapsed) {
                 this.#state = this.#apply(this.#state.set("caret", caret.set(key, value)));
             } else {
-                const operation = selection.formatText(TextStyle.empty.set(key, value), this.getTargetOptions());
+                const style = TextStyle.empty.set(key, value);
+                const options = this.getTargetOptions();
+                const operation = selection.formatText(style, options);
                 this.#state = this.#apply(operation);
             }
+        }
+    }
+
+    formatParagraph<K extends keyof ParagraphStyleProps>(key: K, value: ParagraphStyleProps[K]): void {
+        const { selection } = this.#state;
+        if (selection) {
+            const style = ParagraphStyle.empty.set(key, value);
+            const options = this.getTargetOptions();
+            const operation = selection.formatParagraph(style, options);
+            this.#state = this.#apply(operation);
         }
     }
 
