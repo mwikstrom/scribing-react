@@ -19,6 +19,11 @@ export class FlowEditorCommands {
         this.#apply = apply;
     }
 
+    isRangeSelection(): boolean {
+        const { selection } = this.#state;
+        return selection !== null && !selection.isCollapsed;
+    }
+
     isBold(): boolean | undefined {
         return this.getTextStyle().get("bold");
     }

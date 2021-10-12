@@ -64,7 +64,7 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
         borderRadius: 4,
         userSelect: "none",
         opacity: 0,
-        transition: "opacity ease-in-out 0.1s",
+        transition: "opacity ease-in-out 0.25s",
     },
     active: {
         opacity: 1,

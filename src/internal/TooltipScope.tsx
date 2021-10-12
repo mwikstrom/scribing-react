@@ -1,5 +1,5 @@
 import { VirtualElement } from "@popperjs/core";
-import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { Tooltip } from "./Tooltip";
@@ -14,30 +14,53 @@ export interface TooltipScopeProps {
 /** @internal */
 export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) => {
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
-    const [active, setActive] = useState<TooltipData | null>(manager.current || null);
-    const [display, setDisplay] = useState<TooltipData | null>(active);
+    const [current, setCurrent] = useState<TooltipData | null>(manager.current || null);
+    const [active, setActive] = useState<TooltipData | null>(current);
+    const [displayOne, setDisplayOne] = useState<TooltipData | null>(current);
+    const [displayTwo, setDisplayTwo] = useState<TooltipData | null>(null);
+    const counter = useRef(0);    
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
-        if (event.key === "Escape" && active !== null) {
-            manager.remove(active.key);
+        if (event.key === "Escape" && current !== null) {
+            manager.remove(current.key);
         }
-    }, [active, manager]);
+    }, [current, manager]);
     
-    useEffect(() => manager.sub(setActive), [manager]);
+    useEffect(() => manager.sub(setCurrent), [manager]);
 
     useEffect(() => {
-        if (active && display && active.key === display.key) {
-            setDisplay(active);
-        } else {
-            const timeout = setTimeout(() => setDisplay(active), 250);
+        if (current !== null) {
+            if (current.key === displayOne?.key) {
+                setDisplayOne(current);
+            } else if (current.key === displayTwo?.key) {
+                setDisplayTwo(current);
+            } else {
+                [setDisplayOne, setDisplayTwo][counter.current++ % 2](current);
+            }
+        }
+        const timeout = setTimeout(() => setActive(current), 0);
+        return () => clearTimeout(timeout); 
+    }, [current]);
+
+    useEffect(() => {
+        if (displayOne && displayOne !== active) {
+            const timeout = setTimeout(() => setDisplayOne(null), 250);
             return () => clearTimeout(timeout);
         }
-    }, [active, display]);
+    }, [displayOne, active]);
+
+    useEffect(() => {
+        if (displayTwo && displayTwo !== active) {
+            const timeout = setTimeout(() => setDisplayTwo(null), 250);
+            return () => clearTimeout(timeout);
+        }
+    }, [displayTwo, active]);
 
     return (
         <TooltipContext.Provider value={manager}>
             {children}
-            {display && <Tooltip active={display === active} {...display}/>}
+            {displayOne && <Tooltip active={displayOne === active} {...displayOne}/>}
+            {displayTwo && <Tooltip active={displayTwo === active} {...displayTwo}/>}
         </TooltipContext.Provider>
     );
 };
