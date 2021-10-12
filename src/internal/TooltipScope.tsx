@@ -19,7 +19,7 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape") {
-            setActive(null);
+            manager.removeCurrent();
         }
     }, []);
     
@@ -71,7 +71,7 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        manager.addOrUpdate(key, { reference, messages: [{ key, text: message }] });
+        manager.addOrUpdate(key, { reference, content: message });
     }
     return () => {
         if (active) {
@@ -83,11 +83,11 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     };
 }
 
-function showTools(this: TooltipSource, reference: VirtualElement, editor: FlowEditorCommands): () => void {
+function showTools(this: TooltipSource, reference: VirtualElement, commands: FlowEditorCommands): () => void {
     const { manager, key } = this;
     let active = true;
     if (manager) {
-        manager.addOrUpdate(key, { reference, editor });
+        manager.addOrUpdate(key, { reference, content: commands });
     }
     return () => {
         if (active) {

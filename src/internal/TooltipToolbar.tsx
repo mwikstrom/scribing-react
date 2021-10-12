@@ -31,20 +31,20 @@ import {
 
 /** @internal */
 export interface TooltipToolbarProps {
-    editor: FlowEditorCommands;
+    commands: FlowEditorCommands;
 }
 
 /** @internal */
-export const TooltipToolbar: FC<TooltipToolbarProps> = ({editor}) => {
+export const TooltipToolbar: FC<TooltipToolbarProps> = ({commands}) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <BoldButton editor={editor}/>
-            <ItalicButton editor={editor}/>
-            <UnderlineButton editor={editor}/>
-            <StrikeButton editor={editor}/>
-            <SubscriptButton editor={editor}/>
-            <SuperscriptButton editor={editor}/>
+            <BoldButton commands={commands}/>
+            <ItalicButton commands={commands}/>
+            <UnderlineButton commands={commands}/>
+            <StrikeButton commands={commands}/>
+            <SubscriptButton commands={commands}/>
+            <SuperscriptButton commands={commands}/>
             <TooltipToolButton><Icon path={mdiFormatAlignLeft}/></TooltipToolButton>
             <TooltipToolButton><Icon path={mdiFormatAlignCenter}/></TooltipToolButton>
             <TooltipToolButton><Icon path={mdiFormatAlignRight}/></TooltipToolButton>
@@ -77,50 +77,50 @@ const useStyles = createUseFlowStyles("TooltipToolbar", () => ({
     },
 }));
 
-const BoldButton: FC<TooltipToolbarProps> = ({editor}) => (
+const BoldButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isBold()}
-        onClick={editor.toggleBold.bind(editor)}
+        checked={commands.isBold()}
+        onClick={commands.toggleBold.bind(commands)}
         children={<Icon path={mdiFormatBold}/>}
     />
 );
 
-const ItalicButton: FC<TooltipToolbarProps> = ({editor}) => (
+const ItalicButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isItalic()}
-        onClick={editor.toggleItalic.bind(editor)}
+        checked={commands.isItalic()}
+        onClick={commands.toggleItalic.bind(commands)}
         children={<Icon path={mdiFormatItalic}/>}
     />
 );
 
-const UnderlineButton: FC<TooltipToolbarProps> = ({editor}) => (
+const UnderlineButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isUnderlined()}
-        onClick={editor.toggleUnderline.bind(editor)}
+        checked={commands.isUnderlined()}
+        onClick={commands.toggleUnderline.bind(commands)}
         children={<Icon path={mdiFormatUnderline}/>}
     />
 );
 
-const StrikeButton: FC<TooltipToolbarProps> = ({editor}) => (
+const StrikeButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isStricken()}
-        onClick={editor.toggleStrike.bind(editor)}
+        checked={commands.isStricken()}
+        onClick={commands.toggleStrike.bind(commands)}
         children={<Icon path={mdiFormatStrikethrough}/>}
     />
 );
 
-const SubscriptButton: FC<TooltipToolbarProps> = ({editor}) => (
+const SubscriptButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isSubscript()}
-        onClick={editor.toggleSubscript.bind(editor)}
+        checked={commands.isSubscript()}
+        onClick={commands.toggleSubscript.bind(commands)}
         children={<Icon path={mdiFormatSubscript}/>}
     />
 );
 
-const SuperscriptButton: FC<TooltipToolbarProps> = ({editor}) => (
+const SuperscriptButton: FC<TooltipToolbarProps> = ({commands}) => (
     <TooltipToolButton
-        checked={editor.isSuperscript()}
-        onClick={editor.toggleSuperscript.bind(editor)}
+        checked={commands.isSuperscript()}
+        onClick={commands.toggleSuperscript.bind(commands)}
         children={<Icon path={mdiFormatSuperscript}/>}
     />
 );

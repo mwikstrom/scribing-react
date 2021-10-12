@@ -1,5 +1,5 @@
 import { VirtualElement } from "@popperjs/core";
-import { TooltipMessageProps, TooltipProps } from "./Tooltip";
+import { TooltipProps } from "./Tooltip";
 import { PubSub } from "./utils/PubSub";
 
 /** @internal */
@@ -8,6 +8,7 @@ export type TooltipData = Omit<TooltipProps, "active">;
 /** @internal */
 export class TooltipManager extends PubSub<TooltipData | null> {
     #active = new Map<number, TooltipData>();
+    #currentKey: number | null = null;
 
     addOrUpdate(key: number, props: TooltipData): void {
         const existing = this.#active.get(key);
@@ -23,37 +24,30 @@ export class TooltipManager extends PubSub<TooltipData | null> {
         }
     }
 
+    removeCurrent(): void {
+        if (typeof this.#currentKey === "number") {
+            this.remove(this.#currentKey);
+        }
+    }
+
     #notify(): void {
-        const array = Array.from(this.#active.values()).reverse();
+        const selected = this.#select();
+        this.#setCurrent(selected);
+    }
+
+    #setCurrent(key: number | null): void {
+        this.#currentKey = key;
+        this.pub((key !== null && this.#active.get(key)) || null);
+    }
+
+    #select(): number | null {
+        const array = Array.from(this.#active).reverse();
 
         if (array.length === 0) {
-            this.pub(null);
-            return;
+            return null;
         }
 
-        const first = array[0];
-        let count = 1;
-        let mergedRect: DOMRect | undefined;
-        while (count < array.length) {
-            if (!mergedRect) {
-                mergedRect = first.reference.getBoundingClientRect();
-            }
-
-            const nextRect = array[count].reference.getBoundingClientRect();
-            if (!areOverlappingRects(mergedRect, nextRect)) {
-                break;
-            }
-
-            mergedRect = mergeRects(mergedRect, nextRect);
-            ++count;
-        }
-
-        if (count === 1) {
-            this.pub(first);
-            return;
-        }
-
-        this.pub(createMergedTooltip(array.slice(0, count)));
+        return array[0][0];
     }
 }
 
@@ -63,24 +57,6 @@ const areOverlappingRects = (first: DOMRect, second: DOMRect): boolean => !(
     first.bottom < second.top || 
     first.top > second.bottom
 );
-
-const mergeRects = (first: DOMRect, second: DOMRect): DOMRect => new DOMRect(
-    Math.min(first.x, second.x),
-    Math.min(first.y, second.y),
-    Math.max(first.width, second.width),
-    Math.max(first.height, second.height)
-);
-
-const createMergedTooltip = (array: readonly TooltipData[]): TooltipData => ({
-    reference: {
-        getBoundingClientRect() {
-            const rects = array.map(item => item.reference.getBoundingClientRect());
-            return rects.slice(1).reduce((prev, next) => mergeRects(prev, next), rects[0]);
-        },
-    },
-    messages: array.flatMap(item => item.messages || []),
-    editor: array.filter(item => !!item.editor).map(item => item.editor)[0] || null,
-});
 
 const areEqualTooltips = (first: TooltipData, second: TooltipData | undefined): boolean => {
     if (second === void(0)) {
@@ -93,8 +69,7 @@ const areEqualTooltips = (first: TooltipData, second: TooltipData | undefined): 
 
     return (
         areEqualVirtualElements(first.reference, second.reference) &&
-        areEqualArrays(first.messages || [], second.messages || [], areEqualTooltipMessages) &&
-        first.editor === second.editor
+        first.content === second.content
     );
 };
 
@@ -108,32 +83,4 @@ const areEqualVirtualElements = (first: VirtualElement, second: VirtualElement):
     }
 
     return false;
-};
-
-const areEqualArrays = <T>(
-    first: readonly T[],
-    second: readonly T[],
-    areEqualElements: (first: T, second: T) => boolean
-): boolean => {
-    if (first === second) {
-        return true;
-    }
-
-    if (first.length !== second.length) {
-        return false;
-    }
-
-    return first.every((item, index) => areEqualElements(item, second[index]));
-};
-
-const areEqualTooltipMessages = (first: TooltipMessageProps, second: TooltipMessageProps): boolean => {
-    if (first === second) {
-        return true;
-    }
-
-    if (first.key !== second.key) {
-        return false;
-    }
-
-    return first.text === second.text;
 };

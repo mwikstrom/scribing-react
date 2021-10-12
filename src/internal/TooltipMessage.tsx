@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 import { createUseFlowStyles } from "./JssTheming";
-import { TooltipMessageProps } from "./Tooltip";
+
+/** @internal */
+export interface TooltipMessageProps {
+    text: string;
+}
 
 /** @internal */
 export const TooltipMessage: FC<TooltipMessageProps> = ({text}) => {
@@ -9,5 +13,7 @@ export const TooltipMessage: FC<TooltipMessageProps> = ({text}) => {
 };
 
 const useStyles = createUseFlowStyles("TooltipMessage", () => ({
-    root: {},
+    root: {
+        padding: "0.5rem 1rem"
+    },
 }));

@@ -1,12 +1,10 @@
 import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
-import { TooltipDivider } from "./TooltipDivider";
 import { TooltipMessage } from "./TooltipMessage";
-import { TooltipMessageList } from "./TooltipMessageList";
 import { TooltipToolbar } from "./TooltipToolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
 
@@ -14,19 +12,12 @@ import { SYSTEM_FONT } from "./utils/system-font";
 export interface TooltipProps {
     reference: VirtualElement,
     active: boolean;
-    messages?: readonly TooltipMessageProps[];
-    editor?: FlowEditorCommands | null;
-}
-
-/** @internal */
-export interface TooltipMessageProps {
-    key: number | string;
-    text: string;
+    content: string | FlowEditorCommands;
 }
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, active, messages = [], editor = null } = props;
+    const { reference, active, content } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const { styles, attributes } = usePopper(reference, popper, {
@@ -45,21 +36,18 @@ export const Tooltip: FC<TooltipProps> = props => {
         contentEditable: false,
         style: styles.popper,
     };
+    const children = useMemo(() => {
+        if (content instanceof FlowEditorCommands) {
+            return <TooltipToolbar commands={content}/>;
+        } else if (typeof content === "string") {
+            return <TooltipMessage text={content}/>;
+        } else {
+            return null;
+        }
+    }, [content]);
     return (
         <div ref={setPopper} {...popperProps}>
-            {editor && (
-                <TooltipToolbar editor={editor}/>
-            )}
-            {editor && messages.length > 0 && (
-                <TooltipDivider/>
-            )}
-            {messages.length > 0 && (
-                <TooltipMessageList>
-                    {messages.map(msg => (
-                        <TooltipMessage {...msg}/>
-                    ))}
-                </TooltipMessageList>
-            )}            
+            {children}
             <div ref={setArrow} className={arrowClassName} style={styles.arrow}/>
         </div>
     );
