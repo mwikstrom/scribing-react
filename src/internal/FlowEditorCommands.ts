@@ -19,9 +19,9 @@ export class FlowEditorCommands {
         this.#apply = apply;
     }
 
-    isRangeSelection(): boolean {
+    isCaret(): boolean {
         const { selection } = this.#state;
-        return selection !== null && !selection.isCollapsed;
+        return selection !== null && selection.isCollapsed;
     }
 
     isBold(): boolean | undefined {
