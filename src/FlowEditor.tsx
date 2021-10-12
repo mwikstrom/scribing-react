@@ -253,7 +253,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
-    }, [editingHost, state.selection]);
+    }, [editingHost, state]); // Yes, it depends on `state` -- not just `state.selection`
 
     // Tooltip manager
     const tooltipManager = useMemo(() => new TooltipManager(), []);

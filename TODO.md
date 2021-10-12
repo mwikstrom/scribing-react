@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- selection is broken after applying text/paragraph style
 - click on dynamic text shall select the entire node
 - distinguish between tooltip and toolbar
 - pending must be applied before key handler
