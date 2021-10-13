@@ -1,9 +1,10 @@
 SCRIBING TODO
 =============
 - Scroll caret into view after inserting
+- Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Cannot insert text before/after block level button
-- Special para theme for "inside button"
+- Special para theme for "inside button"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
 
 LOWER PRIO
