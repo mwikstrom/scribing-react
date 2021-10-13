@@ -7,6 +7,7 @@ SCRIBING TODO
 - Special para theme for "inside button"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
 - Let tooltip manager activate the tip that is currently scrolled into view
+- CTRL+PERIOD shall open contextual toolbar with keyboard navigation
 
 LOWER PRIO
 ==========
