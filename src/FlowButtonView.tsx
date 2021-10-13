@@ -47,8 +47,8 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
         if (clickable) {
             invokeAction();
         }
-    }, [editMode, invokeAction]);
-    
+    }, [clickable, invokeAction]);
+   
     const showTip = useShowTip();
     const locale = useFlowLocale();
     
@@ -69,6 +69,8 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
                 clickable ? classes.clickable : !!editMode && classes.editable,
             )}
             children={<FlowView content={content}/>}
+            contentEditable={!!editMode && !clickable}
+            suppressContentEditableWarning={true}
         />
     );
 });
