@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { 
     FlowEditorState, 
     FlowOperation, 
@@ -24,6 +24,8 @@ import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorCommands } from "./internal/FlowEditorCommands";
+import { getVirtualSelectionElement } from "./internal/utils/get-virtual-selection-element";
+import { getLineHeight } from "./internal/utils/get-line-height";
 
 /**
  * Component props for {@link FlowEditor}
@@ -243,9 +245,26 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         setState(after);
     }, [editingHost, state, onStateChange]);
+
+    // Ensure that caret selection stays inside the scrollable viewport after content is changed
+    useEffect(() => {
+        const domSelection = document.getSelection();
+        if (editingHost && domSelection && domSelection.isCollapsed) {
+            const virtualElem = getVirtualSelectionElement(domSelection);
+            if (virtualElem) {
+                const rect = virtualElem.getBoundingClientRect();
+                if (rect.bottom > editingHost.clientHeight - editingHost.scrollTop) {
+                    editingHost.scrollTo({ top: editingHost.scrollTop + rect.bottom - editingHost.clientHeight });
+                } else if (rect.top < 0) {
+                    const lineHeight = getLineHeight(domSelection.focusNode);
+                    editingHost.scrollTo({ top: Math.max(editingHost.scrollTop + rect.top - lineHeight, 0) });
+                }
+            }
+        }
+    }, [state.content, editingHost]);
     
     // Keep DOM selection in sync with editor selection
-    useLayoutEffect(() => {
+    useEffect(() => {
         const domSelection = document.getSelection();
 
         if (!editingHost || !domSelection) {
@@ -258,7 +277,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             state.selection !== null;
         
         if (!different) {
-            return;
+            //return;
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
@@ -271,11 +290,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const showTools = useShowTools(tooltipManager);
     useEffect(() => {
         const domSelection = document.getSelection();
-        if (domSelection && domSelection.rangeCount === 1 && state.selection && documentHasFocus) {
-            const range = domSelection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            if (rect.height > 0 || rect.width > 0) {
-                return showTools(range, new FlowEditorCommands(state, applyChange));
+        if (domSelection && state.selection && documentHasFocus) {
+            const virtualElem = getVirtualSelectionElement(domSelection);
+            if (virtualElem) {
+                return showTools(virtualElem, new FlowEditorCommands(state, applyChange));
             }
         }            
     }, [state, documentHasFocus]);

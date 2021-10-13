@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Scroll caret into view after inserting
 - Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Cannot insert text before/after block level button
