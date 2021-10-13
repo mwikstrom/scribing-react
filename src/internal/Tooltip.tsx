@@ -23,7 +23,7 @@ export const Tooltip: FC<TooltipProps> = props => {
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const [stable, setStable] = useState(false);
 
-    const { styles, attributes } = usePopper(reference, popper, {
+    const { styles, attributes, update } = usePopper(reference, popper, {
         placement: "top",
         modifiers: [
             { name: "arrow", options: { element: arrow } },
@@ -40,6 +40,12 @@ export const Tooltip: FC<TooltipProps> = props => {
         const timeout = setTimeout(() => setStable(true), delay);
         return () => clearTimeout(timeout);
     }, [active]);
+
+    useEffect(() => {
+        if (update) {
+            update();
+        }
+    }, [content, update]);
 
     const popperProps = {
         ...attributes.popper,

@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import React, { useCallback, useEffect, useState } from "react";
-import { createUseStyles } from "react-jss";
 import {
     FlowButton, 
     FlowButtonSelection, 
@@ -13,9 +12,9 @@ import { useFlowLocale } from "./FlowLocaleScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
 import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
+import { createUseFlowStyles } from "./internal/JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
 import { useShowTip } from "./internal/TooltipScope";
-import { makeJssId } from "./internal/utils/make-jss-id";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 
 export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
@@ -41,22 +40,49 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
     const editMode = useEditMode();
     const clickable = !editMode || (hover && ctrlKey);
     const invokeAction = useInteractionInvoker(action);
+    const [pending, setPending] = useState<Promise<void> | null>(null);
+    const [error, setError] = useState<Error | null>(null);
 
     const onClick = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         if (clickable) {
-            invokeAction();
+            setError(null);
+            setPending(invokeAction());
         }
     }, [clickable, invokeAction]);
-   
+
     const showTip = useShowTip();
     const locale = useFlowLocale();
+
+    useEffect(() => {
+        let active = true;
+        (async () => {
+            try {
+                await pending;
+            } catch (error) {
+                if (active) {
+                    setError(error instanceof Error ? error : new Error("Interaction failed"));
+                }
+            }
+            if (active) {
+                setPending(null);
+            }
+        })();
+        return () => { active = false; };
+    }, [pending]);
     
     useEffect(() => {
         if (editMode && !clickable && rootElem && hover) {
             return showTip(rootElem, locale.hold_ctrl_key_to_enable_interaction);
         }
     }, [!!editMode, clickable, rootElem, hover, locale]);
+
+
+    useEffect(() => {
+        if (error && rootElem && hover) {
+            return showTip(rootElem, error.message);
+        }
+    }, [error, rootElem, hover, locale]);
 
     return (
         <Component 
@@ -67,7 +93,10 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             className={clsx(
                 classes.root,
                 clickable ? classes.clickable : !!editMode && classes.editable,
+                pending && classes.pending,
+                error && classes.error,
             )}
+            disabled={!!pending}
             children={<FlowView content={content}/>}
             contentEditable={!!editMode && !clickable}
             suppressContentEditableWarning={true}
@@ -100,7 +129,7 @@ class FlowButtonContentAxis extends FlowAxis {
 }
 
 // TODO: FIX !important rules -- should be part of theme?
-const useStyles = createUseStyles({
+const useStyles = createUseFlowStyles("FlowButton", ({palette}) => ({
     root: {
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
@@ -115,6 +144,13 @@ const useStyles = createUseStyles({
     clickable: {
         cursor: "pointer",
     },
-}, {
-    generateId: makeJssId("FlowButton"),
-});
+    pending: {
+        cursor: "wait",
+    },
+    error: {
+        outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.error,
+        outlineOffset: "0.2rem",
+    },
+}));

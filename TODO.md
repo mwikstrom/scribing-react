@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- dynamic button: states: invoking + error
-- dynamic button: prevent default mouse down when ctrl clicking
 - contextual toolbar: styling, edit script, etc.
 - @validating should verify new.target in ctor
 - Handle input compositions

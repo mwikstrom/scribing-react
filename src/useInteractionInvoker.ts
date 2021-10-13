@@ -5,13 +5,13 @@ import { useScriptHost } from "scripthost-react";
 /**
  * @public
  */
-export function useInteractionInvoker(interaction: Interaction | null): () => void | Promise<void> {
+export function useInteractionInvoker(interaction: Interaction | null): () => Promise<void> {
     const host = useScriptHost();
     return useMemo(() => {
         if (interaction === null) {
-            return () => { /* no-op */ };
+            return async () => { /* no-op */ };
         } else if (interaction instanceof OpenUrl) {
-            return () => {
+            return async () => {
                 window.open(interaction.url, "_blank");
             };
         } else if (interaction instanceof RunScript) {
@@ -19,7 +19,7 @@ export function useInteractionInvoker(interaction: Interaction | null): () => vo
                 await host.eval(interaction.script);
             };
         } else {
-            return () => {
+            return async () => {
                 throw new Error("Unsupported interaction");
             };
         }

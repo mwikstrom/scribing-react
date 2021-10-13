@@ -232,3 +232,34 @@ DynamicTextStates.args = {
         "This should resolve to \"OK\" after 1 second: ", { dynamic: "{ await delay(1000); return 'OK' }" },
     ])),
 };
+
+export const ButtonStates = Template.bind({});
+ButtonStates.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This button should fail immediately: ",
+        { button: ["Click me"], action: { script: "{ throw new Error('Failed'); }" } },
+        { break: "para" },
+        "This button should fail after 1 second: ",
+        { button: ["Click me"], action: { script: "{ await delay(1000); throw new Error('Failed'); }" } },
+        { break: "para" },
+        "This button should succeed after 1 second: ",
+        { button: ["Click me"], action: { script: "delay(1000)" } },
+        { break: "para" },
+    ])),
+};
+
+
+export const LinkStates = Template.bind({});
+LinkStates.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This link should fail immediately: ",
+        { text: "Click me", style: { link: { script: "{ throw new Error('Failed'); }" } } },
+        { break: "para" },
+        "This link should fail after 1 second: ",
+        { text: "Click me", style: { link: { script: "{ await delay(1000); throw new Error('Failed'); }" } } },
+        { break: "para" },
+        "This link should succeed after 1 second: ",
+        { text: "Click me", style: { link: { script: "delay(1000)" } } },
+        { break: "para" },
+    ])),
+};
