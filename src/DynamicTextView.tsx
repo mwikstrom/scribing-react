@@ -9,6 +9,8 @@ import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowLocale } from ".";
 import { useShowTip } from "./internal/TooltipScope";
+import Icon from "@mdi/react";
+import { mdiLoading } from "@mdi/js";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node } = props;
@@ -77,7 +79,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             contentEditable={false}
             className={className}
             style={css}
-            children={value}
+            children={evaluated.ready ? value : <Icon path={mdiLoading} size={0.5} spin={0.5}/>}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
@@ -93,11 +95,20 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
     },
     error: {
         display: "inline-block",
+        padding: "0 .5rem",
         color: palette.error,
         outlineStyle: "dashed",
         outlineWidth: 1,
         outlineColor: palette.error,
-        outlineOffset: "0.2rem"
+        outlineOffset: "0.2rem",
     },
-    pending: {}, // TODO: Style pending
+    pending: {
+        display: "inline-block",
+        padding: "0 .5rem",
+        color: palette.subtle,
+        outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.subtle,
+        outlineOffset: "0.2rem",
+    },
 }));
