@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { MouseEvent, useCallback, useMemo } from "react";
+import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { DynamicText } from "scribing";
 import { createUseFlowStyles } from "./internal/JssTheming";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
@@ -7,8 +7,10 @@ import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
+import { useFlowLocale } from ".";
+import { useShowTip } from "./internal/TooltipScope";
 
-export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
+export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node } = props;
     const { expression, style: givenStyle } = node;
     const theme = useParagraphTheme();
@@ -24,15 +26,36 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
     const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
     
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const ref = useCallback((dom: HTMLElement | null) => {
+        outerRef(dom);
+        setRootElem(dom);
+    }, [outerRef]);
+
     const evaluated = useObservedScript(expression);
+    const locale = useFlowLocale();
+    const showTip = useShowTip();
     const value = useMemo(() => {
         const { result, ready, error } = evaluated;
         if (ready && error === null) {
             return String(result);
+        } else if (error) {            
+            return locale.script_error;
         } else {
             return "";
         }
-    }, [evaluated]);
+    }, [evaluated, locale]);
+    
+    const [hover, setHover] = useState(false);
+    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
+    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
+
+    useEffect(() => {
+        const { error } = evaluated;
+        if (error && rootElem && hover) {
+            return showTip(rootElem, error.message);
+        }
+    }, [evaluated, rootElem, hover]);
 
     const className = useMemo(() => clsx(
         classes.root, 
@@ -56,6 +79,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, ref) => {
             style={css}
             children={value}
             onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         />
     );
 });
@@ -64,7 +89,15 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
     ...textStyles(palette),
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
+        cursor: "default",
     },
-    error: {}, // TODO: Style error
+    error: {
+        display: "inline-block",
+        color: palette.error,
+        outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.error,
+        outlineOffset: "0.2rem"
+    },
     pending: {}, // TODO: Style pending
 }));

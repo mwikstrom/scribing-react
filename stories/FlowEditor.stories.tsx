@@ -219,3 +219,16 @@ Counter.args = {
         { break: "para" },
     ])),
 };
+
+export const DynamicTextStates = Template.bind({});
+DynamicTextStates.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This should be an error: ", { dynamic: "bad.stuff()" },
+        { break: "para" },
+        "This should be \"OK\": ", { dynamic: "'OK'" },
+        { break: "para" },
+        "This should fail after 1 second: ", { dynamic: "{ await delay(1000); throw new Error('Failure'); }" },
+        { break: "para" },
+        "This should resolve to \"OK\" after 1 second: ", { dynamic: "{ await delay(1000); return 'OK' }" },
+    ])),
+};
