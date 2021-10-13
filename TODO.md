@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Make sure target options are given to formatText (FlowSelection)
 - Handle input compositions
 - Scroll caret into view after inserting
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
