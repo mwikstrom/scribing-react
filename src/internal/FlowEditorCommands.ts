@@ -1,10 +1,12 @@
 import { 
+    FlowContent,
     FlowEditorState, 
     FlowOperation, 
     ParagraphStyle, 
     ParagraphStyleProps, 
     ParagraphStyleVariant, 
     TargetOptions, 
+    TextRun, 
     TextStyle, 
     TextStyleProps
 } from "scribing";
@@ -217,6 +219,19 @@ export class FlowEditorCommands {
     getTargetOptions(): TargetOptions {
         const { content: target, theme } = this.#state;
         return { target, theme };
+    }
+
+    insertText(text: string): void {
+        const node = new TextRun({ text, style: TextStyle.empty });
+        const content = new FlowContent({ nodes: Object.freeze([node])});
+        this.insertContent(content);
+    }
+
+    insertContent(content: FlowContent): void {
+        const { selection } = this.#state;
+        if (selection) {
+            this.#apply(selection.insert(content));
+        }
     }
 }
 

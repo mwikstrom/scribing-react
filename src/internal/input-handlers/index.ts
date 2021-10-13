@@ -17,7 +17,6 @@ const HANDLERS: Partial<Record<string, InputHandler>> = {
     formatItalic: toggleTextStyle("italic"),
     formatUnderline: toggleTextStyle("underline"),
     formatStrikeThrough: toggleTextStyle("strike"),
-    insertCompositionText: insertContent,
     insertFromComposition: insertContent,
     insertFromDrop: insertContent,
     insertFromPaste: insertContent,

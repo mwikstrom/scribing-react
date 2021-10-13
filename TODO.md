@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Handle input compositions
 - Scroll caret into view after inserting
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Cannot insert text before/after block level button

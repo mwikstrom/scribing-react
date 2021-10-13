@@ -172,15 +172,24 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             applyChange(result);
         }
     }, [state]);
+
+    // Handle composition events  
+    useNativeEventHandler(editingHost, "compositionend", (event: CompositionEvent) => {
+        new FlowEditorCommands(state, applyChange).insertText(event.data);
+    }, [state, applyChange]);
     
     // Handle native "beforeinput"
     useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
         const { inputType } = event;
 
+        if (inputType === "insertCompositionText" || inputType === "deleteCompositionText") {
+            return;
+        }
+
         try {
             const inputHandler = getInputHandler(inputType);
             if (!inputHandler) {
-                console.warn(`Unsupported input type: ${inputType}`);
+                console.warn(`Unsupported input type: ${inputType}`, event);
                 return;
             }
 
