@@ -1,6 +1,6 @@
 import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
@@ -21,6 +21,8 @@ export const Tooltip: FC<TooltipProps> = props => {
     const { reference, active, content } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
+    const [stable, setStable] = useState(false);
+
     const { styles, attributes } = usePopper(reference, popper, {
         placement: "top",
         modifiers: [
@@ -29,14 +31,27 @@ export const Tooltip: FC<TooltipProps> = props => {
             { name: "computeStyles", options: { gpuAcceleration: false } },
         ],
     });
+
     const classes = useStyles();
-    const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);
+    const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);    
+
+    useEffect(() => {
+        const delay = active ? 250 : 50;
+        const timeout = setTimeout(() => setStable(true), delay);
+        return () => clearTimeout(timeout);
+    }, [active]);
+
     const popperProps = {
         ...attributes.popper,
-        className: clsx(classes.root, active && classes.active), 
+        className: clsx(
+            classes.root, 
+            active && classes.active,
+            stable && classes.stable,
+        ), 
         contentEditable: false,
         style: styles.popper,
     };
+
     const children = useMemo(() => {
         if (content instanceof FlowEditorCommands) {
             return <TooltipToolbar commands={content}/>;
@@ -46,6 +61,7 @@ export const Tooltip: FC<TooltipProps> = props => {
             return null;
         }
     }, [content]);
+
     return (
         <div ref={setPopper} {...popperProps}>
             {children}
@@ -68,6 +84,9 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
     },
     active: {
         opacity: 1,
+    },
+    stable: {
+        transition: "opacity ease-in-out 0.25s, left ease-in-out 0.1s",
     },
     arrow: {
         position: "absolute",
