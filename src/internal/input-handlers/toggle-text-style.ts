@@ -1,4 +1,4 @@
-import { TextStyle, TextStyleProps } from "scribing";
+import { TargetOptions, TextStyle, TextStyleProps } from "scribing";
 import { getSelectionFromInput } from "./get-selection-from-input";
 import { InputHandler } from "./InputHandler";
 
@@ -24,7 +24,11 @@ export const toggleTextStyle = (
     if (selection.isCollapsed) {
         return state.set("caret", state.caret.merge(apply));
     } else {
-        return selection.formatText(apply);
+        const options: TargetOptions = {
+            target: state.content,
+            theme: state.theme,
+        };
+        return selection.formatText(apply, options);
     }
 };
 
