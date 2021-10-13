@@ -5,7 +5,7 @@ import { usePopper } from "react-popper";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
-import { TooltipToolbar } from "./TooltipToolbar";
+import { Toolbar } from "./Toolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
 
 /** @internal */
@@ -54,7 +54,7 @@ export const Tooltip: FC<TooltipProps> = props => {
 
     const children = useMemo(() => {
         if (content instanceof FlowEditorCommands) {
-            return <TooltipToolbar commands={content}/>;
+            return <Toolbar commands={content}/>;
         } else if (typeof content === "string") {
             return <TooltipMessage text={content}/>;
         } else {

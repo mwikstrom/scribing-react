@@ -13,6 +13,9 @@ export interface FlowPalette {
     tooltipText: string;
     activeTool: string;
     activeToolText: string;
+    inactiveTool: string;
+    inactiveToolText: string;
+    hoverTool: string;
 }
 
 /** @public */
@@ -28,6 +31,9 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     subtle: "#9e9e9e",
     tooltip: "#151515",
     tooltipText: "#eaeaea",
-    activeTool: "#333333",
+    activeTool: "#444444",
     activeToolText: "#ffffff",
+    inactiveTool: "transparent",
+    inactiveToolText: "#cccccc",
+    hoverTool: "#333333",
 });
