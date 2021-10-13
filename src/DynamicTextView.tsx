@@ -37,12 +37,12 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const showTip = useShowTip();
     const value = useMemo(() => {
         const { result, ready, error } = evaluated;
-        if (ready && error === null) {
-            return String(result);
-        } else if (error) {            
+        if (error) {            
             return locale.script_error;
+        } else if (result !== void(0) || ready) {
+            return String(result);
         } else {
-            return "";
+            return null;
         }
     }, [evaluated, locale]);
     
