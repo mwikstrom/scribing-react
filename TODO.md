@@ -6,6 +6,9 @@ SCRIBING TODO
 - Cannot insert text before/after block level button
 - Special para theme for "inside button"
 - Formatting paragraph break with zero opacity is not generally a good idea
+
+LOWER PRIO
+==========
 - MultiFlowSelection
 - Paratype: use actual name instead of "freezing"
 - React jest snapshots for view comps
@@ -17,7 +20,6 @@ SCRIBING TODO
 
 SCRIBING COMPONENTS
 ===================
-
 - Conditional Flow
 - FlowBox
 - AlertBox
