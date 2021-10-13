@@ -10,10 +10,11 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         underline,
         strike,
         baseline,
-        fontSize,        
+        fontSize,
     } = style;
 
     const css: CSSProperties = {};
+    let fontSizeMultiplier = 0.01;
 
     if (typeof bold === "boolean") {
         css.fontWeight = bold ? "bold" : "normal";
@@ -38,10 +39,11 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         css.verticalAlign = "baseline";
     } else if (baseline !== void(0)) {
         css.verticalAlign = baseline;
+        fontSizeMultiplier *= 0.8;
     }
 
     if (typeof fontSize === "number") {
-        css.fontSize = toRem(fontSize/100);
+        css.fontSize = toRem(fontSize * fontSizeMultiplier);
     }
 
     return css;
