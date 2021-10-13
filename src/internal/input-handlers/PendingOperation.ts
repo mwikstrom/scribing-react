@@ -50,3 +50,6 @@ export class PendingOperation {
         return flowSelection.insert(content, options);
     }
 }
+
+/** @internal */
+export const DISABLE_PENDING_OPERATIONS = true;

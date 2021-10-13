@@ -1,8 +1,5 @@
 SCRIBING TODO
 =============
-- pending must be applied before key handler
-- pending must transform applied op
-- pending must transform selection
 - dynamic text: states: not ready + error
 - dynamic button: states: invoking + error
 - dynamic button: prevent default mouse down when ctrl clicking

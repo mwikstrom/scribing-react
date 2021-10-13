@@ -2,7 +2,7 @@ import { TextRun } from "scribing";
 import { getMappedFlowNode } from "../mapping/flow-node";
 import { InputHandler } from "./InputHandler";
 import { insertContent } from "./insert-content";
-import { PendingOperation } from "./PendingOperation";
+import { DISABLE_PENDING_OPERATIONS, PendingOperation } from "./PendingOperation";
 
 /** @internal */
 export const insertText: InputHandler = (event, host, state, pending) => {
@@ -16,6 +16,18 @@ export const insertText: InputHandler = (event, host, state, pending) => {
     // editable processor handle the change natively, giving us better performance,
     // and also because it won't cause spell checker errors to flicker (since the
     // change is handled natively)
+
+    // By the default pending operations are disabled becuase there are outstanding
+    // issues with them:
+    //
+    // 1. Pending must be applied before key handler
+    // 2. Pending must transform applied op
+    // 3. Pending must transform selection (which causes a state change, that causes
+    //    a re-render, which negates the use of pending operation in the first place)
+    
+    if (DISABLE_PENDING_OPERATIONS) {
+        return defaultHandler();
+    }
 
     if (!state.caret.isEmpty) {
         // Caret style is not empty, so this is a styled insert.
