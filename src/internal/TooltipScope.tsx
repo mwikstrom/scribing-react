@@ -66,12 +66,9 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
         if (
             current.content instanceof FlowEditorCommands && 
             current.content.isCaret() &&
-            (
-                active === null ||
-                (
-                    active.content instanceof FlowEditorCommands &&
-                    !active.content.isCaret()
-                )
+            !(
+                active?.content instanceof FlowEditorCommands &&
+                active.content.isCaret()
             )
         ) {
             setActive(null);
