@@ -34,7 +34,6 @@ export function getVirtualSelectionElement(
         const tempNode = document.createTextNode("\ufeff");
         range.insertNode(tempNode);
         rect = range.getBoundingClientRect();
-        console.log("FIXED RECT", rect);
         tempNode.remove();
     }
 

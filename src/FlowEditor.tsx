@@ -253,7 +253,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
                 const rect = virtualElem.getBoundingClientRect();
-                if (rect.bottom > editingHost.clientHeight - editingHost.scrollTop) {
+                if (rect.bottom > editingHost.clientHeight) {
                     editingHost.scrollTo({ top: editingHost.scrollTop + rect.bottom - editingHost.clientHeight });
                 } else if (rect.top < 0) {
                     const lineHeight = getLineHeight(domSelection.focusNode);
@@ -277,7 +277,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             state.selection !== null;
         
         if (!different) {
-            //return;
+            return;
         }
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
