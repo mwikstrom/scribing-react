@@ -70,8 +70,8 @@ export const Tooltip: FC<TooltipProps> = props => {
 
     return (
         <div ref={setPopper} {...popperProps}>
-            {children}
             <div ref={setArrow} className={arrowClassName} style={styles.arrow}/>
+            {children}
         </div>
     );
 };
