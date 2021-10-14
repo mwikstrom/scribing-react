@@ -3,17 +3,23 @@ import React, { FC } from "react";
 import { ToolButton } from "../ToolButton";
 import { mdiFormatText, mdiMenuDown } from "@mdi/js";
 import { ToolbarProps } from "../Toolbar";
-import { getParagraphVariantLocaleKey, useFlowLocale } from "../..";
+import { PARAGRAPH_STYLE_VARIANTS } from "scribing";
+import { ParagraphVariantLabel } from "./ParagraphVariantLabel";
 
 export const ParagraphVariantButton: FC<ToolbarProps> = ({commands}) => {
     const variant = commands.getParagraphVariant();
-    const locale = useFlowLocale();
-    const localeKey = variant ? getParagraphVariantLocaleKey(variant) : undefined;
-    const label = localeKey ? locale[localeKey] : "";
     return (
         <ToolButton>
             <Icon path={mdiFormatText} size={0.75}/>
-            {label}
+            <span>
+                {PARAGRAPH_STYLE_VARIANTS.map(option => (
+                    <ParagraphVariantLabel
+                        key={option}
+                        variant={option}
+                        collapsed={option !== variant}
+                    />
+                ))}
+            </span>
             <Icon path={mdiMenuDown} size={0.75}/>
         </ToolButton>
     );
