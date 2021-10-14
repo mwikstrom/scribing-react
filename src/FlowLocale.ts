@@ -1,13 +1,18 @@
-import { ParagraphStyleVariant } from "scribing";
+import { ParagraphStyleVariant, TextColor } from "scribing";
 
 /** @public */
-export interface FlowLocale extends Record<ParagraphVariantLocaleKey, string> {
+export interface FlowLocale extends 
+Record<ParagraphVariantLocaleKey, string>, 
+Record<ColorLocaleKey, string> {
     hold_ctrl_key_to_enable_interaction: string;
     script_error: string;
 }
 
 /** @public */
 export type ParagraphVariantLocaleKey = `paragraph_variant_${ParagraphStyleVariant}`;
+
+/** @public */
+export type ColorLocaleKey = `color_${TextColor}`;
 
 /** @public */
 export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
@@ -24,9 +29,22 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     paragraph_variant_subtitle: "Subtitle",
     paragraph_variant_preamble: "Preamble",
     paragraph_variant_code: "Code",
+    color_default: "Default",
+    color_subtle: "Subtle",
+    color_primary: "Primary accent",
+    color_secondary: "Secondary accent",
+    color_information: "Information",
+    color_success: "Success",
+    color_warning: "Warning",
+    color_error: "Error",
 });
 
 /** @public */
 export function getParagraphVariantLocaleKey(variant: ParagraphStyleVariant): ParagraphVariantLocaleKey {
     return `paragraph_variant_${variant}`;
+}
+
+/** @public */
+export function getTextColorLocaleKey(variant: TextColor): ColorLocaleKey {
+    return `color_${variant}`;
 }
