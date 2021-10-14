@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Setting paragraph variant = normal shall be an unformat operation (change req. in both key handler and commands)
 - Paragraph alignment is not applied/discovered as expected
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
