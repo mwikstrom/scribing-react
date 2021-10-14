@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Paragraph variant is not applied/discovered as expected
 - Paragraph alignment is not applied/discovered as expected
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
