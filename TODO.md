@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Link text color is not exposed via commands
 - Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Tool: Set paragraph variant
