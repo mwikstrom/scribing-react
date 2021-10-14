@@ -1,12 +1,12 @@
 import Icon, { Stack } from "@mdi/react";
 import React, { FC, ReactElement } from "react";
-import { ToolButton } from "../ToolButton";
+import { ToolButton } from "./ToolButton";
 import { mdiFormatColorFill, mdiColorHelper, mdiMenuDown } from "@mdi/js";
 import { FlowPalette } from "../../FlowPalette";
 import { TextStyleProps } from "scribing";
 import { IconProps } from "@mdi/react/dist/IconProps";
 import { useFlowPalette } from "../../FlowPaletteScope";
-import { ToolbarProps } from "../Toolbar";
+import { ToolbarProps } from "./Toolbar";
 
 export const TextColorButton: FC<ToolbarProps> = ({commands}) => {
     const palette = useFlowPalette();

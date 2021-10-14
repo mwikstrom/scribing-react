@@ -1,7 +1,7 @@
 import Icon from "@mdi/react";
 import React, { FC } from "react";
-import { FlowEditorCommands } from "./FlowEditorCommands";
-import { createUseFlowStyles } from "./JssTheming";
+import { FlowEditorCommands } from "../FlowEditorCommands";
+import { createUseFlowStyles } from "../JssTheming";
 import { ToolButton } from "./ToolButton";
 import {
     mdiFormatFont,
@@ -22,14 +22,14 @@ import {
 } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
-import { BoldButton } from "./tools/BoldButton";
-import { ItalicButton } from "./tools/ItalicButton";
-import { UnderlineButton } from "./tools/UnderlineButton";
-import { StrikeButton } from "./tools/StrikeButton";
-import { SubscriptButton } from "./tools/SubscriptButton";
-import { SuperscriptButton } from "./tools/SuperscriptButton";
-import { TextColorButton } from "./tools/TextColorButton";
-import { ParagraphVariantButton } from "./tools/ParagraphVariantButton";
+import { BoldButton } from "./BoldButton";
+import { ItalicButton } from "./ItalicButton";
+import { UnderlineButton } from "./UnderlineButton";
+import { StrikeButton } from "./StrikeButton";
+import { SubscriptButton } from "./SubscriptButton";
+import { SuperscriptButton } from "./SuperscriptButton";
+import { TextColorButton } from "./TextColorButton";
+import { ParagraphVariantButton } from "./ParagraphVariantButton";
 
 /** @internal */
 export interface ToolbarProps {

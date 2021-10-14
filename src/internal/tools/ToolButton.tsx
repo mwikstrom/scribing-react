@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { FC, useCallback, useState } from "react";
-import { createUseFlowStyles } from "./JssTheming";
+import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
 export interface ToolButtonProps {

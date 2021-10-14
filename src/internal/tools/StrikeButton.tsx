@@ -1,8 +1,8 @@
 import Icon from "@mdi/react";
 import React, { FC } from "react";
-import { ToolButton } from "../ToolButton";
+import { ToolButton } from "./ToolButton";
 import { mdiFormatStrikethrough } from "@mdi/js";
-import { ToolbarProps } from "../Toolbar";
+import { ToolbarProps } from "./Toolbar";
 
 export const StrikeButton: FC<ToolbarProps> = ({commands}) => (
     <ToolButton

@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { createUseStyles } from "react-jss";
-import { makeJssId } from "./utils/make-jss-id";
+import { makeJssId } from "../utils/make-jss-id";
 
 /** @internal */
 export const ToolGroup: FC = ({children}) => {

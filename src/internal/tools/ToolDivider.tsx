@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { createUseFlowStyles } from "./JssTheming";
+import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
 export const ToolDivider: FC = () => {
