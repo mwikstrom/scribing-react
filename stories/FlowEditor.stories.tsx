@@ -136,6 +136,22 @@ InlineButton.args = {
     ])),
 };
 
+export const NestedButton = Template.bind({});
+NestedButton.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Can a ",
+        { button: [
+            "button be ",
+            { button: [
+                "nested inside"
+            ]},
+            " another",
+        ]},        
+        " button?",
+        { break: "para" },
+    ])),
+};
+
 export const Rich = Template.bind({});
 Rich.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
