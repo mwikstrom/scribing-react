@@ -45,7 +45,7 @@ const useStyles = createUseFlowStyles("ToolButton", ({palette}) => ({
         minWidth: 24,
         height: 24,
         borderRadius: 2,
-        margin: 1,
+        margin: 0.5,
     },
     active: {
         color: palette.activeToolText,

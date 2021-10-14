@@ -21,7 +21,6 @@ SCRIBING TODO
 - Tool: Insert button
 - Insert ghost span for reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
-- Tool button spacing is inconsistent
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
 - FlowBox and BoxStyle -- can/should replace FlowButton? One style could be "condition expression"?
