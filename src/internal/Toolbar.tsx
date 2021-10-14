@@ -1,5 +1,5 @@
 import Icon, { Stack } from "@mdi/react";
-import React, { FC } from "react";
+import React, { FC, ReactElement } from "react";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
 import { ToolButton } from "./ToolButton";
@@ -28,6 +28,9 @@ import {
     mdiFormatIndentDecrease,
     mdiFormatIndentIncrease,
 } from "@mdi/js";
+import { FlowPalette, useFlowPalette } from "..";
+import { TextStyleProps } from "scribing";
+import { IconProps } from "@mdi/react/dist/IconProps";
 
 /** @internal */
 export interface ToolbarProps {
@@ -45,6 +48,7 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             <StrikeButton commands={commands}/>
             <SubscriptButton commands={commands}/>
             <SuperscriptButton commands={commands}/>
+            <TextColorButton commands={commands}/>
             <ToolButton><Icon path={mdiFormatAlignLeft}/></ToolButton>
             <ToolButton><Icon path={mdiFormatAlignCenter}/></ToolButton>
             <ToolButton><Icon path={mdiFormatAlignRight}/></ToolButton>
@@ -58,12 +62,6 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             <ToolButton><Icon path={mdiFormatFont}/></ToolButton>
             <ToolButton><Icon path={mdiFormatSize}/></ToolButton>
             <ToolButton><Icon path={mdiGestureTapButton}/></ToolButton>
-            <ToolButton>
-                <Stack>
-                    <Icon path={mdiFormatColorFill}/>
-                    <Icon path={mdiColorHelper}/>
-                </Stack>
-            </ToolButton>
             <ToolButton><Icon path={mdiFormatTextdirectionLToR}/></ToolButton>
             <ToolButton><Icon path={mdiFormatTextdirectionRToL}/></ToolButton>
         </div>
@@ -124,3 +122,37 @@ const SuperscriptButton: FC<ToolbarProps> = ({commands}) => (
         children={<Icon path={mdiFormatSuperscript}/>}
     />
 );
+
+const TextColorButton: FC<ToolbarProps> = ({commands}) => {
+    const palette = useFlowPalette();
+    const color = commands.getTextColor();
+    let icon: ReactElement<IconProps> = <Icon path={mdiFormatColorFill}/>;
+
+    if (color) {
+        icon = (
+            <Stack>
+                {icon}
+                <Icon 
+                    path={mdiColorHelper}
+                    color={palette[getPaletteColorFromTextColor(color)]}
+                />
+            </Stack>
+        );
+    }
+
+    return (
+        <ToolButton
+            children={icon}
+        />
+    );
+};
+
+const getPaletteColorFromTextColor = (
+    color: Exclude<TextStyleProps["color"], undefined>
+): keyof FlowPalette => {
+    if (color === "default") {
+        return "text";
+    } else {
+        return color;
+    }
+};
