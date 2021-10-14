@@ -85,6 +85,7 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
         fontSize: "0.75rem",
         borderRadius: 4,
         userSelect: "none",
+        boxShadow: "0 8px 8px rgba(0,0,0,0.25)",
         opacity: 0,
         transition: "opacity ease-in-out 0.25s",
     },
@@ -109,6 +110,7 @@ const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
             content: "''",
             transform: "rotate(45deg)",
             background: "inherit",
+            boxShadow: "0 8px 8px rgba(0,0,0,0.25)",
         }
     },
     arrowTop: {
