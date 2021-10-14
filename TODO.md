@@ -11,7 +11,6 @@ SCRIBING TODO
 - Tool: Set list counter
 - Tool: Set list marker
 - Tool: Set list level
-- Tool: Set text color
 - Tool: Set button action
 - Tool: Set link action
 - Tool: Set dynamic text expression

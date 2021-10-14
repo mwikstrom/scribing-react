@@ -1,7 +1,13 @@
 import Icon, { Stack } from "@mdi/react";
 import React, { FC, ReactElement, useCallback, useState } from "react";
 import { ToolButton } from "./ToolButton";
-import { mdiFormatColorFill, mdiColorHelper, mdiMenuDown } from "@mdi/js";
+import {
+    mdiFormatColorFill,
+    mdiColorHelper,
+    mdiMenuDown,
+    mdiCheckboxBlank,
+    mdiCheck,
+} from "@mdi/js";
 import { FlowPalette } from "../../FlowPalette";
 import { TextColor, TextStyleProps, TEXT_COLORS } from "scribing";
 import { IconProps } from "@mdi/react/dist/IconProps";
@@ -23,7 +29,7 @@ export const TextColorButton: FC<ToolbarProps> = ({commands}) => {
         commands.setTextColor(option);
     }, [closeMenu, commands]);
     const color = commands.getTextColor();
-    let icon: ReactElement<IconProps> = <Icon path={mdiFormatColorFill}/>;
+    let icon: ReactElement<IconProps> = <Icon size={1} path={mdiFormatColorFill}/>;
 
     if (color) {
         icon = (
@@ -47,13 +53,43 @@ export const TextColorButton: FC<ToolbarProps> = ({commands}) => {
                 <ToolMenu anchor={buttonRef} onClose={closeMenu}>
                     {TEXT_COLORS.map(option => (
                         <ToolMenuItem key={option} onClick={applyColor.bind(void(0), option)}>
-                            {locale[getTextColorLocaleKey(option)]}
+                            <ColorIcon color={option} checked={option === color}/>
+                            <span style={{margin: "0 0.5rem"}}>
+                                {locale[getTextColorLocaleKey(option)]}
+                            </span>
                         </ToolMenuItem>
                     ))}
                 </ToolMenu>
             )}
         </>
     );
+};
+
+interface ColorIconProps {
+    color: TextColor;
+    checked: boolean;
+}
+
+const ColorIcon: FC<ColorIconProps> = ({color, checked}) => {
+    const palette = useFlowPalette();
+    let icon = (
+        <Icon
+            size={1}
+            path={mdiCheckboxBlank}
+            color={palette[getPaletteColorFromTextColor(color)]}
+        />
+    );
+
+    if (checked) {
+        icon = (
+            <Stack size={1}>
+                {icon}
+                <Icon size={0.75} path={mdiCheck} color={palette.menuText}/>
+            </Stack>
+        );
+    }
+
+    return icon;
 };
 
 const getPaletteColorFromTextColor = (
