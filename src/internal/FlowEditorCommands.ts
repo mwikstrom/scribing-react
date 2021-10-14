@@ -136,12 +136,30 @@ export class FlowEditorCommands {
         return this.getParagraphStyle().get("alignment");
     }
 
+    isTextAlignment(value: ParagraphStyleProps["alignment"]): boolean | undefined {
+        const actual = this.getTextAlignment();
+        if (actual === value) {
+            return true;
+        } else if (actual !== void(0)) {
+            return false;
+        }
+    }
+
     setTextAlignment(value: Exclude<ParagraphStyleProps["alignment"], undefined>): void {
         this.formatParagraph("alignment", value);
     }
 
     getTextDirection(): ParagraphStyleProps["direction"] {
         return this.getParagraphStyle().get("direction");
+    }
+
+    isTextDirection(value: ParagraphStyleProps["direction"]): boolean | undefined {
+        const actual = this.getTextDirection();
+        if (actual === value) {
+            return true;
+        } else if (actual !== void(0)) {
+            return false;
+        }
     }
 
     setTextDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void {

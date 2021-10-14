@@ -1,12 +1,12 @@
 SCRIBING TODO
 =============
 - Paragraph variant is not applied/discovered as expected
+- Paragraph alignment is not applied/discovered as expected
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
 - Caret tools are not scrolled with editor viewport
 - Tool/menu popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
-- Tool: Set paragraph alignment
 - Tool: Set list variant
 - Tool: Set list counter
 - Tool: Set list marker

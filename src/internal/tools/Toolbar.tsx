@@ -9,10 +9,6 @@ import {
     mdiGestureTapButton,
     mdiFormatTextdirectionLToR,
     mdiFormatTextdirectionRToL,
-    mdiFormatAlignLeft,
-    mdiFormatAlignCenter,
-    mdiFormatAlignRight,
-    mdiFormatAlignJustify,
     mdiFormatText,
     mdiFormatLineSpacing,
     mdiFormatListBulleted,
@@ -30,6 +26,10 @@ import { SubscriptButton } from "./SubscriptButton";
 import { SuperscriptButton } from "./SuperscriptButton";
 import { TextColorButton } from "./TextColorButton";
 import { ParagraphVariantButton } from "./ParagraphVariantButton";
+import { TextAlignLeftButton } from "./TextAlignLeftButton";
+import { TextAlignCenterButton } from "./TextAlignCenterButton";
+import { TextAlignRightButton } from "./TextAlignRightButton";
+import { TextAlignJustifyButton } from "./TextAlignJustifyButton";
 
 /** @internal */
 export interface ToolbarProps {
@@ -56,10 +56,10 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             <TextColorButton commands={commands}/>
             <ToolDivider/>
             <ToolGroup>
-                <ToolButton><Icon path={mdiFormatAlignLeft}/></ToolButton>
-                <ToolButton><Icon path={mdiFormatAlignCenter}/></ToolButton>
-                <ToolButton><Icon path={mdiFormatAlignRight}/></ToolButton>
-                <ToolButton><Icon path={mdiFormatAlignJustify}/></ToolButton>
+                <TextAlignLeftButton commands={commands}/>
+                <TextAlignCenterButton commands={commands}/>
+                <TextAlignRightButton commands={commands}/>
+                <TextAlignJustifyButton commands={commands}/>
             </ToolGroup>
             <ToolDivider/>
             <ToolGroup>
