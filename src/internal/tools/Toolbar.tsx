@@ -9,7 +9,6 @@ import {
     mdiGestureTapButton,
     mdiFormatTextdirectionLToR,
     mdiFormatTextdirectionRToL,
-    mdiFormatText,
     mdiFormatLineSpacing,
     mdiFormatListBulleted,
     mdiFormatListNumbered,
@@ -41,6 +40,8 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
+            <ParagraphVariantButton commands={commands}/>
+            <ToolDivider/>
             <ToolGroup>
                 <BoldButton commands={commands}/>
                 <ItalicButton commands={commands}/>
@@ -55,6 +56,7 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             <ToolDivider/>
             <TextColorButton commands={commands}/>
             <ToolDivider/>
+            <ToolButton><Icon path={mdiGestureTapButton}/></ToolButton>
             <ToolGroup>
                 <TextAlignLeftButton commands={commands}/>
                 <TextAlignCenterButton commands={commands}/>
@@ -66,18 +68,16 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
                 <ToolButton><Icon path={mdiFormatListBulleted}/></ToolButton>
                 <ToolButton><Icon path={mdiFormatListNumbered}/></ToolButton>
             </ToolGroup>
-            <ParagraphVariantButton commands={commands}/>
             <ToolDivider/>
             <ToolGroup>
                 <ToolButton><Icon path={mdiFormatIndentIncrease}/></ToolButton>
                 <ToolButton><Icon path={mdiFormatIndentDecrease}/></ToolButton>
             </ToolGroup>
             <ToolDivider/>
-            <ToolButton><Icon path={mdiFormatText}/></ToolButton>
             <ToolButton><Icon path={mdiFormatLineSpacing}/></ToolButton>
             <ToolButton><Icon path={mdiFormatFont}/></ToolButton>
             <ToolButton><Icon path={mdiFormatSize}/></ToolButton>
-            <ToolButton><Icon path={mdiGestureTapButton}/></ToolButton>
+            <ToolDivider/>
             <ToolButton><Icon path={mdiFormatTextdirectionLToR}/></ToolButton>
             <ToolButton><Icon path={mdiFormatTextdirectionRToL}/></ToolButton>
         </div>
