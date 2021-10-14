@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Flow style JSS is duplicated for tool buttons
 - Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Tool: Set paragraph variant
