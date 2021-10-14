@@ -2,6 +2,21 @@ SCRIBING TODO
 =============
 - Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
+- Tool: Set paragraph variant
+- Tool: Set paragraph alignment
+- Tool: Set list variant
+- Tool: Set list counter
+- Tool: Set list marker
+- Tool: Set list level
+- Tool: Set text color
+- Tool: Set button action
+- Tool: Set link action
+- Tool: Set dynamic text expression
+- Tool: Set reading direction
+- Tool: Set line height
+- Tool: Set font size
+- Tool: Set font family
+- Tool: Insert button
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
 - Special para theme for "inside button"? Or at least fix margin or first/last/single para
