@@ -19,6 +19,8 @@ SCRIBING TODO
 - Tool: Set font size
 - Tool: Set font family
 - Tool: Insert button
+- New interaction: Open Topic
+- Toolbox over interaction point (link/button) makes hover UX crappy
 - Insert ghost span for reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
 - Caret is lost when moving right at end of content
