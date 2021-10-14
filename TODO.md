@@ -22,6 +22,9 @@ SCRIBING TODO
 - Tool button spacing is inconsistent
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
+- FlowBox and BoxStyle -- can/should replace FlowButton? One style could be "condition expression"?
+- FlowTheme vs EditorTheme
+- FlowTypography (default is SYSTEM_FONT)
 - Special para theme for "inside button"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
 - Let tooltip manager activate the tip that is currently scrolled into view
