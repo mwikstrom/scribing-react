@@ -1,7 +1,8 @@
-import React, { FC, ReactNode, useCallback, useRef, useState } from "react";
+import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import { useNativeEventHandler } from "../hooks/use-native-event-handler";
 import { createUseFlowStyles } from "../JssTheming";
+import { getScrollContainer } from "../utils/get-scroll-container";
 import { SYSTEM_FONT } from "../utils/system-font";
 
 /** @internal */
@@ -17,10 +18,21 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    const scrollContainer = useMemo(
+        () => anchor ? getScrollContainer(anchor) : null,
+        [anchor]
+    );
+
+    const boundary = useMemo(
+        () => scrollContainer instanceof Element ? scrollContainer : "clippingParents",
+        [scrollContainer]
+    );
+
     const { styles, attributes } = usePopper(anchor, popper, {
         placement: "bottom-start",
         modifiers: [
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
+            { name: "preventOverflow", options: { boundary, altAxis: true, padding: 2 } },
         ],
     });
 

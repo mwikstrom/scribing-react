@@ -7,6 +7,7 @@ import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
 import { Toolbar } from "./tools/Toolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
+import { getScrollContainer } from "./utils/get-scroll-container";
 
 /** @internal */
 export interface TooltipProps {
@@ -23,12 +24,23 @@ export const Tooltip: FC<TooltipProps> = props => {
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const [stable, setStable] = useState(false);
 
+    const scrollContainer = useMemo(
+        () => popper ? getScrollContainer(popper) : null,
+        [popper]
+    );
+
+    const boundary = useMemo(
+        () => scrollContainer instanceof Element ? scrollContainer : "clippingParents",
+        [scrollContainer]
+    );
+
     const { styles, attributes, update } = usePopper(reference, popper, {
         placement: "top",
         modifiers: [
             { name: "arrow", options: { element: arrow } },
             { name: "offset", options: { offset: [0, 10] } },
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
+            { name: "preventOverflow", options: { boundary, altAxis: true, padding: 5 } },
         ],
     });
 
