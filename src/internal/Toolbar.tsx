@@ -31,6 +31,8 @@ import {
 import { FlowPalette, useFlowPalette } from "..";
 import { TextStyleProps } from "scribing";
 import { IconProps } from "@mdi/react/dist/IconProps";
+import { ToolGroup } from "./ToolGroup";
+import { ToolDivider } from "./ToolDivider";
 
 /** @internal */
 export interface ToolbarProps {
@@ -42,21 +44,37 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <BoldButton commands={commands}/>
-            <ItalicButton commands={commands}/>
-            <UnderlineButton commands={commands}/>
-            <StrikeButton commands={commands}/>
-            <SubscriptButton commands={commands}/>
-            <SuperscriptButton commands={commands}/>
+            <ToolGroup>
+                <BoldButton commands={commands}/>
+                <ItalicButton commands={commands}/>
+                <UnderlineButton commands={commands}/>
+                <StrikeButton commands={commands}/>
+            </ToolGroup>
+            <ToolDivider/>
+            <ToolGroup>
+                <SubscriptButton commands={commands}/>
+                <SuperscriptButton commands={commands}/>
+            </ToolGroup>
+            <ToolDivider/>
             <TextColorButton commands={commands}/>
-            <ToolButton><Icon path={mdiFormatAlignLeft}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatAlignCenter}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatAlignRight}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatAlignJustify}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatListBulleted}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatListNumbered}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatIndentDecrease}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatIndentIncrease}/></ToolButton>
+            <ToolDivider/>
+            <ToolGroup>
+                <ToolButton><Icon path={mdiFormatAlignLeft}/></ToolButton>
+                <ToolButton><Icon path={mdiFormatAlignCenter}/></ToolButton>
+                <ToolButton><Icon path={mdiFormatAlignRight}/></ToolButton>
+                <ToolButton><Icon path={mdiFormatAlignJustify}/></ToolButton>
+            </ToolGroup>
+            <ToolDivider/>
+            <ToolGroup>
+                <ToolButton><Icon path={mdiFormatListBulleted}/></ToolButton>
+                <ToolButton><Icon path={mdiFormatListNumbered}/></ToolButton>
+            </ToolGroup>
+            <ToolDivider/>
+            <ToolGroup>
+                <ToolButton><Icon path={mdiFormatIndentDecrease}/></ToolButton>
+                <ToolButton><Icon path={mdiFormatIndentIncrease}/></ToolButton>
+            </ToolGroup>
+            <ToolDivider/>
             <ToolButton><Icon path={mdiFormatText}/></ToolButton>
             <ToolButton><Icon path={mdiFormatLineSpacing}/></ToolButton>
             <ToolButton><Icon path={mdiFormatFont}/></ToolButton>

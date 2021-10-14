@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Link text color is not exposed via commands
 - Tool popper prevent overflow
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Tool: Set paragraph variant
@@ -17,6 +18,7 @@ SCRIBING TODO
 - Tool: Set font size
 - Tool: Set font family
 - Tool: Insert button
+- Tool button spacing is inconsistent
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
 - Special para theme for "inside button"? Or at least fix margin or first/last/single para

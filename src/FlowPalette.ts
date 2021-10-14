@@ -16,6 +16,7 @@ export interface FlowPalette {
     inactiveTool: string;
     inactiveToolText: string;
     hoverTool: string;
+    toolDivider: string;
 }
 
 /** @public */
@@ -36,4 +37,5 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     inactiveTool: "transparent",
     inactiveToolText: "#cccccc",
     hoverTool: "#333333",
+    toolDivider: "#444444",
 });
