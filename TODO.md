@@ -19,6 +19,8 @@ SCRIBING TODO
 - Tool: Set font size
 - Tool: Set font family
 - Tool: Insert button
+- Insert ghost span for reflect caret style
+- Text style for disabling spell checker (usage example: math/code)
 - Tool button spacing is inconsistent
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
