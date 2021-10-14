@@ -3,22 +3,18 @@ import React, { FC, useCallback, useState } from "react";
 import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
-export interface ToolButtonProps {
-    active?: boolean;
-    setRef?: (elem: HTMLElement) => void;
+export interface ToolMenuItemProps {
     onClick?: () => void;
 }
 
 /** @internal */
-export const ToolButton: FC<ToolButtonProps> = ({active, onClick, setRef, children}) => {
+export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, children}) => {
     const classes = useStyles();
     const [hover, setHover] = useState(false);
 
     const className = clsx(
         classes.root,
-        active && classes.active,
-        active === false && classes.inactive,
-        !active && hover && classes.hover,
+        hover && classes.hover,
     );
 
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
@@ -26,7 +22,6 @@ export const ToolButton: FC<ToolButtonProps> = ({active, onClick, setRef, childr
 
     return (
         <span 
-            ref={setRef}
             className={className}
             children={children}
             onClick={onClick}
@@ -36,26 +31,16 @@ export const ToolButton: FC<ToolButtonProps> = ({active, onClick, setRef, childr
     );
 };
 
-const useStyles = createUseFlowStyles("ToolButton", ({palette}) => ({
+const useStyles = createUseFlowStyles("ToolMenuItem", ({palette}) => ({
     root: {
-        display: "inline-flex",
+        display: "flex",
         alignItems: "center",
         padding: 4,
         cursor: "pointer",
         minWidth: 24,
         height: 24,
-        borderRadius: 2,
-        margin: 1,
-    },
-    active: {
-        color: palette.activeToolText,
-        backgroundColor: palette.activeTool,
-    },
-    inactive: {
-        color: palette.inactiveToolText,
-        backgroundColor: palette.inactiveTool,
     },
     hover: {
-        backgroundColor: palette.hoverTool,
+        backgroundColor: palette.hoverMenu,
     },
 }));
