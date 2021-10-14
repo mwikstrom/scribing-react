@@ -10,7 +10,7 @@ export const ToolDivider: FC = () => {
 const useStyles = createUseFlowStyles("ToolDivider", ({palette}) => ({
     root: {
         display: "inline-block",
-        width: 1,
+        width: 0.5,
         height: 24,
         backgroundColor: palette.toolDivider,
         margin: "0 2px",

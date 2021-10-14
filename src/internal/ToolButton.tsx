@@ -36,10 +36,11 @@ export const ToolButton: FC<ToolButtonProps> = ({active, onClick, children}) => 
 
 const useStyles = createUseFlowStyles("ToolButton", ({palette}) => ({
     root: {
-        display: "inline-block",
+        display: "inline-flex",
+        alignItems: "center",
         padding: 4,
         cursor: "pointer",
-        width: 24,
+        minWidth: 24,
         height: 24,
         borderRadius: 2,
         margin: 1,
