@@ -3,7 +3,7 @@ import React, { FC, ReactElement, useCallback, useState } from "react";
 import { ToolButton } from "./ToolButton";
 import { mdiFormatColorFill, mdiColorHelper, mdiMenuDown } from "@mdi/js";
 import { FlowPalette } from "../../FlowPalette";
-import { TextStyleProps, TEXT_COLORS } from "scribing";
+import { TextColor, TextStyleProps, TEXT_COLORS } from "scribing";
 import { IconProps } from "@mdi/react/dist/IconProps";
 import { useFlowPalette } from "../../FlowPaletteScope";
 import { ToolbarProps } from "./Toolbar";
@@ -18,6 +18,10 @@ export const TextColorButton: FC<ToolbarProps> = ({commands}) => {
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
+    const applyColor = useCallback((option: TextColor) => {
+        closeMenu();
+        commands.setTextColor(option);
+    }, [closeMenu, commands]);
     const color = commands.getTextColor();
     let icon: ReactElement<IconProps> = <Icon path={mdiFormatColorFill}/>;
 
@@ -42,7 +46,7 @@ export const TextColorButton: FC<ToolbarProps> = ({commands}) => {
             {buttonRef && isMenuOpen && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu}>
                     {TEXT_COLORS.map(option => (
-                        <ToolMenuItem key={option}>
+                        <ToolMenuItem key={option} onClick={applyColor.bind(void(0), option)}>
                             {locale[getTextColorLocaleKey(option)]}
                         </ToolMenuItem>
                     ))}
