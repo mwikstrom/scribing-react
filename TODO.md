@@ -1,5 +1,7 @@
 SCRIBING TODO
 =============
+- Implement ordered/unordered toogle tools
+- When incrementing list level from zero, then the list marker shall be initially hidden
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
