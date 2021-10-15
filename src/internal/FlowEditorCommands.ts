@@ -200,10 +200,49 @@ export class FlowEditorCommands {
         }
     }
 
+    isUnorderedList(): boolean | undefined {
+        const { listMarker, hideListMarker, listLevel } = this.getParagraphStyle();
+        if (listMarker && hideListMarker !== void(0) && listLevel !== void(0)) {
+            if (hideListMarker || listLevel <= 0) {
+                return false;
+            }
+
+            return (
+                listMarker === "circle" ||
+                listMarker === "disc" ||
+                listMarker === "dash" || 
+                listMarker === "square" ||
+                listMarker === "unordered"
+            );
+        }
+    }
+
+    isOrderedList(): boolean | undefined {
+        const { listMarker, hideListMarker, listLevel } = this.getParagraphStyle();
+        if (listMarker && hideListMarker !== void(0) && listLevel !== void(0)) {
+            if (hideListMarker || listLevel <= 0) {
+                return false;
+            }
+
+            return (
+                listMarker === "decimal" ||
+                listMarker === "lower-alpha" ||
+                listMarker === "lower-roman" ||
+                listMarker === "ordered" ||
+                listMarker === "upper-alpha" ||
+                listMarker === "upper-roman"
+            );
+        }
+    }
+
+    toggleUnorderedList(): void {
+    }
+
+    toggleOrderedList(): void {
+    }
+
     // TODO: spaceAbove
     // TODO: spaceBelow
-    // TODO: listMarker
-    // TODO: hideListMarker
     // TODO: listCounter
     // TODO: listCounterPrefix
     // TODO: listCounterSuffix
