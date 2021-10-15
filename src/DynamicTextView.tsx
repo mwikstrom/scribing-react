@@ -7,7 +7,7 @@ import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
-import { useFlowLocale } from ".";
+import { useEditMode, useFlowLocale } from ".";
 import { useShowTip } from "./internal/TooltipScope";
 import Icon from "@mdi/react";
 import { mdiLoading } from "@mdi/js";
@@ -37,16 +37,29 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const evaluated = useObservedScript(expression);
     const locale = useFlowLocale();
     const showTip = useShowTip();
+    const editMode = useEditMode();
+    const empty = useMemo(() => {
+        const { result, ready, error } = evaluated;
+        if (!expression) {
+            return true;
+        } else if (ready && !error) {
+            return result === void(0) || result === "";
+        } else {
+            return false;
+        }
+    }, [expression, evaluated]);
     const value = useMemo(() => {
         const { result, ready, error } = evaluated;
-        if (error) {            
+        if (empty) {
+            return !editMode ? "" : expression ? locale.void_result : locale.void_script;
+        } else if (error) {            
             return locale.script_error;
         } else if (result !== void(0) || ready) {
             return String(result);
         } else {
             return null;
         }
-    }, [evaluated, locale]);
+    }, [evaluated, locale, empty, editMode]);
     
     const [hover, setHover] = useState(false);
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
@@ -54,15 +67,16 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
 
     useEffect(() => {
         const { error } = evaluated;
-        if (error && rootElem && hover) {
+        if (error && rootElem && hover && !empty) {
             return showTip(rootElem, error.message);
         }
-    }, [evaluated, rootElem, hover]);
+    }, [evaluated, rootElem, hover, empty]);
 
     const className = useMemo(() => clsx(
         classes.root, 
         !evaluated.ready && classes.pending,
-        evaluated.error !== null && classes.error,
+        evaluated.error !== null && !empty && classes.error,
+        !!editMode && empty && classes.empty,
         ...getTextStyleClassNames(style, classes)
     ), [style, classes, evaluated]);
 
@@ -93,22 +107,17 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
         cursor: "default",
     },
-    error: {
-        display: "inline-block",
-        padding: "0 .5rem",
-        color: palette.error,
-        outlineStyle: "dashed",
-        outlineWidth: 1,
-        outlineColor: palette.error,
-        outlineOffset: "0.2rem",
-    },
-    pending: {
-        display: "inline-block",
-        padding: "0 .5rem",
-        color: palette.subtle,
-        outlineStyle: "dashed",
-        outlineWidth: 1,
-        outlineColor: palette.subtle,
-        outlineOffset: "0.2rem",
-    },
+    error: makeOutlineCssProps(palette.error),
+    pending: makeOutlineCssProps(palette.subtle),
+    empty: makeOutlineCssProps(palette.subtle),
 }));
+
+const makeOutlineCssProps = (color: string) => ({
+    display: "inline-block",
+    padding: "0 .5rem",
+    color: color,
+    outlineStyle: "dashed",
+    outlineWidth: 1,
+    outlineColor: color,
+    outlineOffset: "0.2rem",
+});
