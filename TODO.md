@@ -4,7 +4,6 @@ SCRIBING TODO
 - Paragraph alignment is not applied/discovered as expected
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
-- Caret tools are not scrolled with editor viewport
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Tool: Set list variant
 - Tool: Set list counter
@@ -20,7 +19,7 @@ SCRIBING TODO
 - Tool: Insert button
 - New interaction: Open Topic
 - Toolbox over interaction point (link/button) makes hover UX crappy
-- Insert ghost span for reflect caret style
+- Insert ghost span to reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
 - Caret is lost when moving right at end of content
 - Cannot insert text before/after block level button
