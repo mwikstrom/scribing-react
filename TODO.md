@@ -15,6 +15,7 @@ SCRIBING TODO
 - Tool: Set font family
 - Tool: Insert button
 - Tool: Insert dynamic text
+- Tool: Toggle full width
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
 - Toolbox arrow is not pretty when caret is at start of paragraph
