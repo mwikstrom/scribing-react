@@ -2,13 +2,15 @@ import {
     FlowContent,
     FlowEditorState, 
     FlowOperation, 
+    OrderedListMarkerKindType, 
     ParagraphStyle, 
     ParagraphStyleProps, 
     ParagraphStyleVariant, 
     TargetOptions, 
     TextRun, 
     TextStyle, 
-    TextStyleProps
+    TextStyleProps,
+    UnorderedListMarkerKindType
 } from "scribing";
 
 /** @internal */
@@ -207,13 +209,7 @@ export class FlowEditorCommands {
                 return false;
             }
 
-            return (
-                listMarker === "circle" ||
-                listMarker === "disc" ||
-                listMarker === "dash" || 
-                listMarker === "square" ||
-                listMarker === "unordered"
-            );
+            return UnorderedListMarkerKindType.test(listMarker);
         }
     }
 
@@ -224,21 +220,25 @@ export class FlowEditorCommands {
                 return false;
             }
 
-            return (
-                listMarker === "decimal" ||
-                listMarker === "lower-alpha" ||
-                listMarker === "lower-roman" ||
-                listMarker === "ordered" ||
-                listMarker === "upper-alpha" ||
-                listMarker === "upper-roman"
-            );
+            return OrderedListMarkerKindType.test(listMarker);
         }
     }
 
     toggleUnorderedList(): void {
+        const apply = this.isUnorderedList() ? null : "unordered";
+        this.formatList(apply);
     }
 
     toggleOrderedList(): void {
+        const apply = this.isOrderedList() ? null : "ordered";
+        this.formatList(apply);
+    }
+
+    formatList(kind: "ordered" | "unordered" | null): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.formatList(content, kind));
+        }
     }
 
     // TODO: spaceAbove
