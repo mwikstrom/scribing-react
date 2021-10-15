@@ -21,6 +21,7 @@ SCRIBING TODO
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
 - Toolbox over interaction point (link/button) makes hover UX crappy
+- Cannot toggle toolbox with ctr+period after escaping it
 - Insert ghost span to reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
 - Caret is lost when moving right at end of content
