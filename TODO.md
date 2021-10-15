@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- SEVERE: Something is broken. Typing text causes caret to flicker to start of text run :-(
 - Setting paragraph variant = normal shall be an unformat operation (change req. in both key handler and commands)
 - Paragraph alignment is not applied/discovered as expected
 - Flow style JSS is duplicated for tool buttons
