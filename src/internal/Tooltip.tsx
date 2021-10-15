@@ -34,13 +34,14 @@ export const Tooltip: FC<TooltipProps> = props => {
         [scrollContainer]
     );
 
+    const padding = { left: 2, top: 5, right: 2, bottom: 5 };
     const { styles, attributes, update } = usePopper(reference, popper, {
         placement: "top",
         modifiers: [
             { name: "arrow", options: { element: arrow } },
             { name: "offset", options: { offset: [0, 10] } },
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
-            { name: "preventOverflow", options: { boundary, altAxis: true, padding: 5 } },
+            { name: "preventOverflow", options: { boundary, altAxis: true, padding } },
         ],
     });
 

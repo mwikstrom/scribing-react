@@ -20,7 +20,6 @@ SCRIBING TODO
 - Tool: Toggle full width
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
-- Toolbox arrow is not pretty when caret is at start of paragraph
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Insert ghost span to reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
