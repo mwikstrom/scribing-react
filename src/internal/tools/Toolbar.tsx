@@ -72,8 +72,8 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             </ToolGroup>
             <ToolDivider/>
             <ToolGroup>
-                <IncrementListLevelButton commands={commands}/>
                 <DecrementListLevelButton commands={commands}/>
+                <IncrementListLevelButton commands={commands}/>
             </ToolGroup>
             <ToolDivider/>
             <ToolButton><Icon path={mdiFormatLineSpacing}/></ToolButton>
