@@ -4,6 +4,8 @@ SCRIBING TODO
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
+- Scripthost: Observe instance vars
+- Scribing: Specify script instance in Interaction and DynamicTextExpr
 - Tool: Set list variant
 - Tool: Set list counter
 - Tool: Set list marker
