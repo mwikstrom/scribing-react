@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
     FlowEditorState, 
     FlowOperation, 
@@ -264,7 +264,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [state.content, editingHost]);
     
     // Keep DOM selection in sync with editor selection
-    useEffect(() => {
+    useLayoutEffect(() => {
         const domSelection = document.getSelection();
 
         if (!editingHost || !domSelection) {
