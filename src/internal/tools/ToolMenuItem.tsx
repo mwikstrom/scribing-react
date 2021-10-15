@@ -39,6 +39,7 @@ const useStyles = createUseFlowStyles("ToolMenuItem", ({palette}) => ({
         cursor: "pointer",
         minWidth: 24,
         height: 24,
+        whiteSpace: "nowrap",
     },
     hover: {
         backgroundColor: palette.hoverMenu,
