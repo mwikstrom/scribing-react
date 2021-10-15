@@ -246,6 +246,12 @@ DynamicTextStates.args = {
         "This should fail after 1 second: ", { dynamic: "{ await delay(1000); throw new Error('Failure'); }" },
         { break: "para" },
         "This should resolve to \"OK\" after 1 second: ", { dynamic: "{ await delay(1000); return 'OK' }" },
+        { break: "para" },
+        "This should be null: ", { dynamic: "null" },
+        { break: "para" },
+        "This should be empty: ", { dynamic: "''" },
+        { break: "para" },
+        "This is an empty expression: ", { dynamic: "" },
     ])),
 };
 
