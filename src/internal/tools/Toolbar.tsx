@@ -14,6 +14,7 @@ import {
     mdiFormatListNumbered,
     mdiFormatIndentDecrease,
     mdiFormatIndentIncrease,
+    mdiFunctionVariant,
 } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
@@ -57,6 +58,7 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             <TextColorButton commands={commands}/>
             <ToolDivider/>
             <ToolButton><Icon path={mdiGestureTapButton}/></ToolButton>
+            <ToolButton><Icon path={mdiFunctionVariant}/></ToolButton>
             <ToolGroup>
                 <TextAlignLeftButton commands={commands}/>
                 <TextAlignCenterButton commands={commands}/>
