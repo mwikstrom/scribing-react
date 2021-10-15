@@ -12,8 +12,6 @@ import {
     mdiFormatLineSpacing,
     mdiFormatListBulleted,
     mdiFormatListNumbered,
-    mdiFormatIndentDecrease,
-    mdiFormatIndentIncrease,
     mdiFunctionVariant,
 } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
@@ -30,6 +28,8 @@ import { TextAlignLeftButton } from "./TextAlignLeftButton";
 import { TextAlignCenterButton } from "./TextAlignCenterButton";
 import { TextAlignRightButton } from "./TextAlignRightButton";
 import { TextAlignJustifyButton } from "./TextAlignJustifyButton";
+import { IncrementListLevelButton } from "./IncrementListLevelButton";
+import { DecrementListLevelButton } from "./DecrementListLevelButton";
 
 /** @internal */
 export interface ToolbarProps {
@@ -72,8 +72,8 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
             </ToolGroup>
             <ToolDivider/>
             <ToolGroup>
-                <ToolButton><Icon path={mdiFormatIndentIncrease}/></ToolButton>
-                <ToolButton><Icon path={mdiFormatIndentDecrease}/></ToolButton>
+                <IncrementListLevelButton commands={commands}/>
+                <DecrementListLevelButton commands={commands}/>
             </ToolGroup>
             <ToolDivider/>
             <ToolButton><Icon path={mdiFormatLineSpacing}/></ToolButton>

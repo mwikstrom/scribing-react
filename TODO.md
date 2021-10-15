@@ -8,7 +8,6 @@ SCRIBING TODO
 - Tool: Set list variant
 - Tool: Set list counter
 - Tool: Set list marker
-- Tool: Set list level
 - Tool: Set button action
 - Tool: Set link action
 - Tool: Set dynamic text expression
@@ -20,6 +19,7 @@ SCRIBING TODO
 - Tool: Insert dynamic text
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
+- Toolbox arrow is not pretty when caret is at start of paragraph
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Insert ghost span to reflect caret style
 - Text style for disabling spell checker (usage example: math/code)

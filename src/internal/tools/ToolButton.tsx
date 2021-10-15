@@ -5,20 +5,22 @@ import { createUseFlowStyles } from "../JssTheming";
 /** @internal */
 export interface ToolButtonProps {
     active?: boolean;
+    disabled?: boolean;
     setRef?: (elem: HTMLElement) => void;
     onClick?: () => void;
 }
 
 /** @internal */
-export const ToolButton: FC<ToolButtonProps> = ({active, onClick, setRef, children}) => {
+export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setRef, children}) => {
     const classes = useStyles();
     const [hover, setHover] = useState(false);
 
     const className = clsx(
         classes.root,
+        disabled && classes.disabled,
         active && classes.active,
         active === false && classes.inactive,
-        !active && hover && classes.hover,
+        !active && hover && !disabled && classes.hover,
     );
 
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
@@ -29,7 +31,7 @@ export const ToolButton: FC<ToolButtonProps> = ({active, onClick, setRef, childr
             ref={setRef}
             className={className}
             children={children}
-            onClick={onClick}
+            onClick={!disabled ? onClick : undefined}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         />
@@ -46,6 +48,9 @@ const useStyles = createUseFlowStyles("ToolButton", ({palette}) => ({
         height: 24,
         borderRadius: 2,
         margin: 0.5,
+    },
+    disabled: {
+        opacity: 0.5,
     },
     active: {
         color: palette.activeToolText,

@@ -182,9 +182,26 @@ export class FlowEditorCommands {
         this.formatParagraph("lineSpacing", value);
     }    
 
+    getListLevel(): number | undefined {
+        return this.getParagraphStyle().get("listLevel");
+    }
+
+    incrementListLevel(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.incrementListLevel(content));
+        }
+    }
+
+    decrementListLevel(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.decrementListLevel(content));
+        }
+    }
+
     // TODO: spaceAbove
     // TODO: spaceBelow
-    // TODO: listLevel
     // TODO: listMarker
     // TODO: hideListMarker
     // TODO: listCounter
