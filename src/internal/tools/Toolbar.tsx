@@ -3,15 +3,7 @@ import React, { FC } from "react";
 import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createUseFlowStyles } from "../JssTheming";
 import { ToolButton } from "./ToolButton";
-import {
-    mdiFormatFont,
-    mdiFormatSize,
-    mdiGestureTapButton,
-    mdiFormatTextdirectionLToR,
-    mdiFormatTextdirectionRToL,
-    mdiFormatLineSpacing,
-    mdiFunctionVariant,
-} from "@mdi/js";
+import { mdiGestureTapButton, mdiFunctionVariant, mdiDotsVertical } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";
@@ -41,47 +33,46 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <ParagraphVariantButton commands={commands}/>
-            <ToolDivider/>
-            <ToolGroup>
-                <BoldButton commands={commands}/>
-                <ItalicButton commands={commands}/>
-                <UnderlineButton commands={commands}/>
-                <StrikeButton commands={commands}/>
-            </ToolGroup>
-            <ToolDivider/>
-            <ToolGroup>
-                <SubscriptButton commands={commands}/>
-                <SuperscriptButton commands={commands}/>
-            </ToolGroup>
-            <ToolDivider/>
-            <TextColorButton commands={commands}/>
-            <ToolDivider/>
-            <ToolButton><Icon path={mdiGestureTapButton}/></ToolButton>
-            <ToolButton><Icon path={mdiFunctionVariant}/></ToolButton>
-            <ToolGroup>
-                <TextAlignLeftButton commands={commands}/>
-                <TextAlignCenterButton commands={commands}/>
-                <TextAlignRightButton commands={commands}/>
-                <TextAlignJustifyButton commands={commands}/>
-            </ToolGroup>
-            <ToolDivider/>
-            <ToolGroup>
-                <UnorderedListButton commands={commands}/>
-                <OrderedListButton commands={commands}/>
-            </ToolGroup>
-            <ToolDivider/>
-            <ToolGroup>
-                <DecrementListLevelButton commands={commands}/>
-                <IncrementListLevelButton commands={commands}/>
-            </ToolGroup>
-            <ToolDivider/>
-            <ToolButton><Icon path={mdiFormatLineSpacing}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatFont}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatSize}/></ToolButton>
-            <ToolDivider/>
-            <ToolButton><Icon path={mdiFormatTextdirectionLToR}/></ToolButton>
-            <ToolButton><Icon path={mdiFormatTextdirectionRToL}/></ToolButton>
+            <div className={classes.line}>
+                <ParagraphVariantButton commands={commands}/>
+                <ToolDivider/>
+                <ToolGroup>
+                    <BoldButton commands={commands}/>
+                    <ItalicButton commands={commands}/>
+                    <UnderlineButton commands={commands}/>
+                    <StrikeButton commands={commands}/>
+                </ToolGroup>
+                <ToolDivider/>
+                <ToolGroup>
+                    <SubscriptButton commands={commands}/>
+                    <SuperscriptButton commands={commands}/>
+                </ToolGroup>
+                <ToolDivider/>
+                <TextColorButton commands={commands}/>
+            </div>
+            <div className={classes.line}>
+                <ToolGroup>
+                    <TextAlignLeftButton commands={commands}/>
+                    <TextAlignCenterButton commands={commands}/>
+                    <TextAlignRightButton commands={commands}/>
+                    <TextAlignJustifyButton commands={commands}/>
+                </ToolGroup>
+                <ToolDivider/>
+                <ToolGroup>
+                    <UnorderedListButton commands={commands}/>
+                    <OrderedListButton commands={commands}/>
+                </ToolGroup>
+                <ToolDivider/>
+                <ToolGroup>
+                    <DecrementListLevelButton commands={commands}/>
+                    <IncrementListLevelButton commands={commands}/>
+                </ToolGroup>
+                <ToolDivider/>
+                <ToolButton disabled><Icon path={mdiGestureTapButton}/></ToolButton>
+                <ToolButton disabled><Icon path={mdiFunctionVariant}/></ToolButton>
+                <ToolDivider/>
+                <ToolButton disabled><Icon path={mdiDotsVertical}/></ToolButton>
+            </div>
         </div>
     );
 };
@@ -89,9 +80,12 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
 const useStyles = createUseFlowStyles("Toolbar", () => ({
     root: {
         display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
+        flexDirection: "column",
         padding: 4,
-        maxWidth: 480,
     },
+    line: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+    }
 }));
