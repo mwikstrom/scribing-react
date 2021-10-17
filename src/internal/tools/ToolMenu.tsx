@@ -9,12 +9,14 @@ import { SYSTEM_FONT } from "../utils/system-font";
 export interface ToolMenuProps {
     anchor: HTMLElement,
     children: ReactNode;
+    placement?: "bottom-start" | "bottom" | "bottom-end",
+    closeOnMouseLeave?: boolean;
     onClose?: () => void;
 }
 
 /** @internal */
 export const ToolMenu: FC<ToolMenuProps> = props => {
-    const { anchor, children, onClose } = props;
+    const { anchor, children, onClose, placement = "bottom-start", closeOnMouseLeave = true } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -29,7 +31,7 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
     );
 
     const { styles, attributes } = usePopper(anchor, popper, {
-        placement: "bottom-start",
+        placement,
         modifiers: [
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
             { name: "preventOverflow", options: { boundary, altAxis: true, padding: 2 } },
@@ -60,7 +62,7 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
                 clearTimeout(closeTimer.current);
                 closeTimer.current = null;
             }
-        } else if (closeTimer.current === null) {
+        } else if (closeTimer.current === null && closeOnMouseLeave) {
             closeTimer.current = setTimeout(onClose, 1000);
         }
     }, [isMouseOver, onClose]);
