@@ -300,22 +300,20 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     const classes = useStyles();
     return (
-        <div 
-            ref={setEditingHost}
-            className={classes.root}
-            style={style}
-            contentEditable={editMode !== false}
-            suppressContentEditableWarning={true}
-            children={
-                <TooltipScope manager={tooltipManager}>
-                    <EditModeScope mode={editMode}>
-                        <FormattingMarksScope show={state.formattingMarks}>
-                            <FlowView content={state.content}/>
-                        </FormattingMarksScope>
-                    </EditModeScope>
-                </TooltipScope>
-            }
-        />
+        <TooltipScope manager={tooltipManager}>
+            <EditModeScope mode={editMode}>
+                <FormattingMarksScope show={state.formattingMarks}>
+                    <div 
+                        ref={setEditingHost}
+                        className={classes.root}
+                        style={style}
+                        contentEditable={editMode !== false}
+                        suppressContentEditableWarning={true}
+                        children={<FlowView content={state.content}/>}
+                    />
+                </FormattingMarksScope>
+            </EditModeScope>
+        </TooltipScope>
     );
 };
 
