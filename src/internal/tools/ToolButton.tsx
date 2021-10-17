@@ -51,6 +51,7 @@ const useStyles = createUseFlowStyles("ToolButton", ({palette}) => ({
     },
     disabled: {
         opacity: 0.5,
+        cursor: "default",
     },
     active: {
         color: palette.activeToolText,
