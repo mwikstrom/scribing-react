@@ -90,5 +90,6 @@ const useStyles = createUseFlowStyles("ToolMenu", ({palette}) => ({
         borderWidth: 1,
         borderColor: palette.menuBorder,
         boxShadow: "0 8px 8px rgba(0,0,0,0.25)",
+        zIndex: 1000,
     },
 }));
