@@ -26,6 +26,7 @@ import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorCommands } from "./internal/FlowEditorCommands";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-selection-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
+import { isSelectionInside } from "./internal/utils/is-selection-inside";
 
 /**
  * Component props for {@link FlowEditor}
@@ -225,6 +226,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         const domSelection = document.getSelection();
+        if (!isSelectionInside(editingHost, domSelection)) {
+            return;
+        }
+
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
         const changed = mapped ?
             !FlowSelection.baseType.equals(mapped, state.selection) :
@@ -249,7 +254,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Ensure that caret selection stays inside the scrollable viewport after content is changed
     useEffect(() => {
         const domSelection = document.getSelection();
-        if (editingHost && domSelection && domSelection.isCollapsed) {
+        if (editingHost && domSelection && domSelection.isCollapsed && isSelectionInside(editingHost, domSelection)) {
             const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
                 const rect = virtualElem.getBoundingClientRect();
@@ -267,7 +272,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useLayoutEffect(() => {
         const domSelection = document.getSelection();
 
-        if (!editingHost || !domSelection) {
+        if (!editingHost || !domSelection || !isSelectionInside(editingHost, domSelection)) {
             return;
         }
 
@@ -290,13 +295,19 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const showTools = useShowTools(tooltipManager);
     useEffect(() => {
         const domSelection = document.getSelection();
-        if (domSelection && state.selection && documentHasFocus) {
+        if (
+            domSelection && 
+            state.selection && 
+            editingHost && 
+            isSelectionInside(editingHost, domSelection) && 
+            documentHasFocus
+        ) {
             const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
                 return showTools(virtualElem, new FlowEditorCommands(state, applyChange));
             }
         }            
-    }, [state, documentHasFocus]);
+    }, [editingHost, state, documentHasFocus]);
 
     const classes = useStyles();
     return (
