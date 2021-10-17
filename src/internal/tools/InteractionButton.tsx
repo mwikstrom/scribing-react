@@ -16,7 +16,10 @@ export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
-    const clearInteraction = useCallback(() => commands.setInteraction(null), [commands]);
+    const clearInteraction = useCallback(() => {
+        commands.setInteraction(null);
+        closeMenu();
+    }, [commands, closeMenu]);
     const interaction = commands.getInteraction();
     const active = interaction === void(0) ? void(0) : interaction !== null;
     return (

@@ -2,6 +2,7 @@ import {
     FlowContent,
     FlowEditorState, 
     FlowOperation, 
+    FlowRange, 
     Interaction, 
     OrderedListMarkerKindType, 
     ParagraphStyle, 
@@ -120,11 +121,20 @@ export class FlowEditorCommands {
     }
 
     getInteraction(): Interaction | null | undefined {
-        return this.getLink();
+        const buttonAction = this.getButtonAction();
+        if (buttonAction === void(0)) {
+            return this.getLink();
+        } else {
+            return buttonAction;
+        }
     }
 
     setInteraction(value: Interaction | null): void {
-        this.setLink(value);
+        if (this.isButton()) {
+            this.setButtonAction(value);
+        } else {
+            this.setLink(value);
+        }
     }
 
     getLink(): TextStyleProps["link"] {
@@ -132,6 +142,9 @@ export class FlowEditorCommands {
     }
 
     setLink(value: Exclude<TextStyleProps["link"], undefined>): void {
+        if (this.isCaret() && this.isLink()) {
+            this.expandCaretToTextRun();
+        }
         this.formatText("link", value);
     }
 
@@ -315,6 +328,76 @@ export class FlowEditorCommands {
         if (selection) {
             this.#apply(selection.insert(content));
         }
+    }
+
+    isButton(): boolean {
+        // TODO: Implement
+        return false;
+    }
+
+    getButtonAction(): Interaction | null | undefined {
+        // TODO: Implement
+        return undefined;
+    }
+
+    setButtonAction(value: Interaction | null): void {
+        // TODO: Implement
+        console.log("TODO: Set button action", value);
+    }
+
+    isLink(): boolean {
+        const { selection } = this.#state;
+        
+        if (selection === null) {
+            return false;
+        }
+
+        let foundLink = false;
+        let foundOther = false;
+
+        selection.transformRanges((range, options = {}) => {
+            const { target } = options;
+
+            if (target) {
+                for (const node of target.peek(range.first).range(range.size)) {
+                    if (node instanceof TextRun && !!node.style.link) {
+                        foundLink = true;
+                    } else {
+                        foundOther = true;
+                    }
+                }
+            }
+
+            return null;
+        }, this.getTargetOptions());
+
+        return foundLink && !foundOther;
+    }
+
+    expandCaretToTextRun(): void {
+        const { selection } = this.#state;
+        
+        if (selection === null) {
+            return;
+        }
+
+        const newSelection = selection.transformRanges((range, options = {}) => {
+            const { target } = options;
+            
+            if (!target || !range.isCollapsed) {
+                return null;
+            }
+
+            const { node, offset } = target.peek(range.first);
+
+            if (!(node instanceof TextRun)) {
+                return null;
+            }
+
+            return FlowRange.at(range.first - offset, node.size);
+        }, this.getTargetOptions());
+
+        this.#state = this.#apply(this.#state.set("selection", newSelection));
     }
 }
 
