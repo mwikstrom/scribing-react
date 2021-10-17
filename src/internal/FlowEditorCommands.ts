@@ -2,6 +2,7 @@ import {
     FlowContent,
     FlowEditorState, 
     FlowOperation, 
+    Interaction, 
     OrderedListMarkerKindType, 
     ParagraphStyle, 
     ParagraphStyleProps, 
@@ -116,6 +117,14 @@ export class FlowEditorCommands {
 
     setFontSize(value: Exclude<TextStyleProps["fontSize"], undefined>): void {
         this.formatText("fontSize", value);
+    }
+
+    getInteraction(): Interaction | null | undefined {
+        return this.getLink();
+    }
+
+    setInteraction(value: Interaction | null): void {
+        this.setLink(value);
     }
 
     getLink(): TextStyleProps["link"] {
