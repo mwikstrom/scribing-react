@@ -1,5 +1,7 @@
 SCRIBING TODO
 =============
+- Editor must regain focus when lost to toolbox and toolbox is closed
+- Must allow selection before/after nested button (perhaps using empty text elements before/after?)
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
