@@ -8,6 +8,9 @@ Record<ColorLocaleKey, string> {
     script_error: string;
     void_script: string;
     void_result: string;
+    not_interactive: string;
+    open_web_page: string;
+    run_script: string;
 }
 
 /** @public */
@@ -41,6 +44,9 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     color_success: "Success",
     color_warning: "Warning",
     color_error: "Error",
+    not_interactive: "Not interactive",
+    open_web_page: "Open web page",
+    run_script: "Run script",
 });
 
 /** @public */

@@ -10,8 +10,10 @@ import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { OpenUrl, RunScript } from "scribing";
+import { useFlowLocale } from "../../FlowLocaleScope";
 
 export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
+    const locale = useFlowLocale();
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState(false);
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
@@ -32,15 +34,15 @@ export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
                 <ToolMenu anchor={buttonRef} onClose={closeMenu}>
                     <ToolMenuItem onClick={clearInteraction}>
                         <Icon path={mdiCheck} size={0.75} style={visibleIf(interaction === null)}/>
-                        <span style={{margin: "0 0.5rem"}}>Not interactive</span>
+                        <span style={{margin: "0 0.5rem"}}>{locale.not_interactive}</span>
                     </ToolMenuItem>
                     <ToolMenuItem>
                         <Icon path={mdiCheck} size={0.75} style={visibleIf(interaction instanceof OpenUrl)}/>
-                        <span style={{margin: "0 0.5rem"}}>Open web page&hellip;</span>
+                        <span style={{margin: "0 0.5rem"}}>{locale.open_web_page}&hellip;</span>
                     </ToolMenuItem>
                     <ToolMenuItem>
                         <Icon path={mdiCheck} size={0.75} style={visibleIf(interaction instanceof RunScript)}/>
-                        <span style={{margin: "0 0.5rem"}}>Run script&hellip;</span>
+                        <span style={{margin: "0 0.5rem"}}>{locale.run_script}&hellip;</span>
                     </ToolMenuItem>
                 </ToolMenu>
             )}
