@@ -15,7 +15,6 @@ SCRIBING TODO
 - ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
 - Tool: Set list counter
 - Tool: Set button action
-- Tool: Set link action
 - Tool: Set dynamic text expression
 - Tool: Set reading direction
 - Tool: Set line height
