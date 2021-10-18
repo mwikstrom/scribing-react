@@ -1,4 +1,5 @@
 import { 
+    DynamicText,
     FlowContent,
     FlowEditorState, 
     FlowOperation, 
@@ -372,6 +373,48 @@ export class FlowEditorCommands {
         }, this.getTargetOptions());
 
         return foundLink && !foundOther;
+    }
+
+    getDynamicExpression(): string | null | undefined {
+        // TODO: Add support for conditional expressions too
+        return this.getDynamicTextExpression();
+    }
+
+    setDynamicExpression(value: string): void {
+        // TODO: Implement set dynamic expression
+        console.warn("Not implemented. Cannot set dynamic expression:", value);
+    }
+
+    getDynamicTextExpression(): string | null | undefined {
+        const { selection } = this.#state;
+        
+        if (selection === null) {
+            return null;
+        }
+
+        let result: string | null | undefined = null;
+
+        selection.transformRanges((range, options = {}) => {
+            const { target } = options;
+
+            if (target) {
+                for (const node of target.peek(range.first).range(range.size)) {
+                    if (node instanceof DynamicText) {
+                        if (result === null || result === node.expression) {
+                            result = node.expression;
+                        } else {
+                            result = void(0);
+                        }
+                    } else {
+                        result = void(0);
+                    }
+                }
+            }
+
+            return null;
+        }, this.getTargetOptions());
+
+        return result;
     }
 
     expandCaretToTextRun(): void {

@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createUseFlowStyles } from "../JssTheming";
 import { ToolButton } from "./ToolButton";
-import { mdiFunctionVariant, mdiDotsVertical, mdiMenuDown } from "@mdi/js";
+import { mdiDotsVertical } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";
@@ -23,6 +23,7 @@ import { DecrementListLevelButton } from "./DecrementListLevelButton";
 import { UnorderedListButton } from "./UnorderedListButton";
 import { OrderedListButton } from "./OrderedListButton";
 import { InteractionButton } from "./InteractionButton";
+import { DynamicExpressionButton } from "./DynamicExpressionButton";
 
 /** @internal */
 export interface ToolbarProps {
@@ -73,10 +74,7 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
                 <ToolDivider/>
                 <InteractionButton commands={commands}/>
                 <ToolDivider/>
-                <ToolButton disabled>
-                    <Icon path={mdiFunctionVariant} size={1}/>
-                    <Icon path={mdiMenuDown} size={0.75}/>
-                </ToolButton>
+                <DynamicExpressionButton commands={commands}/>
             </div>
         </div>
     );
