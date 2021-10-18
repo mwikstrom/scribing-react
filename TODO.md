@@ -8,6 +8,7 @@ SCRIBING TODO
 - ScriptEditor + OpenUrlEditor shall have common component
 - Must allow selection before/after nested button (perhaps using empty text elements before/after?)
 - Flow style JSS is duplicated for tool buttons
+- Add refresh to dynamic text (auto re-evaluate on an interval)
 - Escape to close menu, but not toolbox
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Scripthost: Observe instance vars
