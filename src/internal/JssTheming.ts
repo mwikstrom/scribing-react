@@ -17,9 +17,11 @@ export function createUseFlowStyles<C extends string>(
 ): () => Classes<C> {
     const generateId = makeJssId(component);
     const useStyles = createUseStyles<C, unknown, JssFlowTheme>(styles, { generateId });
-    return function useFlowStyles() {
-        const palette = useFlowPalette();
-        const theme = useMemo<JssFlowTheme>(() => ({ palette }), [palette]);
-        return useStyles({ theme });
-    };
+    return useFlowStyles.bind(useStyles);
+}
+
+function useFlowStyles<C extends string>(this: (data: {theme: JssFlowTheme}) => Classes<C>) {
+    const palette = useFlowPalette();
+    const theme = useMemo<JssFlowTheme>(() => ({ palette }), [palette]);
+    return this({ theme });
 }
