@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Deleting backward after nesting node should delete that node
 - Selecting backward (SHIFT+LeftArrow) over nesting node should select that node
 - Selecting forward (SHIFT+RightArrow) over nesting node should select that node
 - Moving down from inside nesting node does not place caret properly
