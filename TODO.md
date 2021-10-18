@@ -1,6 +1,9 @@
 SCRIBING TODO
 =============
 - Editor must regain focus when lost to toolbox and toolbox is closed
+- LinkView: prevent editable when clickable (CTRL held)
+- ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
+- ScriptEditor + OpenUrlEditor shall have common component
 - Must allow selection before/after nested button (perhaps using empty text elements before/after?)
 - Flow style JSS is duplicated for tool buttons
 - Escape to close menu, but not toolbox
