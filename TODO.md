@@ -2,7 +2,6 @@ SCRIBING TODO
 =============
 - Forward tooltip boundary to toolmenu popper
 - Forward scroll events to popper boundary
-- Clean up isOverlappingRects
 - Clean up getScrollContainer
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update

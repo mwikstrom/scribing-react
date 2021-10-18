@@ -40,13 +40,6 @@ export class TooltipManager extends PubSub<TooltipData | null> {
     }
 }
 
-const areOverlappingRects = (first: DOMRect, second: DOMRect): boolean => !(
-    first.right < second.left || 
-    first.left > second.right || 
-    first.bottom < second.top || 
-    first.top > second.bottom
-);
-
 const areEqualTooltips = (first: TooltipData, second: TooltipData | undefined): boolean => {
     if (second === void(0)) {
         return false;
