@@ -97,9 +97,15 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
                 error && classes.error,
             )}
             disabled={!!pending}
-            children={<FlowView content={content}/>}
-            contentEditable={!!editMode && !clickable}
-            suppressContentEditableWarning={true}
+            contentEditable={false}
+            children={(
+                <span
+                    contentEditable={!!editMode && !clickable}
+                    suppressContentEditableWarning={true}
+                    className={classes.content}
+                    children={<FlowView content={content}/>}
+                />
+            )}
         />
     );
 });
@@ -130,7 +136,9 @@ class FlowButtonContentAxis extends FlowAxis {
 
 // TODO: FIX !important rules -- should be part of theme?
 const useStyles = createUseFlowStyles("FlowButton", ({palette}) => ({
-    root: {
+    root: {},
+    content: {
+        outline: "none",
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
         },
