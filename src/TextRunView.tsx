@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { TextRun } from "scribing";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
@@ -24,11 +24,21 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
         () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
         [style, classes]
     );
+
+    // Enable spell checker only after text has been idle for a while
+    const [spellCheck, setSpellCheck] = useState(false);
+    useEffect(() => {
+        const timeout = setTimeout(() => setSpellCheck(true), 250);
+        setSpellCheck(false);
+        return () => clearTimeout(timeout);
+    }, [text]);
+
     return (
         <span
             ref={ref}
             className={className}
             style={css}
+            spellCheck={spellCheck}
             children={text}
         />
     );
