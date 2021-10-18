@@ -4,7 +4,7 @@ import { FlowNodeView } from "../FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps } from "../FlowNodeComponent";
 import clsx from "clsx";
-import { useCtrlKey } from "./hooks/use-ctrl-key";
+import { useCtrlKey } from "./hooks/use-modifier-key";
 import { useInteractionInvoker } from "../useInteractionInvoker";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "../EditModeScope";

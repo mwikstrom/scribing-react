@@ -1,9 +1,5 @@
 SCRIBING TODO
 =============
-- Selecting backward (SHIFT+LeftArrow) over nesting node should select that node
-- Selecting forward (SHIFT+RightArrow) over nesting node should select that node
-- Selecting upward into nesting node does not work. Should select all
-- Selecing downward into nesting node does not work. Should select all
 - Moving down from inside nesting node does not place caret properly
 - Caret is not visible when placed just before/after button
 - Caret is lost when moving right at end of content

@@ -11,7 +11,8 @@ import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { useFlowLocale } from "./FlowLocaleScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowView } from "./FlowView";
-import { useCtrlKey } from "./internal/hooks/use-ctrl-key";
+import { useCtrlKey } from "./internal/hooks/use-modifier-key";
+import { useIsParentSelectionActive } from "./internal/hooks/use-is-parent-selection-active";
 import { createUseFlowStyles } from "./internal/JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
 import { useShowTip } from "./internal/TooltipScope";
@@ -33,6 +34,8 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             setupFlowAxisMapping(dom, new FlowButtonContentAxis());
         }        
     }, [outerRef]);
+
+    const isParentSelectionActive = useIsParentSelectionActive(rootElem);
 
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
@@ -100,7 +103,7 @@ export const FlowButtonView = flowNode<FlowButton>((props, outerRef) => {
             contentEditable={false}
             children={(
                 <span
-                    contentEditable={!!editMode && !clickable}
+                    contentEditable={!!editMode && !clickable && !isParentSelectionActive}
                     suppressContentEditableWarning={true}
                     className={classes.content}
                     children={<FlowView content={content}/>}
