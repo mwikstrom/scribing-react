@@ -20,6 +20,7 @@ SCRIBING TODO
 - Tool: Toggle full width
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
+- Omit empty style from dynamic text node data
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Cannot toggle toolbox with ctr+period after escaping it
 - Insert ghost span to reflect caret style
