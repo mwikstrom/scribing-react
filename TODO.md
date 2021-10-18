@@ -1,10 +1,6 @@
 SCRIBING TODO
 =============
-- Hide toolbox arrow when selection includes para break
-- Can baseline offset be applied without affecting height of line box?
-- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
-- ScriptEditor + OpenUrlEditor shall have common component
 - Must allow selection before/after nested button (perhaps using empty text elements before/after?)
 - Flow style JSS is duplicated for tool buttons
 - Add refresh to dynamic text (auto re-evaluate on an interval)
@@ -36,11 +32,14 @@ SCRIBING TODO
 - FlowTheme vs EditorTheme
 - FlowTypography (default is SYSTEM_FONT)
 - Special para theme for "inside button"? Or at least fix margin or first/last/single para
+- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - Formatting paragraph break with zero opacity is not generally a good idea
 - CTRL+PERIOD shall open contextual toolbar with keyboard navigation
+- Can baseline offset be applied without affecting height of line box?
 
 LOWER PRIO
 ==========
+- Hide toolbox arrow when selection includes para break
 - MultiFlowSelection
 - Paratype: use actual name instead of "freezing"
 - React jest snapshots for view comps
