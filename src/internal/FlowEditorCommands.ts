@@ -442,6 +442,14 @@ export class FlowEditorCommands {
 
         this.#state = this.#apply(this.#state.set("selection", newSelection));
     }
+
+    getFormattingMarks(): boolean {
+        return this.#state.formattingMarks;
+    }
+
+    toggleFormattingMarks(): void {
+        this.#state = this.#apply(this.#state.set("formattingMarks", !this.#state.formattingMarks));
+    }
 }
 
 type BooleanTextStyleKeys = {

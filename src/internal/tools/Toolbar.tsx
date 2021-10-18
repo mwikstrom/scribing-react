@@ -1,9 +1,6 @@
-import Icon from "@mdi/react";
 import React, { FC } from "react";
 import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createUseFlowStyles } from "../JssTheming";
-import { ToolButton } from "./ToolButton";
-import { mdiDotsVertical } from "@mdi/js";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";
@@ -24,6 +21,7 @@ import { UnorderedListButton } from "./UnorderedListButton";
 import { OrderedListButton } from "./OrderedListButton";
 import { InteractionButton } from "./InteractionButton";
 import { DynamicExpressionButton } from "./DynamicExpressionButton";
+import { MoreToolsButton } from "./MoreToolsButton";
 
 /** @internal */
 export interface ToolbarProps {
@@ -52,7 +50,7 @@ export const Toolbar: FC<ToolbarProps> = ({commands}) => {
                 <ToolDivider/>
                 <TextColorButton commands={commands}/>
                 <ToolDivider/>
-                <ToolButton disabled><Icon path={mdiDotsVertical}/></ToolButton>
+                <MoreToolsButton commands={commands}/>
             </div>
             <div className={classes.line}>
                 <ToolGroup>
