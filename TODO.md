@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Popper is no longer rooted inside scrollable view
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - ScriptEditor + OpenUrlEditor shall have common component
