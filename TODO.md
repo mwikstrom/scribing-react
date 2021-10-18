@@ -1,10 +1,16 @@
 SCRIBING TODO
 =============
-- Must allow selection before/after nested button (perhaps using empty text elements before/after?)
+- Deleting backward after nesting node should delete that node
+- Selecting backward (SHIFT+LeftArrow) over nesting node should select that node
+- Selecting forward (SHIFT+RightArrow) over nesting node should select that node
+- Moving down from inside nesting node does not place caret properly
+- Caret is not visible when placed just before/after button
+- Caret is lost when moving right at end of content
+- Implement TODO-methods in FlowEditCommands
+- Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Flow style JSS is duplicated for tool buttons
 - Add refresh to dynamic text (auto re-evaluate on an interval)
 - Escape to close menu, but not toolbox
-- Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Scripthost: Observe instance vars
 - Scribing: Specify script instance in Interaction and DynamicTextExpr
 - ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
@@ -23,10 +29,7 @@ SCRIBING TODO
 - Omit empty style from dynamic text node data
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Cannot toggle toolbox with ctr+period after escaping it
-- Insert ghost span to reflect caret style
 - Text style for disabling spell checker (usage example: math/code)
-- Caret is lost when moving right at end of content
-- Cannot insert text before/after block level button
 - FlowBox and BoxStyle -- can/should replace FlowButton? One style could be "condition expression"?
 - FlowTheme vs EditorTheme
 - FlowTypography (default is SYSTEM_FONT)
