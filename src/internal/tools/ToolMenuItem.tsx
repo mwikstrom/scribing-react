@@ -4,17 +4,19 @@ import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
 export interface ToolMenuItemProps {
+    disabled?: boolean;
     onClick?: () => void;
 }
 
 /** @internal */
-export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, children}) => {
+export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, disabled, children}) => {
     const classes = useStyles();
     const [hover, setHover] = useState(false);
 
     const className = clsx(
         classes.root,
-        hover && classes.hover,
+        hover && !disabled && classes.hover,
+        disabled && classes.disabled,
     );
 
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
@@ -43,5 +45,9 @@ const useStyles = createUseFlowStyles("ToolMenuItem", ({palette}) => ({
     },
     hover: {
         backgroundColor: palette.hoverMenu,
+    },
+    disabled: {
+        opacity: 0.5,
+        cursor: "default",
     },
 }));

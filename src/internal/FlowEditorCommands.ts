@@ -2,6 +2,7 @@ import {
     DynamicText,
     FlowContent,
     FlowEditorState, 
+    FlowNode, 
     FlowOperation, 
     FlowRange, 
     Interaction, 
@@ -318,8 +319,16 @@ export class FlowEditorCommands {
         return { target, theme };
     }
 
+    getCaretStyle(): TextStyle {
+        return this.#state.caret;
+    }
+
     insertText(text: string): void {
         const node = new TextRun({ text, style: TextStyle.empty });
+        this.insertNode(node);
+    }
+
+    insertNode(node: FlowNode): void {
         const content = new FlowContent({ nodes: Object.freeze([node])});
         this.insertContent(content);
     }

@@ -8,12 +8,12 @@ import { createUseFlowStyles } from "../JssTheming";
 import { ToolButton } from "./ToolButton";
 
 export interface ScriptEditorProps {
-    value: string;
+    value?: string;
     onSave: (value: string) => void;
     onCancel: () => void;
 }
 
-export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue, onSave, onCancel}) => {
+export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", onSave, onCancel}) => {
     const classes = useStyles();
     const locale = useFlowLocale();
     const [value, setValue] = useState(defaultValue);
@@ -32,10 +32,8 @@ export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue, onSave
     const isValid = useMemo(() => !error, [error]);
 
     const handleSave = useCallback(() => {
-        if (isValid) {
-            onSave(value);
-        }
-    }, [onSave, isValid, value]);
+        onSave(value);
+    }, [onSave, value]);
     
     const onChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(e.target.value);

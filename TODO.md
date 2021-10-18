@@ -21,7 +21,6 @@ SCRIBING TODO
 - Tool: Set font size
 - Tool: Set font family
 - Tool: Insert button
-- Tool: Insert dynamic text
 - Tool: Toggle full width
 - New Ops: WrapButton UnwrapButton
 - New interaction: Open Topic
