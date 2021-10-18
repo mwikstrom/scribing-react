@@ -29,50 +29,50 @@ export interface ToolbarProps {
 }
 
 /** @internal */
-export const Toolbar: FC<ToolbarProps> = ({commands}) => {
+export const Toolbar: FC<ToolbarProps> = props => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.line}>
-                <ParagraphVariantButton commands={commands}/>
+                <ParagraphVariantButton {...props}/>
                 <ToolDivider/>
                 <ToolGroup>
-                    <BoldButton commands={commands}/>
-                    <ItalicButton commands={commands}/>
-                    <UnderlineButton commands={commands}/>
-                    <StrikeButton commands={commands}/>
+                    <BoldButton {...props}/>
+                    <ItalicButton {...props}/>
+                    <UnderlineButton {...props}/>
+                    <StrikeButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <SubscriptButton commands={commands}/>
-                    <SuperscriptButton commands={commands}/>
+                    <SubscriptButton {...props}/>
+                    <SuperscriptButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
-                <TextColorButton commands={commands}/>
+                <TextColorButton {...props}/>
                 <ToolDivider/>
-                <MoreToolsButton commands={commands}/>
+                <MoreToolsButton {...props}/>
             </div>
             <div className={classes.line}>
                 <ToolGroup>
-                    <TextAlignLeftButton commands={commands}/>
-                    <TextAlignCenterButton commands={commands}/>
-                    <TextAlignRightButton commands={commands}/>
-                    <TextAlignJustifyButton commands={commands}/>
+                    <TextAlignLeftButton {...props}/>
+                    <TextAlignCenterButton {...props}/>
+                    <TextAlignRightButton {...props}/>
+                    <TextAlignJustifyButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <UnorderedListButton commands={commands}/>
-                    <OrderedListButton commands={commands}/>
+                    <UnorderedListButton {...props}/>
+                    <OrderedListButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <DecrementListLevelButton commands={commands}/>
-                    <IncrementListLevelButton commands={commands}/>
+                    <DecrementListLevelButton {...props}/>
+                    <IncrementListLevelButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
-                <InteractionButton commands={commands}/>
+                <InteractionButton {...props}/>
                 <ToolDivider/>
-                <DynamicExpressionButton commands={commands}/>
+                <DynamicExpressionButton {...props}/>
             </div>
         </div>
     );
