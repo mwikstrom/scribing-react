@@ -14,7 +14,7 @@ SCRIBING TODO
 - Scripthost: Observe instance vars
 - Scribing: Specify script instance in Interaction and DynamicTextExpr
 - ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
-- List indent shall depent on paragraph alignment AND reading direction
+- List indent shall depend on paragraph alignment AND reading direction
 - Tool: Set list counter
 - Tool: Set button action
 - Tool: Set dynamic text expression
