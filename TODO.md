@@ -2,6 +2,7 @@ SCRIBING TODO
 =============
 - Forward scroll events to popper boundary
 - Hide toolbox arrow when selection includes para break
+- Can baseline offset be applied without affecting height of line box?
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - ScriptEditor + OpenUrlEditor shall have common component
