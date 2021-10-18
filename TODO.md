@@ -2,7 +2,6 @@ SCRIBING TODO
 =============
 - Moving down from inside nesting node does not place caret properly
 - Caret is not visible when placed just before/after button
-- Caret is lost when moving right at end of content
 - Implement TODO-methods in FlowEditCommands
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Flow style JSS is duplicated for tool buttons

@@ -9,7 +9,11 @@ export const ArrowRightHandler: KeyHandler = (e, state) => {
             if (target) {
                 const cursor = target.peek(range.last);
                 if (cursor.node instanceof ParagraphBreak) {
-                    return range.translate(1);
+                    if (range.last < target.size - 1) {
+                        return range.translate(1);
+                    } else {
+                        return range;
+                    }
                 }
             }
             return null;
