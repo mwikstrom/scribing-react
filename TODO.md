@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Initial selection does not work anymore
 - Editor must regain focus when lost to toolbox and toolbox is closed
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - LinkView: prevent editable when clickable (CTRL held)
