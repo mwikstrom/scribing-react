@@ -29,8 +29,6 @@ export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", o
         }
     }, [value]);
 
-    const isValid = useMemo(() => !error, [error]);
-
     const handleSave = useCallback(() => {
         onSave(value);
     }, [onSave, value]);
@@ -99,7 +97,7 @@ export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", o
                     onKeyDown={onKeyDown}
                     maxRows={10}
                 />
-                <ToolButton disabled={!isValid} onClick={handleSave}>
+                <ToolButton onClick={handleSave}>
                     <Icon path={mdiCheck}/>
                 </ToolButton>
                 <ToolButton onClick={onCancel}>
