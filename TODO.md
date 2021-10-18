@@ -2,6 +2,7 @@ SCRIBING TODO
 =============
 - Forward scroll events to popper boundary
 - Clean up getScrollContainer
+- Hide toolbox arrow when selection includes para break
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - ScriptEditor + OpenUrlEditor shall have common component
