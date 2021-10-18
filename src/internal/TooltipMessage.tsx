@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { createUseFlowStyles } from "./JssTheming";
+import { createUseStyles } from "react-jss";
+import { makeJssId } from "./utils/make-jss-id";
 
 /** @internal */
 export interface TooltipMessageProps {
@@ -12,8 +13,10 @@ export const TooltipMessage: FC<TooltipMessageProps> = ({text}) => {
     return <div className={classes.root} children={text}/>;
 };
 
-const useStyles = createUseFlowStyles("TooltipMessage", () => ({
+const useStyles = createUseStyles({
     root: {
         padding: "0.5rem 1rem"
     },
-}));
+}, {
+    generateId: makeJssId("TooltipMessage"),
+});

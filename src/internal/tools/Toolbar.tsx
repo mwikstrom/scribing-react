@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { FlowEditorCommands } from "../FlowEditorCommands";
-import { createUseFlowStyles } from "../JssTheming";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";
@@ -22,6 +21,8 @@ import { OrderedListButton } from "./OrderedListButton";
 import { InteractionButton } from "./InteractionButton";
 import { DynamicExpressionButton } from "./DynamicExpressionButton";
 import { MoreToolsButton } from "./MoreToolsButton";
+import { createUseStyles } from "react-jss";
+import { makeJssId } from "../utils/make-jss-id";
 
 /** @internal */
 export interface ToolbarProps {
@@ -79,7 +80,7 @@ export const Toolbar: FC<ToolbarProps> = props => {
     );
 };
 
-const useStyles = createUseFlowStyles("Toolbar", () => ({
+const useStyles = createUseStyles({
     root: {
         display: "flex",
         flexDirection: "column",
@@ -90,4 +91,6 @@ const useStyles = createUseFlowStyles("Toolbar", () => ({
         flexDirection: "row",
         alignItems: "center",
     }
-}));
+}, {
+    generateId: makeJssId("Toolbar"),
+});
