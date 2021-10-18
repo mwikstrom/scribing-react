@@ -1,6 +1,8 @@
 SCRIBING TODO
 =============
 - Editor must regain focus when lost to toolbox and toolbox is closed
+- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
+- Allow tabs in ScriptEditor
 - LinkView: prevent editable when clickable (CTRL held)
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - ScriptEditor + OpenUrlEditor shall have common component
