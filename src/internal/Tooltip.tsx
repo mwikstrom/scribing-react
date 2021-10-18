@@ -8,6 +8,7 @@ import { TooltipMessage } from "./TooltipMessage";
 import { Toolbar } from "./tools/Toolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
+import { useTransparentMouseWheel } from "./hooks/use-transparent-mouse-wheel";
 
 /** @internal */
 export interface TooltipProps {
@@ -77,6 +78,8 @@ export const Tooltip: FC<TooltipProps> = props => {
             return null;
         }
     }, [content]);
+
+    useTransparentMouseWheel(popper, givenBoundary);
 
     return (
         <div ref={setPopper} {...popperProps}>
