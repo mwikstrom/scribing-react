@@ -22,6 +22,15 @@ export function createUseFlowStyles<C extends string>(
 
 function useFlowStyles<C extends string>(this: (data: {theme: JssFlowTheme}) => Classes<C>) {
     const palette = useFlowPalette();
-    const theme = useMemo<JssFlowTheme>(() => ({ palette }), [palette]);
+    const theme = useMemo(() => getTheme(palette), [palette]);
     return this({ theme });
 }
+
+const themeByPalette = new WeakMap<FlowPalette, JssFlowTheme>();
+const getTheme = (palette: FlowPalette): JssFlowTheme => {
+    let theme = themeByPalette.get(palette);
+    if (!theme) {
+        themeByPalette.set(palette, theme = Object.freeze({ palette }));
+    }
+    return theme;
+};

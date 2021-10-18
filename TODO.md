@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Implement TODO-methods in FlowEditCommands
-- Flow style JSS is duplicated for tool buttons
 - Add refresh to dynamic text (auto re-evaluate on an interval)
 - Escape to close menu, but not toolbox
 - Scripthost: Observe instance vars
