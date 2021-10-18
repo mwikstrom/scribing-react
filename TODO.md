@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - Must allow selection before/after nested button (perhaps using empty text elements before/after?)
 - Flow style JSS is duplicated for tool buttons
 - Add refresh to dynamic text (auto re-evaluate on an interval)
@@ -35,6 +34,7 @@ SCRIBING TODO
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - Formatting paragraph break with zero opacity is not generally a good idea
 - CTRL+PERIOD shall open contextual toolbar with keyboard navigation
+- ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update (useContext for this. must apply to both tool menu and tool tip)
 - Can baseline offset be applied without affecting height of line box?
 
 LOWER PRIO
