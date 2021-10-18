@@ -88,5 +88,8 @@
     "scripthost-browser": "0.x",
     "scripthost-core": "0.x",
     "scripthost-react": "0.x"
+  },
+  "dependencies": {
+    "react-textarea-autosize": "^8.3.3"
   }
 }

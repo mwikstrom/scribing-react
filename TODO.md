@@ -7,6 +7,7 @@ SCRIBING TODO
 - Expanded nested selection is not synced. Perhaps we should display fully selected in another way?
 - Scripthost: Observe instance vars
 - Scribing: Specify script instance in Interaction and DynamicTextExpr
+- ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
 - Tool: Set list counter
 - Tool: Set button action
 - Tool: Set link action

@@ -13,6 +13,7 @@ Record<ColorLocaleKey, string> {
     run_script: string;
     enter_web_page_url: string;
     must_be_a_valid_web_page_url: string;
+    enter_script: string;
 }
 
 /** @public */
@@ -51,6 +52,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     run_script: "Run script",
     enter_web_page_url: "Enter web page URL",
     must_be_a_valid_web_page_url: "Must be a fully qualified https URL",
+    enter_script: "Enter script expression or statement block",
 });
 
 /** @public */

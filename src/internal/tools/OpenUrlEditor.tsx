@@ -82,7 +82,7 @@ const useStyles = createUseFlowStyles("OpenUrlEditor", ({palette}) => ({
     root: {
         display: "flex",
         flexDirection: "column",
-        minWidth: 400,
+        width: "calc(min(100vw,600px))",
         padding: 8,
     },
     inputRow: {
