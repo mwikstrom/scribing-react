@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- Initial selection does not work anymore
-- Editor must regain focus when lost to toolbox and toolbox is closed
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update
 - ScriptEditor + OpenUrlEditor shall have common component
