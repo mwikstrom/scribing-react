@@ -311,7 +311,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     const classes = useStyles();
     return (
-        <TooltipScope manager={tooltipManager}>
+        <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
                     <div 

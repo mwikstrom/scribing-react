@@ -9,10 +9,11 @@ import { TooltipData, TooltipManager } from "./TooltipManager";
 export interface TooltipScopeProps {
     manager?: TooltipManager;
     children?: ReactNode;
+    boundary?: HTMLElement | null;
 }
 
 /** @internal */
-export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) => {
+export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, boundary}) => {
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
     const [current, setCurrent] = useState<TooltipData | null>(manager.current || null);
     const [active, setActive] = useState<TooltipData | null>(current);
@@ -102,8 +103,8 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given}) 
     return (
         <TooltipContext.Provider value={manager}>
             {children}
-            {displayOne && <Tooltip active={displayOne === active} {...displayOne}/>}
-            {displayTwo && <Tooltip active={displayTwo === active} {...displayTwo}/>}
+            {displayOne && <Tooltip active={displayOne === active} boundary={boundary} {...displayOne}/>}
+            {displayTwo && <Tooltip active={displayTwo === active} boundary={boundary} {...displayTwo}/>}
         </TooltipContext.Provider>
     );
 };

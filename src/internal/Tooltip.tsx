@@ -7,7 +7,7 @@ import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
 import { Toolbar } from "./tools/Toolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
-import { getScrollContainer } from "./utils/get-scroll-container";
+import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 
 /** @internal */
 export interface TooltipProps {
@@ -15,25 +15,15 @@ export interface TooltipProps {
     reference: VirtualElement,
     active: boolean;
     content: string | FlowEditorCommands;
+    boundary?: HTMLElement | null;
 }
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, active, content } = props;
+    const { reference, active, content, boundary } = props;
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const [stable, setStable] = useState(false);
-
-    const scrollContainer = useMemo(
-        () => popper ? getScrollContainer(popper) : null,
-        [popper]
-    );
-
-    const boundary = useMemo(
-        () => scrollContainer instanceof Element ? scrollContainer : "clippingParents",
-        [scrollContainer]
-    );
-
     const padding = { left: 2, top: 5, right: 2, bottom: 5 };
     const { styles, attributes, update } = usePopper(reference, popper, {
         placement: "top",
@@ -41,7 +31,7 @@ export const Tooltip: FC<TooltipProps> = props => {
             { name: "arrow", options: { element: arrow } },
             { name: "offset", options: { offset: [0, 10] } },
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
-            { name: "preventOverflow", options: { boundary, altAxis: true, padding } },
+            { name: "preventOverflow", options: { boundary: boundary ?? "clippingParents", altAxis: true, padding } },
         ],
     });
 
@@ -59,6 +49,12 @@ export const Tooltip: FC<TooltipProps> = props => {
             update();
         }
     }, [content, update]);
+
+    useNativeEventHandler(boundary ?? null, "scroll", () => {
+        if (update) {
+            update();
+        }
+    }, [update]);
 
     const popperProps = {
         ...attributes.popper,

@@ -3,7 +3,7 @@ import { TooltipProps } from "./Tooltip";
 import { PubSub } from "./utils/PubSub";
 
 /** @internal */
-export type TooltipData = Omit<TooltipProps, "active">;
+export type TooltipData = Omit<TooltipProps, "active" | "boundary">;
 
 /** @internal */
 export class TooltipManager extends PubSub<TooltipData | null> {
