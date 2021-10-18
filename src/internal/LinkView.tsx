@@ -110,6 +110,8 @@ export const LinkView: FC<LinkViewProps> = props => {
                     node={child}
                 />
             ))}
+            contentEditable={!!editMode && !clickable}
+            suppressContentEditableWarning={true}
         />
     );
 };
