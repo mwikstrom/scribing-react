@@ -5,7 +5,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { useFlowLocale } from "../../FlowLocaleScope";
 import { createUseFlowStyles } from "../JssTheming";
-import { SYSTEM_FONT } from "../utils/system-font";
 import { ToolButton } from "./ToolButton";
 
 export interface ScriptEditorProps {
