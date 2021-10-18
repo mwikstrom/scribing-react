@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { DynamicText } from "scribing";
+import React, { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { DynamicText, TextStyle, TextStyleProps } from "scribing";
 import { createUseFlowStyles } from "./internal/JssTheming";
 import { getTextCssProperties } from "./internal/utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
@@ -25,7 +25,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
     
-    const css = useMemo(() => getTextCssProperties(style), [style]);
     const classes = useStyles();
     
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
@@ -38,6 +37,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const locale = useFlowLocale();
     const showTip = useShowTip();
     const editMode = useEditMode();
+    
     const empty = useMemo(() => {
         const { result, ready, error } = evaluated;
         if (!expression) {
@@ -48,18 +48,46 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             return false;
         }
     }, [expression, evaluated]);
-    const value = useMemo(() => {
-        const { result, ready, error } = evaluated;
-        if (empty) {
-            return !editMode ? "" : expression ? locale.void_result : locale.void_script;
-        } else if (error) {            
-            return locale.script_error;
-        } else if (result !== void(0) || ready) {
-            return String(result);
-        } else {
-            return null;
+
+    const children = useMemo(() => {
+        const { result, error, ready } = evaluated;
+        
+        if (!ready) {
+            return <Icon path={mdiLoading} size={0.5} spin={0.5}/>;
         }
-    }, [evaluated, locale, empty, editMode]);
+
+        if (empty) {
+            if (!editMode) {
+                return null;
+            }
+
+            return (
+                <RenderValue
+                    classes={classes}
+                    style={style.unset("color")}
+                    value={expression ? locale.void_result : locale.void_script}
+                />
+            );
+        }
+
+        if (error) {
+            return (
+                <RenderValue
+                    classes={classes}
+                    style={style.unset("color")}
+                    value={locale.script_error}
+                />
+            );
+        }
+
+        return (
+            <RenderValue
+                classes={classes}
+                style={style}
+                value={result}
+            />
+        );
+    }, [evaluated, locale, empty, editMode, classes, style]);
     
     const [hover, setHover] = useState(false);
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
@@ -77,7 +105,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         !evaluated.ready && classes.pending,
         evaluated.error !== null && !empty && classes.error,
         !!editMode && empty && classes.empty,
-        ...getTextStyleClassNames(style, classes)
     ), [style, classes, evaluated]);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
@@ -92,8 +119,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             ref={ref}
             contentEditable={false}
             className={className}
-            style={css}
-            children={evaluated.ready ? value : <Icon path={mdiLoading} size={0.5} spin={0.5}/>}
+            children={children}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
@@ -121,3 +147,61 @@ const makeOutlineCssProps = (color: string) => ({
     outlineColor: color,
     outlineOffset: "0.2rem",
 });
+
+interface RenderValueProps {
+    classes: ReturnType<typeof useStyles>;
+    style: TextStyle;
+    value: unknown;
+}
+
+const RenderValue: FC<RenderValueProps> = props => {
+    const { value, ...rest } = props;
+    if (Array.isArray(value)) {
+        return (
+            <>
+                {
+                    value.map((item, index) => (
+                        <RenderValue
+                            key={index}
+                            value={item}
+                            {...rest}
+                        />
+                    ))
+                }
+            </>
+        );
+    } else if (isTextObject(value)) {
+        const { text } = value;
+        const style = isStyleObject(value) ? props.style.merge(new TextStyle(value.style)) : props.style;
+        return <RenderValueSpan classes={props.classes} style={style} value={text}/>;
+    } else {
+        return <RenderValueSpan {...props}/>;
+    }    
+};
+
+function isTextObject(thing: unknown): thing is { text: string } {
+    return (
+        isRecordObject(thing) &&
+        typeof thing["text"] === "string"
+    );
+}
+
+function isStyleObject(thing: unknown): thing is { style: TextStyleProps } {
+    return (
+        isRecordObject(thing) &&
+        TextStyle.dataType.test(thing["style"])
+    );
+}
+
+function isRecordObject(thing: unknown): thing is Record<string, unknown> {
+    return (
+        typeof thing === "object" &&
+        thing !== null
+    );
+}
+
+const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value }) => {
+    const css = useMemo(() => getTextCssProperties(style), [style]);
+    const className = useMemo(() => clsx(...getTextStyleClassNames(style, classes)), [style, classes]);
+    return <span style={css} className={className}>{String(value)}</span>;
+};

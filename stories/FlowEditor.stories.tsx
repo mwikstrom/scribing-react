@@ -230,8 +230,35 @@ Counter.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Counter value is: ",
         { dynamic: "value || 0" },
-        ". ",
+        ".",
         { button: ["Increment"], action: { script: "value = (value || 0) + 1" } },
+        { break: "para" },
+    ])),
+};
+
+export const StyledCounter = Template.bind({});
+StyledCounter.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Counter value is: ",
+        { dynamic: `{
+            if (!value) {
+                return { text: "zero", style: { color: "subtle" } };
+            }
+
+            const suffix = ["th","st","nd","rd","th"][Math.min(value, 4)];
+            const color = value < 5 ? "default" : value < 10 ? "success" : value < 20 ? "warning" : "error";
+
+            return [
+                { text: String(value), style: { color, bold: true } },
+                { text: suffix, style: { color, italic: true, baseline: "super" } },
+            ];
+        }` },
+        { break: "para" },
+        { button: ["Increment"], action: { script: "value = (value || 0) + 1" } },
+        " ",
+        { button: ["Double-up"], action: { script: "value *= 2" } },
+        " ",
+        { button: ["Reset"], action: { script: "value = 0" } },
         { break: "para" },
     ])),
 };
