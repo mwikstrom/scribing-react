@@ -1,8 +1,6 @@
 SCRIBING TODO
 =============
-- Moving down from inside nesting node does not place caret properly
 - Implement TODO-methods in FlowEditCommands
-- Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Flow style JSS is duplicated for tool buttons
 - Add refresh to dynamic text (auto re-evaluate on an interval)
 - Escape to close menu, but not toolbox
@@ -33,6 +31,8 @@ SCRIBING TODO
 - Formatting paragraph break with zero opacity is not generally a good idea
 - CTRL+PERIOD shall open contextual toolbar with keyboard navigation
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update (useContext for this. must apply to both tool menu and tool tip)
+- Moving down from inside nesting node does not place caret properly
+- Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Can baseline offset be applied without affecting height of line box?
 
 LOWER PRIO
