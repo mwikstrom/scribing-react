@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Forward tooltip boundary to toolmenu popper
 - Forward scroll events to popper boundary
 - Clean up getScrollContainer
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?

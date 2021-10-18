@@ -1,8 +1,7 @@
-import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import React, { FC, ReactNode, useCallback, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import { useNativeEventHandler } from "../hooks/use-native-event-handler";
 import { createUseFlowStyles } from "../JssTheming";
-import { getScrollContainer } from "../utils/get-scroll-container";
 import { SYSTEM_FONT } from "../utils/system-font";
 
 /** @internal */
@@ -11,26 +10,24 @@ export interface ToolMenuProps {
     children: ReactNode;
     placement?: "bottom-start" | "bottom" | "bottom-end",
     closeOnMouseLeave?: boolean;
+    boundary?: HTMLElement | null;
     onClose?: () => void;
 }
 
 /** @internal */
 export const ToolMenu: FC<ToolMenuProps> = props => {
-    const { anchor, children, onClose, placement = "bottom-start", closeOnMouseLeave = true } = props;
+    const {
+        anchor,
+        children,
+        onClose,
+        placement = "bottom-start",
+        closeOnMouseLeave = true,
+        boundary: givenBoundary,
+    } = props;
+    const boundary = givenBoundary ?? "clippingParents";
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const scrollContainer = useMemo(
-        () => anchor ? getScrollContainer(anchor) : null,
-        [anchor]
-    );
-
-    const boundary = useMemo(
-        () => scrollContainer instanceof Element ? scrollContainer : "clippingParents",
-        [scrollContainer]
-    );
-
-    const { styles, attributes } = usePopper(anchor, popper, {
+    const { styles, attributes, update } = usePopper(anchor, popper, {
         placement,
         modifiers: [
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
@@ -72,6 +69,12 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
             onClose();
         }
     }, [isMouseOver, onClose]);
+
+    useNativeEventHandler(givenBoundary ?? null, "scroll", () => {
+        if (update) {
+            update();
+        }
+    }, [update]);
 
     return (
         <div ref={setPopper} {...popperProps}>

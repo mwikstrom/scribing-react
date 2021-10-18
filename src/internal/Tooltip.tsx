@@ -20,7 +20,8 @@ export interface TooltipProps {
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, active, content, boundary } = props;
+    const { reference, active, content, boundary: givenBoundary } = props;
+    const boundary = givenBoundary ?? "clippingParents";
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const [stable, setStable] = useState(false);
@@ -31,7 +32,7 @@ export const Tooltip: FC<TooltipProps> = props => {
             { name: "arrow", options: { element: arrow } },
             { name: "offset", options: { offset: [0, 10] } },
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
-            { name: "preventOverflow", options: { boundary: boundary ?? "clippingParents", altAxis: true, padding } },
+            { name: "preventOverflow", options: { boundary, altAxis: true, padding } },
         ],
     });
 
@@ -50,7 +51,7 @@ export const Tooltip: FC<TooltipProps> = props => {
         }
     }, [content, update]);
 
-    useNativeEventHandler(boundary ?? null, "scroll", () => {
+    useNativeEventHandler(givenBoundary ?? null, "scroll", () => {
         if (update) {
             update();
         }
@@ -69,7 +70,7 @@ export const Tooltip: FC<TooltipProps> = props => {
 
     const children = useMemo(() => {
         if (content instanceof FlowEditorCommands) {
-            return <Toolbar commands={content}/>;
+            return <Toolbar commands={content} boundary={givenBoundary}/>;
         } else if (typeof content === "string") {
             return <TooltipMessage text={content}/>;
         } else {

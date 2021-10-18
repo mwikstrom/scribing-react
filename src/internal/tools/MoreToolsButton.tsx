@@ -10,7 +10,7 @@ import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
 import { DynamicText } from "scribing";
 
-export const MoreToolsButton: FC<ToolbarProps> = ({commands}) => {
+export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text">(false);
     const locale = useFlowLocale();
@@ -34,7 +34,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands}) => {
                 <Icon size={1} path={mdiDotsVertical}/>
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
-                <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end">
+                <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end" boundary={boundary}>
                     <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertDynamicText}>
                         <Icon path={mdiFunctionVariant} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
@@ -51,12 +51,19 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands}) => {
                 </ToolMenu>
             )}
             {buttonRef && isMenuOpen === "insert_dynamic_text" && (
-                <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom" closeOnMouseLeave={false}>
-                    <ScriptEditor
-                        onSave={insertDynamicText}
-                        onCancel={closeMenu}
-                    />
-                </ToolMenu>
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={(
+                        <ScriptEditor
+                            onSave={insertDynamicText}
+                            onCancel={closeMenu}
+                        />
+                    )}
+                />
             )}
         </>
     );

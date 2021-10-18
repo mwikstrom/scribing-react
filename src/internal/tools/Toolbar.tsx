@@ -26,6 +26,7 @@ import { MoreToolsButton } from "./MoreToolsButton";
 /** @internal */
 export interface ToolbarProps {
     commands: FlowEditorCommands;
+    boundary?: HTMLElement | null;
 }
 
 /** @internal */

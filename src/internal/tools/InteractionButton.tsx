@@ -14,7 +14,7 @@ import { useFlowLocale } from "../../FlowLocaleScope";
 import { OpenUrlEditor } from "./OpenUrlEditor";
 import { ScriptEditor } from "./ScriptEditor";
 
-export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
+export const InteractionButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const locale = useFlowLocale();
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<boolean | "url" | "script">(false);
@@ -49,7 +49,7 @@ export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
                 <Icon path={mdiMenuDown} size={0.75}/>
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
-                <ToolMenu anchor={buttonRef} onClose={closeMenu}>
+                <ToolMenu anchor={buttonRef} onClose={closeMenu} boundary={boundary}>
                     <ToolMenuItem onClick={clearInteraction}>
                         <Icon path={mdiCheck} size={0.75} style={visibleIf(interaction === null)}/>
                         <span style={{margin: "0 0.5rem"}}>{locale.not_interactive}</span>
@@ -65,22 +65,36 @@ export const InteractionButton: FC<ToolbarProps> = ({commands}) => {
                 </ToolMenu>
             )}
             {buttonRef && isMenuOpen === "url" && (
-                <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom" closeOnMouseLeave={false}>
-                    <OpenUrlEditor
-                        value={interaction instanceof OpenUrl ? interaction.url : ""}
-                        onSave={setOpenUrl}
-                        onCancel={closeMenu}
-                    />
-                </ToolMenu>
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={(
+                        <OpenUrlEditor
+                            value={interaction instanceof OpenUrl ? interaction.url : ""}
+                            onSave={setOpenUrl}
+                            onCancel={closeMenu}
+                        />
+                    )}
+                />
             )}
             {buttonRef && isMenuOpen === "script" && (
-                <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom" closeOnMouseLeave={false}>
-                    <ScriptEditor
-                        value={interaction instanceof RunScript ? interaction.script : ""}
-                        onSave={setRunScript}
-                        onCancel={closeMenu}
-                    />
-                </ToolMenu>
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={(
+                        <ScriptEditor
+                            value={interaction instanceof RunScript ? interaction.script : ""}
+                            onSave={setRunScript}
+                            onCancel={closeMenu}
+                        />
+                    )}
+                />
             )}
         </>
     );
