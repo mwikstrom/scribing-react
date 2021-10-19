@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     FlowBox, 
     FlowBoxSelection, 
@@ -17,6 +17,8 @@ import { createUseFlowStyles } from "./internal/JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
 import { useShowTip } from "./internal/TooltipScope";
 import { useInteractionInvoker } from "./useInteractionInvoker";
+import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
+import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -87,18 +89,23 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         }
     }, [error, rootElem, hover, locale]);
 
+    const css = useMemo(() => getBoxCssProperties(style), [style]);
+    const className = useMemo(() => clsx(
+        classes.root,
+        clickable ? classes.clickable : !!editMode && classes.editable,
+        pending && classes.pending,
+        error && classes.error,
+        ...getBoxStyleClassNames(style, classes),
+    ), [clickable, pending, error, editMode, style, classes]);
+
     return (
         <Component 
             ref={ref}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className={clsx(
-                classes.root,
-                clickable ? classes.clickable : !!editMode && classes.editable,
-                pending && classes.pending,
-                error && classes.error,
-            )}
+            className={className}
+            style={css}
             contentEditable={false}
             children={(
                 <span
@@ -138,7 +145,10 @@ class FlowBoxContentAxis extends FlowAxis {
 
 // TODO: FIX !important rules -- should be part of theme?
 const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
-    root: {},
+    ...boxStyles(palette),
+    root: {
+        padding: "2px 5px",
+    },
     content: {
         outline: "none",
         "&>.ScribingParagraph-root:first-child": {
