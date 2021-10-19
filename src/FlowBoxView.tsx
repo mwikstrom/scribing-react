@@ -19,7 +19,7 @@ import { useShowTip } from "./internal/TooltipScope";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
 import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
-import { mdiAlert, mdiAlertOctagonOutline, mdiAlertOutline, mdiChatOutline, mdiCheck, mdiCheckCircleOutline, mdiHandPointingRight, mdiInformation, mdiInformationOutline, mdiMessageOutline, mdiStop } from "@mdi/js";
+import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useFlowPalette } from ".";
 
@@ -114,7 +114,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
 
     if (style.variant === "alert" && style.color && style.color !== "default") {
         let icon: string | undefined;
-        
+
         if (style.color === "information") {
             icon = mdiInformationOutline;
         } else if (style.color === "warning") {
