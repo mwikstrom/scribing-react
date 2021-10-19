@@ -60,7 +60,7 @@ export const getBoxStyleClassNames = (
     classes: BoxStyleClasses
 ): string[] => {
     const {  variant = "basic", color = "default" } = style;
-    const result = [classes[variant], getColorRule(color)];
+    const result = [classes[variant], classes[getColorRule(color)]];
     return result;
 };
 
