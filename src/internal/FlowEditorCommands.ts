@@ -1,5 +1,8 @@
 import { 
+    BoxStyle,
+    BoxStyleProps,
     DynamicText,
+    FlowColor,
     FlowContent,
     FlowEditorState, 
     FlowNode, 
@@ -123,7 +126,7 @@ export class FlowEditorCommands {
     }
 
     getInteraction(): Interaction | null | undefined {
-        const buttonAction = this.getButtonAction();
+        const buttonAction = this.getBoxInteraction();
         if (buttonAction === void(0)) {
             return this.getLink();
         } else {
@@ -132,8 +135,8 @@ export class FlowEditorCommands {
     }
 
     setInteraction(value: Interaction | null): void {
-        if (this.isButton()) {
-            this.setButtonAction(value);
+        if (this.isInteractiveBox()) {
+            this.setBoxInteraction(value);
         } else {
             this.setLink(value);
         }
@@ -150,12 +153,36 @@ export class FlowEditorCommands {
         this.formatText("link", value);
     }
 
-    getTextColor(): TextStyleProps["color"] {
+    getColor(): TextStyleProps["color"] {
+        if (this.isBox()) {
+            return this.getBoxColor();
+        } else {
+            return this.getTextColor();
+        }
+    }
+
+    setColor(value: FlowColor): void {
+        if (this.isBox()) {
+            this.setBoxColor(value);
+        } else {
+            this.setTextColor(value);
+        }
+    }
+
+    getTextColor(): FlowColor | undefined {
         return this.getTextStyle().get("color");
     }
 
-    setTextColor(value: Exclude<TextStyleProps["color"], undefined>): void {
+    setTextColor(value: FlowColor): void {
         this.formatText("color", value);
+    }
+
+    getBoxColor(): FlowColor | undefined {
+        return this.getBoxStyle().get("color");
+    }
+
+    setBoxColor(value: FlowColor): void {
+        this.formatBox("color", value);
     }
 
     getTextAlignment(): ParagraphStyleProps["alignment"] {
@@ -275,6 +302,13 @@ export class FlowEditorCommands {
         this.formatText(key, !this.getTextStyle().get(key));
     }
 
+    getBoxStyle(): BoxStyle {
+        // TODO: Implement getBoxStyle
+        //const { selection, content, theme } = this.#state;
+        //return selection === null ? BoxStyle.empty : selection.getUniformBoxStyle(content, theme);
+        return BoxStyle.empty;
+    }
+
     getTextStyle(): TextStyle {
         const { selection, content, theme, caret } = this.#state;
         const uniform = selection === null ? TextStyle.empty : selection.getUniformTextStyle(content, theme);
@@ -288,6 +322,16 @@ export class FlowEditorCommands {
     getParagraphStyle(): ParagraphStyle {
         const { selection, content, theme } = this.#state;
         return selection === null ? ParagraphStyle.empty : selection.getUniformParagraphStyle(content, theme);
+    }
+
+    formatBox<K extends keyof BoxStyleProps>(key: K, value: BoxStyleProps[K]): void {
+        const { selection } = this.#state;
+        if (selection) {
+            const style = BoxStyle.empty.set(key, value);
+            const options = this.getTargetOptions();
+            const operation = selection.formatBox(style, options);
+            this.#state = this.#apply(operation);
+        }
     }
 
     formatText<K extends keyof TextStyleProps>(key: K, value: TextStyleProps[K]): void {
@@ -340,19 +384,24 @@ export class FlowEditorCommands {
         }
     }
 
-    isButton(): boolean {
+    isBox(): boolean {
         // TODO: Implement
         return false;
     }
 
-    getButtonAction(): Interaction | null | undefined {
+    isInteractiveBox(): boolean {
+        // TODO: Implement
+        return false;
+    }
+
+    getBoxInteraction(): Interaction | null | undefined {
         // TODO: Implement
         return undefined;
     }
 
-    setButtonAction(value: Interaction | null): void {
+    setBoxInteraction(value: Interaction | null): void {
         // TODO: Implement
-        console.log("TODO: Set button action", value);
+        console.log("TODO: Set box interaction", value);
     }
 
     isLink(): boolean {

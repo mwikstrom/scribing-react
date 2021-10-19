@@ -8,7 +8,7 @@ import { UnderlineButton } from "./UnderlineButton";
 import { StrikeButton } from "./StrikeButton";
 import { SubscriptButton } from "./SubscriptButton";
 import { SuperscriptButton } from "./SuperscriptButton";
-import { TextColorButton } from "./TextColorButton";
+import { ColorButton } from "./ColorButton";
 import { ParagraphVariantButton } from "./ParagraphVariantButton";
 import { TextAlignLeftButton } from "./TextAlignLeftButton";
 import { TextAlignCenterButton } from "./TextAlignCenterButton";
@@ -50,7 +50,7 @@ export const Toolbar: FC<ToolbarProps> = props => {
                     <SuperscriptButton {...props}/>
                 </ToolGroup>
                 <ToolDivider/>
-                <TextColorButton {...props}/>
+                <ColorButton {...props}/>
                 <ToolDivider/>
                 <MoreToolsButton {...props}/>
             </div>
