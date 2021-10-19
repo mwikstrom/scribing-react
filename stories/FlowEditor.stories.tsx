@@ -2,7 +2,15 @@ import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
-import { FlowContent, FlowEditorState, FlowSelection } from "scribing";
+import {
+    BoxVariant,
+    BOX_VARIANTS,
+    FlowColor,
+    FlowContent,
+    FlowEditorState,
+    FlowSelection,
+    FLOW_COLORS
+} from "scribing";
 import { JsonObject, JsonValue } from "paratype";
 
 export default {
@@ -312,12 +320,29 @@ LinkStates.args = {
     ])),
 };
 
-function button(content: Array<JsonValue>, script = ""): JsonObject {
+export const BoxVariants = Template.bind({});
+BoxVariants.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue(
+        BOX_VARIANTS.flatMap(variant => FLOW_COLORS.flatMap(color => [
+            button([`${variant} ${color}`], { variant, color }),
+            { "break": "para"},
+        ])),
+    )),
+};
+
+function button(
+    content: Array<JsonValue>, 
+    scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""
+): JsonObject {
+    const script = typeof scriptOrOptions === "string" ? scriptOrOptions : scriptOrOptions.script ?? "";
+    const variant = typeof scriptOrOptions === "string" ? "outlined" : scriptOrOptions.variant ?? "outlined";
+    const color = typeof scriptOrOptions === "string" ? "default" : scriptOrOptions.color ?? "default";
     return {
         box: content,
         style: {
             interaction: { script },
-            variant: "outlined",
+            variant,
+            color,
             inline: true,
         }
     };

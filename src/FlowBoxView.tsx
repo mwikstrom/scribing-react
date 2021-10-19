@@ -19,6 +19,9 @@ import { useShowTip } from "./internal/TooltipScope";
 import { useInteractionInvoker } from "./useInteractionInvoker";
 import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
 import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
+import { mdiAlert, mdiAlertOctagonOutline, mdiAlertOutline, mdiChatOutline, mdiCheck, mdiCheckCircleOutline, mdiHandPointingRight, mdiInformation, mdiInformationOutline, mdiMessageOutline, mdiStop } from "@mdi/js";
+import Icon from "@mdi/react";
+import { useFlowPalette } from ".";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -89,14 +92,48 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         }
     }, [error, rootElem, hover, locale]);
 
+    const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const className = useMemo(() => clsx(
         classes.root,
         clickable ? classes.clickable : !!editMode && classes.editable,
         pending && classes.pending,
         error && classes.error,
+        clickable && hover && classes.hover,
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, pending, error, editMode, style, classes]);
+
+    let children = (
+        <div
+            contentEditable={!!editMode && !clickable && !isParentSelectionActive}
+            suppressContentEditableWarning={true}
+            className={classes.content}
+            children={<FlowView content={content}/>}
+        />
+    );
+
+    if (style.variant === "alert" && style.color && style.color !== "default") {
+        let icon: string | undefined;
+        
+        if (style.color === "information") {
+            icon = mdiInformationOutline;
+        } else if (style.color === "warning") {
+            icon = mdiAlertOutline;
+        } else if (style.color === "success") {
+            icon = mdiCheckCircleOutline;
+        } else if (style.color === "error") {
+            icon = mdiAlertOctagonOutline;
+        }
+
+        if (icon) {
+            children = (
+                <div className={classes.alertBody}>
+                    <Icon path={icon} size={1} className={classes.alertIcon} color={palette[style.color]}/>
+                    {children}
+                </div>
+            );
+        }
+    }
 
     return (
         <Component 
@@ -107,14 +144,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             className={className}
             style={css}
             contentEditable={false}
-            children={(
-                <span
-                    contentEditable={!!editMode && !clickable && !isParentSelectionActive}
-                    suppressContentEditableWarning={true}
-                    className={classes.content}
-                    children={<FlowView content={content}/>}
-                />
-            )}
+            children={children}
         />
     );
 });
@@ -147,10 +177,22 @@ class FlowBoxContentAxis extends FlowAxis {
 const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     ...boxStyles(palette),
     root: {
+        borderRadius: 2,
         padding: "2px 5px",
+    },
+    alertBody: {
+        position: "relative",
+        marginLeft: 30,
+    },
+    alertIcon: {
+        position: "absolute",
+        left: -30,
     },
     content: {
         outline: "none",
+        "$alert>&": {
+            flex: 1,
+        },
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
         },

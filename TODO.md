@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Define (with stories) box variant styles (include fading/shadow + hover style)
 - Do not execute empty scripts (invoke)
 - Do not execute empty scripts (observe)
 - Clickable box: Disable double click when interacting

@@ -41,10 +41,11 @@
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
-    "@storybook/addon-actions": "^6.3.8",
-    "@storybook/addon-essentials": "^6.3.8",
-    "@storybook/addon-links": "^6.3.8",
-    "@storybook/react": "^6.3.8",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/react": "^6.3.12",
+    "@types/color": "^3.0.2",
     "@types/jest": "^26.0.24",
     "@types/react": "^17.0.20",
     "@types/react-test-renderer": "^17.0.1",
@@ -90,6 +91,7 @@
     "scripthost-react": "0.x"
   },
   "dependencies": {
+    "color": "^3.2.1",
     "react-textarea-autosize": "^8.3.3"
   }
 }
