@@ -240,18 +240,18 @@ StyledCounter.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Counter value is: ",
         { dynamic: `{
-            if (!value) {
-                return { text: "zero", style: { color: "subtle" } };
-            }
+\tif (!value) {
+\t\treturn { text: "zero", style: { color: "subtle" } };
+\t}
 
-            const suffix = ["th","st","nd","rd","th"][Math.min(value, 4)];
-            const color = value < 5 ? "default" : value < 10 ? "success" : value < 20 ? "warning" : "error";
+\tconst suffix = ["th","st","nd","rd","th"][Math.min(value % 20, 4)];
+\tconst color = value < 5 ? "default" : value < 10 ? "success" : value < 20 ? "warning" : "error";
 
-            return [
-                { text: String(value), style: { color, bold: true } },
-                { text: suffix, style: { color, italic: true, baseline: "super" } },
-            ];
-        }` },
+\treturn [
+\t\t{ text: String(value), style: { color, bold: true } },
+\t\t{ text: suffix, style: { color, italic: true, baseline: "super" } },
+\t];
+}` },
         { break: "para" },
         button(["Increment"], "value = (value || 0) + 1"),
         " ",
