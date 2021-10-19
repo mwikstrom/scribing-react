@@ -135,7 +135,7 @@ export class FlowEditorCommands {
     }
 
     setInteraction(value: Interaction | null): void {
-        if (this.isInteractiveBox()) {
+        if (this.isBox()) {
             this.setBoxInteraction(value);
         } else {
             this.setLink(value);
@@ -385,11 +385,6 @@ export class FlowEditorCommands {
     }
 
     isBox(): boolean {
-        // TODO: Implement
-        return false;
-    }
-
-    isInteractiveBox(): boolean {
         // TODO: Implement
         return false;
     }
