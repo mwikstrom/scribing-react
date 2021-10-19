@@ -21,7 +21,7 @@ import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
 import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
 import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useFlowPalette } from ".";
+import { useFlowPalette } from "./FlowPaletteScope";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
