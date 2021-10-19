@@ -14,8 +14,6 @@ SCRIBING TODO
 - ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
 - List indent shall depend on paragraph alignment AND reading direction
 - Tool: Set list counter
-- Tool: Set button action
-- Tool: Set dynamic text expression
 - Tool: Set reading direction
 - Tool: Set line height
 - Tool: Set font size
