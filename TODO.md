@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- TextColorButton -> ColorButton
-- SetTextColor -> SetColor
 - Implement TODO-methods in FlowEditCommands
 - Define (with strories) box variant styles (include fading/shadow + hover style)
 - Do not execute empty scripts (invoke)
