@@ -3,7 +3,7 @@ import React, { FC, useCallback, useState } from "react";
 import { ToolButton } from "./ToolButton";
 import { mdiCheck, mdiFormatText, mdiMenuDown } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
-import { ParagraphStyleVariant, PARAGRAPH_STYLE_VARIANTS } from "scribing";
+import { ParagraphVariant, PARAGRAPH_VARIANTS } from "scribing";
 import { useFlowLocale } from "../../FlowLocaleScope";
 import { getParagraphVariantLocaleKey } from "../..";
 import { ToolMenu } from "./ToolMenu";
@@ -15,7 +15,7 @@ export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) =
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
-    const applyVariant = useCallback((option: ParagraphStyleVariant) => {
+    const applyVariant = useCallback((option: ParagraphVariant) => {
         closeMenu();
         commands.setParagraphVariant(option);
     }, [closeMenu, commands]);
@@ -25,7 +25,7 @@ export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) =
             <ToolButton setRef={setButtonRef} onClick={toggleMenu}>
                 <Icon path={mdiFormatText} size={0.75}/>
                 <span style={{ margin: "0 0.5rem" }}>
-                    {PARAGRAPH_STYLE_VARIANTS.map(option => (
+                    {PARAGRAPH_VARIANTS.map(option => (
                         <div 
                             key={option}
                             style={option === variant ? undefined : {
@@ -40,7 +40,7 @@ export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) =
             </ToolButton>
             {buttonRef && isMenuOpen && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu} boundary={boundary}>
-                    {PARAGRAPH_STYLE_VARIANTS.map(option => (
+                    {PARAGRAPH_VARIANTS.map(option => (
                         <ToolMenuItem key={option} onClick={applyVariant.bind(void(0), option)}>
                             <Icon
                                 path={mdiCheck}

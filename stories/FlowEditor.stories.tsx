@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowEditorProps } from "../src";
 import { FlowContent, FlowEditorState, FlowSelection } from "scribing";
+import { JsonObject, JsonValue } from "paratype";
 
 export default {
     title: "FlowEditor",
@@ -111,11 +112,11 @@ Button.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Let's try a button:",
         { break: "para" },
-        { button: [
+        button([
             "Hello ",
             { text: "world", style: { italic: true } },
             "!",
-        ]},        
+        ]),        
         { break: "para" },
         "The end.",
         { break: "para" },
@@ -126,11 +127,11 @@ export const InlineButton = Template.bind({});
 InlineButton.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Let's try an inline button: ",
-        { button: [
+        button([
             "Hello ",
             { text: "world", style: { italic: true } },
             "!",
-        ]},        
+        ]),        
         " The end.",
         { break: "para" },
     ])),
@@ -140,13 +141,11 @@ export const NestedButton = Template.bind({});
 NestedButton.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Can a ",
-        { button: [
+        button([
             "button be ",
-            { button: [
-                "nested inside"
-            ]},
+            button(["nested inside"]),
             " another",
-        ]},        
+        ]),        
         " button?",
         { break: "para" },
     ])),
@@ -231,7 +230,7 @@ Counter.args = {
         "Counter value is: ",
         { dynamic: "value || 0" },
         ". ",
-        { button: ["Increment"], action: { script: "value = (value || 0) + 1" } },
+        button(["Increment"], "value = (value || 0) + 1" ),
         { break: "para" },
     ])),
 };
@@ -254,11 +253,11 @@ StyledCounter.args = {
             ];
         }` },
         { break: "para" },
-        { button: ["Increment"], action: { script: "value = (value || 0) + 1" } },
+        button(["Increment"], "value = (value || 0) + 1"),
         " ",
-        { button: ["Double-up"], action: { script: "value *= 2" } },
+        button(["Double-up"], "value *= 2"),
         " ",
-        { button: ["Reset"], action: { script: "value = 0" } },
+        button(["Reset"], "value = 0"),
         { break: "para" },
     ])),
 };
@@ -286,13 +285,13 @@ export const ButtonStates = Template.bind({});
 ButtonStates.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "This button should fail immediately: ",
-        { button: ["Click me"], action: { script: "{ throw new Error('Failed'); }" } },
+        button(["Click me"], "{ throw new Error('Failed'); }"),
         { break: "para" },
         "This button should fail after 1 second: ",
-        { button: ["Click me"], action: { script: "{ await delay(1000); throw new Error('Failed'); }" } },
+        button(["Click me"], "{ await delay(1000); throw new Error('Failed'); }"),
         { break: "para" },
         "This button should succeed after 1 second: ",
-        { button: ["Click me"], action: { script: "delay(1000)" } },
+        button(["Click me"], "delay(1000)"),
         { break: "para" },
     ])),
 };
@@ -312,3 +311,14 @@ LinkStates.args = {
         { break: "para" },
     ])),
 };
+
+function button(content: Array<JsonValue>, script = ""): JsonObject {
+    return {
+        box: content,
+        style: {
+            interaction: { script },
+            variant: "outlined",
+            inline: true,
+        }
+    };
+}

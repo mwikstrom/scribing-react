@@ -1,4 +1,4 @@
-import { ParagraphStyleVariant, TextColor } from "scribing";
+import { ParagraphVariant, FlowColor } from "scribing";
 
 /** @public */
 export interface FlowLocale extends 
@@ -19,10 +19,10 @@ Record<ColorLocaleKey, string> {
 }
 
 /** @public */
-export type ParagraphVariantLocaleKey = `paragraph_variant_${ParagraphStyleVariant}`;
+export type ParagraphVariantLocaleKey = `paragraph_variant_${ParagraphVariant}`;
 
 /** @public */
-export type ColorLocaleKey = `color_${TextColor}`;
+export type ColorLocaleKey = `color_${FlowColor}`;
 
 /** @public */
 export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
@@ -60,11 +60,11 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
 });
 
 /** @public */
-export function getParagraphVariantLocaleKey(variant: ParagraphStyleVariant): ParagraphVariantLocaleKey {
+export function getParagraphVariantLocaleKey(variant: ParagraphVariant): ParagraphVariantLocaleKey {
     return `paragraph_variant_${variant}`;
 }
 
 /** @public */
-export function getTextColorLocaleKey(variant: TextColor): ColorLocaleKey {
+export function getFlowColorLocaleKey(variant: FlowColor): ColorLocaleKey {
     return `color_${variant}`;
 }

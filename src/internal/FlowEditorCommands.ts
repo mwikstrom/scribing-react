@@ -9,7 +9,7 @@ import {
     OrderedListMarkerKindType, 
     ParagraphStyle, 
     ParagraphStyleProps, 
-    ParagraphStyleVariant, 
+    ParagraphVariant, 
     TargetOptions, 
     TextRun, 
     TextStyle, 
@@ -192,11 +192,11 @@ export class FlowEditorCommands {
         this.formatParagraph("direction", value);
     }
 
-    getParagraphVariant(): ParagraphStyleVariant | undefined {
+    getParagraphVariant(): ParagraphVariant | undefined {
         return this.getParagraphStyle().get("variant");
     }
 
-    setParagraphVariant(value: ParagraphStyleVariant): void {
+    setParagraphVariant(value: ParagraphVariant): void {
         this.formatParagraph("variant", value);
     }
 

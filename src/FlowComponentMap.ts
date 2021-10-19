@@ -8,13 +8,13 @@ import {
 import { 
     LineBreak, 
     ParagraphBreak, 
-    ParagraphStyleVariant, 
+    ParagraphVariant, 
     TextRun, 
-    FlowButton,
+    FlowBox,
     DynamicText,
 } from "scribing";
 import { DynamicTextView } from "./DynamicTextView";
-import { FlowButtonView } from "./FlowButtonView";
+import { FlowBoxView } from "./FlowBoxView";
 import { FlowNodeComponent } from "./FlowNodeComponent";
 import { LineBreakView } from "./LineBreakView";
 import { ParagraphBreakView } from "./ParagraphBreakView";
@@ -38,20 +38,20 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
     lineBreakView: LineBreakView,
     paragraphBreakView: ParagraphBreakView,
     link: "a",
-    buttonView: FlowButtonView,
-    button: "button",
+    boxView: FlowBoxView,
+    box: "span",
     dynamicTextView: DynamicTextView,
     fallbackView: UnknownNodeView,
 });
 
 /** @public */
-export interface FlowComponentMap extends Record<ParagraphStyleVariant, ParagraphComponent> {
+export interface FlowComponentMap extends Record<ParagraphVariant, ParagraphComponent> {
     textRunView: FlowNodeComponent<TextRun>;
     lineBreakView: FlowNodeComponent<LineBreak>;
     paragraphBreakView: FlowNodeComponent<ParagraphBreak>;
     link: LinkComponent;
-    button: ButtonComponent;
-    buttonView: FlowNodeComponent<FlowButton>;
+    box: BoxComponent;
+    boxView: FlowNodeComponent<FlowBox>;
     dynamicTextView: FlowNodeComponent<DynamicText>;
     fallbackView: FlowNodeComponent;
 }
@@ -84,10 +84,10 @@ export interface LinkComponentProps {
 }
 
 /** @public */
-export type ButtonComponent = "button" | FC<ButtonComponentProps>;
+export type BoxComponent = "span" | FC<BoxComponentProps>;
 
 /** @public */
-export interface ButtonComponentProps {
+export interface BoxComponentProps {
     className: string;
     children: ReactNode;
     ref: RefCallback<HTMLElement>;
