@@ -1,11 +1,12 @@
 SCRIBING TODO
 =============
-- Implement TODO-methods in FlowEditCommands
-- Define (with strories) box variant styles (include fading/shadow + hover style)
+- Define (with stories) box variant styles (include fading/shadow + hover style)
 - Do not execute empty scripts (invoke)
 - Do not execute empty scripts (observe)
 - Handle/assign conditional flow boxes
 - Clickable box: Disable double click when interacting
+- Scipthost: support passing props to script
+- Ambient box style
 - Add refresh to dynamic text (auto re-evaluate on an interval)
 - Escape to close menu, but not toolbox
 - Scripthost: Observe instance vars

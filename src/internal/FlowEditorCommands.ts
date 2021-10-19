@@ -2,6 +2,7 @@ import {
     BoxStyle,
     BoxStyleProps,
     DynamicText,
+    FlowBox,
     FlowColor,
     FlowContent,
     FlowEditorState, 
@@ -303,10 +304,8 @@ export class FlowEditorCommands {
     }
 
     getBoxStyle(): BoxStyle {
-        // TODO: Implement getBoxStyle
-        //const { selection, content, theme } = this.#state;
-        //return selection === null ? BoxStyle.empty : selection.getUniformBoxStyle(content, theme);
-        return BoxStyle.empty;
+        const { selection, content, theme } = this.#state;
+        return selection === null ? BoxStyle.empty : selection.getUniformBoxStyle(content, theme);
     }
 
     getTextStyle(): TextStyle {
@@ -384,40 +383,43 @@ export class FlowEditorCommands {
         }
     }
 
-    isBox(): boolean {
-        // TODO: Implement
-        return false;
-    }
-
     getBoxInteraction(): Interaction | null | undefined {
-        // TODO: Implement
-        return undefined;
+        return this.getBoxStyle().interaction;
     }
 
     setBoxInteraction(value: Interaction | null): void {
-        // TODO: Implement
-        console.log("TODO: Set box interaction", value);
+        // TODO: Interaction should be unset when null, this should be accomplished by having ambient box style
+        this.formatBox("interaction", value);
+    }
+
+    isBox(): boolean {
+        return this.isUniformNodes(node => node instanceof FlowBox);
     }
 
     isLink(): boolean {
+        return this.isUniformNodes(node => node instanceof TextRun && !!node.style.link);
+    }
+
+    isUniformNodes(predicate: (node: FlowNode) => boolean): boolean {
+        const { found, other } = this.matchNodes(predicate);
+        return found && !other;
+    }
+
+    matchNodes(predicate: (node: FlowNode) => boolean): { found: boolean, other: boolean } {
         const { selection } = this.#state;
         
-        if (selection === null) {
-            return false;
-        }
+        let found = false;
+        let other = false;
 
-        let foundLink = false;
-        let foundOther = false;
-
-        selection.transformRanges((range, options = {}) => {
+        selection?.transformRanges((range, options = {}) => {
             const { target } = options;
 
             if (target) {
                 for (const node of target.peek(range.first).range(range.size)) {
-                    if (node instanceof TextRun && !!node.style.link) {
-                        foundLink = true;
+                    if (predicate(node)) {
+                        found = true;
                     } else {
-                        foundOther = true;
+                        other = true;
                     }
                 }
             }
@@ -425,17 +427,31 @@ export class FlowEditorCommands {
             return null;
         }, this.getTargetOptions());
 
-        return foundLink && !foundOther;
+        return { found, other };
     }
 
     getDynamicExpression(): string | null | undefined {
-        // TODO: Add support for conditional expressions too
-        return this.getDynamicTextExpression();
+        if (this.isBox()) {
+            return this.getBoxStyle().source;
+        } else {
+            return this.getDynamicTextExpression();
+        }
     }
 
-    setDynamicExpression(value: string): void {
-        // TODO: Implement set dynamic expression
-        console.warn("Not implemented. Cannot set dynamic expression:", value);
+    setDynamicExpression(value: string | null): void {
+        if (this.isBox()) {
+            // TODO: Source should be unset when null, this should be accomplished by having ambient box style
+            this.formatBox("source", value);
+        } else if (value !== null) {
+            this.setDynamicTextExpression(value);
+        }
+    }
+
+    setDynamicTextExpression(value: string): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setDynamicTextExpression(content, value));
+        }
     }
 
     getDynamicTextExpression(): string | null | undefined {
