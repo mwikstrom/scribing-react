@@ -1,9 +1,6 @@
 SCRIBING TODO
 =============
-- Do not execute empty scripts (invoke)
-- Do not execute empty scripts (observe)
 - Clickable box: Disable double click when interacting
-- Scipthost: support passing props to script
 - Ambient box style
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
