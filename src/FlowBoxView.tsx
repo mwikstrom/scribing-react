@@ -24,6 +24,7 @@ import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInfo
 import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
+import { useFormattingMarks } from "./FormattingMarksScope";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -100,12 +101,14 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
 
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
+    const formattingMarks = useFormattingMarks();
     const className = useMemo(() => clsx(
         classes.root,
         clickable ? classes.clickable : !!editMode && classes.editable,
         pending && classes.pending,
         error && classes.error,
         clickable && hover && classes.hover,
+        formattingMarks && !hasBorder(style) && !error && classes.formattingMarks,
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, pending, error, editMode, style, classes]);
 
@@ -190,6 +193,12 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         borderRadius: 2,
         padding: "2px 5px",
     },
+    formattingMarks: {
+        outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.subtle,
+        outlineOffset: 0,
+    },
     alertBody: {
         position: "relative",
         marginLeft: 30,
@@ -227,3 +236,5 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         outlineOffset: "0.2rem",
     },
 }));
+
+const hasBorder = (style?: BoxStyle): boolean => !!style && style.variant !== "basic";

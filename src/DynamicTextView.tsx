@@ -7,10 +7,12 @@ import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, textStyles } from "./internal/utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
-import { useEditMode, useFlowLocale } from ".";
 import { useShowTip } from "./internal/TooltipScope";
 import Icon from "@mdi/react";
 import { mdiLoading } from "@mdi/js";
+import { useFormattingMarks } from "./FormattingMarksScope";
+import { useFlowLocale } from "./FlowLocaleScope";
+import { useEditMode } from "./EditModeScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node } = props;
@@ -100,11 +102,16 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         }
     }, [evaluated, rootElem, hover, empty]);
 
+    const formattingMarks = useFormattingMarks();
+    const isPending = !evaluated.ready;
+    const hasError = evaluated.error !== null && !empty;
+    const showEmpty = !!editMode && empty;
     const className = useMemo(() => clsx(
         classes.root, 
-        !evaluated.ready && classes.pending,
-        evaluated.error !== null && !empty && classes.error,
-        !!editMode && empty && classes.empty,
+        isPending && classes.pending,
+        hasError && classes.error,
+        showEmpty && classes.empty,
+        formattingMarks && !isPending && !hasError && !showEmpty && classes.formattingMarks,
     ), [style, classes, evaluated]);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
@@ -132,6 +139,12 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
         cursor: "default",
+    },
+    formattingMarks: {
+        outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.subtle,
+        outlineOffset: 0,
     },
     error: makeOutlineCssProps(palette.error),
     pending: makeOutlineCssProps(palette.subtle),
@@ -205,3 +218,4 @@ const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value }) => {
     const className = useMemo(() => clsx(...getTextStyleClassNames(style, classes)), [style, classes]);
     return <span style={css} className={className}>{String(value)}</span>;
 };
+
