@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    BoxStyle,
     FlowBox, 
     FlowBoxSelection, 
     FlowSelection, 
@@ -22,15 +23,20 @@ import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-
 import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
+import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
-    const { content, style } = node;
+    const { content, style: givenStyle } = node;
     const { box: Component } = useFlowComponentMap();
     const classes = useStyles();
     const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     
+    const style = useMemo(() => BoxStyle.ambient.merge(givenStyle), [givenStyle]);
+    const outerTheme = useFlowTheme();
+    const innerTheme = useMemo(() => outerTheme.getBoxTheme(style), [style, outerTheme]);
+
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
@@ -108,7 +114,11 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             contentEditable={!!editMode && !clickable && !isParentSelectionActive}
             suppressContentEditableWarning={true}
             className={classes.content}
-            children={<FlowView content={content}/>}
+            children={
+                <FlowThemeScope theme={innerTheme}>
+                    <FlowView content={content}/>
+                </FlowThemeScope>
+            }
         />
     );
 

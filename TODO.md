@@ -1,6 +1,6 @@
 SCRIBING TODO
 =============
-- Ambient box style
+- Show "formatting mark" for dynamic text and flow box
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
 - Escape to close menu, but not toolbox

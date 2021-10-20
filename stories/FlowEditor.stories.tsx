@@ -343,7 +343,6 @@ function button(
             interaction: { script },
             variant,
             color,
-            inline: true,
         }
     };
 }
