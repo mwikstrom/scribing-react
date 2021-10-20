@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Tool: Edit box source
+- Make it possible in UI to determine whether flow box is selected or whether all contents of flow box is selected
 - Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
