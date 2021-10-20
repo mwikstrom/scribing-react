@@ -102,7 +102,7 @@ export const getCommonFlowPath = (
     let anchorRootDelta = 0;
     if (nestedAnchorPath.length > commonNestedPath.length) {
         if (commonNestedPath.length === 0) {
-            anchorRootDelta = leafFocusDistance < 0 ? 1 : -1;
+            anchorRootDelta = leafFocusDistance < 0 ? 1 : 0;
         } else {
             const lastNested = commonNestedPath[commonNestedPath.length - 1];
             if (leafFocusDistance < 0) {
