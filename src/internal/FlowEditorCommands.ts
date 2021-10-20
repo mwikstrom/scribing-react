@@ -396,6 +396,10 @@ export class FlowEditorCommands {
         return this.isUniformNodes(node => node instanceof FlowBox);
     }
 
+    isDynamicText(): boolean {
+        return this.isUniformNodes(node => node instanceof DynamicText);
+    }
+
     isLink(): boolean {
         return this.isUniformNodes(node => node instanceof TextRun && !!node.style.link);
     }

@@ -19,7 +19,7 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) 
     }, [commands, closeEditor]);
     
     const expression = commands.getDynamicExpression();
-    const disabled = typeof expression !== "string";
+    const disabled = !commands.isBox() && !commands.isDynamicText();
     const active = expression === void(0) ? void(0) : expression !== null;
     
     return (
@@ -28,7 +28,7 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) 
                 <Icon path={mdiFunctionVariant} size={1}/>
                 <Icon path={mdiMenuDown} size={0.75}/>
             </ToolButton>
-            {buttonRef && isEditorOpen && typeof expression === "string" && (
+            {buttonRef && isEditorOpen && (
                 <ToolMenu
                     anchor={buttonRef}
                     onClose={closeEditor}
@@ -37,7 +37,7 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) 
                     boundary={boundary}
                     children={(
                         <ScriptEditor
-                            value={expression}
+                            value={expression ?? ""}
                             onSave={setExpression}
                             onCancel={closeEditor}
                         />
