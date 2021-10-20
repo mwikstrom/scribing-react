@@ -1,7 +1,12 @@
 import { TextRun } from "scribing";
 import { getMappedFlowAxis, NestedFlowPosition } from "./flow-axis";
 import { isMappedEditingHost } from "./flow-editing-host";
-import { getFlowSizeFromDomNode, getMappedFlowNode, isMappedFlowNode } from "./flow-node";
+import { 
+    getFlowOffsetFromPreviousSiblings, 
+    getFlowSizeFromDomNode, 
+    getMappedFlowNode, 
+    isMappedFlowNode 
+} from "./flow-node";
 
 /** @internal */
 export type FlowPath = [number, ...NestedFlowPosition[]];
@@ -69,7 +74,7 @@ export const mapDomPositionToFlow = (
                 node = node.parentNode;
             }
 
-            // Now, we've move up to the closest ancestor mapped from a flow node
+            // Now, we've moved up to the closest ancestor mapped from a flow node
             // If we've decided to move right we want to go to the next sibling,
             // and if that's not possible (because there isn't one) then we'll
             // adjust the offset to accomodate for the entire flow space of the
@@ -84,19 +89,12 @@ export const mapDomPositionToFlow = (
         }
     } else if (offset > 0) {
         // At this point: We're not inside a text node but given a non-zero 
-        // child offset.
-        const { childNodes } = node;
-        // Is the offset after the last child?
-        if (offset >= childNodes.length) {
-            // Keep the selected node, but update offset so that we're at the
-            // very end of the mapped flow space (if any)
-            const nodeSize = getFlowSizeFromDomNode(node);
-            offset = nodeSize;
-        } else {
-            // Select the child node and let offset be zero, as if
-            // the dom location were inside that node at the leading position.
-            node = childNodes.item(offset);
-            offset = 0;
+        // child offset. So we'll select the closest anchestor mapped from a flow
+        // node and compute flow offset by summing up size of preceding siblings
+        offset = getFlowOffsetFromPreviousSiblings(node.childNodes.item(offset));
+        while (!isMappedFlowNode(node) && !isMappedEditingHost(node) && node.parentNode) {
+            node = node.parentNode;
+            offset += getFlowOffsetFromPreviousSiblings(node);
         }
     }
 

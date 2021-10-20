@@ -43,7 +43,9 @@ const mapFlowPositionToDomCore = (
         return null;
     }
 
-    if (getMappedFlowNode(container) instanceof TextRun) {
+    const mapped = getMappedFlowNode(container);
+
+    if (mapped instanceof TextRun) {
         let result: DomPosition = { node: container, offset: 0 };
         for (const child of getDescendantTextNodes(container)) {
             const size = child.textContent?.length || 0;
@@ -55,6 +57,21 @@ const mapFlowPositionToDomCore = (
             }
         }
         return result;
+    } else if (
+        mapped && 
+        !preferNested &&
+        container.parentNode && 
+        (
+            position === 0 || 
+            position === mapped.size
+        )
+    ) {
+        const node = container.parentNode;
+        let offset = position === 0 ? 0 : 1;
+        for (let prev = container.previousSibling; prev; prev = prev.previousSibling) {
+            ++offset;
+        }
+        return { node, offset };
     }
 
     return mapFlowPositionToDom(position, container, preferNested);

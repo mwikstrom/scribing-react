@@ -25,4 +25,13 @@ export const getFlowSizeFromDomNode = (node: Node): number => {
     return result;
 };
 
+/** @internal */
+export const getFlowOffsetFromPreviousSiblings = (node: Node): number => {
+    let offset = 0;
+    for (let prev = node.previousSibling; prev; prev = prev.previousSibling) {
+        offset += getFlowSizeFromDomNode(prev);
+    }
+    return offset;
+};
+
 const MAP = new WeakMap<Node, FlowNode>();
