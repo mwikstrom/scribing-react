@@ -93,8 +93,8 @@ export const mapDomPositionToFlow = (
         // node and compute flow offset by summing up size of preceding siblings
         offset = getFlowOffsetFromPreviousSiblings(node.childNodes.item(offset));
         while (!isMappedFlowNode(node) && !isMappedEditingHost(node) && node.parentNode) {
-            node = node.parentNode;
             offset += getFlowOffsetFromPreviousSiblings(node);
+            node = node.parentNode;
         }
     }
 
