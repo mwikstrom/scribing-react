@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Make it possible in UI to determine whether flow box is selected or whether all contents of flow box is selected
-- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
 - Escape to close menu, but not toolbox
@@ -29,6 +28,7 @@ SCRIBING TODO
 - CTRL+PERIOD shall open contextual toolbar with keyboard navigation
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update (useContext for this. must apply to both tool menu and tool tip)
 - ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
+- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 
 LOWER PRIO
 ==========
