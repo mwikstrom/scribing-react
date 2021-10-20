@@ -116,10 +116,13 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
         const domSelection = document.getSelection();
-        if (domSelection) {
-            domSelection.selectAllChildren(e.currentTarget);
+        if (domSelection && rootElem) {
+            if (domSelection && domSelection.rangeCount === 1) {
+                domSelection.getRangeAt(0).selectNode(rootElem);
+                e.stopPropagation();
+            }
         }
-    }, []);
+    }, [rootElem]);
 
     return (
         <span
