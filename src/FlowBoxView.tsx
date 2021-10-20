@@ -25,6 +25,7 @@ import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
+import { useIsSelected } from "./internal/hooks/use-is-selected";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -48,6 +49,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     }, [outerRef]);
 
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
+    const isSelected = useIsSelected(rootElem);
 
     const onMouseEnter = useCallback(() => setHover(true), [setHover]);
     const onMouseLeave = useCallback(() => setHover(false), [setHover]);
@@ -108,13 +110,16 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
+    const showSelectionOutline = isSelected && !error;
+    const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
     const className = useMemo(() => clsx(
         classes.root,
         clickable ? classes.clickable : !!editMode && classes.editable,
         pending && classes.pending,
         error && classes.error,
         clickable && hover && classes.hover,
-        formattingMarks && !hasBorder(style) && !error && classes.formattingMarks,
+        showSelectionOutline && classes.selected,
+        showFormattingOutline && classes.formattingMarks,
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, pending, error, editMode, style, classes]);
 
@@ -198,6 +203,12 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     root: {
         borderRadius: 2,
         padding: "2px 5px",
+    },
+    selected: {
+        outlineStyle: "dashed",
+        outlineWidth: 2,
+        outlineColor: palette.subtle,
+        outlineOffset: 2,
     },
     formattingMarks: {
         outlineStyle: "dashed",

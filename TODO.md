@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Make it possible in UI to determine whether flow box is selected or whether all contents of flow box is selected
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
 - Escape to close menu, but not toolbox
