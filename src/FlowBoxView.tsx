@@ -205,6 +205,7 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     },
     clickable: {
         cursor: "pointer",
+        userSelect: "none",
     },
     pending: {
         cursor: "wait",

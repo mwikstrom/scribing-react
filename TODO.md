@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Clickable box: Disable double click when interacting
 - Ambient box style
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
