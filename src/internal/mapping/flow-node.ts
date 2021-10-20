@@ -26,9 +26,9 @@ export const getFlowSizeFromDomNode = (node: Node): number => {
 };
 
 /** @internal */
-export const getFlowOffsetFromPreviousSiblings = (node: Node): number => {
+export const getFlowOffsetFromPreviousSiblings = (node: Node | null): number => {
     let offset = 0;
-    for (let prev = node.previousSibling; prev; prev = prev.previousSibling) {
+    for (let prev = node?.previousSibling; prev; prev = prev.previousSibling) {
         offset += getFlowSizeFromDomNode(prev);
     }
     return offset;
