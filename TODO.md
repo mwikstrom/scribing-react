@@ -1,16 +1,17 @@
 SCRIBING TODO
 =============
+- Tool: Edit box source
+- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
 - Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
 - Escape to close menu, but not toolbox
-- ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
-- Maybe an icon in ScriptEditor/OpenUrlEditor to distinguish between what the input will do?
+- New Ops: Wrap + Unwrap
+- Tool: Insert box
+- Tool: Set box variant
+- Tool: Toggle inline box
 - List indent shall depend on paragraph alignment AND reading direction
 - Formatting paragraph break with zero opacity is not generally a good idea
-- Tool: Insert box
-- Tool: Toggle inline box
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
-- New Ops: Wrap + Unwrap
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Cannot toggle toolbox with ctr+period after escaping it
@@ -27,6 +28,7 @@ SCRIBING TODO
 - FlowTypography (default is SYSTEM_FONT)
 - CTRL+PERIOD shall open contextual toolbar with keyboard navigation
 - ScriptEditor + OpenUrlEditor must notify on size change and trigger popper update (useContext for this. must apply to both tool menu and tool tip)
+- ScriptEditor: Improve error handling (do not report unexpected tokens that doesn't exist. handle empty expression better?)
 
 LOWER PRIO
 ==========
