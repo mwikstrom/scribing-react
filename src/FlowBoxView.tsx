@@ -63,8 +63,15 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         if (clickable && !pending) {
             setError(null);
             setPending(invokeAction());
+        } else if (!clickable && editMode && e.detail >= 3 && rootElem) {
+            console.log("triple click");
+            const domSelection = document.getSelection();
+            if (domSelection && domSelection.rangeCount === 1) {
+                domSelection.getRangeAt(0).selectNode(rootElem);
+                e.stopPropagation();
+            }    
         }
-    }, [clickable, pending, invokeAction]);
+    }, [clickable, pending, invokeAction, editMode, rootElem]);
 
     const showTip = useShowTip();
     const locale = useFlowLocale();
