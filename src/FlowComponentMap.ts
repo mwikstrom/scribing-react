@@ -89,5 +89,4 @@ export interface BoxComponentProps {
     className: string;
     children: ReactNode;
     ref: RefCallback<HTMLElement>;
-    onClick: MouseEventHandler;
 }
