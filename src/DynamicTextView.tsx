@@ -14,6 +14,7 @@ import { useFormattingMarks } from "./FormattingMarksScope";
 import { useFlowLocale } from "./FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
 import { useHover } from "./internal/hooks/use-hover";
+import { useScriptVariables } from "./ScriptVariablesScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node } = props;
@@ -37,7 +38,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         setRootElem(dom);
     }, [outerRef]);
 
-    const evaluated = useObservedScript(expression);
+    const vars = useScriptVariables();
+    const evaluated = useObservedScript(expression, { vars });
     const locale = useFlowLocale();
     const showTip = useShowTip();
     const editMode = useEditMode();
