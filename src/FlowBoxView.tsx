@@ -101,12 +101,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
 
     let children = !hasSource || sourceResult === true ? (
         <ContentElement {...contentElementProps}/>
-    ) : sourceError ? (
-        <TemplateElement
-            {...contentElementProps}
-            data={undefined}
-        />
-    ) : data.length === 0 ? (
+    ) : sourceError || data.length === 0 ? (
         <TemplateElement
             {...contentElementProps}
             data={undefined}
