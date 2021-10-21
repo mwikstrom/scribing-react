@@ -372,6 +372,20 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "Binding a single delayed value:",
+        { break: "para" },
+        { 
+            box: [
+                "Hello ",
+                { dynamic: "data" },
+                "!",
+            ],
+            style: {
+                source: "{ await delay(2000); return 'world'; }",
+                inline: false,
+            }
+        },
+        { break: "para" },
         "Hidden (false binding):",
         { break: "para" },
         { 
@@ -397,6 +411,18 @@ DataSource.args = {
                 inline: false,
             }
         },
+        { break: "para" },
+        "Delayed multi-binding:",
+        { break: "para" },
+        { 
+            box: [{ dynamic: "data" }],
+            style: {
+                source: "{ await delay(3000); return [11,22,33]; }",
+                inline: false,
+            }
+        },
+        { break: "para" },
+        "The end.",
         { break: "para" },
     ])),
 };
