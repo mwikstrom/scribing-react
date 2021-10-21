@@ -363,7 +363,7 @@ DataSource.args = {
         { 
             box: [
                 "Hello ",
-                { dynamic: "name" },
+                { dynamic: "data" },
                 "!",
             ],
             style: {

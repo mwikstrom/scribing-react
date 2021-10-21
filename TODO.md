@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Hide additional data source items from flow/dom mapping
-- Data vars is not working
 - Pending render output for data source
 - Error render output for data source
 - Empty/void render output for data source
