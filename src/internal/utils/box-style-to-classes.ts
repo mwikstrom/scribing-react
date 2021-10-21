@@ -23,11 +23,13 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
     hover: {},
     basic: {},
     outlined: {
+        padding: "2px 5px",
         borderWidth: 1,
         borderRadius: 4,
         borderStyle: "solid",
     },
     contained: {
+        padding: "2px 5px",
         borderWidth: 1,
         borderRadius: 4,
         borderStyle: "solid",
@@ -89,6 +91,7 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
         }
     },
     alert: {
+        padding: "2px 5px",
         borderWidth: 1,
         borderRadius: 4,
         borderStyle: "solid",
@@ -150,6 +153,7 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
         }
     },
     quote: {
+        padding: "2px 5px",
         borderLeftWidth: 3,
         borderLeftStyle: "solid",
     },

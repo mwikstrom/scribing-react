@@ -1,6 +1,9 @@
 SCRIBING TODO
 =============
-- Apply flow box data source (support for-each binding + refresh)
+- Hide additional data source items from flow/dom mapping
+- Data vars is not working
+- Pending render output for data source
+- Error render output for data source
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - New Ops: Wrap + Unwrap

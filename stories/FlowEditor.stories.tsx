@@ -355,6 +355,52 @@ Progress.args = {
     ])),
 };
 
+export const DataSource = Template.bind({});
+DataSource.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Binding a single value:",
+        { break: "para" },
+        { 
+            box: [
+                "Hello ",
+                { dynamic: "name" },
+                "!",
+            ],
+            style: {
+                source: "'world'",
+                inline: false,
+            }
+        },
+        { break: "para" },
+        "Hidden (false binding):",
+        { break: "para" },
+        { 
+            box: ["This should be hidden"],
+            style: {
+                source: "false",
+                inline: false,
+            }
+        },
+        { break: "para" },
+        "Multi-binding:",
+        { break: "para" },
+        { 
+            box: [
+                "Message #",
+                { dynamic: "data.index" },
+                ": ",
+                { dynamic: "data.message" },
+                { break: "para" },
+            ],
+            style: {
+                source: "['this', 'is', 'useful'].map((message, index) => ({ message, index}))",
+                inline: false,
+            }
+        },
+        { break: "para" },
+    ])),
+};
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""

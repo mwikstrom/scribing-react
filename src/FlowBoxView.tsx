@@ -1,10 +1,12 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
     BoxStyle,
     FlowBox, 
     FlowBoxSelection, 
+    FlowContent, 
     FlowSelection, 
+    FlowTheme, 
     NestedFlowSelection 
 } from "scribing";
 import { useEditMode } from "./EditModeScope";
@@ -23,6 +25,9 @@ import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useIsSelected } from "./internal/hooks/use-is-selected";
 import { useInteraction } from "./internal/hooks/use-interaction";
+import { useObservedScript } from "scripthost-react";
+import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
+import { ScriptValue } from "scripthost-core";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -46,8 +51,29 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const isSelected = useIsSelected(rootElem);
     const editMode = useEditMode();
-    const { clickable, hover, pending, error } = useInteraction(style.interaction ?? null, rootElem);
-    
+    const {
+        clickable,
+        hover,
+        pending,
+        error: interactionError,
+    } = useInteraction(style.interaction ?? null, rootElem);
+    const vars = useScriptVariables();
+    const hasSource = !!style.source;
+    const {
+        result: sourceResult,
+        ready: sourceReady,
+        error: sourceError,
+    } = useObservedScript(style.source ?? null, { vars });
+    const data = useMemo(() => {
+        if (!hasSource || !sourceReady || sourceResult === void(0) || sourceResult === null || sourceResult === false) {
+            return [];
+        } else if (Array.isArray(sourceResult)) {
+            return sourceResult;
+        } else {
+            return [sourceResult];
+        }
+    }, [hasSource, sourceReady, sourceResult]);
+    const error = hasSource ? sourceError || interactionError : interactionError;
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
@@ -64,18 +90,25 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, pending, error, editMode, style, classes]);
 
-    let children = (
-        <div
-            contentEditable={!!editMode && !clickable && !isParentSelectionActive}
-            suppressContentEditableWarning={true}
-            className={classes.content}
-            children={
-                <FlowThemeScope theme={innerTheme}>
-                    <FlowView content={content}/>
-                </FlowThemeScope>
-            }
+    const contentElementProps: ContentElementProps = {
+        className: classes.content,
+        contentEditable: !!editMode && !clickable && !isParentSelectionActive,
+        theme: innerTheme,
+        content,
+    };
+
+    // TODO: Render special when source has error
+    // TODO: Render special when source is not ready
+
+    let children = !hasSource || sourceResult === true ? (
+        <ContentElement {...contentElementProps}/>
+    ) : data.map((item, index) => (
+        <TemplateElement
+            key={index}
+            data={item}
+            {...contentElementProps}
         />
-    );
+    ));
 
     if (style.variant === "alert" && style.color && style.color !== "default") {
         let icon: string | undefined;
@@ -140,7 +173,6 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     ...boxStyles(palette),
     root: {
         borderRadius: 2,
-        padding: "2px 5px",
     },
     selected: {
         outlineStyle: "dashed",
@@ -193,3 +225,40 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
 }));
 
 const hasBorder = (style?: BoxStyle): boolean => !!style && style.variant !== "basic";
+
+interface ContentElementProps {
+    className: string;
+    contentEditable: boolean;
+    theme: FlowTheme;
+    content: FlowContent;
+    data?: ScriptValue;
+}
+
+const ContentElement: FC<ContentElementProps> = props => {
+    const { theme, content, ...rest } = props;
+    return (
+        <div
+            {...rest}
+            suppressContentEditableWarning={true}
+            children={
+                <FlowThemeScope theme={theme}>
+                    <FlowView content={content}/>
+                </FlowThemeScope>
+            }
+        />
+    );
+};
+
+interface TemplateElementProps extends ContentElementProps {
+    data: ScriptValue;
+}
+
+const TemplateElement: FC<TemplateElementProps> = props => {
+    const { data, ...rest } = props;
+    const vars = useMemo(() => ({ data }), [data]);
+    return (
+        <ScriptVaraiblesScope variables={vars}>
+            <ContentElement {...rest}/>
+        </ScriptVaraiblesScope>
+    );
+};
