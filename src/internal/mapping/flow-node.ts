@@ -1,4 +1,5 @@
 import { FlowNode } from "scribing";
+import { isMappedTemplateNode } from "./dom-node";
 
 /** @internal */
 export const setupFlowNodeMapping = (
@@ -28,8 +29,10 @@ export const getFlowSizeFromDomNode = (node: Node): number => {
 /** @internal */
 export const getFlowOffsetFromPreviousSiblings = (node: Node | null): number => {
     let offset = 0;
-    for (let prev = node?.previousSibling; prev; prev = prev.previousSibling) {
-        offset += getFlowSizeFromDomNode(prev);
+    if (!isMappedTemplateNode(node)) {
+        for (let prev = node?.previousSibling; prev; prev = prev.previousSibling) {
+            offset += getFlowSizeFromDomNode(prev);
+        }
     }
     return offset;
 };

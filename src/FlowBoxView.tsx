@@ -28,6 +28,7 @@ import { useInteraction } from "./internal/hooks/use-interaction";
 import { useObservedScript } from "scripthost-react";
 import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
 import { ScriptValue } from "scripthost-core";
+import { registerTemplateNode } from "./internal/mapping/dom-node";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -104,9 +105,9 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         <ContentElement {...contentElementProps}/>
     ) : data.map((item, index) => (
         <TemplateElement
+            {...contentElementProps}
             key={index}
             data={item}
-            {...contentElementProps}
         />
     ));
 
@@ -231,13 +232,15 @@ interface ContentElementProps {
     contentEditable: boolean;
     theme: FlowTheme;
     content: FlowContent;
+    templateRef?: (elem: HTMLElement | null) => void;
 }
 
 const ContentElement: FC<ContentElementProps> = props => {
-    const { theme, content, ...rest } = props;
+    const { theme, content, templateRef, ...rest } = props;
     return (
         <div
             {...rest}
+            ref={templateRef}
             suppressContentEditableWarning={true}
             children={
                 <FlowThemeScope theme={theme}>
@@ -257,7 +260,10 @@ const TemplateElement: FC<TemplateElementProps> = props => {
     const vars = useMemo(() => ({ data }), [data]);
     return (
         <ScriptVaraiblesScope variables={vars}>
-            <ContentElement {...rest}/>
+            <ContentElement
+                {...rest}
+                templateRef={registerTemplateNode}
+            />
         </ScriptVaraiblesScope>
     );
 };

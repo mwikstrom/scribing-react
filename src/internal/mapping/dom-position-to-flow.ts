@@ -1,4 +1,5 @@
 import { TextRun } from "scribing";
+import { isMappedTemplateNode } from "./dom-node";
 import { getMappedFlowAxis, NestedFlowPosition } from "./flow-axis";
 import { isMappedEditingHost } from "./flow-editing-host";
 import { 
@@ -80,7 +81,7 @@ export const mapDomPositionToFlow = (
             // adjust the offset to accomodate for the entire flow space of the
             // mapped node.
             if (right) {
-                if (node.nextSibling !== null) {
+                if (node.nextSibling !== null && !isMappedTemplateNode(node.nextSibling)) {
                     node = node.nextSibling;
                 } else {
                     offset = getFlowSizeFromDomNode(node);
@@ -121,10 +122,14 @@ export const mapDomPositionToFlow = (
             offset = 0;
         }
 
-        // Move left as long as we can and sum up the flow space
-        while (node.previousSibling) {
-            node = node.previousSibling;
-            offset += getFlowSizeFromDomNode(node);
+        // Move left as long as we can and sum up the flow space, unless the
+        // current node is a template in which case siblings are clones that
+        // occupy the same flow space.
+        if (!isMappedTemplateNode(node)) {
+            while (node.previousSibling) {
+                node = node.previousSibling;
+                offset += getFlowSizeFromDomNode(node);
+            }
         }
 
         // Move up, we should reach the editing host...

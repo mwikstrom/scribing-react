@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Hide additional data source items from flow/dom mapping
 - Pending render output for data source
 - Error render output for data source
 - Empty/void render output for data source
