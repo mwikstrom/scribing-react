@@ -390,7 +390,7 @@ DataSource.args = {
                 { dynamic: "data.index" },
                 ": ",
                 { dynamic: "data.message" },
-                { break: "para" },
+                { break: "para", style: { listLevel: 1, listMarker: "ordered" } },
             ],
             style: {
                 source: "['this', 'is', 'useful'].map((message, index) => ({ message, index}))",
