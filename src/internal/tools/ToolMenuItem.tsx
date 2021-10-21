@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useState } from "react";
 import { useHover } from "../hooks/use-hover";
 import { createUseFlowStyles } from "../JssTheming";
 
