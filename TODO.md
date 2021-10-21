@@ -5,6 +5,7 @@ SCRIBING TODO
 - Pending render output for data source
 - Error render output for data source
 - Empty/void render output for data source
+- Prevent dynamic text/boxes from flickering when editing next to them (cache evaluation?!)
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - New Ops: Wrap + Unwrap
