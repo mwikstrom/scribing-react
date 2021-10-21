@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Support refresh return prop in dynamic text (auto re-evaluate on an interval)
 - Apply flow box data source (support for-each binding + refresh)
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box

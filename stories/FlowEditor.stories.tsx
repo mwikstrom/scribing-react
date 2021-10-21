@@ -330,6 +330,31 @@ BoxVariants.args = {
     )),
 };
 
+export const Progress = Template.bind({});
+Progress.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This progress indicator should be auto-refreshing:",
+        { break: "para" },
+        { 
+            dynamic: `
+            {
+                this.refresh = 500;
+                return progress >= 0 ? progress + "%" : "Idle";
+            }
+            `,
+        },
+        { break: "para" },
+        button(["Run"], `
+        {
+            for (let i = 0; i <= 100; i += 3) {
+                progress = i;
+                await delay(250);
+            }
+            progress = undefined;
+        }`),
+    ])),
+};
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""
