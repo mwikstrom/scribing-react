@@ -4,6 +4,7 @@ SCRIBING TODO
 - Data vars is not working
 - Pending render output for data source
 - Error render output for data source
+- Empty/void render output for data source
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - New Ops: Wrap + Unwrap
