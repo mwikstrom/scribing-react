@@ -231,7 +231,6 @@ interface ContentElementProps {
     contentEditable: boolean;
     theme: FlowTheme;
     content: FlowContent;
-    data?: ScriptValue;
 }
 
 const ContentElement: FC<ContentElementProps> = props => {
