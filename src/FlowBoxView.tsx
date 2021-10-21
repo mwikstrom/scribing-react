@@ -52,12 +52,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const isSelected = useIsSelected(rootElem);
     const editMode = useEditMode();
-    const {
-        clickable,
-        hover,
-        pending,
-        error: interactionError,
-    } = useInteraction(style.interaction ?? null, rootElem);
     const vars = useScriptVariables();
     const hasSource = !!style.source;
     const {
@@ -65,6 +59,12 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         ready: sourceReady,
         error: sourceError,
     } = useObservedScript(style.source ?? null, { vars });
+    const {
+        clickable,
+        hover,
+        pending,
+        error,
+    } = useInteraction(style.interaction ?? null, rootElem, sourceError);
     const data = useMemo(() => {
         if (!hasSource || !sourceReady || sourceResult === void(0) || sourceResult === null || sourceResult === false) {
             return [];
@@ -74,7 +74,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             return [sourceResult];
         }
     }, [hasSource, sourceReady, sourceResult]);
-    const error = hasSource ? sourceError || interactionError : interactionError;
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
@@ -98,11 +97,15 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         content,
     };
 
-    // TODO: Render special when source has error
     // TODO: Render special when source is not ready
 
     let children = !hasSource || sourceResult === true ? (
         <ContentElement {...contentElementProps}/>
+    ) : sourceError ? (
+        <TemplateElement
+            {...contentElementProps}
+            data={undefined}
+        />
     ) : data.map((item, index) => (
         <TemplateElement
             {...contentElementProps}

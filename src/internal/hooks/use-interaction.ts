@@ -18,7 +18,11 @@ interface InteractionState {
 }
 
 /** @internal */
-export function useInteraction(interaction: Interaction | null, rootElem: HTMLElement | null): InteractionState {
+export function useInteraction(
+    interaction: Interaction | null,
+    rootElem: HTMLElement | null,
+    sourceError: Error | null = null,
+): InteractionState {
     const editMode = useEditMode();
     const hover = useHover(rootElem);
     const ctrlKey = useCtrlKey();
@@ -26,7 +30,7 @@ export function useInteraction(interaction: Interaction | null, rootElem: HTMLEl
     const showTip = useShowTip();
     const locale = useFlowLocale();
     const [pending, setPending] = useState<Promise<void> | null>(null);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<Error | null>(sourceError);
     const clickable = !!interaction && (!editMode || (hover && ctrlKey));
     const message = useMemo(
         () => error ? (
@@ -46,7 +50,7 @@ export function useInteraction(interaction: Interaction | null, rootElem: HTMLEl
 
     useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {        
         if (clickable && !pending) {
-            setError(null);
+            setError(sourceError);
             if (!href || editMode) {
                 e.preventDefault();
                 setPending(invokeAction());
@@ -59,7 +63,7 @@ export function useInteraction(interaction: Interaction | null, rootElem: HTMLEl
                 e.stopPropagation();
             }    
         }
-    }, [clickable, pending, invokeAction, editMode, rootElem, href]);
+    }, [clickable, pending, invokeAction, editMode, rootElem, href, sourceError]);
 
     useEffect(() => {
         let active = true;

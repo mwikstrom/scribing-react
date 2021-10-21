@@ -386,6 +386,20 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "Binding error:",
+        { break: "para" },
+        { 
+            box: [
+                "Hello ",
+                { dynamic: "data" },
+                "!",
+            ],
+            style: {
+                source: "{ throw new Error('This is an intentional error'); }",
+                inline: false,
+            }
+        },
+        { break: "para" },
         "Hidden (false binding):",
         { break: "para" },
         { 
