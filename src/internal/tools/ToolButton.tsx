@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React, { FC, useCallback, useState } from "react";
+import { useHover } from "../hooks/use-hover";
 import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
@@ -11,9 +12,16 @@ export interface ToolButtonProps {
 }
 
 /** @internal */
-export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setRef, children}) => {
+export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setRef: setOuterRef, children}) => {
     const classes = useStyles();
-    const [hover, setHover] = useState(false);
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const hover = useHover(rootElem);
+    const setRef = useCallback((elem: HTMLElement) => {
+        setRootElem(elem);
+        if (setOuterRef) {
+            setOuterRef(elem);
+        }
+    }, [setOuterRef, setRootElem]);
 
     const className = clsx(
         classes.root,
@@ -23,17 +31,12 @@ export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setR
         !active && hover && !disabled && classes.hover,
     );
 
-    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
-    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
-
     return (
         <span 
             ref={setRef}
             className={className}
             children={children}
             onClick={!disabled ? onClick : undefined}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         />
     );
 };

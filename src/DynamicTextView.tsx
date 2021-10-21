@@ -13,6 +13,7 @@ import { mdiLoading } from "@mdi/js";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useFlowLocale } from "./FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
+import { useHover } from "./internal/hooks/use-hover";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node } = props;
@@ -30,6 +31,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const classes = useStyles();
     
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const hover = useHover(rootElem);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
         setRootElem(dom);
@@ -89,11 +91,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                 value={result}
             />
         );
-    }, [evaluated, locale, empty, editMode, classes, style]);
-    
-    const [hover, setHover] = useState(false);
-    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
-    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
+    }, [evaluated, locale, empty, editMode, classes, style]);   
 
     useEffect(() => {
         const { error } = evaluated;
@@ -131,8 +129,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             className={className}
             children={children}
             onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         />
     );
 });

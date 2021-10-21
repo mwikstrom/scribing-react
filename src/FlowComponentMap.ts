@@ -79,8 +79,6 @@ export interface LinkComponentProps {
     href: string;
     title?: string; // TODO: REMOVE THIS
     onClick: MouseEventHandler;
-    onMouseEnter: MouseEventHandler;
-    onMouseLeave: MouseEventHandler;
 }
 
 /** @public */
@@ -92,6 +90,4 @@ export interface BoxComponentProps {
     children: ReactNode;
     ref: RefCallback<HTMLElement>;
     onClick: MouseEventHandler;
-    onMouseEnter: MouseEventHandler;
-    onMouseLeave: MouseEventHandler;
 }

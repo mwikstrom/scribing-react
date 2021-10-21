@@ -26,13 +26,13 @@ import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useIsSelected } from "./internal/hooks/use-is-selected";
+import { useHover } from "./internal/hooks/use-hover";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
     const { content, style: givenStyle } = node;
     const { box: Component } = useFlowComponentMap();
     const classes = useStyles();
-    const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     
     const style = useMemo(() => BoxStyle.ambient.merge(givenStyle), [givenStyle]);
@@ -40,6 +40,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const innerTheme = useMemo(() => outerTheme.getBoxTheme(style), [style, outerTheme]);
 
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const hover = useHover(rootElem);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
         setRootElem(dom);
@@ -50,9 +51,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
 
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const isSelected = useIsSelected(rootElem);
-
-    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
-    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
     
     const editMode = useEditMode();
     const clickable = !!style.interaction && (!editMode || (hover && ctrlKey));
@@ -172,8 +170,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         <Component 
             ref={ref}
             onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
             className={className}
             style={css}
             contentEditable={false}

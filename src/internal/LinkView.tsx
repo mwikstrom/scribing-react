@@ -11,6 +11,7 @@ import { useEditMode } from "../EditModeScope";
 import { useShowTip } from "./TooltipScope";
 import { useFlowComponentMap } from "../FlowComponentMapScope";
 import { createUseFlowStyles } from "./JssTheming";
+import { useHover } from "./hooks/use-hover";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -24,10 +25,10 @@ export const LinkView: FC<LinkViewProps> = props => {
 
     const { link: Component } = useFlowComponentMap();
     const classes = useStyles();
-    const [hover, setHover] = useState(false);
     const ctrlKey = useCtrlKey();
     
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const hover = useHover(rootElem);
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     
     const href = useMemo(() => {
@@ -37,9 +38,6 @@ export const LinkView: FC<LinkViewProps> = props => {
             return "";
         }
     }, [link]);
-
-    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
-    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
 
     const editMode = useEditMode();
     const clickable = !editMode || (hover && ctrlKey);
@@ -96,8 +94,6 @@ export const LinkView: FC<LinkViewProps> = props => {
             ref={setRootElem}
             href={href}
             onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
             className={clsx(
                 classes.root,
                 clickable ? classes.clickable : !!editMode && classes.editable,

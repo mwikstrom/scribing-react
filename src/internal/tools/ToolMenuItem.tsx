@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React, { FC, useCallback, useState } from "react";
+import { useHover } from "../hooks/use-hover";
 import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
@@ -11,7 +12,8 @@ export interface ToolMenuItemProps {
 /** @internal */
 export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, disabled, children}) => {
     const classes = useStyles();
-    const [hover, setHover] = useState(false);
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const hover = useHover(rootElem);
 
     const className = clsx(
         classes.root,
@@ -19,16 +21,12 @@ export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, disabled, children
         disabled && classes.disabled,
     );
 
-    const onMouseEnter = useCallback(() => setHover(true), [setHover]);
-    const onMouseLeave = useCallback(() => setHover(false), [setHover]);
-
     return (
         <span 
+            ref={setRootElem}
             className={className}
             children={children}
             onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         />
     );
 };
