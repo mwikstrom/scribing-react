@@ -93,19 +93,28 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         })();
         return () => { active = false; };
     }, [pending]);
+
+    const message = useMemo(
+        () => error ? (
+            error.message
+        ) : editMode && !clickable && style.interaction && !pending ? (
+            locale.hold_ctrl_key_to_enable_interaction
+        ) : null, 
+        [!!editMode, clickable, locale, !!style.interaction, !pending, error]
+    );
     
     useEffect(() => {
-        if (editMode && !clickable && rootElem && hover && style.interaction) {
-            return showTip(rootElem, locale.hold_ctrl_key_to_enable_interaction);
+        if (rootElem && hover && message) {
+            let hideTip: (() => void) | undefined;
+            const timer = setTimeout(() => hideTip = showTip(rootElem, message), 500);
+            return () => {
+                clearTimeout(timer);
+                if (hideTip) {
+                    hideTip();
+                }
+            };
         }
-    }, [!!editMode, clickable, rootElem, hover, locale]);
-
-
-    useEffect(() => {
-        if (error && rootElem && hover) {
-            return showTip(rootElem, error.message);
-        }
-    }, [error, rootElem, hover, locale]);
+    }, [rootElem, hover, message, showTip]);
 
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
