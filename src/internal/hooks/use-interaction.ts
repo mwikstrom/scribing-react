@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Interaction } from "scribing";
+import { Interaction, OpenUrl } from "scribing";
 import { useEditMode } from "../../EditModeScope";
 import { useFlowLocale } from "../../FlowLocaleScope";
 import { useInteractionInvoker } from "../../useInteractionInvoker";
@@ -14,6 +14,7 @@ interface InteractionState {
     hover: boolean;
     pending: boolean;
     error: boolean;
+    href: string;
 }
 
 /** @internal */
@@ -35,20 +36,30 @@ export function useInteraction(interaction: Interaction | null, rootElem: HTMLEl
         ) : null, 
         [!!editMode, clickable, locale, !!interaction, !pending, error]
     );
+    const href = useMemo(() => {
+        if (rootElem != null && rootElem.tagName.toUpperCase() === "A" && interaction instanceof OpenUrl) {
+            return interaction.url;
+        } else {
+            return "";
+        }
+    }, [rootElem, interaction]);
 
-    useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {
-        e.preventDefault();
+    useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {        
         if (clickable && !pending) {
             setError(null);
-            setPending(invokeAction());
+            if (!href || editMode) {
+                e.preventDefault();
+                setPending(invokeAction());
+            }
         } else if (!clickable && editMode && e.detail === 4 && rootElem) {
+            e.preventDefault();
             const domSelection = document.getSelection();
             if (domSelection && domSelection.rangeCount === 1) {
                 domSelection.getRangeAt(0).selectNode(rootElem);
                 e.stopPropagation();
             }    
         }
-    }, [clickable, pending, invokeAction, editMode, rootElem]);
+    }, [clickable, pending, invokeAction, editMode, rootElem, href]);
 
     useEffect(() => {
         let active = true;
@@ -85,5 +96,6 @@ export function useInteraction(interaction: Interaction | null, rootElem: HTMLEl
         hover,
         pending: !!pending,
         error: !!error,
+        href,
     };
 }

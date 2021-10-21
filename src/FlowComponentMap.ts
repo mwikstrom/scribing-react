@@ -1,7 +1,6 @@
 import { 
     CSSProperties, 
     FC, 
-    MouseEventHandler, 
     ReactNode, 
     RefCallback 
 } from "react";
@@ -77,8 +76,6 @@ export interface LinkComponentProps {
     className: string;
     children: ReactNode;
     href: string;
-    title?: string; // TODO: REMOVE THIS
-    onClick: MouseEventHandler;
 }
 
 /** @public */
