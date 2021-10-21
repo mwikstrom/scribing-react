@@ -29,6 +29,7 @@ import { useObservedScript } from "scripthost-react";
 import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
 import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./internal/mapping/dom-node";
+import Color from "color";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node } = props;
@@ -84,6 +85,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         clickable ? classes.clickable : !!editMode && classes.editable,
         pending && classes.pending,
         error && classes.error,
+        sourceReady && data.length === 0 && classes.hidden,
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
         showFormattingOutline && classes.formattingMarks,
@@ -97,11 +99,14 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         content,
     };
 
-    // TODO: Render special when source is not ready
-
     let children = !hasSource || sourceResult === true ? (
         <ContentElement {...contentElementProps}/>
     ) : sourceError ? (
+        <TemplateElement
+            {...contentElementProps}
+            data={undefined}
+        />
+    ) : data.length === 0 ? (
         <TemplateElement
             {...contentElementProps}
             data={undefined}
@@ -177,6 +182,16 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     ...boxStyles(palette),
     root: {
         borderRadius: 2,
+    },
+    hidden: {
+        opacity: 0.75,
+        background: `repeating-linear-gradient(
+            45deg,
+            ${Color(palette.subtle).fade(0.85)},
+            ${Color(palette.subtle).fade(0.85)} 10px,
+            ${Color(palette.subtle).fade(0.98)} 10px,
+            ${Color(palette.subtle).fade(0.98)} 20px
+        )`,
     },
     selected: {
         outlineStyle: "dashed",
