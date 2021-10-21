@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Pending render output for data source
 - Support continuation list in template box
 - Don't show empty trailing para in flow-box?!
 - Prevent dynamic text/boxes from flickering when editing next to them (cache evaluation?!)

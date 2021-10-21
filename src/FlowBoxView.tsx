@@ -18,7 +18,13 @@ import { createUseFlowStyles } from "./internal/JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
 import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
 import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
-import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
+import {
+    mdiAlertOctagonOutline,
+    mdiAlertOutline,
+    mdiCheckCircleOutline,
+    mdiInformationOutline,
+    mdiLoading,
+} from "@mdi/js";
 import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
@@ -63,7 +69,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const {
         clickable,
         hover,
-        pending,
+        pending: interactionPending,
         error,
     } = useInteraction(style.interaction ?? null, rootElem, sourceError);
     const data = useMemo(() => {
@@ -83,14 +89,14 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const className = useMemo(() => clsx(
         classes.root,
         clickable ? classes.clickable : !!editMode && classes.editable,
-        pending && classes.pending,
+        interactionPending && classes.interactionPending,
         error && classes.error,
         sourceReady && data.length === 0 && classes.hidden,
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
         showFormattingOutline && classes.formattingMarks,
         ...getBoxStyleClassNames(style, classes),
-    ), [clickable, pending, error, editMode, style, classes]);
+    ), [clickable, interactionPending, error, editMode, style, classes]);
 
     const contentElementProps: ContentElementProps = {
         className: classes.content,
@@ -101,6 +107,10 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
 
     let children = !hasSource || sourceResult === true ? (
         <ContentElement {...contentElementProps}/>
+    ) : !sourceReady ? (
+        <div className={classes.sourcePending}>
+            <Icon path={mdiLoading} size={1} spin={0.5}/>
+        </div>
     ) : sourceError || data.length === 0 ? (
         <TemplateElement
             {...contentElementProps}
@@ -227,8 +237,11 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         cursor: "pointer",
         userSelect: "none",
     },
-    pending: {
+    interactionPending: {
         cursor: "wait",
+    },
+    sourcePending: {
+        color: palette.subtle,
     },
     error: {
         outlineStyle: "dashed",
