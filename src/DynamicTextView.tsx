@@ -39,7 +39,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     }, [outerRef]);
 
     const vars = useScriptVariables();
-    console.log("VARS", vars);
     const evaluated = useObservedScript(expression, { vars });
     const locale = useFlowLocale();
     const showTip = useShowTip();
