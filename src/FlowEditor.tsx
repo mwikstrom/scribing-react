@@ -250,24 +250,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         setState(after);
     }, [editingHost, state, onStateChange]);
-
-    // Ensure that caret selection stays inside the scrollable viewport after content is changed
-    useEffect(() => {
-        const domSelection = document.getSelection();
-        if (editingHost && domSelection && domSelection.isCollapsed && isSelectionInside(editingHost, domSelection)) {
-            const virtualElem = getVirtualSelectionElement(domSelection);
-            if (virtualElem) {
-                const rect = virtualElem.getBoundingClientRect();
-                if (rect.bottom > editingHost.clientHeight) {
-                    editingHost.scrollTo({ top: editingHost.scrollTop + rect.bottom - editingHost.clientHeight });
-                } else if (rect.top < 0) {
-                    const lineHeight = getLineHeight(domSelection.focusNode);
-                    editingHost.scrollTo({ top: Math.max(editingHost.scrollTop + rect.top - lineHeight, 0) });
-                }
-            }
-        }
-    }, [state.content, editingHost]);
-    
+   
     // Keep DOM selection in sync with editor selection
     useLayoutEffect(() => {
         const domSelection = document.getSelection();
@@ -287,6 +270,23 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
         mapFlowSelectionToDom(state.selection, editingHost, domSelection);
     }, [editingHost, state]); // Yes, it depends on `state` -- not just `state.selection`
+
+    // Ensure that caret selection stays inside the scrollable viewport after content is changed
+    useEffect(() => {
+        const domSelection = document.getSelection();
+        if (editingHost && domSelection && domSelection.isCollapsed && isSelectionInside(editingHost, domSelection)) {
+            const virtualElem = getVirtualSelectionElement(domSelection);
+            if (virtualElem) {
+                const rect = virtualElem.getBoundingClientRect();
+                if (rect.bottom > editingHost.clientHeight) {
+                    editingHost.scrollTo({ top: editingHost.scrollTop + rect.bottom - editingHost.clientHeight });
+                } else if (rect.top < 0) {
+                    const lineHeight = getLineHeight(domSelection.focusNode);
+                    editingHost.scrollTo({ top: Math.max(editingHost.scrollTop + rect.top - lineHeight, 0) });
+                }
+            }
+        }
+    }, [state.content, editingHost]);
 
     // Tooltip manager
     const tooltipManager = useMemo(() => new TooltipManager(), []);
