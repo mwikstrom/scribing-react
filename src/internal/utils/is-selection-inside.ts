@@ -1,4 +1,8 @@
-export function isSelectionInside(rootElement: HTMLElement, selection: Selection | null): boolean {
+export function isSelectionInside(
+    rootElement: HTMLElement,
+    selection: Selection | null,
+    requireEditable?: boolean
+): boolean {
     if (selection === null) {
         return false;
     }
@@ -12,9 +16,35 @@ export function isSelectionInside(rootElement: HTMLElement, selection: Selection
         return false;
     }
 
+    if (requireEditable && !isEditable(anchorNode)) {
+        return false;
+    }
+
     if (focusNode === anchorNode) {
         return true;
     }
 
-    return rootElement.contains(focusNode);
+    if (!rootElement.contains(focusNode)) {
+        return false;
+    }
+
+    if (requireEditable && !isEditable(focusNode)) {
+        return false;
+    }
+
+    return true;
+}
+
+function isEditable(node: Node | null): boolean {
+    if (!node) {
+        return false;
+    } else if (
+        node.nodeType === Node.ELEMENT_NODE && 
+        "isContentEditable" in node &&
+        typeof node["isContentEditable"] === "boolean"
+    ) {
+        return node["isContentEditable"];
+    } else {
+        return isEditable(node.parentNode);
+    }
 }

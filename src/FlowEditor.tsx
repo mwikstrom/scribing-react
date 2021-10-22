@@ -299,7 +299,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             domSelection && 
             state.selection && 
             editingHost && 
-            isSelectionInside(editingHost, domSelection) && 
+            isSelectionInside(editingHost, domSelection, true) && 
             documentHasFocus
         ) {
             const virtualElem = getVirtualSelectionElement(domSelection);
