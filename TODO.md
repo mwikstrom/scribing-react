@@ -1,6 +1,8 @@
 SCRIBING TODO
 =============
 - Don't show empty trailing para in flow-box?!
+- Special para theme for "inside box"? Or at least fix margin or first/last/single para
+- Formatting paragraph break with zero opacity is not generally a good idea
 - Prevent dynamic text/boxes from flickering when editing next to them (cache evaluation?!)
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
@@ -10,8 +12,6 @@ SCRIBING TODO
 - Tool: Set box variant
 - Tool: Toggle inline box
 - List indent shall depend on paragraph alignment AND reading direction
-- Formatting paragraph break with zero opacity is not generally a good idea
-- Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Cannot toggle toolbox with ctr+period after escaping it
