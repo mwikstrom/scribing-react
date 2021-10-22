@@ -13,5 +13,7 @@ export function useTransparentMouseWheel(
                 left: scrollLeft + deltaX,
             });
         }
-    }, [boundary]);
+    }, [boundary], {
+        passive: true,
+    });
 }
