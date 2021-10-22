@@ -4,6 +4,7 @@ SCRIBING TODO
 - Prevent dynamic text/boxes from flickering when editing next to them (cache evaluation?!)
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
+- Hide toolbox while typing
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
 - Tool: Set box variant
