@@ -17,7 +17,7 @@ const useModifierKey = (modifier: ModifierKey): boolean => {
     const [state, setState] = useState(!!source.current);
     useEffect(() => {
         setState(!!source.current);
-        source.sub(setState);
+        return source.sub(setState);
     }, [source, setState]);
     return state;
 };
