@@ -92,7 +92,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         clickable ? classes.clickable : !!editMode && classes.editable,
         interactionPending && classes.interactionPending,
         error && classes.error,
-        sourceReady && data.length === 0 && classes.hidden,
+        hasSource && sourceReady && data.length === 0 && classes.hidden,
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
         showFormattingOutline && classes.formattingMarks,
