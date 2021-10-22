@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Don't show empty trailing para in flow-box?!
-- Cannot edit after trailing dynamic text inside flow box template
 - Caret position is broken when editing inside flow box template
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
