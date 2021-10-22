@@ -35,7 +35,7 @@ const getKeySource = <T extends ModifierKey>(key: T) => {
 };
 
 const makeKeySource = <T extends ModifierKey>(key: T) => new (
-    class CtrlKeySource<T extends ModifierKey> extends PubSub<boolean> {
+    class KeySource<T extends ModifierKey> extends PubSub<boolean> {
         readonly #key: T;
         #handler: (e: ModifierKeyEvent<T>) => void;
         #eventSources = new Set<Window>();
