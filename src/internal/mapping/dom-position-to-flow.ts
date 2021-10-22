@@ -88,6 +88,14 @@ export const mapDomPositionToFlow = (
                 }
             }
         }
+    } else if (offset >= node.childNodes.length) {
+        // Positioned after the last child node. We think of this as being positioned
+        // before the next sibling instead
+        offset = 0;
+        node = getNextDomNode(node);
+        if (node === null) {
+            return null;
+        }
     } else if (offset > 0) {
         // At this point: We're not inside a text node but given a non-zero 
         // child offset. So we'll select the closest anchestor mapped from a flow
@@ -97,13 +105,15 @@ export const mapDomPositionToFlow = (
             offset += getFlowOffsetFromPreviousSiblings(node);
             node = node.parentNode;
         }
+    } else {
+        offset = 0;
     }
 
     const nested: NestedFlowPosition[] = [];
 
     // Now, at this point we've normalized the offset (and node selection) so
     // that the offset is a mapped flow position within that node. All we need
-    // to do know is to traverse the DOM tree left/upward and accumulate the
+    // to do now is to traverse the DOM tree left/upward and accumulate the
     // flow space that we traverse. We'll stop when we've reached the editing
     // host.
     while (node !== editingHost) {        
@@ -142,3 +152,18 @@ export const mapDomPositionToFlow = (
 
     return [offset, ...nested];
 };
+
+function getNextDomNode(node: Node): Node | null {
+    const { nextSibling } = node;
+    
+    if (nextSibling != null) {
+        return nextSibling;
+    }
+
+    const { parentNode } = node;
+    if (parentNode != null) {
+        return getNextDomNode(parentNode);
+    }
+
+    return null;
+}
