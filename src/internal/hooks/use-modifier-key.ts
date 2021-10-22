@@ -62,9 +62,9 @@ const makeKeySource = <T extends ModifierKey>(key: T) => new (
             }        
         }
         onStop() {
-            for (const w of this.#eventSources) {
+            this.#eventSources.forEach(w => {
                 MODIFIER_KEY_EVENTS.forEach(type => w.removeEventListener(type, this.#handler));
-            }
+            });
             this.#eventSources.clear();
         }
     }
