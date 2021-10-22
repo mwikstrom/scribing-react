@@ -17,7 +17,7 @@ export const getListMarkerClass = (
         listCounterSuffix: suffix = "",
         listMarker: kind,
         listLevel: level,
-        listCounter: counterReset,
+        listCounter: counter,
         hideListMarker: hide,
     } = para;
 
@@ -37,14 +37,11 @@ export const getListMarkerClass = (
     };
 
     const continueCounter = (
-        counterReset === "resume" ||
-        (counterReset === "auto" && prev && (prev.style.listLevel ?? 0) >= level)
+        counter === "resume" ||
+        (counter === "auto" && prev && (prev.style.listLevel ?? 0) >= level)
     );
     if (!continueCounter) {
-        li.counterReset = getListCounterName(level);
-        if (typeof counterReset === "number") {
-            li.counterReset += ` ${counterReset - 1}`;
-        }        
+        li.counterSet = `${getListCounterName(level)} ${typeof counter === "number" ? counter : 1}`;
     }
 
     if (hide) {

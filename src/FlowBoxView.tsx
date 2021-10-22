@@ -7,12 +7,13 @@ import {
     FlowContent, 
     FlowSelection, 
     FlowTheme, 
-    NestedFlowSelection 
+    NestedFlowSelection, 
+    ParagraphBreak
 } from "scribing";
 import { useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { flowNode } from "./FlowNodeComponent";
-import { FlowView } from "./FlowView";
+import { FlowFragmentView } from "./FlowFragmentView";
 import { useIsParentSelectionActive } from "./internal/hooks/use-is-parent-selection-active";
 import { createUseFlowStyles } from "./internal/JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
@@ -98,6 +99,15 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, interactionPending, error, editMode, style, classes]);
 
+    const lastBreak = useMemo(() => {
+        let result: ParagraphBreak | null = null;
+        for (const node of content.nodes) {
+            if (node instanceof ParagraphBreak) {
+                result = node;
+            }
+        }
+        return result;
+    }, [content]);
     const contentElementProps: ContentElementProps = {
         className: classes.content,
         contentEditable: !!editMode && !clickable && !isParentSelectionActive,
@@ -121,6 +131,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             {...contentElementProps}
             key={index}
             data={item}
+            prevBreak={index > 0 ? lastBreak : null}
         />
     ));
 
@@ -258,11 +269,12 @@ interface ContentElementProps {
     contentEditable: boolean;
     theme: FlowTheme;
     content: FlowContent;
+    prevBreak?: ParagraphBreak | null;
     templateRef?: (elem: HTMLElement | null) => void;
 }
 
 const ContentElement: FC<ContentElementProps> = props => {
-    const { theme, content, templateRef, ...rest } = props;
+    const { theme, content, templateRef, prevBreak, ...rest } = props;
     return (
         <div
             {...rest}
@@ -270,7 +282,7 @@ const ContentElement: FC<ContentElementProps> = props => {
             suppressContentEditableWarning={true}
             children={
                 <FlowThemeScope theme={theme}>
-                    <FlowView content={content}/>
+                    <FlowFragmentView nodes={content.nodes} prevBreak={prevBreak}/>
                 </FlowThemeScope>
             }
         />

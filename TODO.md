@@ -1,9 +1,5 @@
 SCRIBING TODO
 =============
-- Support continuation list in template box
-    RENAME FlowView to FlowFragmentView
-    AND new FlowView (use from FlowEditor and set counterReset: [1,2,3,4,5,6,7,8,9].map(v => `li${v} 0`).join(" "),
-    SUPPORT sending prev para break to FlowFragmentView and USE that in template...
 - Don't show empty trailing para in flow-box?!
 - Prevent dynamic text/boxes from flickering when editing next to them (cache evaluation?!)
 - Escape to close menu, but not toolbox
