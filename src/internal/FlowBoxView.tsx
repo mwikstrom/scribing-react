@@ -14,11 +14,11 @@ import { useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowFragmentView } from "./FlowFragmentView";
-import { useIsParentSelectionActive } from "./internal/hooks/use-is-parent-selection-active";
-import { createUseFlowStyles } from "./internal/JssTheming";
-import { FlowAxis, setupFlowAxisMapping } from "./internal/mapping/flow-axis";
-import { getBoxCssProperties } from "./internal/utils/box-style-to-css";
-import { boxStyles, getBoxStyleClassNames } from "./internal/utils/box-style-to-classes";
+import { useIsParentSelectionActive } from "./hooks/use-is-parent-selection-active";
+import { createUseFlowStyles } from "./JssTheming";
+import { FlowAxis, setupFlowAxisMapping } from "./mapping/flow-axis";
+import { getBoxCssProperties } from "./utils/box-style-to-css";
+import { boxStyles, getBoxStyleClassNames } from "./utils/box-style-to-classes";
 import {
     mdiAlertOctagonOutline,
     mdiAlertOutline,
@@ -30,12 +30,12 @@ import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
-import { useIsSelected } from "./internal/hooks/use-is-selected";
-import { useInteraction } from "./internal/hooks/use-interaction";
+import { useIsSelected } from "./hooks/use-is-selected";
+import { useInteraction } from "./hooks/use-interaction";
 import { useObservedScript } from "scripthost-react";
 import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
 import { ScriptValue } from "scripthost-core";
-import { registerTemplateNode } from "./internal/mapping/dom-node";
+import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {

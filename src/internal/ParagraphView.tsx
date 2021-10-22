@@ -12,15 +12,15 @@ import {
 } from "scribing";
 import { getParagraphCssProperties } from "./utils/paragraph-style-to-css";
 import { makeJssId } from "./utils/make-jss-id";
-import { FlowNodeView } from "../FlowNodeView";
+import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
-import { FlowNodeComponentProps } from "../FlowNodeComponent";
+import { FlowNodeComponentProps } from "./FlowNodeComponent";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
-import { useParagraphTheme } from "../ParagraphThemeScope";
-import { useFlowComponentMap } from "../FlowComponentMapScope";
-import { useFlowPalette } from "../FlowPaletteScope";
+import { useParagraphTheme } from "./ParagraphThemeScope";
+import { useFlowComponentMap } from "./FlowComponentMapScope";
+import { useFlowPalette } from "./FlowPaletteScope";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {

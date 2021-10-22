@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from "react";
 import { FlowNode, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
 import { useFlowTheme } from "./FlowThemeScope";
-import { FlowNodeKeyManager } from "./internal/FlowNodeKeyManager";
-import { ParagraphView, ParagraphViewProps } from "./internal/ParagraphView";
+import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
+import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
 import { ParagraphThemeScope } from "./ParagraphThemeScope";
 
 /**

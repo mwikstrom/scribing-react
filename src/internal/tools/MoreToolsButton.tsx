@@ -8,7 +8,7 @@ import { ToolMenuItem } from "./ToolMenuItem";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
 import { DynamicText } from "scribing";
-import { useFlowLocale } from "../../FlowLocaleScope";
+import { useFlowLocale } from "../FlowLocaleScope";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);

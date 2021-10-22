@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { DynamicText, FlowBox, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
-import { useFlowComponentMap } from "../../FlowComponentMapScope";
-import { FlowNodeComponent } from "../../FlowNodeComponent";
+import { useFlowComponentMap } from "../FlowComponentMapScope";
+import { FlowNodeComponent } from "../FlowNodeComponent";
 
 /** @internal */
 export const useFlowNodeComponent = (

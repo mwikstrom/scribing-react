@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { createUseStyles } from "react-jss";
 import { FlowContent } from "scribing";
-import { FlowFragmentView } from "./FlowFragmentView";
+import { FlowFragmentView } from "./internal/FlowFragmentView";
 import { makeJssId } from "./internal/utils/make-jss-id";
 
 /**

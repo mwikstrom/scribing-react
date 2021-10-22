@@ -3,7 +3,7 @@ import Icon from "@mdi/react";
 import clsx from "clsx";
 import TextareaAutosize from "react-textarea-autosize";
 import React, { FC, useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { useFlowLocale } from "../../FlowLocaleScope";
+import { useFlowLocale } from "../FlowLocaleScope";
 import { createUseFlowStyles } from "../JssTheming";
 import { ToolButton } from "./ToolButton";
 

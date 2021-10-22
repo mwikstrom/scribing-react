@@ -1,7 +1,7 @@
 import { Classes } from "jss";
 import { CSSProperties } from "react";
 import { TextStyle, TextStyleProps } from "scribing";
-import { FlowPalette } from "../../FlowPalette";
+import { FlowPalette } from "../FlowPalette";
 import { SYSTEM_FONT } from "./system-font";
 
 /** @internal */

@@ -1,11 +1,11 @@
 import React, { FC, useMemo, useState } from "react";
 import { FlowNode, Interaction } from "scribing";
-import { FlowNodeView } from "../FlowNodeView";
+import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
-import { FlowNodeComponentProps } from "../FlowNodeComponent";
+import { FlowNodeComponentProps } from "./FlowNodeComponent";
 import clsx from "clsx";
-import { useEditMode } from "../EditModeScope";
-import { useFlowComponentMap } from "../FlowComponentMapScope";
+import { useEditMode } from "./EditModeScope";
+import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { createUseFlowStyles } from "./JssTheming";
 import { useInteraction } from "./hooks/use-interaction";
 

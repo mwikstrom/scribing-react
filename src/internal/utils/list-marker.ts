@@ -1,6 +1,6 @@
 import jss, { JssStyle } from "jss";
 import { ListMarkerKind, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
-import { FlowPalette } from "../../FlowPalette";
+import { FlowPalette } from "../FlowPalette";
 import { makeDynamicJssId } from "./make-jss-id";
 import { getTextStyleClassProperites } from "./text-style-to-classes";
 import { getTextCssProperties } from "./text-style-to-css";

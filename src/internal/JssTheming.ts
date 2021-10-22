@@ -1,8 +1,8 @@
 import { Classes } from "jss";
 import { useMemo } from "react";
 import { createUseStyles, Styles } from "react-jss";
-import { FlowPalette } from "../FlowPalette";
-import { useFlowPalette } from "../FlowPaletteScope";
+import { FlowPalette } from "./FlowPalette";
+import { useFlowPalette } from "./FlowPaletteScope";
 import { makeJssId } from "./utils/make-jss-id";
 
 /** @internal */

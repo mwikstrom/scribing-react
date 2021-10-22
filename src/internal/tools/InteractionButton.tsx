@@ -10,7 +10,7 @@ import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { OpenUrl, RunScript } from "scribing";
-import { useFlowLocale } from "../../FlowLocaleScope";
+import { useFlowLocale } from "../FlowLocaleScope";
 import { OpenUrlEditor } from "./OpenUrlEditor";
 import { ScriptEditor } from "./ScriptEditor";
 

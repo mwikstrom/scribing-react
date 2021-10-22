@@ -3,7 +3,7 @@ import Icon from "@mdi/react";
 import clsx from "clsx";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { OpenUrl } from "scribing";
-import { useFlowLocale } from "../../FlowLocaleScope";
+import { useFlowLocale } from "../FlowLocaleScope";
 import { createUseFlowStyles } from "../JssTheming";
 import { SYSTEM_FONT } from "../utils/system-font";
 import { ToolButton } from "./ToolButton";

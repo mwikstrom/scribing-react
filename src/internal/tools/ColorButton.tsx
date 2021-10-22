@@ -8,15 +8,15 @@ import {
     mdiCheckboxBlank,
     mdiCheck,
 } from "@mdi/js";
-import { FlowPalette } from "../../FlowPalette";
+import { FlowPalette } from "../FlowPalette";
 import { FlowColor, FLOW_COLORS } from "scribing";
 import { IconProps } from "@mdi/react/dist/IconProps";
-import { useFlowPalette } from "../../FlowPaletteScope";
+import { useFlowPalette } from "../FlowPaletteScope";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
-import { useFlowLocale } from "../../FlowLocaleScope";
-import { getFlowColorLocaleKey } from "../../FlowLocale";
+import { useFlowLocale } from "../FlowLocaleScope";
+import { getFlowColorLocaleKey } from "../FlowLocale";
 
 export const ColorButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
