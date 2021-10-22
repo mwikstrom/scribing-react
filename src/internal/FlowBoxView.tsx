@@ -122,15 +122,13 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             <Icon path={mdiLoading} size={1} spin={0.5}/>
         </div>
     ) : sourceError || data.length === 0 ? (
-        <TemplateElement
-            {...contentElementProps}
-            data={undefined}
-        />
+        <TemplateElement {...contentElementProps}/>
     ) : data.map((item, index) => (
         <TemplateElement
             {...contentElementProps}
             key={index}
             data={item}
+            isClone={index > 0}
             prevBreak={index > 0 ? lastBreak : null}
         />
     ));
@@ -290,16 +288,18 @@ const ContentElement: FC<ContentElementProps> = props => {
 };
 
 interface TemplateElementProps extends ContentElementProps {
-    data: ScriptValue;
+    data?: ScriptValue;
+    isClone?: boolean;
 }
 
 const TemplateElement: FC<TemplateElementProps> = props => {
-    const { data, ...rest } = props;
+    const { data, isClone, contentEditable, ...rest } = props;
     const vars = useMemo(() => ({ data }), [data]);
     return (
         <ScriptVaraiblesScope variables={vars}>
             <ContentElement
                 {...rest}
+                contentEditable={contentEditable && !isClone}
                 templateRef={registerTemplateNode}
             />
         </ScriptVaraiblesScope>
