@@ -15,7 +15,8 @@ import { useFlowPalette } from "../../FlowPaletteScope";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
-import { getFlowColorLocaleKey, useFlowLocale } from "../..";
+import { useFlowLocale } from "../../FlowLocaleScope";
+import { getFlowColorLocaleKey } from "../../FlowLocale";
 
 export const ColorButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);

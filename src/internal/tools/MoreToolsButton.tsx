@@ -5,10 +5,10 @@ import { mdiDotsVertical, mdiCheck, mdiFunctionVariant, mdiFormatPilcrow } from 
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
-import { useFlowLocale } from "../..";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
 import { DynamicText } from "scribing";
+import { useFlowLocale } from "../../FlowLocaleScope";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);

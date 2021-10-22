@@ -5,9 +5,9 @@ import { mdiCheck, mdiFormatText, mdiMenuDown } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ParagraphVariant, PARAGRAPH_VARIANTS } from "scribing";
 import { useFlowLocale } from "../../FlowLocaleScope";
-import { getParagraphVariantLocaleKey } from "../..";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
+import { getParagraphVariantLocaleKey } from "../../FlowLocale";
 
 export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
