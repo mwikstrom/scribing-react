@@ -355,8 +355,8 @@ Progress.args = {
     ])),
 };
 
-export const DataSource = Template.bind({});
-DataSource.args = {
+export const DataSourceSingle = Template.bind({});
+DataSourceSingle.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Binding a single value:",
         { break: "para" },
@@ -372,6 +372,14 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceSingleDelayed = Template.bind({});
+DataSourceSingleDelayed.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Binding a single delayed value:",
         { break: "para" },
         { 
@@ -386,6 +394,14 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceError = Template.bind({});
+DataSourceError.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Binding error:",
         { break: "para" },
         { 
@@ -400,6 +416,14 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceHidden = Template.bind({});
+DataSourceHidden.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Hidden (false binding):",
         { break: "para" },
         { 
@@ -410,6 +434,14 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceMultiOutput = Template.bind({});
+DataSourceMultiOutput.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Multi-binding:",
         { break: "para" },
         { 
@@ -426,6 +458,40 @@ DataSource.args = {
             }
         },
         { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceMultiOutputInAlert = Template.bind({});
+DataSourceMultiOutputInAlert.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Multi-binding:",
+        { break: "para" },
+        { 
+            box: [
+                "Message #",
+                { dynamic: "data.index" },
+                ": ",
+                { dynamic: "data.message" },
+                { break: "para"},
+            ],
+            style: {
+                source: "['this', 'is', 'useful'].map((message, index) => ({ message, index}))",
+                inline: false,
+                variant: "alert",
+                color: "warning",
+            }
+        },
+        { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceDelayedMultiOutput = Template.bind({});
+DataSourceDelayedMultiOutput.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         "Delayed multi-binding:",
         { break: "para" },
         { 
