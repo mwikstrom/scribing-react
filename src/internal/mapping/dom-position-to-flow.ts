@@ -90,10 +90,15 @@ export const mapDomPositionToFlow = (
         }
     } else if (offset >= node.childNodes.length) {
         // Positioned after the last child node. We think of this as being positioned
-        // before the next sibling instead
-        offset = 0;
-        node = getNextDomNode(node);
-        if (node === null) {
+        // before the next sibling instead (if there is one)
+        const next = getNextDomNode(node);
+        if (next && !isMappedTemplateNode(next)) {
+            node = next;
+            offset = 0;
+        } else if (node.lastChild !== null) {
+            node = node.lastChild;
+            offset = getFlowSizeFromDomNode(node);
+        } else {
             return null;
         }
     } else if (offset > 0) {
