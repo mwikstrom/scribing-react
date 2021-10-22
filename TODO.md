@@ -10,6 +10,7 @@ SCRIBING TODO
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - Hide toolbox while typing
+- Show selection outline when non-caret selection is confined within a flow box
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
 - Tool: Set box variant
