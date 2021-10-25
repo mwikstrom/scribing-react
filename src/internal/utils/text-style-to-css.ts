@@ -39,7 +39,8 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         css.verticalAlign = "baseline";
     } else if (baseline !== void(0)) {
         css.verticalAlign = baseline;
-        fontSizeMultiplier *= 0.8;
+        css.lineHeight = "50%";
+        fontSizeMultiplier *= 0.75;
     }
 
     if (typeof fontSize === "number") {

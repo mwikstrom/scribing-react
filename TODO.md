@@ -17,7 +17,6 @@ SCRIBING TODO
 - Cannot toggle toolbox with ctr+period after escaping it
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Moving down from inside nesting node does not place caret properly
-- Can baseline offset be applied without affecting height of line box?
 - Tool: Set list counter
 - Tool: Set line height
 - Tool: Set font size
