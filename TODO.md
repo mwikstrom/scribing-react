@@ -1,5 +1,8 @@
 SCRIBING TODO
 =============
+- Moving up/down may place caret on wrong side of pilcrow
+- Moving down from inside nesting node does not place caret properly
+- Show selection outline when non-caret selection is confined within a flow box
 - Don't show empty trailing para in flow-box?!
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
@@ -7,16 +10,13 @@ SCRIBING TODO
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - Hide toolbox while typing
-- Show selection outline when non-caret selection is confined within a flow box
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
-- Moving up/down may place caret on wrong side of pilcrow
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - Cannot toggle toolbox with ctr+period after escaping it
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
-- Moving down from inside nesting node does not place caret properly
 - Tool: Set list counter
 - Tool: Set line height
 - Tool: Set font size
