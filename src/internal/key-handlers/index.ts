@@ -9,6 +9,7 @@ import { SetParagraphStyleHandler } from "./SetParagraphStyleHandler";
 import { TabHandler } from "./TabHandler";
 import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
+import { VerticalArrowHandler } from "./VerticalArrowHandler";
 
 const ALL_HANDLERS = [
     ArrowBackHandler,
@@ -21,6 +22,7 @@ const ALL_HANDLERS = [
     TabHandler,
     ToggleFormattingMarksHandler,
     UndoHandler,
+    VerticalArrowHandler,
 ];
 
 export const handleKeyEvent: KeyHandler = (e, state) => {
