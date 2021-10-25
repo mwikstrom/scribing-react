@@ -26,6 +26,7 @@ import { makeJssId } from "../utils/make-jss-id";
 
 /** @internal */
 export interface ToolbarProps {
+    editingHost: HTMLElement | null;
     commands: FlowEditorCommands;
     boundary?: HTMLElement | null;
 }

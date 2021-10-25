@@ -11,9 +11,10 @@ export interface ScriptEditorProps {
     value?: string;
     onSave: (value: string) => void;
     onCancel: () => void;
+    editingHost: HTMLElement | null;
 }
 
-export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", onSave, onCancel}) => {
+export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", onSave, onCancel, editingHost}) => {
     const classes = useStyles();
     const locale = useFlowLocale();
     const [value, setValue] = useState(defaultValue);
@@ -97,10 +98,10 @@ export const ScriptEditor: FC<ScriptEditorProps> = ({value: defaultValue = "", o
                     onKeyDown={onKeyDown}
                     maxRows={10}
                 />
-                <ToolButton onClick={handleSave}>
+                <ToolButton onClick={handleSave} editingHost={editingHost}>
                     <Icon path={mdiCheck}/>
                 </ToolButton>
-                <ToolButton onClick={onCancel}>
+                <ToolButton onClick={onCancel} editingHost={editingHost}>
                     <Icon path={mdiClose}/>
                 </ToolButton>
             </div>

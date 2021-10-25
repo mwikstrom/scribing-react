@@ -14,7 +14,7 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { OpenUrlEditor } from "./OpenUrlEditor";
 import { ScriptEditor } from "./ScriptEditor";
 
-export const InteractionButton: FC<ToolbarProps> = ({commands, boundary}) => {
+export const InteractionButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const locale = useFlowLocale();
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<boolean | "url" | "script">(false);
@@ -27,24 +27,33 @@ export const InteractionButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const clearInteraction = useCallback(() => {
         commands.setInteraction(null);
         closeMenu();
-    }, [commands, closeMenu]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
     
     const setOpenUrl = useCallback((url: string) => {
         commands.setInteraction(new OpenUrl({ url }));
         closeMenu();
-    }, [commands, closeMenu]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
     
     const setRunScript = useCallback((script: string) => {
         commands.setInteraction(new RunScript({ script }));
         closeMenu();
-    }, [commands, closeMenu]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
     
     const interaction = commands.getInteraction();
     const active = interaction === void(0) ? void(0) : interaction !== null;
     
     return (
         <>
-            <ToolButton setRef={setButtonRef} onClick={toggleMenu} active={active}>
+            <ToolButton setRef={setButtonRef} onClick={toggleMenu} active={active} editingHost={editingHost}>
                 <Icon path={mdiGestureTapButton} size={1}/>
                 <Icon path={mdiMenuDown} size={0.75}/>
             </ToolButton>
@@ -76,6 +85,7 @@ export const InteractionButton: FC<ToolbarProps> = ({commands, boundary}) => {
                             value={interaction instanceof OpenUrl ? interaction.url : ""}
                             onSave={setOpenUrl}
                             onCancel={closeMenu}
+                            editingHost={editingHost}
                         />
                     )}
                 />
@@ -92,6 +102,7 @@ export const InteractionButton: FC<ToolbarProps> = ({commands, boundary}) => {
                             value={interaction instanceof RunScript ? interaction.script : ""}
                             onSave={setRunScript}
                             onCancel={closeMenu}
+                            editingHost={editingHost}
                         />
                     )}
                 />

@@ -9,7 +9,7 @@ import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { getParagraphVariantLocaleKey } from "../FlowLocale";
 
-export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) => {
+export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState(false);
     const locale = useFlowLocale();
@@ -18,11 +18,14 @@ export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary}) =
     const applyVariant = useCallback((option: ParagraphVariant) => {
         closeMenu();
         commands.setParagraphVariant(option);
-    }, [closeMenu, commands]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [closeMenu, commands, editingHost]);
     const variant = commands.getParagraphVariant();
     return (
         <>
-            <ToolButton setRef={setButtonRef} onClick={toggleMenu}>
+            <ToolButton setRef={setButtonRef} onClick={toggleMenu} editingHost={editingHost}>
                 <Icon path={mdiFormatText} size={0.75}/>
                 <span style={{ margin: "0 0.5rem" }}>
                     {PARAGRAPH_VARIANTS.map(option => (

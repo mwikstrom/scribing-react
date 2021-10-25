@@ -18,7 +18,7 @@ import { ToolMenuItem } from "./ToolMenuItem";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { getFlowColorLocaleKey } from "../FlowLocale";
 
-export const ColorButton: FC<ToolbarProps> = ({commands, boundary}) => {
+export const ColorButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState(false);
     const palette = useFlowPalette();
@@ -28,7 +28,10 @@ export const ColorButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const applyColor = useCallback((option: FlowColor) => {
         closeMenu();
         commands.setColor(option);
-    }, [closeMenu, commands]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [closeMenu, commands, editingHost]);
     const color = commands.getColor();
     let icon: ReactElement<IconProps> = <Icon size={1} path={mdiFormatColorFill}/>;
 
@@ -46,7 +49,7 @@ export const ColorButton: FC<ToolbarProps> = ({commands, boundary}) => {
 
     return (
         <>
-            <ToolButton setRef={setButtonRef} onClick={toggleMenu}>
+            <ToolButton setRef={setButtonRef} onClick={toggleMenu} editingHost={editingHost}>
                 {icon}
                 <Icon path={mdiMenuDown} size={0.75}/>
             </ToolButton>

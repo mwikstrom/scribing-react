@@ -21,6 +21,7 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
     const [displayOne, setDisplayOne] = useState<TooltipData | null>(current);
     const [displayTwo, setDisplayTwo] = useState<TooltipData | null>(null);
     const [deferToken, setDeferToken] = useState(0);
+    const [editingHost, setEditingHost] = useState<HTMLElement | null>(manager.editingHost.current ?? null);
     const counter = useRef(0);    
     const setDisplay = (data: TooltipData) => {
         if (data.key === displayOne?.key) {
@@ -33,6 +34,8 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         setTimeout(() => setActive(data), 0);
         setPending(null);
     };
+
+    useEffect(() => manager.editingHost.sub(setEditingHost), [manager, setEditingHost]);
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape" && current !== null) {
@@ -103,8 +106,22 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
     return (
         <TooltipContext.Provider value={manager}>
             {children}
-            {displayOne && <Tooltip active={displayOne === active} boundary={boundary} {...displayOne}/>}
-            {displayTwo && <Tooltip active={displayTwo === active} boundary={boundary} {...displayTwo}/>}
+            {displayOne && (
+                <Tooltip
+                    {...displayOne}
+                    active={displayOne === active}
+                    boundary={boundary}
+                    editingHost={editingHost}
+                />
+            )}
+            {displayTwo && (
+                <Tooltip
+                    {...displayTwo}
+                    active={displayTwo === active}
+                    boundary={boundary}
+                    editingHost={editingHost}
+                />
+            )}
         </TooltipContext.Provider>
     );
 };

@@ -4,7 +4,6 @@ SCRIBING TODO
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
 - Paragraph break mark after block level flow box shall be displayed after the block -- not take up a separate line
-- Clicking on tool button causes editor to loose focus (repro: select caret, click on bold...)
 - Escape to close menu, but not toolbox
 - Cannot unformat italic from quote box
 - Hide toolbox while typing

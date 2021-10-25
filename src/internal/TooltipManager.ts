@@ -3,11 +3,13 @@ import { TooltipProps } from "./Tooltip";
 import { PubSub } from "./utils/PubSub";
 
 /** @internal */
-export type TooltipData = Omit<TooltipProps, "active" | "boundary">;
+export type TooltipData = Omit<TooltipProps, "active" | "boundary" | "editingHost">;
 
 /** @internal */
 export class TooltipManager extends PubSub<TooltipData | null> {
     #map = new Map<number, TooltipData>();
+
+    public readonly editingHost = new PubSub<HTMLElement | null>(null);
 
     addOrUpdate(props: TooltipData): void {
         const { key } = props;

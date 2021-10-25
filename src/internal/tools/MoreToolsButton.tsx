@@ -10,7 +10,7 @@ import { ScriptEditor } from "./ScriptEditor";
 import { DynamicText } from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
 
-export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
+export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text">(false);
     const locale = useFlowLocale();
@@ -20,17 +20,29 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
         closeMenu();
-    }, [commands, closeMenu]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
 
-    const beginInsertDynamicText = useCallback(() => setMenuOpen("insert_dynamic_text"), [setMenuOpen]);
+    const beginInsertDynamicText = useCallback(() => {
+        setMenuOpen("insert_dynamic_text");
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [setMenuOpen, editingHost]);
+
     const insertDynamicText = useCallback((expression: string) => {
         commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
         closeMenu();
-    }, [commands, closeMenu]);
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
 
     return (
         <>
-            <ToolButton setRef={setButtonRef} onClick={toggleMenu}>
+            <ToolButton setRef={setButtonRef} onClick={toggleMenu} editingHost={editingHost}>
                 <Icon size={1} path={mdiDotsVertical}/>
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
@@ -61,6 +73,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary}) => {
                         <ScriptEditor
                             onSave={insertDynamicText}
                             onCancel={closeMenu}
+                            editingHost={editingHost}
                         />
                     )}
                 />

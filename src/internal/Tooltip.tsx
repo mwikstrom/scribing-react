@@ -16,12 +16,13 @@ export interface TooltipProps {
     reference: VirtualElement,
     active: boolean;
     content: string | FlowEditorCommands;
+    editingHost: HTMLElement | null;
     boundary?: HTMLElement | null;
 }
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, active, content, boundary: givenBoundary } = props;
+    const { reference, active, content, editingHost, boundary: givenBoundary } = props;
     const boundary = givenBoundary ?? "clippingParents";
     const [popper, setPopper] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
@@ -71,7 +72,7 @@ export const Tooltip: FC<TooltipProps> = props => {
 
     const children = useMemo(() => {
         if (content instanceof FlowEditorCommands) {
-            return <Toolbar commands={content} boundary={givenBoundary}/>;
+            return <Toolbar commands={content} boundary={givenBoundary} editingHost={editingHost}/>;
         } else if (typeof content === "string") {
             return <TooltipMessage text={content}/>;
         } else {

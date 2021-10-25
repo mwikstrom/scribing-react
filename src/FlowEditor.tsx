@@ -290,6 +290,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Tooltip manager
     const tooltipManager = useMemo(() => new TooltipManager(), []);
+    useEffect(() => tooltipManager.editingHost.pub(editingHost), [tooltipManager, editingHost]);
 
     // Show contextual toolbar
     const showTools = useShowTools(tooltipManager);

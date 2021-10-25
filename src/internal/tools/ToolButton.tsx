@@ -5,6 +5,7 @@ import { createUseFlowStyles } from "../JssTheming";
 
 /** @internal */
 export interface ToolButtonProps {
+    editingHost: HTMLElement | null;
     active?: boolean;
     disabled?: boolean;
     setRef?: (elem: HTMLElement) => void;
@@ -12,16 +13,34 @@ export interface ToolButtonProps {
 }
 
 /** @internal */
-export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setRef: setOuterRef, children}) => {
+export const ToolButton: FC<ToolButtonProps> = ({
+    active,
+    disabled,
+    onClick,
+    setRef: setOuterRef,
+    editingHost,
+    children,
+}) => {
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const hover = useHover(rootElem);
+
     const setRef = useCallback((elem: HTMLElement) => {
         setRootElem(elem);
         if (setOuterRef) {
             setOuterRef(elem);
         }
     }, [setOuterRef, setRootElem]);
+
+    const handleClick = useCallback(() => {
+        if (onClick) {
+            onClick();
+        }
+
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [onClick]);
 
     const className = clsx(
         classes.root,
@@ -36,7 +55,7 @@ export const ToolButton: FC<ToolButtonProps> = ({active, disabled, onClick, setR
             ref={setRef}
             className={className}
             children={children}
-            onClick={!disabled ? onClick : undefined}
+            onClick={!disabled ? handleClick : undefined}
         />
     );
 };

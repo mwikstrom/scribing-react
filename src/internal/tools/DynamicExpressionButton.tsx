@@ -6,7 +6,7 @@ import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ScriptEditor } from "./ScriptEditor";
 
-export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) => {
+export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isEditorOpen, setEditorOpen] = useState<boolean>(false);
     
@@ -24,10 +24,19 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) 
     
     return (
         <>
-            <ToolButton setRef={setButtonRef} onClick={toggleEditor} active={active} disabled={disabled}>
-                <Icon path={mdiFunctionVariant} size={1}/>
-                <Icon path={mdiMenuDown} size={0.75}/>
-            </ToolButton>
+            <ToolButton 
+                setRef={setButtonRef}
+                onClick={toggleEditor}
+                active={active}
+                disabled={disabled}
+                editingHost={editingHost}
+                children={(
+                    <>
+                        <Icon path={mdiFunctionVariant} size={1}/>
+                        <Icon path={mdiMenuDown} size={0.75}/>
+                    </>
+                )}
+            />
             {buttonRef && isEditorOpen && (
                 <ToolMenu
                     anchor={buttonRef}
@@ -40,6 +49,7 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary}) 
                             value={expression ?? ""}
                             onSave={setExpression}
                             onCancel={closeEditor}
+                            editingHost={editingHost}
                         />
                     )}
                 />
