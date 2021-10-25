@@ -2,6 +2,7 @@ import { ParagraphBreak } from "scribing";
 import { getMappedFlowNode } from "../mapping/flow-node";
 import { getTooltipElement } from "../Tooltip";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
+import { getClientRectFromDomRange } from "../utils/get-virtual-selection-element";
 import { KeyHandler } from "./KeyHandler";
 
 export const VerticalArrowHandler: KeyHandler = e => {
@@ -43,10 +44,11 @@ export const VerticalArrowHandler: KeyHandler = e => {
     const focusRange = document.createRange();
     focusRange.setStart(focusNode, focusOffset);
     focusRange.setEnd(focusNode, focusOffset);
-    const focusRect = focusRange.getBoundingClientRect();
+    const focusRect = getClientRectFromDomRange(focusRange);
     const clientX = focusRect.x;
     const deltaY = e.key === "ArrowUp" ? -10 : 10;
     const startY = e.key === "ArrowUp" ? focusRect.top : focusRect.bottom;
+    let found: undefined | { node: Node, offset: number, distance: number };
 
     for (let i = 1; i < 20; ++i) {
         const clientY = startY + i * deltaY;
@@ -62,10 +64,10 @@ export const VerticalArrowHandler: KeyHandler = e => {
         // to caret by using arrow keys alone.
         const tooltip = getTooltipElement(node);
         if (tooltip) {
-            const prevVisibility = tooltip.style.visibility;
-            tooltip.style.visibility = "hidden";
+            const oldValue = tooltip.style.display;
+            tooltip.style.display = "none";
             domPos = getDomPositionFromPoint({ clientX, clientY });
-            tooltip.style.visibility = prevVisibility;
+            tooltip.style.display = oldValue;
             if (!domPos) {
                 continue;
             }
@@ -88,20 +90,30 @@ export const VerticalArrowHandler: KeyHandler = e => {
         const nodeRange = document.createRange();
         nodeRange.setStart(node, offset);
         nodeRange.setEnd(node, offset);
-        const nodeRect = nodeRange.getBoundingClientRect();
-        const distance = deltaY < 0 ? focusRect.top - nodeRect.bottom : nodeRect.top - focusRect.bottom;
+        const nodeRect = getClientRectFromDomRange(nodeRange);
+        const distance = deltaY < 0 ? focusRect.top - nodeRect.top : nodeRect.bottom - focusRect.bottom;
+        
         if (distance <= 0) {
             // Wrong/no distance
             continue;
         }
 
-        // TODO: Fallback to non-text node
-
-        if (node.nodeType !== Node.TEXT_NODE) {
-            // We're looking for a text node. This could be improved so that
-            // we support other nodes too - but I'm too lazy for that now.
-            continue;
+        // Stop looking if we've gone too far
+        if (found && distance > found.distance + Math.abs(deltaY * 2)) {
+            break;
         }
+
+        // Remember it
+        found = { node, offset, distance };
+
+        // If it's a text node then it must be the best :-)
+        if (node.nodeType === Node.TEXT_NODE) {
+            break;
+        }
+    }
+
+    if (found) {
+        const { node, offset } = found;
 
         // Extend selection or move caret
         if (e.shiftKey) {
@@ -113,6 +125,6 @@ export const VerticalArrowHandler: KeyHandler = e => {
         }
 
         e.preventDefault();
-        return null;
+        return null;        
     }
 };

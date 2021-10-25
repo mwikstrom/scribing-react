@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- Moving up/down may place caret on wrong side of pilcrow
-- Moving down from inside nesting node does not place caret properly
 - Show selection outline when non-caret selection is confined within a flow box
 - Don't show empty trailing para in flow-box?!
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para

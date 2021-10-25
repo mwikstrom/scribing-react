@@ -32,17 +32,21 @@ export function getVirtualSelectionElement(
     return new VirtualCaret(range);
 }
 
+export function getClientRectFromDomRange(range: Range): DOMRect {
+    let rect = range.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+        const tempNode = document.createTextNode("\ufeff");
+        range.insertNode(tempNode);
+        rect = range.getBoundingClientRect();
+        tempNode.remove();
+    }    
+    return rect;
+}
+
 class VirtualCaret {
     #range: Range;
     constructor(range: Range) { this.#range = range; }
     getBoundingClientRect(): DOMRect {
-        let rect = this.#range.getBoundingClientRect();
-        if (rect.width === 0 && rect.height === 0) {
-            const tempNode = document.createTextNode("\ufeff");
-            this.#range.insertNode(tempNode);
-            rect = this.#range.getBoundingClientRect();
-            tempNode.remove();
-        }    
-        return rect;
+        return getClientRectFromDomRange(this.#range);
     }
 }
