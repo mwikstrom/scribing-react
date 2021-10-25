@@ -21,7 +21,7 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
     const [displayOne, setDisplayOne] = useState<TooltipData | null>(current);
     const [displayTwo, setDisplayTwo] = useState<TooltipData | null>(null);
     const [deferToken, setDeferToken] = useState(0);
-    const [editingHost, setEditingHost] = useState<HTMLElement | null>(manager.editingHost.current ?? null);
+    const [editingHost, setEditingHost] = useState<HTMLElement | null>(manager.editingHost?.current ?? null);
     const counter = useRef(0);    
     const setDisplay = (data: TooltipData) => {
         if (data.key === displayOne?.key) {
