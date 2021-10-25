@@ -88,7 +88,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             editingHost && 
             activeElement && 
             documentHasFocus &&
-            activeElement.contains(editingHost)
+            (
+                editingHost === activeElement ||
+                editingHost.contains(activeElement)
+            )
         ) {
             return true;
         } else {
