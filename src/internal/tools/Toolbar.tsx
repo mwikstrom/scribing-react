@@ -97,6 +97,8 @@ const useStyles = createUseStyles({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        paddingTop: 2,
+        paddingBottom: 2,
     }
 }, {
     generateId: makeJssId("Toolbar"),
