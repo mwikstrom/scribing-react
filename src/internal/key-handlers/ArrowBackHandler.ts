@@ -4,7 +4,7 @@ import { KeyHandler } from "./KeyHandler";
 
 export const ArrowBackHandler: KeyHandler = (e, state) => {
     // Handle case when moving caret back to avoid ending up after a paragraph break
-    if (state.selection && state.selection.isCollapsed && e.key === getBackArrowKey(state)) {
+    if (state.selection && state.selection.isCollapsed && !e.shiftKey && e.key === getBackArrowKey(state)) {
         const newSelection = state.selection.transformRanges((range, options = {}) => {
             const { target } = options;
             if (target) {

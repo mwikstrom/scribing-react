@@ -4,7 +4,7 @@ import { KeyHandler } from "./KeyHandler";
 
 export const ArrowForwardHandler: KeyHandler = (e, state) => {
     // Handle case when moving caret forward to avoid ending up after a paragraph break
-    if (state.selection && state.selection.isCollapsed && e.key === getForwardArrowKey(state)) {
+    if (state.selection && state.selection.isCollapsed && !e.shiftKey && e.key === getForwardArrowKey(state)) {
         const newSelection = state.selection.transformRanges((range, options = {}) => {
             const { target } = options;
             if (target) {
