@@ -18,6 +18,7 @@ Record<ColorLocaleKey, string> {
     insert_dynamic_text: string;
     ltr_reading_direction: string;
     rtl_reading_direction: string;
+    full_width_box: string;
 }
 
 /** @public */
@@ -61,6 +62,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     insert_dynamic_text: "Insert dynamic text",
     ltr_reading_direction: "Left-to-right reading direction",
     rtl_reading_direction: "Right-to-left reading direction",
+    full_width_box: "Full width box",
 });
 
 /** @public */

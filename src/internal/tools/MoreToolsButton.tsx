@@ -8,6 +8,7 @@ import {
     mdiFormatPilcrow, 
     mdiFormatTextdirectionLToR, 
     mdiFormatTextdirectionRToL,
+    mdiArrowExpandHorizontal,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -26,6 +27,15 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
+    const toggleInlineBox = useCallback(() => {
+        const { inline = true } = commands.getBoxStyle();
+        commands.formatBox("inline", !inline);
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -66,6 +76,16 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         <Icon path={mdiFunctionVariant} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.insert_dynamic_text}&hellip;
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuDivider/>
+                    <ToolMenuItem disabled={!commands.isBox()} onClick={toggleInlineBox}>
+                        <Icon
+                            path={(commands.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
+                            size={0.75}
+                        />
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.full_width_box}
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>
