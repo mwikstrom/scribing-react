@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Clicking outside of paragraph shall place caret inside paragraph (before/after pilcrow depending on reading direction)
+  USE: https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
 - Don't show empty trailing para in flow-box?!
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
