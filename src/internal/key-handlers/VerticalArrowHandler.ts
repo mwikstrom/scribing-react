@@ -1,5 +1,6 @@
 import { ParagraphBreak } from "scribing";
 import { getMappedFlowNode } from "../mapping/flow-node";
+import { getTooltipElement } from "../Tooltip";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
 import { KeyHandler } from "./KeyHandler";
 
@@ -49,16 +50,29 @@ export const VerticalArrowHandler: KeyHandler = e => {
 
     for (let i = 1; i < 20; ++i) {
         const clientY = startY + i * deltaY;
-        // TODO: This may select a position within a popper window. We don't want that!
-        const domPos = getDomPositionFromPoint({ clientX, clientY });
+        let domPos = getDomPositionFromPoint({ clientX, clientY });        
 
         if (!domPos) {
             continue;
         }
 
-        const { node } = domPos;
-        let { offset } = domPos;
+        let { node } = domPos;
 
+        // Ignore tooltip elements - we never move the focus point from editing host
+        // to caret by using arrow keys alone.
+        const tooltip = getTooltipElement(node);
+        if (tooltip) {
+            const prevVisibility = tooltip.style.visibility;
+            tooltip.style.visibility = "hidden";
+            domPos = getDomPositionFromPoint({ clientX, clientY });
+            tooltip.style.visibility = prevVisibility;
+            if (!domPos) {
+                continue;
+            }
+            node = domPos.node;
+        }
+
+        let { offset } = domPos;
         if (node === focusNode && offset === focusOffset) {
             // Still at the same position
             continue;

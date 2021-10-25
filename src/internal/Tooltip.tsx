@@ -1,6 +1,6 @@
 import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
 import { FlowEditorCommands } from "./FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
@@ -24,10 +24,18 @@ export interface TooltipProps {
 export const Tooltip: FC<TooltipProps> = props => {
     const { reference, active, content, editingHost, boundary: givenBoundary } = props;
     const boundary = givenBoundary ?? "clippingParents";
-    const [popper, setPopper] = useState<HTMLElement | null>(null);
+    const [popper, setPopperState] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
     const [stable, setStable] = useState(false);
     const padding = { left: 2, top: 5, right: 2, bottom: 5 };
+
+    const setPopper = useCallback((elem: HTMLElement | null) => {
+        setPopperState(elem);
+        if (elem) {
+            TOOLTIP_NODES.add(elem);
+        }
+    }, [setPopperState]);
+
     const { styles, attributes, update } = usePopper(reference, popper, {
         placement: "top",
         modifiers: [
@@ -37,7 +45,7 @@ export const Tooltip: FC<TooltipProps> = props => {
             { name: "preventOverflow", options: { boundary, altAxis: true, padding } },
         ],
     });
-
+    
     const classes = useStyles();
     const arrowClassName = clsx(classes.arrow, classes[getArrowPlacementRule(attributes)]);    
 
@@ -89,6 +97,22 @@ export const Tooltip: FC<TooltipProps> = props => {
         </div>
     );
 };
+
+/** @internal */
+export function isTooltipElement(node: Node | null | undefined): node is HTMLElement {
+    return !!node && TOOLTIP_NODES.has(node);
+}
+
+/** @internal */
+export function getTooltipElement(node: Node | null | undefined): HTMLElement | null {
+    if (isTooltipElement(node)) {
+        return node;
+    } else if (node) {
+        return getTooltipElement(node.parentElement);
+    } else {
+        return null;
+    }
+}
 
 const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
     root: {
@@ -147,3 +171,5 @@ const getArrowPlacementRule = (
     }
     return "arrowTop";
 };
+
+const TOOLTIP_NODES = new WeakSet<Node>();
