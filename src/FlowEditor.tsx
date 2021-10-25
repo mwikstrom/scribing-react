@@ -293,7 +293,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Tooltip manager
     const tooltipManager = useMemo(() => new TooltipManager(), []);
-    useEffect(() => tooltipManager.editingHost.pub(editingHost), [tooltipManager, editingHost]);
+    useEffect(() => {
+        if (editingHost && activeElement && (editingHost === activeElement || editingHost.contains(activeElement))) {
+            tooltipManager.editingHost.pub(activeElement as HTMLElement);
+        } else {
+            tooltipManager.editingHost.pub(null);
+        }
+    }, [tooltipManager, editingHost, activeElement]);
 
     // Show contextual toolbar
     const showTools = useShowTools(tooltipManager);
