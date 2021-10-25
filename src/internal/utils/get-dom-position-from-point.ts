@@ -28,10 +28,10 @@ export function getDomPositionFromPoint(point: ClientPoint): DomPosition | null 
 
 interface DocumentExt {
     // Mozilla/Firefox only
-    caretPositionFromPoint?: (x: number, y: number) => CaretPosition;
+    caretPositionFromPoint?: (x: number, y: number) => CaretPosition | null;
 
     // All other modern browsers
-    caretRangeFromPoint?: (x: number, y: number) => AbstractRange;
+    caretRangeFromPoint?: (x: number, y: number) => Range | null;
 }
 
 interface CaretPosition {
