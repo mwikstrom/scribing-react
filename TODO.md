@@ -21,7 +21,6 @@ SCRIBING TODO
 - Moving down from inside nesting node does not place caret properly
 - Can baseline offset be applied without affecting height of line box?
 - Tool: Set list counter
-- Tool: Set reading direction
 - Tool: Set line height
 - Tool: Set font size
 - Tool: Set font family
