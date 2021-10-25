@@ -78,7 +78,22 @@ export const VerticalArrowHandler: KeyHandler = e => {
             continue;
         }
 
-        // TODO: Ignore nodes that are in the wrong direction
+        // Avoid ending up on the wrong side of a pilcrow.
+        const { parentNode } = node;
+        if (parentNode && getMappedFlowNode(parentNode) instanceof ParagraphBreak && offset === 1) {
+            offset = 0;
+        }
+
+        // Check that the discovered position is actually in the intended direction
+        const nodeRange = document.createRange();
+        nodeRange.setStart(node, offset);
+        nodeRange.setEnd(node, offset);
+        const nodeRect = nodeRange.getBoundingClientRect();
+        const distance = deltaY < 0 ? focusRect.top - nodeRect.bottom : nodeRect.top - focusRect.bottom;
+        if (distance <= 0) {
+            // Wrong/no distance
+            continue;
+        }
 
         // TODO: Fallback to non-text node
 
@@ -86,12 +101,6 @@ export const VerticalArrowHandler: KeyHandler = e => {
             // We're looking for a text node. This could be improved so that
             // we support other nodes too - but I'm too lazy for that now.
             continue;
-        }
-
-        // Avoid ending up on the wrong side of a pilcrow.
-        const { parentNode } = node;
-        if (parentNode && getMappedFlowNode(parentNode) instanceof ParagraphBreak && offset === 1) {
-            offset = 0;
         }
 
         // Extend selection or move caret
