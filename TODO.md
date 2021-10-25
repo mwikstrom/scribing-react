@@ -11,7 +11,6 @@ SCRIBING TODO
 - Show selection outline when non-caret selection is confined within a flow box
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
-- Tool: Set box variant
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy

@@ -23,6 +23,7 @@ import { DynamicExpressionButton } from "./DynamicExpressionButton";
 import { MoreToolsButton } from "./MoreToolsButton";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "../utils/make-jss-id";
+import { BoxVariantButton } from "./BoxVariantButton";
 
 /** @internal */
 export interface ToolbarProps {
@@ -33,11 +34,16 @@ export interface ToolbarProps {
 
 /** @internal */
 export const Toolbar: FC<ToolbarProps> = props => {
+    const { commands } = props;
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.line}>
-                <ParagraphVariantButton {...props}/>
+                {commands.isBox() ? (
+                    <BoxVariantButton {...props}/>
+                ) : (
+                    <ParagraphVariantButton {...props}/>
+                )}                
                 <ToolDivider/>
                 <ToolGroup>
                     <BoldButton {...props}/>

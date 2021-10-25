@@ -1,8 +1,9 @@
-import { ParagraphVariant, FlowColor } from "scribing";
+import { ParagraphVariant, FlowColor, BoxVariant } from "scribing";
 
 /** @public */
 export interface FlowLocale extends 
 Record<ParagraphVariantLocaleKey, string>, 
+Record<BoxVariantLocaleKey, string>, 
 Record<ColorLocaleKey, string> {
     hold_ctrl_key_to_enable_interaction: string;
     script_error: string;
@@ -23,6 +24,9 @@ Record<ColorLocaleKey, string> {
 
 /** @public */
 export type ParagraphVariantLocaleKey = `paragraph_variant_${ParagraphVariant}`;
+
+/** @public */
+export type BoxVariantLocaleKey = `box_variant_${BoxVariant}`;
 
 /** @public */
 export type ColorLocaleKey = `color_${FlowColor}`;
@@ -63,11 +67,21 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     ltr_reading_direction: "Left-to-right reading direction",
     rtl_reading_direction: "Right-to-left reading direction",
     full_width_box: "Full width box",
+    box_variant_basic: "Basic",
+    box_variant_contained: "Contained",
+    box_variant_outlined: "Outlined",
+    box_variant_alert: "Alert",
+    box_variant_quote: "Quote",
 });
 
 /** @public */
 export function getParagraphVariantLocaleKey(variant: ParagraphVariant): ParagraphVariantLocaleKey {
     return `paragraph_variant_${variant}`;
+}
+
+/** @public */
+export function getBoxVariantLocaleKey(variant: BoxVariant): BoxVariantLocaleKey {
+    return `box_variant_${variant}`;
 }
 
 /** @public */
