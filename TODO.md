@@ -12,7 +12,6 @@ SCRIBING TODO
 - Tool: Insert box
 - Tool: Set box variant
 - Tool: Toggle inline box
-- List indent shall depend on paragraph alignment AND reading direction
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy

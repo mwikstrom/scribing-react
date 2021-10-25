@@ -1,7 +1,8 @@
 import jss, { JssStyle } from "jss";
-import { ListMarkerKind, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
+import { ListMarkerKind, OrderedListMarkerKindType, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
 import { FlowPalette } from "../FlowPalette";
 import { makeDynamicJssId } from "./make-jss-id";
+import { listIndent } from "./paragraph-style-to-classes";
 import { getTextStyleClassProperites } from "./text-style-to-classes";
 import { getTextCssProperties } from "./text-style-to-css";
 
@@ -30,10 +31,13 @@ export const getListMarkerClass = (
     const marker: JssStyle = {
         ...getTextCssProperties(text),
         ...getTextStyleClassProperites(text, palette),
+        display: "inline-block",
+        minWidth: listIndent(1),
+        textAlign: "end",
     };
     const li: JssStyle = {
         counterIncrement: hide ? "none" : getListCounterName(level),        
-        "&::marker": marker,
+        "&::before": marker,
     };
 
     const continueCounter = (
@@ -45,15 +49,13 @@ export const getListMarkerClass = (
     }
 
     if (hide) {
-        li.listStyleType = "none";
+        marker.content ="''";
     } else if (isCounterKind(kind)) {
         marker.whiteSpace = "pre";
         marker.content = `'${prefix}' counter(${counterName}, ${counterStyle}) '${suffix}'`;
-    } else if (kind === "dash") {
-        marker.whiteSpace = "pre";
-        marker.content = "'-  '";
     } else {
-        li.listStyleType = getListCounterStyle(kind, level);
+        marker.whiteSpace = "pre";
+        marker.content = `'${getBullet(kind, level)}  '`;
     }
 
     const cacheKey = JSON.stringify(li);
@@ -85,12 +87,27 @@ export const isCounterKind = (kind: ListMarkerKind): boolean => (
 
 /** @internal */
 export const getListCounterStyle = (kind: ListMarkerKind, level: number): string => {
-    if (kind === "unordered") {
-        return ["disc", "circle", "square"][(level - 1) % 3];
-    } else if (kind === "ordered") {
-        return ["decimal", "lower-alpha", "lower-roman"][(level - 1) % 3];
-    } else {
+    if (kind === "ordered") {
+        return (["decimal", "lower-alpha", "lower-roman"] as const)[(level - 1) % 3];
+    } else if (OrderedListMarkerKindType.test(kind)) {
         return kind;
+    } else {
+        return "decimal";
+    }
+};
+
+/** @internal */
+export const getBullet = (kind: ListMarkerKind, level: number): string => {
+    if (kind === "unordered") {
+        kind =  (["disc", "circle", "square"] as const)[(level - 1) % 3];
+    }
+
+    switch (kind) {
+    case "circle": return "⚬";
+    case "dash": return "-";
+    case "square": return "▪";
+    default:
+    case "disc": return "•";
     }
 };
 

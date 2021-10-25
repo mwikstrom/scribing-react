@@ -34,7 +34,7 @@ export type ParagraphStyles = Styles<ParagraphStyleRule>;
 export type ParagraphStyleClasses = Classes<ParagraphStyleRule>;
 
 /** @internal */
-export const LIST_LEVEL_INDENT_SIZE = 1.5;
+export const LIST_LEVEL_INDENT_SIZE = 2;
 
 /** @internal */
 export const listIndent = (level: number): string => toRem(level * LIST_LEVEL_INDENT_SIZE);
@@ -53,34 +53,34 @@ export const PARAGRAPH_STYLE_CLASSES: ParagraphStyles = {
     h5: {},
     h6: {},
     li: {
-        display: "list-item",
+        textIndent: listIndent(-1),
     },
     li1: {
-        marginLeft: listIndent(1),
+        paddingInlineStart: listIndent(1),
     },
     li2: {
-        marginLeft: listIndent(2),
+        paddingInlineStart: listIndent(2),
     },
     li3: {
-        marginLeft: listIndent(3),
+        paddingInlineStart: listIndent(3),
     },
     li4: {
-        marginLeft: listIndent(4),
+        paddingInlineStart: listIndent(4),
     },
     li5: {
-        marginLeft: listIndent(5),
+        paddingInlineStart: listIndent(5),
     },
     li6: {
-        marginLeft: listIndent(6),
+        paddingInlineStart: listIndent(6),
     },
     li7: {
-        marginLeft: listIndent(7),
+        paddingInlineStart: listIndent(7),
     },
     li8: {
-        marginLeft: listIndent(8),
+        paddingInlineStart: listIndent(8),
     },
     li9: {
-        marginLeft: listIndent(9),
+        paddingInlineStart: listIndent(9),
     },
 };
 
