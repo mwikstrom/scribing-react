@@ -49,6 +49,7 @@ export const VerticalArrowHandler: KeyHandler = e => {
 
     for (let i = 1; i < 20; ++i) {
         const clientY = startY + i * deltaY;
+        // TODO: This may select a position within a popper window. We don't want that!
         const domPos = getDomPositionFromPoint({ clientX, clientY });
 
         if (!domPos) {
