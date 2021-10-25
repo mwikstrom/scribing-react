@@ -3,6 +3,7 @@ import {
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
+    ParagraphBreak, 
     TextStyle
 } from "scribing";
 import { FlowView } from "./FlowView";
@@ -27,6 +28,9 @@ import { FlowEditorCommands } from "./internal/FlowEditorCommands";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-selection-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
+import { getMappedFlowNode } from "./internal/mapping/flow-node";
+import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
+import { getEditingHost } from "./internal/utils/get-editing-host";
 
 /**
  * Component props for {@link FlowEditor}
@@ -318,6 +322,32 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             }
         }            
     }, [editingHost, state, documentHasFocus]);
+
+    // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
+    useNativeEventHandler(editingHost, "mousedown", (e: MouseEvent) => {
+        if (editingHost) {
+            const domPos = getDomPositionFromPoint(e);
+            if (domPos) {
+                const { node, offset } = domPos;
+                const { parentNode } = node;
+                if (parentNode) {
+                    const mapped = getMappedFlowNode(parentNode);
+                    if (mapped instanceof ParagraphBreak && offset === 1) {
+                        // At this point we've detected that the new caret position (after mouse down)
+                        // will be on the wrong side of a pilcrow (outside the paragraph). We'll
+                        // therefore explicitly adjust the selection so that the caret ends up on
+                        // the right side instead.
+                        const domSelection = document.getSelection();
+                        if (domSelection) {
+                            domSelection.setBaseAndExtent(node, 0, node, 0);
+                            getEditingHost(node)?.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            }
+        }
+    }, [editingHost, state, applyChange], { capture: true });
 
     const classes = useStyles();
     return (

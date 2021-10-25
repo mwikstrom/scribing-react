@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- Clicking outside of paragraph shall place caret inside paragraph (before/after pilcrow depending on reading direction)
-  USE: https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
 - Don't show empty trailing para in flow-box?!
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
@@ -12,6 +10,7 @@ SCRIBING TODO
 - Show selection outline when non-caret selection is confined within a flow box
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
+- Moving up/down may place caret on wrong side of pilcrow
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
