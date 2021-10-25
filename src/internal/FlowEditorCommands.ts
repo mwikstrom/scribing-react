@@ -299,6 +299,14 @@ export class FlowEditorCommands {
     // TODO: listCounterPrefix
     // TODO: listCounterSuffix
 
+    getReadingDirection(): ParagraphStyleProps["direction"] {
+        return this.getParagraphStyle().get("direction");
+    }
+
+    setReadingDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void {
+        this.formatParagraph("direction", value);
+    }
+
     toggleTextStyle(key: BooleanTextStyleKeys): void {
         this.formatText(key, !this.getTextStyle().get(key));
     }

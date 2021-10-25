@@ -1,13 +1,20 @@
 import Icon from "@mdi/react";
 import React, { FC, useCallback, useState } from "react";
 import { ToolButton } from "./ToolButton";
-import { mdiDotsVertical, mdiCheck, mdiFunctionVariant, mdiFormatPilcrow } from "@mdi/js";
+import {
+    mdiDotsVertical,
+    mdiCheck, 
+    mdiFunctionVariant, 
+    mdiFormatPilcrow, 
+    mdiFormatTextdirectionLToR, 
+    mdiFormatTextdirectionRToL,
+} from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
-import { DynamicText } from "scribing";
+import { DynamicText, ParagraphStyleProps } from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
@@ -19,6 +26,14 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
+    const setReadingDirection = useCallback((value: Exclude<ParagraphStyleProps["direction"], undefined>) => {
+        commands.setReadingDirection(value);
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -51,6 +66,25 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         <Icon path={mdiFunctionVariant} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.insert_dynamic_text}&hellip;
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuDivider/>
+                    <ToolMenuItem onClick={setReadingDirection.bind(void(0), "ltr")}>
+                        <Icon
+                            path={commands.getReadingDirection() === "ltr" ? mdiCheck : mdiFormatTextdirectionLToR}
+                            size={0.75}
+                        />
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.ltr_reading_direction}
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuItem onClick={setReadingDirection.bind(void(0), "rtl")}>
+                        <Icon
+                            path={commands.getReadingDirection() === "rtl" ? mdiCheck : mdiFormatTextdirectionRToL}
+                            size={0.75}
+                        />
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.rtl_reading_direction}
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>

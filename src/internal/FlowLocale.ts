@@ -16,6 +16,8 @@ Record<ColorLocaleKey, string> {
     enter_script: string;
     show_formatting_marks: string;
     insert_dynamic_text: string;
+    ltr_reading_direction: string;
+    rtl_reading_direction: string;
 }
 
 /** @public */
@@ -57,6 +59,8 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     enter_script: "Enter script expression or statement block",
     show_formatting_marks: "Show formatting marks",
     insert_dynamic_text: "Insert dynamic text",
+    ltr_reading_direction: "Left-to-right reading direction",
+    rtl_reading_direction: "Right-to-left reading direction",
 });
 
 /** @public */
