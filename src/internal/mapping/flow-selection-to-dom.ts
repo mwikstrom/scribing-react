@@ -59,11 +59,12 @@ export function mapFlowSelectionToDom(
             domSelection.setBaseAndExtent(domAnchor.node, domAnchor.offset, domFocus.node, domFocus.offset);
             mapped = true;
         }
-    } else if (flowSelection) {
-        console.warn("Unsupported flow selection type");
     }
 
     if (!mapped) {
         domSelection.removeAllRanges();
+        if (flowSelection) {
+            console.warn("Unmappable flow selection", flowSelection);
+        }
     }
 }

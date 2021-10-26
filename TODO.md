@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Appending text to trailing paragraph causes caret to disappear
 - Don't show empty trailing para in flow-box?!
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea

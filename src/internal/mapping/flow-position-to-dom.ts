@@ -16,7 +16,16 @@ export const mapFlowPositionToDom = (
     for (let i = 0; i < childNodes.length; ++i) {
         const node = childNodes.item(i);
         const size = getFlowSizeFromDomNode(node);
-        if (position > size || (!preferNested && position === size)) {
+        if (
+            i < (childNodes.length - 1) &&
+            (
+                position > size || 
+                (
+                    !preferNested && 
+                    position === size
+                )
+            )
+        ) {
             position -= size;
         } else {
             const mapped = mapFlowPositionToDomCore(position, node, preferNested);
