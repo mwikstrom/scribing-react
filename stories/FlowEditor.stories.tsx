@@ -320,6 +320,28 @@ LinkStates.args = {
     ])),
 };
 
+export const FullWidthBox = Template.bind({});
+FullWidthBox.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        { box: ["Inside"], style: { variant: "outlined", inline: false } },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])).set("formattingMarks", true),
+};
+
+export const FullWidthBoxWithoutParaBreaks = Template.bind({});
+FullWidthBoxWithoutParaBreaks.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { box: ["Inside"], style: { variant: "outlined", inline: false } },
+        "After",
+        { break: "para" },
+    ])).set("formattingMarks", true),
+};
+
 export const BoxVariants = Template.bind({});
 BoxVariants.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue(

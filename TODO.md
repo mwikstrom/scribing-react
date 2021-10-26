@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Paragraph break mark after block level flow box shall be displayed after the block -- not take up a separate line
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - Down arrow can place caret after last pilcrow
 - Inserting pilcrow at end of flow box places caret after the new pilcrow
