@@ -1,4 +1,3 @@
-import { MutableRefObject } from "react";
 import { FlowEditorState, FlowOperation } from "scribing";
 import { PendingOperation } from "./PendingOperation";
 
