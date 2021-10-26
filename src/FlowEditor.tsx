@@ -119,9 +119,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const stopMergeUndoTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Handle new state or operation
-    const applyChange = useCallback((result: FlowOperation | FlowEditorState | null): FlowEditorState => {
+    const applyChange = useCallback((
+        result: FlowOperation | FlowEditorState | null, 
+        base: FlowEditorState = state
+    ): FlowEditorState => {
         const { current: mergeUndo } = shouldMergeUndo;
-        let base = state;
         let after: FlowEditorState;
         let operation: FlowOperation | null;
         let didApplyMine = false;
@@ -218,7 +220,15 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 completePendingTimeout.current = setTimeout(() => applyChange(null), 500);
             } else {
                 event.preventDefault();
-                applyChange(result);
+                if (Array.isArray(result)) {
+                    let base = state;
+                    for (const item of result) {
+                        const change = typeof item === "function" ? item(base) : item;
+                        base = applyChange(change, base);
+                    }
+                } else {
+                    applyChange(result);
+                }
             }
         } catch (err) {
             event.preventDefault();

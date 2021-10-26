@@ -1,6 +1,7 @@
 import { deleteContent } from "./delete-content";
 import { InputHandler } from "./InputHandler";
 import { insertContent } from "./insert-content";
+import { insertParagraph } from "./insert-paragraph";
 import { insertText } from "./insert-text";
 import { toggleTextStyle } from "./toggle-text-style";
 
@@ -23,7 +24,7 @@ const HANDLERS: Partial<Record<string, InputHandler>> = {
     // TODO: insertFromPasteAsQuotation: insertContent,
     insertFromYank: insertContent,
     insertLineBreak: insertContent,
-    insertParagraph: insertContent,
+    insertParagraph: insertParagraph,
     insertReplacementText: insertContent,
     insertText: insertText,
     insertTranspose: insertContent,

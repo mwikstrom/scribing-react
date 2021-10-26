@@ -7,4 +7,15 @@ export type InputHandler = (
     host: HTMLElement,
     state: FlowEditorState,
     pending: PendingOperation | null,
-) => FlowOperation | FlowEditorState | PendingOperation | null;
+) => (
+    FlowOperation | 
+    FlowEditorState | 
+    PendingOperation | 
+    null |
+    (
+        FlowOperation |
+        FlowEditorState |
+        null |
+        ((state: FlowEditorState) => FlowOperation | FlowEditorState | null)
+    )[]
+);
