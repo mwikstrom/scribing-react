@@ -1,5 +1,4 @@
-import { ArrowBackHandler } from "./ArrowBackHandler";
-import { ArrowForwardHandler } from "./ArrowForwardHandler";
+import { ArrowHandler } from "./ArrowHandler";
 import { BackspaceHandler } from "./BackspaceHandler";
 import { EndHandler } from "./EndHandler";
 import { KeyHandler } from "./KeyHandler";
@@ -9,11 +8,9 @@ import { SetParagraphStyleHandler } from "./SetParagraphStyleHandler";
 import { TabHandler } from "./TabHandler";
 import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
-import { VerticalArrowHandler } from "./VerticalArrowHandler";
 
 const ALL_HANDLERS = [
-    ArrowBackHandler,
-    ArrowForwardHandler,
+    ArrowHandler,
     BackspaceHandler,
     EndHandler,
     RedoHandler,
@@ -22,7 +19,6 @@ const ALL_HANDLERS = [
     TabHandler,
     ToggleFormattingMarksHandler,
     UndoHandler,
-    VerticalArrowHandler,
 ];
 
 export const handleKeyEvent: KeyHandler = (e, state) => {

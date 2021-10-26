@@ -1,9 +1,7 @@
 SCRIBING TODO
 =============
-- Vertical key handler does not scroll caret into view
-- Moving down from within muli-para inline flow box places caret before box.
-- Cannot move right out of multi-para inline flow box
-- Moving right into multi-para inline flow box places caret at the top instead of closest line
+- Arrow key handler shall scroll selection into view if needed
+- Horizontal arrow key handler must support moving to prev/next line
 - Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
 - Deleting backward from trailing paragraph can place caret after pilcrow
 - Cannot unformat italic from quote box
