@@ -1,4 +1,5 @@
 import { TextRun } from "scribing";
+import { getNextDomNode } from "../utils/dom-traversal";
 import { isMappedTemplateNode } from "./dom-node";
 import { getMappedFlowAxis, NestedFlowPosition } from "./flow-axis";
 import { isMappedEditingHost } from "./flow-editing-host";
@@ -157,18 +158,3 @@ export const mapDomPositionToFlow = (
 
     return [offset, ...nested];
 };
-
-function getNextDomNode(node: Node): Node | null {
-    const { nextSibling } = node;
-    
-    if (nextSibling != null) {
-        return nextSibling;
-    }
-
-    const { parentNode } = node;
-    if (parentNode != null) {
-        return getNextDomNode(parentNode);
-    }
-
-    return null;
-}

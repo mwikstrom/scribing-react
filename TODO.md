@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Moving left/right over pilcrow inside flow box causes caret to disappear
 - Appending text to trailing paragraph causes caret to disappear
 - Double press CTRL + period shall select entire innermost flow box (press again to select next outer box)
 - Show selection outline when non-caret selection is confined within a flow box

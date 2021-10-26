@@ -1,4 +1,5 @@
 import { FlowSelection, FlowRangeSelection, NestedFlowSelection } from "scribing";
+import { getNextDomNode } from "../utils/dom-traversal";
 import { getMappedFlowAxis } from "./flow-axis";
 import { mapFlowPositionToDom } from "./flow-position-to-dom";
 
@@ -19,14 +20,20 @@ export function mapFlowSelectionToDom(
 
         const { node, offset } = parent;
 
-        if (node.nodeType !== Node.TEXT_NODE) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const textLength = (node.nodeValue ?? "").length;
+            container = node.parentNode ?? node;
+            if (offset >= textLength) {
+                const nextNode = getNextDomNode(node);
+                if (nextNode) {
+                    container = nextNode;
+                }
+            }
+        } else if (offset >= 0 && offset < node.childNodes.length) {
             container = node.childNodes.item(offset);
-        } else if (node.parentNode === null) {
-            break;
         } else {
-            container = node.parentNode;
+            container = node;
         }
-
 
         let axis = getMappedFlowAxis(container);
         while (axis === null && container.parentNode !== null) {
@@ -36,7 +43,7 @@ export function mapFlowSelectionToDom(
 
         const inner = axis?.getInnerSelection(flowSelection);
         if (!inner) {
-            console.warn("Unmapped nested flow axis");
+            console.warn("Unmapped nested flow axis", axis, "for selection", flowSelection);
             flowSelection = null;
             break;
         }
