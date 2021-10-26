@@ -1,10 +1,10 @@
 SCRIBING TODO
 =============
-- Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
-- Deleting backward from trailing paragraph can place caret after pilcrow
 - Moving down from within muli-para inline flow box places caret before box.
 - Cannot move right out of multi-para inline flow box
 - Moving right into multi-para inline flow box places caret at the top instead of closest line
+- Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
+- Deleting backward from trailing paragraph can place caret after pilcrow
 - Cannot unformat italic from quote box
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - New Ops: Wrap + Unwrap
