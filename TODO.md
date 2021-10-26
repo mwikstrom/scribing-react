@@ -1,5 +1,7 @@
 SCRIBING TODO
 =============
+- Arrow left/right does not work in rich story title
+- Arrow handler does not support moving into empty paragraph
 - Arrow key handler shall scroll selection into view if needed
 - Horizontal arrow key handler must support moving to prev/next line
 - Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
