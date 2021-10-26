@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Down arrow can place caret after last pilcrow
 - Moving down from within muli-para inline flow box places caret before box.
 - Cannot move right out of multi-para inline flow box
 - Moving right into multi-para inline flow box places caret at the top instead of closest line

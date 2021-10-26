@@ -47,6 +47,8 @@ export const VerticalArrowHandler: KeyHandler = e => {
         return;
     }
 
+    e.preventDefault();
+
     const focusRange = document.createRange();
     focusRange.setStart(focusNode, focusOffset);
     focusRange.setEnd(focusNode, focusOffset);
@@ -132,8 +134,7 @@ export const VerticalArrowHandler: KeyHandler = e => {
         } else {
             domSelection.setBaseAndExtent(node, offset, node, offset);
         }
-
-        e.preventDefault();
-        return null;        
     }
+
+    return null;        
 };
