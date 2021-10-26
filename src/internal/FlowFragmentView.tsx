@@ -12,6 +12,7 @@ import { ParagraphThemeScope } from "./ParagraphThemeScope";
 export interface FlowFragmentViewProps {
     nodes: readonly FlowNode[];
     prevBreak?: ParagraphBreak | null;
+    emptyTrailingPara?: boolean;
 }
 
 /**
@@ -19,12 +20,12 @@ export interface FlowFragmentViewProps {
  * @internal
  */
 export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
-    const { nodes, prevBreak = null } = props;
+    const { nodes, prevBreak = null, emptyTrailingPara = false } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(
-        () => splitToParagraphs(nodes, theme, prevBreak),
-        [nodes, keyManager, theme, prevBreak]
+        () => splitToParagraphs(nodes, theme, prevBreak, emptyTrailingPara),
+        [nodes, keyManager, theme, prevBreak, emptyTrailingPara]
     );
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
@@ -45,6 +46,7 @@ const splitToParagraphs = (
     source: readonly FlowNode[],
     theme: FlowTheme,
     prevBreak: ParagraphBreak | null,
+    emptyTrailingPara: boolean,
 ): SplitParaProps[] => {
     const result: SplitParaProps[] = [];
     let children: FlowNode[] = [];
@@ -63,17 +65,19 @@ const splitToParagraphs = (
         }        
     }
 
-    // Append a virtual text node in the trailing para
-    if (children.length === 0) {
+    // Append a virtual text node in the trailing para?
+    if (children.length === 0 && emptyTrailingPara) {
         children.push(TextRun.fromData(""));
     }
 
-    result.push({
-        children,
-        breakNode: null,
-        prevBreak,
-        theme: theme.getParagraphTheme("normal"),
-    });
+    if (children.length > 0) {
+        result.push({
+            children,
+            breakNode: null,
+            prevBreak,
+            theme: theme.getParagraphTheme("normal"),
+        });
+    }
 
     return result;
 };

@@ -191,7 +191,6 @@ class FlowBoxContentAxis extends FlowAxis {
     }
 }
 
-// TODO: FIX !important rules -- should be part of theme?
 const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     ...boxStyles(palette),
     root: {

@@ -1,9 +1,10 @@
 SCRIBING TODO
 =============
-- Don't show empty trailing para in flow-box?!
 - Down arrow can place caret after last pilcrow
-- Special para theme for "inside box"? Or at least fix margin or first/last/single para
-- Formatting paragraph break with zero opacity is not generally a good idea
+- Inserting pilcrow at end of flow box places caret after the new pilcrow
+- Moving down from within muli-para inline flow box places caret before box.
+- Cannot move right out of multi-para inline flow box
+- Moving right into multi-para inline flow box places caret at the top instead of closest line
 - Paragraph break mark after block level flow box shall be displayed after the block -- not take up a separate line
 - Cannot unformat italic from quote box
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
