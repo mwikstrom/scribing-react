@@ -2,6 +2,7 @@ import { ParagraphBreak } from "scribing";
 import { getMappedFlowNode } from "../mapping/flow-node";
 import { getTooltipElement } from "../Tooltip";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
+import { getSelectionBounary } from "../utils/get-selection-bounary";
 import { getClientRectFromDomRange } from "../utils/get-virtual-selection-element";
 import { KeyHandler } from "./KeyHandler";
 
@@ -36,8 +37,13 @@ export const VerticalArrowHandler: KeyHandler = e => {
         return;
     }
 
-    const { focusNode, focusOffset } = domSelection;
-    if (!focusNode) {
+    const { anchorNode, anchorOffset, focusNode, focusOffset } = domSelection;
+    if (!anchorNode || !focusNode) {
+        return;
+    }
+
+    const boundaryNode = getSelectionBounary(anchorNode, anchorOffset);
+    if (!boundaryNode) {
         return;
     }
 
@@ -80,6 +86,11 @@ export const VerticalArrowHandler: KeyHandler = e => {
             continue;
         }
 
+        if (e.shiftKey && getSelectionBounary(node) !== boundaryNode) {
+            // Cannot extend selection cross boundary
+            continue;
+        }
+
         // Avoid ending up on the wrong side of a pilcrow.
         const { parentNode } = node;
         if (parentNode && getMappedFlowNode(parentNode) instanceof ParagraphBreak && offset === 1) {
@@ -117,8 +128,6 @@ export const VerticalArrowHandler: KeyHandler = e => {
 
         // Extend selection or move caret
         if (e.shiftKey) {
-            // TODO: When extending selection we must make sure that the focus point and anchor point
-            // are within the same flow, since we currently don't support multi-range selections.
             domSelection.extend(node, offset);
         } else {
             domSelection.setBaseAndExtent(node, offset, node, offset);
