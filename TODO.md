@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Don't show empty trailing para in flow-box?!
+- Down arrow can place caret after last pilcrow
 - Special para theme for "inside box"? Or at least fix margin or first/last/single para
 - Formatting paragraph break with zero opacity is not generally a good idea
 - Paragraph break mark after block level flow box shall be displayed after the block -- not take up a separate line
