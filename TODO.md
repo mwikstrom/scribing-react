@@ -1,11 +1,13 @@
 SCRIBING TODO
 =============
-- Adjust caret for pending baseline offset
+- When mapping flow position to dom position: prefer end of preceding text node
+- Baseline offset is broken in title paragraph variant
 - Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
 - Prefer end of existing text node when moving caret before pilcrow
 - Caret in empty para causes re-render loop
 - Fix pilcrow after full width flow box
 - Fix insert content after full width flow box
+- Adjust caret for pending baseline offset
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
 - Improve alert icon positioning (line-height)
