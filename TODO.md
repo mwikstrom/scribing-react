@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Cannot unformat italic from quote box
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
