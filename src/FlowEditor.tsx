@@ -336,10 +336,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
     // when caret is moved by the cursor
     useNativeEventHandler(editingHost, "mousedown", (e: MouseEvent) => {
-        if (!editingHost) {
-            return;
-        }
-
         const domPos = getDomPositionFromPoint(e);
         if (!domPos) {
             return;
@@ -368,7 +364,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 e.preventDefault();
             }
         }
-    }, [editingHost, state, applyChange], { capture: true });
+    }, [], { capture: true });
 
     const classes = useStyles();
     return (
