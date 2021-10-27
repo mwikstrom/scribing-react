@@ -2,7 +2,7 @@ CARET NAVIGATION
 ================
 - Cannot move into empty paragraph
 - Cannot place caret after flow box that is at the end of a paragraph
-- Prevent caret placed after pilcrow (try to unify that code)
+- Prevent caret placed after pilcrow when using arrow keys (and END key)
 
 SCRIBING TODO
 =============

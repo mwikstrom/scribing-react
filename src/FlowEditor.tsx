@@ -334,27 +334,38 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, documentHasFocus]);
 
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
+    // when caret is moved by the cursor
     useNativeEventHandler(editingHost, "mousedown", (e: MouseEvent) => {
-        if (editingHost) {
-            const domPos = getDomPositionFromPoint(e);
-            if (domPos) {
-                const { node, offset } = domPos;
-                const { parentNode } = node;
-                if (parentNode) {
-                    const mapped = getMappedFlowNode(parentNode);
-                    if (mapped instanceof ParagraphBreak && offset === 1) {
-                        // At this point we've detected that the new caret position (after mouse down)
-                        // will be on the wrong side of a pilcrow (outside the paragraph). We'll
-                        // therefore explicitly adjust the selection so that the caret ends up on
-                        // the right side instead.
-                        const domSelection = document.getSelection();
-                        if (domSelection) {
-                            domSelection.setBaseAndExtent(node, 0, node, 0);
-                            getEditingHost(node)?.focus();
-                            e.preventDefault();
-                        }
-                    }
-                }
+        if (!editingHost) {
+            return;
+        }
+
+        const domPos = getDomPositionFromPoint(e);
+        if (!domPos) {
+            return;
+        }
+
+        if (e.shiftKey) {
+            // Selection is extended - this is not a caret move operation
+            return;
+        }
+
+        const { node, offset } = domPos;
+        const { childNodes } = node;
+        if (
+            offset > 0 && 
+            childNodes.length === offset &&
+            getMappedFlowNode(childNodes.item(offset - 1)) instanceof ParagraphBreak
+        ) {
+            // At this point we've detected that the new caret position (after mouse down)
+            // will be on the wrong side of a pilcrow (outside the paragraph). We'll
+            // therefore explicitly adjust the selection so that the caret ends up on
+            // the right side instead.
+            const domSelection = document.getSelection();
+            if (domSelection) {
+                domSelection.setBaseAndExtent(node, offset - 1, node, offset - 1);
+                getEditingHost(node)?.focus();
+                e.preventDefault();
             }
         }
     }, [editingHost, state, applyChange], { capture: true });
