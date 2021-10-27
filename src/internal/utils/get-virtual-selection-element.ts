@@ -32,7 +32,7 @@ export function getVirtualSelectionElement(
     return new VirtualCaret(range);
 }
 
-export function getClientRectFromDomRange(range: Range): DOMRect {
+export function getClientRectFromDomCaret(range: Range): DOMRect {
     let rect = range.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0) {
         const tempNode = document.createTextNode("\ufeff");
@@ -47,6 +47,6 @@ class VirtualCaret {
     #range: Range;
     constructor(range: Range) { this.#range = range; }
     getBoundingClientRect(): DOMRect {
-        return getClientRectFromDomRange(this.#range);
+        return getClientRectFromDomCaret(this.#range);
     }
 }

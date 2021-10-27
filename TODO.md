@@ -1,6 +1,11 @@
 SCRIBING TODO
 =============
-- Insert ghost span to reflect caret style (for example exiting a super-baseline)
+- Adjust caret for pending baseline offset
+- Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
+- Prefer end of existing text node when moving caret before pilcrow
+- Caret in empty para causes re-render loop
+- Fix pilcrow after full width flow box
+- Fix insert content after full width flow box
 - New Ops: Wrap + Unwrap
 - Tool: Insert box
 - Improve alert icon positioning (line-height)

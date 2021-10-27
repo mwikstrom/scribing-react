@@ -1,16 +1,19 @@
 import { FlowSelection, FlowRangeSelection, NestedFlowSelection } from "scribing";
 import { getNextDomNode } from "../utils/dom-traversal";
 import { getMappedFlowAxis } from "./flow-axis";
-import { mapFlowPositionToDom } from "./flow-position-to-dom";
+import { DomPosition, mapFlowPositionToDom } from "./flow-position-to-dom";
+
+/** @internal */
+export interface DomRange {
+    anchor: DomPosition;
+    focus: DomPosition;
+}
 
 /** @internal */
 export function mapFlowSelectionToDom(
     flowSelection: FlowSelection | null,
     container: Node,
-    domSelection: Selection,
-): void {
-    let mapped = false;
-
+): DomRange | null {
     while (flowSelection instanceof NestedFlowSelection) {
         const parent = mapFlowPositionToDom(flowSelection.position, container, true);
         
@@ -56,15 +59,32 @@ export function mapFlowSelectionToDom(
         const domAnchor = mapFlowPositionToDom(range.anchor, container);
         const domFocus = range.isCollapsed ? domAnchor : mapFlowPositionToDom(range.focus, container);
         if (domAnchor && domFocus) {
-            domSelection.setBaseAndExtent(domAnchor.node, domAnchor.offset, domFocus.node, domFocus.offset);
-            mapped = true;
+            return { anchor: domAnchor, focus: domFocus };
         }
     }
 
-    if (!mapped) {
+    if (flowSelection) {
+        console.warn("Unmappable flow selection", flowSelection);
+    }
+
+    return null;
+}
+
+/** @internal */
+export function applyFlowSelectionToDom(
+    flowSelection: FlowSelection | null,
+    container: Node,
+    domSelection: Selection,
+): void {
+    const mapped = mapFlowSelectionToDom(flowSelection, container);
+    if (mapped) {
+        domSelection.setBaseAndExtent(
+            mapped.anchor.node,
+            mapped.anchor.offset,
+            mapped.focus.node,
+            mapped.focus.offset
+        );
+    } else {
         domSelection.removeAllRanges();
-        if (flowSelection) {
-            console.warn("Unmappable flow selection", flowSelection);
-        }
     }
 }

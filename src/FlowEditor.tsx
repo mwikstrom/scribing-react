@@ -1,5 +1,6 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
+    FlowColor,
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
@@ -9,12 +10,11 @@ import { FlowView } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
 import { mapDomSelectionToFlow } from "./internal/mapping/dom-selection-to-flow";
-import { mapFlowSelectionToDom } from "./internal/mapping/flow-selection-to-dom";
+import { applyFlowSelectionToDom } from "./internal/mapping/flow-selection-to-dom";
 import { getInputHandler } from "./internal/input-handlers";
 import { setupEditingHostMapping } from "./internal/mapping/flow-editing-host";
 import { isEditingSupported } from "./internal/utils/is-editing-supported";
-import { createUseStyles } from "react-jss";
-import { makeJssId } from "./internal/utils/make-jss-id";
+import { createUseFlowStyles } from "./internal/JssTheming";
 import { EditMode, EditModeScope } from "./internal/EditModeScope";
 import { FormattingMarksScope } from "./internal/FormattingMarksScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
@@ -24,12 +24,13 @@ import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorCommands } from "./internal/FlowEditorCommands";
-import { getVirtualSelectionElement } from "./internal/utils/get-virtual-selection-element";
+import { getClientRectFromDomCaret, getVirtualSelectionElement } from "./internal/utils/get-virtual-selection-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
 import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition } from "./internal/utils/set-caret-position";
+import clsx from "clsx";
 
 /**
  * Component props for {@link FlowEditor}
@@ -60,6 +61,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         style,
         onStateChange,
     } = props;
+
+    // JSS classes
+    const classes = useStyles();
     
     // Setup controlled/uncontrolled state
     const [state, setState] = useControllable({
@@ -235,14 +239,60 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [state, editingHost, applyChange]);
 
-    // Handle native "selectionchange"
-    useNativeEventHandler(document, "selectionchange", () => {
+    // The caret element
+    const [caretSteady, setCaretSteady] = useState(false);
+    const [caretRect, setCaretRect] = useState<DOMRect | null>(null);
+
+    // Apply caret class
+    const caretClass = useMemo(() => {
+        const style = (
+            state.selection?.getUniformTextStyle(state.content, state.theme) ?? TextStyle.empty
+        ).merge(state.caret);
+        const { bold, italic, color } = style;
+        return clsx(
+            classes.caret,
+            classes[getCaretColorRule(color)],
+            editMode !== true && classes.noCaret,
+            caretSteady && classes.steadyCaret,
+            bold && classes.boldCaret,
+            italic && classes.italicCaret,
+        );
+    }, [state, caretSteady, editMode]);
+
+    // Apply caret position, size and visibility
+    const caretStyle = useMemo<CSSProperties>(() => {
+        if (caretRect) {
+            const { left, top, height } = caretRect;
+            return { visibility: "visible", left, top, height };
+        } else {
+            return { visibility: "hidden" };
+        }
+    }, [caretRect]);
+
+    // Caret becomes steady after remaining at the same position for 500 ms
+    useEffect(() => {
+        if (!caretSteady) {
+            const timer = setTimeout(() => setCaretSteady(true), 500);
+            return () => clearTimeout(timer);
+        }
+    }, [caretSteady, setCaretSteady]);
+
+    // Keep track of DOM selection
+    const [domSelectionChange, setDomSelectionChange] = useState(0);
+    useNativeEventHandler(
+        document, 
+        "selectionchange", 
+        () => setDomSelectionChange(before => before + 1),
+        [],
+    );
+    useEffect(() => {
         if (!editingHost || pendingOperation.current !== null) {
             return;
         }
 
         const domSelection = document.getSelection();
         if (!isSelectionInside(editingHost, domSelection)) {
+            setCaretRect(null);
             return;
         }
 
@@ -255,6 +305,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     return;
                 }
             }
+        }
+
+        setCaretSteady(false);
+        if (domSelection && domSelection.isCollapsed && domSelection.rangeCount > 0) {
+            setCaretRect(getClientRectFromDomCaret(domSelection.getRangeAt(0)));
+        } else {
+            setCaretRect(null);
         }
 
         const mapped = mapDomSelectionToFlow(domSelection, editingHost);
@@ -276,7 +333,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         setState(after);
-    }, [editingHost, state, onStateChange]);
+    }, [domSelectionChange, editingHost, state, onStateChange]);
    
     // Keep DOM selection in sync with editor selection
     useLayoutEffect(() => {
@@ -295,7 +352,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        mapFlowSelectionToDom(state.selection, editingHost, domSelection);
+        applyFlowSelectionToDom(state.selection, editingHost, domSelection);
     }, [editingHost, state]); // Yes, it depends on `state` -- not just `state.selection`
 
     // Ensure that caret selection stays inside the scrollable viewport after content is changed
@@ -363,7 +420,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [], { capture: true });
 
-    const classes = useStyles();
     return (
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
@@ -374,7 +430,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                         style={style}
                         contentEditable={editMode !== false}
                         suppressContentEditableWarning={true}
-                        children={<FlowView content={state.content}/>}
+                        children={(
+                            <>
+                                <FlowView content={state.content}/>
+                                <span className={caretClass} style={caretStyle}/>
+                            </>
+                        )}
                     />
                 </FormattingMarksScope>
             </EditModeScope>
@@ -382,11 +443,63 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     );
 };
 
-const useStyles = createUseStyles({
+const useStyles = createUseFlowStyles("FlowEditor", ({palette}) => ({
     root: {
         outline: "none",
         padding: "0 0.75rem",
+        caretColor: "transparent",
     },
-}, {
-    generateId: makeJssId("FlowEditor"),
-});
+    caret: {
+        position: "absolute",
+        backgroundColor: "currentcolor",
+        width: 2,
+        marginLeft: -1,
+    },
+    noCaret: {
+        display: "none",
+    },
+    boldCaret: {
+        width: 3,
+    },
+    italicCaret: {
+        transform: "rotate(10deg)",
+    },
+    steadyCaret: {
+        animationName: "$blink",
+        animationDuration: "1060ms",
+        animationTimingFunction: "linear",
+        animationIterationCount: "infinite",
+    },
+    defaultCaretColor: {
+        color: palette.text,
+    },
+    subtleCaretColor: {
+        color: palette.subtle,
+    },
+    primaryCaretColor: {
+        color: palette.primary,
+    },
+    secondaryCaretColor: {
+        color: palette.secondary,
+    },
+    successCaretColor: {
+        color: palette.success,
+    },
+    informationCaretColor: {
+        color: palette.information,
+    },
+    warningCaretColor: {
+        color: palette.warning,
+    },
+    errorCaretColor: {
+        color: palette.error,
+    },
+    "@keyframes blink": {
+        "0%": { opacity: 0 },
+        "50%": { opacity: 0 },
+        "51%": { opacity: 1 },
+        "100%": { opacity: 1 },
+    },
+}));
+
+const getCaretColorRule = (color: FlowColor = "default") => `${color}CaretColor` as const;
