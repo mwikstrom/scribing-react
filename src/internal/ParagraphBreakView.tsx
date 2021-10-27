@@ -39,6 +39,6 @@ const useStyles = createUseFlowStyles("ParagraphBreak", ({palette}) => ({
         opacity: 0.5,
     },
     hidden: {
-        display: "none",
+        opacity: 0,
     },
 }));

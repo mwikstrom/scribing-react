@@ -1,7 +1,6 @@
 CARET NAVIGATION
 ================
 - Cannot move into empty paragraph
-- Cannot place caret after flow box that is at the end of a paragraph
 
 SCRIBING TODO
 =============
