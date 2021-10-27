@@ -28,6 +28,7 @@ export const ParagraphBreakView = flowNode<ParagraphBreak>((_, ref) => {
             className={className}
             style={css}
             children={"¶"}
+            contentEditable={false}
         />
     );
 });
@@ -39,6 +40,5 @@ const useStyles = createUseFlowStyles("ParagraphBreak", ({palette}) => ({
     },
     hidden: {
         display: "none",
-        opacity: 0,
     },
 }));

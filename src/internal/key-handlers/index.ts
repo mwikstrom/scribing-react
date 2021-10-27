@@ -1,4 +1,3 @@
-import { ArrowHandler } from "./ArrowHandler";
 import { BackspaceHandler } from "./BackspaceHandler";
 import { EndHandler } from "./EndHandler";
 import { KeyHandler } from "./KeyHandler";
@@ -10,7 +9,6 @@ import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
 
 const ALL_HANDLERS = [
-    ArrowHandler,
     BackspaceHandler,
     EndHandler,
     RedoHandler,

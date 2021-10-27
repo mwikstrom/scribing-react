@@ -1,9 +1,11 @@
+CARET NAVIGATION
+================
+- Cannot move into empty paragraph
+- Cannot place caret after flow box that is at the end of a paragraph
+- Prevent caret placed after pilcrow (try to unify that code)
+
 SCRIBING TODO
 =============
-- Arrow left/right does not work in rich story title
-- Arrow handler does not support moving into empty paragraph
-- Arrow key handler shall scroll selection into view if needed
-- Horizontal arrow key handler must support moving to prev/next line
 - Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
 - Deleting backward from trailing paragraph can place caret after pilcrow
 - Cannot unformat italic from quote box
