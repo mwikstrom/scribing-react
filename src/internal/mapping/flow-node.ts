@@ -8,7 +8,7 @@ export const setupFlowNodeMapping = (
 ): void => void(MAP.set(dom, flow));
 
 /** @internal */
-export const getMappedFlowNode = (node: Node): FlowNode | null => MAP.get(node) ?? null;
+export const getMappedFlowNode = (node: Node | null): FlowNode | null => node ? MAP.get(node) ?? null : null;
 
 /** @internal */
 export const isMappedFlowNode = (node: Node): boolean => MAP.has(node);

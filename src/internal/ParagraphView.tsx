@@ -61,15 +61,16 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
         childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
             [...childNodes, TextRun.fromData(" ")] : childNodes
     ), [childNodes]);
-    const nodesWithLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
+    const nodesAndLinks = useMemo(() => splitToLinks(adjustedNodes), [adjustedNodes]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
-            {nodesWithLinks.map(nodeOrLinkProps => (
+            {nodesAndLinks.map(nodeOrLinkProps => (
                 nodeOrLinkProps instanceof FlowNode ? (
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps)}
                         node={nodeOrLinkProps}
+                        singleNodeInPara={nodesAndLinks.length === 1}
                     />
                 ) : (
                     <LinkView

@@ -1,11 +1,5 @@
-CARET NAVIGATION
-================
-- Cannot move into empty paragraph
-
 SCRIBING TODO
 =============
-- Prevent deletion of last pilcrow (or fix so that it doesn't place caret incorrectly)
-- Deleting backward from trailing paragraph can place caret after pilcrow
 - Cannot unformat italic from quote box
 - Insert ghost span to reflect caret style (for example exiting a super-baseline)
 - New Ops: Wrap + Unwrap
