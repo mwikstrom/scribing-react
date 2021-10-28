@@ -22,7 +22,7 @@ import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorCommands } from "./internal/FlowEditorCommands";
-import { getVirtualCaretElement } from "./internal/utils/get-virtual-caret-element";
+import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
@@ -313,7 +313,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useEffect(() => {
         const domSelection = document.getSelection();
         if (editingHost && domSelection && domSelection.isCollapsed && isSelectionInside(editingHost, domSelection)) {
-            const virtualElem = getVirtualCaretElement(domSelection);
+            const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
                 const rect = virtualElem.getBoundingClientRect();
                 if (rect.bottom > editingHost.clientHeight) {
@@ -347,7 +347,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             isSelectionInside(editingHost, domSelection, true) && 
             documentHasFocus
         ) {
-            const virtualElem = getVirtualCaretElement(domSelection);
+            const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
                 return showTools(virtualElem, new FlowEditorCommands(state, applyChange));
             }

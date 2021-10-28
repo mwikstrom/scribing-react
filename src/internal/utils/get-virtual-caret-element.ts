@@ -12,11 +12,11 @@ import { VirtualElement } from "@popperjs/core";
  * This function detects this case and tries to fix it by inserting a
  * "Zero Width Space" into the selection and then immediately removes it. 
  * 
- * NOTE: This hack can only be done when the seleciton is collapsed (= a caret)
+ * NOTE: This hack can only be done when the selection is collapsed (=a caret)
  * 
  * @internal
  */
-export function getVirtualCaretElement(
+export function getVirtualSelectionElement(
     selection: Selection | null = document.getSelection()
 ): VirtualElement | null {
     if (selection === null || selection.rangeCount !== 1) {
@@ -32,14 +32,15 @@ export function getVirtualCaretElement(
     return new VirtualCaret(range);
 }
 
-export function getClientRectFromDomCaret(range: Range): DOMRect {
+export function getClientRectFromDomRange(range: Range): DOMRect {
     let rect = range.getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0) {
+    if (rect.width === 0 && rect.height === 0 && range.collapsed) {
+        console.log(`x:${rect.x}, y:${rect.y}, w:${rect.width}, h:${rect.height}`);
         const tempNode = document.createTextNode("\ufeff");
         range.insertNode(tempNode);
         rect = range.getBoundingClientRect();
         tempNode.remove();
-    }    
+    }
     return rect;
 }
 
@@ -47,6 +48,6 @@ class VirtualCaret {
     #range: Range;
     constructor(range: Range) { this.#range = range; }
     getBoundingClientRect(): DOMRect {
-        return getClientRectFromDomCaret(this.#range);
+        return getClientRectFromDomRange(this.#range);
     }
 }
