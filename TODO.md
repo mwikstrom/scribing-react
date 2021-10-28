@@ -32,7 +32,6 @@ LOWER PRIO
 - FlowTable
 - Escape to close menu, but not toolbox
 - Double press CTRL + period shall select entire innermost flow box (press again to select next outer box)
-- Show selection outline when non-caret selection is confined within a flow box
 - Hide toolbox arrow when selection includes para break
 - Hide toolbox while typing?
 - MultiFlowSelection

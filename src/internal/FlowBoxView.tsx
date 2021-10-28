@@ -5,6 +5,7 @@ import {
     FlowBox, 
     FlowBoxSelection, 
     FlowContent, 
+    FlowRangeSelection, 
     FlowSelection, 
     FlowTheme, 
     NestedFlowSelection, 
@@ -85,7 +86,10 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
-    const showSelectionOutline = !error && innerSelection === true;
+    const showSelectionOutline = !error && (
+        innerSelection === true ||
+        (innerSelection instanceof FlowRangeSelection && !innerSelection.isCollapsed)
+    );
     const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
     const className = useMemo(() => clsx(
         classes.root,
