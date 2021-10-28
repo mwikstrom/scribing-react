@@ -30,7 +30,6 @@ import Icon from "@mdi/react";
 import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
-import { useIsSelected } from "./hooks/use-is-selected";
 import { useInteraction } from "./hooks/use-interaction";
 import { useObservedScript } from "scripthost-react";
 import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
@@ -59,7 +58,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     }, [outerRef]);
 
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
-    const isSelected = useIsSelected(rootElem);
+    const innerSelection = useMemo(() => getFlowBoxContentSelection(outerSelection), [outerSelection]);
     const editMode = useEditMode();
     const vars = useScriptVariables();
     const hasSource = !!style.source;
@@ -86,7 +85,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
-    const showSelectionOutline = isSelected && !error;
+    const showSelectionOutline = !error && innerSelection === true;
     const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
     const className = useMemo(() => clsx(
         classes.root,
@@ -114,7 +113,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         contentEditable: !!editMode && !clickable && !isParentSelectionActive,
         theme: innerTheme,
         content,
-        selection: getFlowBoxContentSelection(outerSelection),
+        selection: innerSelection,
     };
 
     let children = !hasSource || sourceResult === true ? (
