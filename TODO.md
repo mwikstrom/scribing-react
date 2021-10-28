@@ -1,9 +1,8 @@
 SCRIBING TODO
 =============
-- When mapping flow position to dom position: prefer end of preceding text node
-  The problem that I think might be fixed by this: Typing at end of sub/super causes caret to be full-sized
+- Custom caret must be rendered outside of editing host.
+  Effect of current design: Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
 - Baseline offset is broken in title paragraph variant
-- Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
 - Prefer end of existing text node when moving caret before pilcrow
 - Caret in empty para causes re-render loop
 - Fix pilcrow after full width flow box
