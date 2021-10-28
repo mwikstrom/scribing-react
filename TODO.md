@@ -1,7 +1,10 @@
 SCRIBING TODO
 =============
-- Custom caret must be rendered outside of editing host. Try using popper for positioning it.
-  Effect of current design: Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
+- Virtual caret causes custom caret to stop blinking (render loop)
+- Custom caret height is not applied
+- Custom caret shall be hidden when scrolled out of view
+- Edit mode is probably incorrect after regaining focus (caret not shown)
+- Flow caret baseline offset is incorrect after typing in sub/super
 - Baseline offset is broken in title paragraph variant
 - Prefer end of existing text node when moving caret before pilcrow
 - Caret in empty para causes re-render loop
