@@ -6,7 +6,7 @@ import { usePopper } from "react-popper";
 import { FlowColor, FlowContent, FlowSelection, FlowTheme, TextStyle } from "scribing";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { createUseFlowStyles } from "./JssTheming";
-import { getVirtualSelectionElement } from "./utils/get-virtual-selection-element";
+import { getVirtualCaretElement } from "./utils/get-virtual-caret-element";
 import { isSelectionInside } from "./utils/is-selection-inside";
 
 /** @internal */
@@ -71,7 +71,7 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
             domSelection.rangeCount > 0 &&
             isSelectionInside(boundary, domSelection)
         ) {
-            const virtualElement = getVirtualSelectionElement(domSelection);
+            const virtualElement = getVirtualCaretElement(domSelection);
             setReference(virtualElement);
             setHeight(virtualElement?.getBoundingClientRect().height ?? 0);
         } else {

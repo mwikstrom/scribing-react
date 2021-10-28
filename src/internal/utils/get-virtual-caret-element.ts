@@ -16,7 +16,7 @@ import { VirtualElement } from "@popperjs/core";
  * 
  * @internal
  */
-export function getVirtualSelectionElement(
+export function getVirtualCaretElement(
     selection: Selection | null = document.getSelection()
 ): VirtualElement | null {
     if (selection === null || selection.rangeCount !== 1) {
