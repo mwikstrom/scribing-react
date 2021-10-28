@@ -261,13 +261,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Apply caret position, size and visibility
     const caretStyle = useMemo<CSSProperties>(() => {
-        if (caretRect) {
-            const { left, top, height } = caretRect;
+        if (caretRect && editingHost) {
+            let { left, top } = caretRect;
+            const { height } = caretRect;
+            left += editingHost.scrollLeft - editingHost.offsetLeft;
+            top += editingHost.scrollTop - editingHost.offsetTop;
             return { visibility: "visible", left, top, height };
         } else {
             return { visibility: "hidden" };
         }
-    }, [caretRect]);
+    }, [caretRect, editingHost]);
 
     // Caret becomes steady after remaining at the same position for 500 ms
     useEffect(() => {
@@ -448,6 +451,7 @@ const useStyles = createUseFlowStyles("FlowEditor", ({palette}) => ({
         outline: "none",
         padding: "0 0.75rem",
         caretColor: "transparent",
+        position: "relative",
     },
     caret: {
         position: "absolute",
