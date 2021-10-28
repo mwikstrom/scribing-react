@@ -35,7 +35,7 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
     const [steady, setSteady] = useState(false);    
     const [reference, setReference] = useState<VirtualElement | null>(null);
     const [popper, setPopper] = useState<HTMLElement | null>(null);
-    const [height, setHeight] = useState(20);
+    const [height, setHeight] = useState(0);
 
     // Apply caret class
     const className = useMemo(() => {
@@ -71,7 +71,9 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
             domSelection.rangeCount > 0 &&
             isSelectionInside(boundary, domSelection)
         ) {
-            setReference(getVirtualSelectionElement(domSelection));
+            const virtualElement = getVirtualSelectionElement(domSelection);
+            setReference(virtualElement);
+            setHeight(virtualElement?.getBoundingClientRect().height ?? 0);
         } else {
             setReference(null);
         }

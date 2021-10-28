@@ -1,10 +1,9 @@
 SCRIBING TODO
 =============
 - Virtual caret causes custom caret to stop blinking (render loop)
-- Custom caret height is not applied
 - Custom caret shall be hidden when scrolled out of view
 - Edit mode is probably incorrect after regaining focus (caret not shown)
-- Flow caret baseline offset is incorrect after typing in sub/super
+- Flow caret baseline offset is incorrect after typing in sub/super (probably a virtual element problem)
 - Baseline offset is broken in title paragraph variant
 - Prefer end of existing text node when moving caret before pilcrow
 - Caret in empty para causes re-render loop
