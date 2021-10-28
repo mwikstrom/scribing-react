@@ -1,6 +1,6 @@
 SCRIBING TODO
 =============
-- Custom caret must be rendered outside of editing host.
+- Custom caret must be rendered outside of editing host. Try using popper for positioning it.
   Effect of current design: Pressing ArrowDown in last trailing para causes caret to wander off to the left :-)
 - Baseline offset is broken in title paragraph variant
 - Prefer end of existing text node when moving caret before pilcrow
