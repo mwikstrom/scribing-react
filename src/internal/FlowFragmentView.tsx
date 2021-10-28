@@ -1,9 +1,10 @@
 import React, { FC, useMemo } from "react";
-import { FlowNode, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
+import { FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
 import { ParagraphThemeScope } from "./ParagraphThemeScope";
+import { getFlowFragmentSelection } from "./utils/get-sub-selection";
 
 /**
  * Component props for {@link FlowFragmentView}
@@ -11,6 +12,7 @@ import { ParagraphThemeScope } from "./ParagraphThemeScope";
  */
 export interface FlowFragmentViewProps {
     nodes: readonly FlowNode[];
+    selection: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
     emptyTrailingPara?: boolean;
 }
@@ -20,12 +22,12 @@ export interface FlowFragmentViewProps {
  * @internal
  */
 export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
-    const { nodes, prevBreak = null, emptyTrailingPara = false } = props;
+    const { nodes, prevBreak = null, emptyTrailingPara = false, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(
-        () => splitToParagraphs(nodes, theme, prevBreak, emptyTrailingPara),
-        [nodes, keyManager, theme, prevBreak, emptyTrailingPara]
+        () => splitToParagraphs(nodes, theme, prevBreak, emptyTrailingPara, selection),
+        [nodes, keyManager, theme, prevBreak, emptyTrailingPara, selection]
     );
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
@@ -38,7 +40,7 @@ export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
     return <>{children}</>;
 };
 
-interface SplitParaProps extends Pick<ParagraphViewProps, "breakNode" | "children" | "prevBreak"> {
+interface SplitParaProps extends Pick<ParagraphViewProps, "breakNode" | "children" | "prevBreak" | "selection"> {
     theme: ParagraphTheme;
 }
 
@@ -47,21 +49,39 @@ const splitToParagraphs = (
     theme: FlowTheme,
     prevBreak: ParagraphBreak | null,
     emptyTrailingPara: boolean,
+    outerSelection: FlowSelection | boolean,
 ): SplitParaProps[] => {
     const result: SplitParaProps[] = [];
     let children: FlowNode[] = [];
+    let index = 0;
+    let position = 0;
+    let startIndex = 0;
+    let startPosition = 0;
 
     for (const node of source) {
         children.push(node);
+        ++index;
+        position += node.size;
+
         if (node instanceof ParagraphBreak) {
             result.push({
                 children,
                 breakNode: node,
                 prevBreak,
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
+                selection: getFlowFragmentSelection(
+                    outerSelection,
+                    source,
+                    startIndex,
+                    index - startIndex,
+                    startPosition,
+                    position - startPosition,                    
+                ),
             });
             prevBreak = node;
             children = [];
+            startIndex = index;
+            startPosition = position;
         }        
     }
 
@@ -76,6 +96,14 @@ const splitToParagraphs = (
             breakNode: null,
             prevBreak,
             theme: theme.getParagraphTheme("normal"),
+            selection: getFlowFragmentSelection(
+                outerSelection,
+                source,
+                startIndex,
+                index - startIndex,
+                startPosition,
+                position - startPosition,
+            ),
         });
     }
 

@@ -5,7 +5,7 @@ import {
     ReactElement, 
     RefCallback 
 } from "react";
-import { FlowNode } from "scribing";
+import { FlowNode, FlowSelection } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
@@ -13,6 +13,7 @@ export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
     ref: RefCallback<HTMLElement>;
     singleNodeInPara?: boolean;
+    selection: boolean | FlowSelection;
 }
 
 export const flowNode = <T extends FlowNode>(

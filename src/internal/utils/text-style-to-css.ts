@@ -9,12 +9,9 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
         italic,
         underline,
         strike,
-        baseline,
-        fontSize,
     } = style;
 
-    const css: CSSProperties = {};
-    let fontSizeMultiplier = 0.01;
+    const css = getTextSizeCssProperties(style);
 
     if (typeof bold === "boolean") {
         css.fontWeight = bold ? "bold" : "normal";
@@ -34,6 +31,19 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
     if (decorations.length > 0) {
         css.textDecorationLine = decorations.join(" ");
     }
+
+    return css;
+};
+
+/** @internal */
+export const getTextSizeCssProperties = (style: TextStyle): CSSProperties => {
+    const {
+        baseline,
+        fontSize,
+    } = style;
+
+    const css: CSSProperties = {};
+    let fontSizeMultiplier = 0.01;
 
     if (baseline === "normal") {
         css.verticalAlign = "baseline";

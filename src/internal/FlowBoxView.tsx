@@ -37,9 +37,10 @@ import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope
 import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
+import { getFlowBoxContentSelection } from "./utils/get-sub-selection";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
-    const { node } = props;
+    const { node, selection: outerSelection } = props;
     const { content, style: givenStyle } = node;
     const { box: Component } = useFlowComponentMap();
     const classes = useStyles();
@@ -113,6 +114,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         contentEditable: !!editMode && !clickable && !isParentSelectionActive,
         theme: innerTheme,
         content,
+        selection: getFlowBoxContentSelection(outerSelection),
     };
 
     let children = !hasSource || sourceResult === true ? (
@@ -266,12 +268,13 @@ interface ContentElementProps {
     contentEditable: boolean;
     theme: FlowTheme;
     content: FlowContent;
+    selection: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
     templateRef?: (elem: HTMLElement | null) => void;
 }
 
 const ContentElement: FC<ContentElementProps> = props => {
-    const { theme, content, templateRef, prevBreak, ...rest } = props;
+    const { theme, content, selection, templateRef, prevBreak, ...rest } = props;
     return (
         <div
             {...rest}
@@ -279,7 +282,11 @@ const ContentElement: FC<ContentElementProps> = props => {
             suppressContentEditableWarning={true}
             children={
                 <FlowThemeScope theme={theme}>
-                    <FlowFragmentView nodes={content.nodes} prevBreak={prevBreak}/>
+                    <FlowFragmentView
+                        nodes={content.nodes}
+                        selection={selection}
+                        prevBreak={prevBreak}
+                    />
                 </FlowThemeScope>
             }
         />

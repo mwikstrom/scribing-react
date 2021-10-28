@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { createUseStyles } from "react-jss";
-import { FlowContent } from "scribing";
+import { FlowContent, FlowSelection } from "scribing";
 import { FlowFragmentView } from "./internal/FlowFragmentView";
 import { makeJssId } from "./internal/utils/make-jss-id";
 
@@ -10,6 +10,7 @@ import { makeJssId } from "./internal/utils/make-jss-id";
  */
 export interface FlowViewProps {
     content: FlowContent;
+    selection?: FlowSelection | null;
 }
 
 /**
@@ -17,11 +18,11 @@ export interface FlowViewProps {
  * @public
  */
 export const FlowView: FC<FlowViewProps> = props => {
-    const { content: { nodes } } = props;
+    const { content: { nodes }, selection } = props;
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <FlowFragmentView nodes={nodes}/>
+            <FlowFragmentView nodes={nodes} selection={selection ?? false}/>
         </div>
     );
 };

@@ -1,52 +1,54 @@
-import clsx from "clsx";
-import React, { useEffect, useMemo, useState } from "react";
-import { TextRun } from "scribing";
-import { getTextCssProperties } from "./utils/text-style-to-css";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { FlowRangeSelection, TextRun } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
-import { createUseFlowStyles } from "./JssTheming";
-import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
-import { useParagraphTheme } from "./ParagraphThemeScope";
+import { TextSegment } from "./TextSegment";
+import { FlowCaret } from "./FlowCaret";
 
 export const TextRunView = flowNode<TextRun>((props, ref) => {
-    const { node } = props;
-    const { text, style: givenStyle } = node;
-    const theme = useParagraphTheme();
-    const style = useMemo(() => {
-        let ambient = theme.getAmbientTextStyle();
-        if (givenStyle.link) {
-            ambient = ambient.merge(theme.getLinkStyle());
-        }
-        return ambient.merge(givenStyle);
-    }, [givenStyle, theme]);
-    const css = useMemo(() => getTextCssProperties(style), [style]);
-    const classes = useStyles();
-    const className = useMemo(
-        () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
-        [style, classes]
-    );
+    const { node, selection } = props;
+    const { text, style } = node;
 
     // Enable spell checker only after text has been idle for a while
     const [spellCheck, setSpellCheck] = useState(false);
+
     useEffect(() => {
         const timeout = setTimeout(() => setSpellCheck(true), 250);
         setSpellCheck(false);
         return () => clearTimeout(timeout);
     }, [text]);
 
+    const children = useMemo<ReactNode>(() => {
+        if (selection instanceof FlowRangeSelection) {
+            const { range } = selection;
+            if (range.isCollapsed) {
+                const { first: caret } = range;
+                return (
+                    <>
+                        {caret > 0 && <TextSegment style={style} text={text.substr(0, caret)}/> }
+                        <FlowCaret style={style}/>
+                        {caret < text.length && <TextSegment style={style} text={text.substr(caret)}/> }
+                    </>
+                );
+            } else {
+                const { first, last } = range;
+                return (
+                    <>
+                        {first > 0 && <TextSegment style={style} text={text.substr(0, first)}/> }
+                        <TextSegment style={style} text={text.substr(first, last - first)} selected/>
+                        {last < text.length && <TextSegment style={style} text={text.substr(last)}/> }
+                    </>
+                );
+            }
+        } else {
+            return <TextSegment style={style} text={text} selected={selection === true}/>;
+        }
+    }, [text, selection]);
+
     return (
         <span
             ref={ref}
-            className={className}
-            style={css}
             spellCheck={spellCheck}
-            children={text}
+            children={children}
         />
     );
 });
-
-const useStyles = createUseFlowStyles("TextRun", ({palette}) => ({
-    ...textStyles(palette),
-    root: {
-        whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
-    },
-}));

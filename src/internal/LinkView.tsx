@@ -8,6 +8,7 @@ import { useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { createUseFlowStyles } from "./JssTheming";
 import { useInteraction } from "./hooks/use-interaction";
+import { getFlowNodeSelection } from "./utils/get-sub-selection";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -17,15 +18,28 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children: childNodes, link } = props;
+    const { children: childNodes, link, selection: outerSelection } = props;
     const { link: Component } = useFlowComponentMap();
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const { clickable, pending, error, href } = useInteraction(link, rootElem);
     const editMode = useEditMode();
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
-    const keyRenderer = keyManager.createRenderer();
-
+    const children = useMemo(() => {
+        const keyRenderer = keyManager.createRenderer();
+        let pos = 0;
+        return childNodes.map((child, index) => {
+            const selection = getFlowNodeSelection(outerSelection, childNodes, index, child, pos);
+            pos += child.size;
+            return (
+                <FlowNodeView
+                    key={keyRenderer.getNodeKey(child)}
+                    node={child}
+                    selection={selection}
+                />
+            );
+        });
+    }, [childNodes, outerSelection, keyManager]);
     return (
         <Component
             ref={setRootElem}
@@ -36,12 +50,7 @@ export const LinkView: FC<LinkViewProps> = props => {
                 pending && classes.pending,
                 error && classes.error,
             )}
-            children={childNodes.map(child => (
-                <FlowNodeView
-                    key={keyRenderer.getNodeKey(child)}
-                    node={child}
-                />
-            ))}
+            children={children}
             contentEditable={!!editMode && !clickable}
             suppressContentEditableWarning={true}
         />

@@ -28,9 +28,9 @@ import { isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
 import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition } from "./internal/utils/set-caret-position";
-import { FlowCaret } from "./internal/FlowCaret";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
+import { CaretStyleScope } from "./internal/CaretStyleScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -378,22 +378,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <div 
-                        ref={setEditingHost}
-                        className={classes.root}
-                        style={style}
-                        contentEditable={editMode !== false}
-                        suppressContentEditableWarning={true}
-                        children={<FlowView content={state.content}/>}
-                    />
-                    <FlowCaret
-                        boundary={editingHost}
-                        hidden={editMode !== true}
-                        selection={state.selection}
-                        content={state.content}
-                        theme={state.theme}
-                        caret={state.caret}
-                    />
+                    <CaretStyleScope style={state.caret}>
+                        <div 
+                            ref={setEditingHost}
+                            className={classes.root}
+                            style={style}
+                            contentEditable={editMode !== false}
+                            suppressContentEditableWarning={true}
+                            children={<FlowView content={state.content} selection={state.selection}/>}
+                        />
+                    </CaretStyleScope>
                 </FormattingMarksScope>
             </EditModeScope>
         </TooltipScope>

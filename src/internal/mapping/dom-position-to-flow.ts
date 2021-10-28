@@ -28,13 +28,14 @@ export const mapDomPositionToFlow = (
     if (node.nodeType === Node.TEXT_NODE) {
         const { parentNode } = node;
 
-        // A text node without a parent can't be mapped
+        // A text node without a grand parent can't be mapped
         if (parentNode === null) {
             return null;
         }
 
         // Is the grand parent node mapped from a text run?
-        if (getMappedFlowNode(parentNode) instanceof TextRun) {
+        const grandParentNode = parentNode.parentNode;
+        if (grandParentNode !== null && getMappedFlowNode(grandParentNode) instanceof TextRun) {
             // Normally a text run is mapped to a single text node,
             // but here we handle the abnormal case when a text run is
             // mapped to multiple text nodes for some reason.
@@ -47,9 +48,23 @@ export const mapDomPositionToFlow = (
                 }
             }
 
+            // We also need to take preceeding segments in the same
+            // text run.
+            for (
+                let prevParent = parentNode.previousSibling; 
+                prevParent != null; 
+                prevParent = prevParent.previousSibling
+            ) {
+                for (const childNode of prevParent.childNodes) {
+                    if (childNode.nodeType === Node.TEXT_NODE) {
+                        offset += childNode.textContent?.length || 0;
+                    }
+                }
+            }
+
             // At this point the offset is relative to the text run so
             // we let the node be the one that the text run is mapped to
-            node = parentNode;
+            node = grandParentNode;
         } else {
             // Otherwise, we're in a text node that is not the child of
             // a node mapped from a text run. This means that the text node

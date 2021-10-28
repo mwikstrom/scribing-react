@@ -1,117 +1,65 @@
-import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
 import React, { useEffect, useMemo } from "react";
 import { FC, useState } from "react";
-import { usePopper } from "react-popper";
-import { FlowColor, FlowContent, FlowSelection, FlowTheme, TextStyle } from "scribing";
-import { useNativeEventHandler } from "./hooks/use-native-event-handler";
+import { FlowColor, TextStyle } from "scribing";
+import { useCaretStyle } from "./CaretStyleScope";
+import { useEditMode } from "./EditModeScope";
 import { createUseFlowStyles } from "./JssTheming";
-import { getVirtualSelectionElement } from "./utils/get-virtual-caret-element";
-import { isSelectionInside } from "./utils/is-selection-inside";
+import { useParagraphTheme } from "./ParagraphThemeScope";
+import { getTextSizeCssProperties } from "./utils/text-style-to-css";
 
 /** @internal */
 export interface FlowCaretProps {
-    boundary: HTMLElement | null;
-    hidden: boolean;
-    selection: FlowSelection | null;
-    content: FlowContent;
-    theme: FlowTheme;
-    caret: TextStyle;
+    style: TextStyle;
 }
 
 /** @internal */
 export const FlowCaret: FC<FlowCaretProps> = props => {
-    const {
-        boundary,
-        hidden,
-        selection,
-        content,
-        theme,
-        caret,
-    } = props;
-
-    // The caret element
+    const { style: givenStyle } = props;
     const classes = useStyles();
     const [steady, setSteady] = useState(false);    
-    const [reference, setReference] = useState<VirtualElement | null>(null);
-    const [popper, setPopper] = useState<HTMLElement | null>(null);
-    const [height, setHeight] = useState(0);
+    const theme = useParagraphTheme();
+    const editMode = useEditMode();
+    const caretStyle = useCaretStyle();
+    const style = useMemo(() => {
+        let ambient = theme.getAmbientTextStyle();
+        if (givenStyle.link) {
+            ambient = ambient.merge(theme.getLinkStyle());
+        }
+        return ambient.merge(givenStyle).merge(caretStyle);
+    }, [givenStyle, theme, caretStyle]);
+    const { bold, italic, color } = style;
+    const css = useMemo(() => getTextSizeCssProperties(style), [style]);
+    const className = clsx(
+        classes.root,
+        classes[getColorRule(color)],
+        steady && classes.steady,
+        bold && classes.bold,
+        italic && classes.italic,
+    );
 
-    // Apply caret class
-    const className = useMemo(() => {
-        const style = (selection?.getUniformTextStyle(content, theme) ?? TextStyle.empty).merge(caret);
-        const { bold, italic, color } = style;
-        return clsx(
-            classes.root,
-            classes[getColorRule(color)],
-            steady && classes.steady,
-            bold && classes.bold,
-            italic && classes.italic,
-        );
-    }, [selection, content, theme, caret, steady]);
-
-    // Caret becomes steady after remaining at the same position for 500 ms
     useEffect(() => {
-        if (!steady) {
-            const timer = setTimeout(() => setSteady(true), 500);
-            return () => clearTimeout(timer);
-        }
-    }, [steady, setSteady]);
+        const timer = setTimeout(() => setSteady(true), 500);
+        return () => clearTimeout(timer);
+    }, []);
 
-    // Track DOM selection
-    const [changeCount, setChangeCount] = useState(0);
-    useNativeEventHandler(document, "selectionchange", () => setChangeCount(before => before + 1), []);    
-    useEffect(() => {
-        setSteady(false);
-        const domSelection = document.getSelection();        
-        if (
-            boundary && 
-            domSelection && 
-            domSelection.isCollapsed && 
-            domSelection.rangeCount > 0 &&
-            isSelectionInside(boundary, domSelection)
-        ) {
-            const virtualElement = getVirtualSelectionElement(domSelection);
-            setReference(virtualElement);
-            setHeight(virtualElement?.getBoundingClientRect().height ?? 0);
-        } else {
-            setReference(null);
-        }
-    }, [boundary, changeCount, selection, content, theme, caret]);
-    
-    // Use popper for positioning
-    const { styles, attributes, update } = usePopper(reference, popper, {
-        placement: "bottom",
-        modifiers: [
-            { name: "offset", options: { offset: [-1, -height] } },
-            { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
-        ],
-    });
-
-    useNativeEventHandler(boundary ?? null, "scroll", () => {
-        if (update) {
-            update();
-        }
-    }, [update]);
-
-    return hidden || reference === null ? null : (
-        <div
-            {...attributes.popper}
-            ref={setPopper}
-            className={className}
-            style={{...styles.popper, height}}
-        />
+    return editMode !== true ? null : (
+        <span className={className} style={css}/>
     );
 };
 
 const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
     root: {
-        position: "absolute",
-        backgroundColor: "currentcolor",
-        width: 2,
+        display: "inline",
+        pointerEvents: "none",
+        outlineColor: "currentcolor",
+        outlineStyle: "solid",
+        outlineOffset: 0,
+        outlineWidth: 1,
+        height: "1em",
     },
     bold: {
-        width: 3,
+        outlineWidth: 2,
     },
     italic: {
         transform: "rotate(10deg)",
