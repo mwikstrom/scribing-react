@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Remove "is selection inside" util and other crap
 - Flow caret stable should be a contextual prop
 - Flow caret move causes flickering spell check
 - Spell check should be a contextual prop?
