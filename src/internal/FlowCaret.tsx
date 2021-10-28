@@ -94,7 +94,7 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
         }
     }, [update]);
 
-    return hidden ? null : (
+    return hidden || reference === null ? null : (
         <div
             {...attributes.popper}
             ref={setPopper}
