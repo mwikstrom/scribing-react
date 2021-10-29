@@ -78,7 +78,10 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         ) {
             setActive(null);
             setPending(current);
-        } else {
+        } else if (
+            current.content instanceof FlowEditorCommands ||
+            !(active?.content instanceof FlowEditorCommands)
+        ) {
             setDisplay(current);
         }
     }, [current]);
