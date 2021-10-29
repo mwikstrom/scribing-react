@@ -4,7 +4,8 @@ import {
     FlowRange, 
     FlowRangeSelection, 
     FlowSelection, 
-    NestedFlowSelection 
+    InlineNode, 
+    NestedFlowSelection, 
 } from "scribing";
 
 /** @internal */
@@ -49,19 +50,43 @@ export function getFlowFragmentSelection(
             return false;
         }
     } else if (outer instanceof FlowRangeSelection) {
-        if (!outer.range.isCollapsed) {
-            const intersectedRange = outer.range.intersect(FlowRange.at(position, size));
+        const { range } = outer;
+        if (range.isCollapsed) {
+            const caretPos = range.first;
+            if (
+                (caretPos > position && caretPos < position + size) ||
+                (caretPos === position && placeCaretAtStartOfNode(array, index)) ||
+                (caretPos === position + size && placeCaretAtEndOfNode(array, index + length))
+            ) {
+                return outer.set("range", FlowRange.at(caretPos - position));
+            } else {
+                return false;
+            }
+        } else {
+            const intersectedRange = range.intersect(FlowRange.at(position, size));
             if (intersectedRange.isCollapsed) {
                 return false;
             } else {
                 return outer.set("range", intersectedRange.translate(-position));
             }
-        } else if (fragmentRange.contains(outer.range.first)) {
-            return outer.set("range", outer.range.translate(-position));
-        } else {
-            return false;
         }
     } else {
         return outer === true;
     }
 }
+
+// Caret shall be placed at tht start of a node when...
+const placeCaretAtStartOfNode = (array: readonly FlowNode[], index: number) => (
+    // ...it's the first node, or...
+    index === 0 ||
+    // ...the previous node isn't an inline node
+    !(array[index - 1] instanceof InlineNode)
+);
+
+// Caret shall be placed at the end of a node when...
+const placeCaretAtEndOfNode = (array: readonly FlowNode[], index: number) => (
+    // ...it's the last node, or...
+    index >= array.length - 1 ||
+    // ...the caret can't be placed at the start of the next node.
+    !placeCaretAtStartOfNode(array, index + 1)
+);
