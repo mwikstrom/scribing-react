@@ -1,21 +1,20 @@
 SCRIBING TODO
 =============
-- Double arrow is needed to move out of empty flow box
-- Edit mode is probably incorrect after regaining focus (caret not shown)
-- Cannot move down using arrow key when caret is placed before/inside inline box
-- Shortcut: CTRL + UP/DOWN to set super/sub
 - Flow caret causes double click to select word to be broken
-- Custom selection style?
+- Edit mode is probably incorrect after regaining focus (caret not shown)
+- Cannot move down using arrow key when caret is placed before/inside inline box surrounded by text
+- Shortcut: CTRL + UP/DOWN to set super/sub
 - Baseline offset is broken in title paragraph variant
-- Fix pilcrow after full width flow box
-- Fix insert content after full width flow box
-- New Ops: Wrap + Unwrap
 - Tool: Insert box
+- New Ops: Wrap + Unwrap
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - FlowImage
 - Support any URL in OpenUrl interaction + add URL resolver scope
+- Fix pilcrow after full width flow box
+- Fix insert content after full width flow box
+- Double arrow is needed to move out of empty flow box
 - Tool: Set list counter
 - Tool: Set line height
 - Tool: Set font size
@@ -26,6 +25,7 @@ SCRIBING TODO
 LOWER PRIO
 ==========
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
+- Custom selection style?
 - New interaction?: Open Topic
 - FlowTable
 - Escape to close menu, but not toolbox
