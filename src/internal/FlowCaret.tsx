@@ -49,6 +49,7 @@ const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
     root: {
         display: "inline",
         pointerEvents: "none",
+        userSelect: "none",
         position: "relative",
         width: 0,
         height: "1em",
@@ -59,8 +60,8 @@ const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
             backgroundColor: "currentcolor",
             width: 2,
             left: -1,
+            top: 0,
             bottom: 0,
-            height: "1em",
         }
     },
     bold: {
