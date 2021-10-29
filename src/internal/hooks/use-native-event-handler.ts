@@ -11,8 +11,19 @@ export const useNativeEventHandler = <Args extends [...unknown[]]>(
     const callback = useCallback(handler, dependencies) as unknown as EventListener;
     useLayoutEffect(() => {
         if (target) {
-            target.addEventListener(type, callback, options);
-            return () => target.removeEventListener(type, callback);
+            let active = true;
+            const wrapped: typeof callback = (...args) => {
+                if (active) {
+                    callback(...args);
+                }
+            };
+            target.addEventListener(type, wrapped, options);
+            return () => {
+                if (active) {
+                    active = false;
+                    target.removeEventListener(type, wrapped);
+                }
+            };
         }
-    });
+    }, [target, callback]);
 };
