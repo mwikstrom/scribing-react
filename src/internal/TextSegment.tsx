@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { TextStyle } from "scribing";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { createUseFlowStyles } from "./JssTheming";
@@ -28,13 +28,21 @@ export const TextSegment: FC<TextSegmentProps> = props => {
         () => clsx(classes.root, selected && classes.selected, ...getTextStyleClassNames(style, classes)),
         [style, classes, selected]
     );
-
+    const [spellCheck, setSpellCheck] = useState(false);
+    // Enable spell checker only after text has been idle for a while
+    useEffect(() => {
+        setSpellCheck(false);
+        if (style.spellcheck) {
+            const timeout = setTimeout(() => setSpellCheck(true), 500);
+            return () => clearTimeout(timeout);
+        }
+    }, [text, style.spellcheck]);
     return (
         <span
             className={className}
             style={css}
             children={text || "\u200b"}
-            spellCheck={style.spellcheck}
+            spellCheck={spellCheck}
         />
     );
 };
