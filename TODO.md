@@ -1,8 +1,6 @@
 SCRIBING TODO
 =============
-- Flow caret causes double click to select word to be broken
 - Edit mode is probably incorrect after regaining focus (caret not shown)
-- Cannot move down using arrow key when caret is placed before/inside inline box surrounded by text
 - Shortcut: CTRL + UP/DOWN to set super/sub
 - Baseline offset is broken in title paragraph variant
 - Tool: Insert box
@@ -19,6 +17,8 @@ SCRIBING TODO
 - Tool: Set line height
 - Tool: Set font size
 - Tool: Set font family
+- Flow caret causes double click to select word to be broken
+- Cannot move down using arrow key when caret is placed before/inside inline box surrounded by text
 - Deleting when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
 

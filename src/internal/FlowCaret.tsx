@@ -48,8 +48,6 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
 const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
     root: {
         display: "inline",
-        pointerEvents: "none",
-        userSelect: "none",
         outline: "1px solid currentcolor",
     },
     bold: {
