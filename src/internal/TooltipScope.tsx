@@ -10,10 +10,11 @@ export interface TooltipScopeProps {
     manager?: TooltipManager;
     children?: ReactNode;
     boundary?: HTMLElement | null;
+    autoOpenTools?: boolean;
 }
 
 /** @internal */
-export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, boundary}) => {
+export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, boundary, autoOpenTools}) => {
     const manager = useMemo(() => given ?? new TooltipManager(), [given]);
     const [current, setCurrent] = useState<TooltipData | null>(manager.current || null);
     const [active, setActive] = useState<TooltipData | null>(current);
@@ -83,11 +84,11 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
     }, [current]);
 
     useEffect(() => {
-        if (pending !== null) {
+        if (pending !== null && autoOpenTools) {
             const timeout = setTimeout(() => setDisplay(pending), 3000);
             return () => clearTimeout(timeout);
         }
-    }, [pending, deferToken]);
+    }, [pending, deferToken, autoOpenTools]);
 
     useEffect(() => {
         if (displayOne && displayOne !== active) {
