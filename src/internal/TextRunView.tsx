@@ -8,14 +8,14 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
     const { node, selection } = props;
     const { text, style } = node;
 
-    // Enable spell checker only after text has been idle for a while
+    // Enable spell checker only after text and selection has been idle for a while
     const [spellCheck, setSpellCheck] = useState(false);
 
     useEffect(() => {
-        const timeout = setTimeout(() => setSpellCheck(true), 250);
+        const timeout = setTimeout(() => setSpellCheck(true), 500);
         setSpellCheck(false);
         return () => clearTimeout(timeout);
-    }, [text]);
+    }, [text, selection]);
 
     const children = useMemo<ReactNode>(() => {
         if (selection instanceof FlowRangeSelection) {
