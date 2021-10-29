@@ -16,6 +16,7 @@ Record<ColorLocaleKey, string> {
     must_be_a_valid_web_page_url: string;
     enter_script: string;
     show_formatting_marks: string;
+    insert_box: string;
     insert_dynamic_text: string;
     ltr_reading_direction: string;
     rtl_reading_direction: string;
@@ -63,6 +64,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     must_be_a_valid_web_page_url: "Must be a fully qualified https URL",
     enter_script: "Enter script expression or statement block",
     show_formatting_marks: "Show formatting marks",
+    insert_box: "Insert box",
     insert_dynamic_text: "Insert dynamic text",
     ltr_reading_direction: "Left-to-right reading direction",
     rtl_reading_direction: "Right-to-left reading direction",

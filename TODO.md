@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Tool: Insert box
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
@@ -25,6 +24,7 @@ LOWER PRIO
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
 - Custom selection style?
 - New interaction?: Open Topic
+- ALT+ENTER shall open insert menu with keyboard focus
 - New Ops: Wrap + Unwrap
 - FlowTable
 - Escape to close menu, but not toolbox

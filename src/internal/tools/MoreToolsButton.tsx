@@ -9,13 +9,14 @@ import {
     mdiFormatTextdirectionLToR, 
     mdiFormatTextdirectionRToL,
     mdiArrowExpandHorizontal,
+    mdiTextBoxOutline,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
-import { DynamicText, ParagraphStyleProps } from "scribing";
+import { BoxStyle, DynamicText, FlowBox, FlowContent, ParagraphBreak, ParagraphStyleProps } from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
@@ -50,6 +51,14 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [commands, closeMenu, editingHost]);
 
+    const insertBox = useCallback(() => {
+        commands.insertNode(EMPTY_FLOW_BOX);
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
     const beginInsertDynamicText = useCallback(() => {
         setMenuOpen("insert_dynamic_text");
         if (editingHost) {
@@ -72,6 +81,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end" boundary={boundary}>
+                    <ToolMenuItem disabled={!commands.isCaret()} onClick={insertBox}>
+                        <Icon path={mdiTextBoxOutline} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.insert_box}
+                        </span>
+                    </ToolMenuItem>
                     <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertDynamicText}>
                         <Icon path={mdiFunctionVariant} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
@@ -135,3 +150,6 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         </>
     );
 };
+
+const SINGLE_PARA_CONTENT = new FlowContent({ nodes: Object.freeze([ new ParagraphBreak() ])});
+const EMPTY_FLOW_BOX = new FlowBox({ content: SINGLE_PARA_CONTENT, style: BoxStyle.empty.set("variant", "outlined") });
