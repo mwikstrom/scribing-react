@@ -529,6 +529,27 @@ DataSourceDelayedMultiOutput.args = {
     ])),
 };
 
+export const LoremIpsum = Template.bind({});
+LoremIpsum.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        // eslint-disable-next-line max-len
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis luctus tortor vitae dui aliquet, sed luctus massa viverra. Donec sed tortor sapien. Morbi iaculis, orci at volutpat consectetur, ligula sem efficitur ante, ut ultricies neque diam vitae enim. Morbi sed sem ante. Pellentesque tincidunt consectetur mauris, vitae dignissim arcu. Donec pulvinar massa vitae diam condimentum aliquet. Nullam euismod nibh felis, ut tristique mi aliquam quis. Praesent efficitur, felis ut scelerisque sagittis, nunc tortor fringilla quam, ut euismod ipsum ex nec enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin iaculis ex ac nibh ultricies feugiat vel at lorem. In sollicitudin, turpis in sodales hendrerit, dui sem hendrerit leo, ac pellentesque massa dui sed turpis. Curabitur nulla lorem, tempor et porttitor at, sollicitudin at mi.",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        "Vestibulum eget augue vitae orci pellentesque venenatis et eu felis. Aliquam et leo ac ligula vehicula pellentesque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum eget bibendum nunc, a elementum diam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut est ipsum, varius ac malesuada at, eleifend sed justo. Pellentesque consequat, ante a dictum varius, lacus ipsum convallis ante, eu condimentum lacus erat in velit. Quisque blandit volutpat interdum.",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        "Curabitur sed ante id lacus eleifend egestas at nec ante. Aliquam a diam dictum, congue ligula vitae, lobortis diam. Vestibulum eu lacinia mi. Aenean feugiat tellus ut eleifend fermentum. Vivamus iaculis vel turpis a tincidunt. Nulla cursus nulla vel mauris accumsan blandit. Integer rutrum leo tellus, at laoreet orci vulputate mattis. Etiam convallis nec dui sit amet posuere. Suspendisse non tortor urna. Fusce ultricies pharetra dui, vitae lacinia diam sagittis fermentum. Donec vitae eros non purus lacinia feugiat. Duis lacinia egestas tempor. Curabitur ipsum ante, tempor sit amet imperdiet ut, porta non erat. Donec euismod massa risus. Nam et purus lorem. Quisque pellentesque eleifend nisl eu efficitur.",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        "Morbi porta nisi risus, at elementum lectus congue ac. Maecenas commodo ultrices dictum. Mauris diam purus, vulputate in velit sit amet, imperdiet faucibus felis. Sed hendrerit lacinia metus at faucibus. Nunc nec laoreet metus. Nullam hendrerit eget risus ut aliquam. Pellentesque eget elementum justo. Fusce ullamcorper ex vel mauris tincidunt pharetra. Integer dapibus tortor vitae consectetur sollicitudin. Ut eleifend non tortor eget ultricies. Sed consequat odio ac mi lacinia, vel pretium augue ullamcorper. In in blandit odio.",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        "Integer malesuada fermentum quam. Fusce tincidunt at sem nec venenatis. Sed rhoncus blandit condimentum. In dignissim sed quam vehicula maximus. Nulla facilisi. Fusce ut leo viverra, iaculis magna nec, bibendum turpis. Suspendisse potenti. Pellentesque ac sapien fermentum eros tincidunt molestie interdum non tortor. Sed nisi nisi, posuere pulvinar neque at, tincidunt malesuada quam. Sed sed mi et ex dictum feugiat eu nec est. Donec maximus dui metus, in porta tortor volutpat lacinia. Ut nunc risus, vestibulum in tempor eu, laoreet non lectus. Ut vehicula, turpis nec luctus semper, lorem erat efficitur purus, in luctus dui magna nec lectus. Nam eget ullamcorper metus. Phasellus pretium lacinia feugiat. Maecenas lectus est, dapibus vitae lacinia eget, mattis at tortor.",
+        { break: "para" },
+    ])),
+};
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""
