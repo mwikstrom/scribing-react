@@ -18,6 +18,8 @@ SCRIBING TODO
 - Flow caret causes double click to select word to be broken
 - Cannot move down using arrow key when caret is placed before/inside inline box surrounded by text
 - Deleting when there's a final para break, shall result in an empty document with a para break
+- Copy flow content to clipboard
+- Pase flow content when available
 - Client/server/proto
 
 LOWER PRIO
