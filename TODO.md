@@ -23,6 +23,7 @@ SCRIBING TODO
 - Tool: Set line height
 - Tool: Set font size
 - Tool: Set font family
+- Deleting when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
 
 LOWER PRIO
