@@ -62,7 +62,7 @@ export const mapDomPositionToFlow = (
             ) {
                 for (const childNode of prevParent.childNodes) {
                     if (childNode.nodeType === Node.TEXT_NODE) {
-                        offset += getFlowSizeFromTextNode(node);
+                        offset += getFlowSizeFromTextNode(childNode);
                     }
                 }
             }

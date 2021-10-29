@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Moving right is broken!
 - Custom caret messes up line breaking
 - Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
