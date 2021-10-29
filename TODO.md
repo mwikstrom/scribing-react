@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Italic caret does not work
 - Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
 - Cannot move down using arrow key when caret is placed before/inside inline box
@@ -26,7 +25,8 @@ SCRIBING TODO
 
 LOWER PRIO
 ==========
-- New interaction: Open Topic
+- Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
+- New interaction?: Open Topic
 - FlowTable
 - Escape to close menu, but not toolbox
 - Double press CTRL + period shall select entire innermost flow box (press again to select next outer box)
