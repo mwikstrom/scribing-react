@@ -30,7 +30,8 @@ import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition } from "./internal/utils/set-caret-position";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
-import { CaretStyleScope } from "./internal/FlowCaretScope";
+import { FlowCaretScope } from "./internal/FlowCaretScope";
+import clsx from "clsx";
 
 /**
  * Component props for {@link FlowEditor}
@@ -41,6 +42,7 @@ export interface FlowEditorProps {
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
     style?: CSSProperties;
+    nativeCaret?: boolean;
     onStateChange?: (
         after: FlowEditorState,
         change: FlowOperation | null,
@@ -59,6 +61,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         autoFocus,
         style,
+        nativeCaret,
         onStateChange,
     } = props;
 
@@ -378,16 +381,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <CaretStyleScope style={state.caret} selection={state.selection}>
+                    <FlowCaretScope style={state.caret} selection={state.selection} native={nativeCaret}>
                         <div 
                             ref={setEditingHost}
-                            className={classes.root}
+                            className={clsx(classes.root, !nativeCaret && classes.customCaret)}
                             style={style}
                             contentEditable={editMode !== false}
                             suppressContentEditableWarning={true}
                             children={<FlowView content={state.content} selection={state.selection}/>}
                         />
-                    </CaretStyleScope>
+                    </FlowCaretScope>
                 </FormattingMarksScope>
             </EditModeScope>
         </TooltipScope>
@@ -398,6 +401,8 @@ const useStyles = createUseStyles({
     root: {
         outline: "none",
         padding: "0 0.75rem",
+    },
+    customCaret: {
         caretColor: "transparent",
     },
 }, {

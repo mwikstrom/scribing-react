@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { useMemo } from "react";
 import { FC } from "react";
 import { FlowColor, TextStyle } from "scribing";
-import { useCaretStyle, useIsCaretSteady } from "./FlowCaretScope";
+import { useFlowCaretContext } from "./FlowCaretScope";
 import { useEditMode } from "./EditModeScope";
 import { createUseFlowStyles } from "./JssTheming";
 import { useParagraphTheme } from "./ParagraphThemeScope";
@@ -19,8 +19,11 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
     const classes = useStyles();
     const theme = useParagraphTheme();
     const editMode = useEditMode();
-    const caretStyle = useCaretStyle();
-    const steady = useIsCaretSteady();
+    const {
+        style: caretStyle,
+        steady,
+        native,
+    } = useFlowCaretContext();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {
@@ -37,7 +40,7 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
         bold && classes.bold,
         italic && classes.italic,
     );
-    return editMode !== true ? null : (
+    return native || editMode !== true ? null : (
         <span className={className} style={css}/>
     );
 };

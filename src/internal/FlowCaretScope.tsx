@@ -1,24 +1,40 @@
-import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
+import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { FlowSelection, TextStyle } from "scribing";
 
 /**
- * @public
+ * @internal
  */
-export interface CaretStyleScopeProps {
-    style: TextStyle;
+export interface FlowCaretScopeProps {
+    style?: TextStyle;
     selection?: FlowSelection | null;
     children?: ReactNode;
+    native?: boolean;
 }
 
 /**
- * @public
+ * @internal
  */
-export const CaretStyleScope: FC<CaretStyleScopeProps> = ({
-    style,
+export interface FlowCaretContextValue {
+    readonly style: TextStyle;
+    readonly steady: boolean;
+    readonly native: boolean;
+}
+
+/**
+ * @internal
+ */
+export const FlowCaretScope: FC<FlowCaretScopeProps> = ({
+    style = TextStyle.empty,
     selection,
+    native = false,
     children,
 }) => {
-    const [steady, setSteady] = useState(false);    
+    const [steady, setSteady] = useState(false);
+    const value = useMemo<FlowCaretContextValue>(() => ({
+        style,
+        steady,
+        native,
+    }), [style, steady, native]);
 
     useEffect(() => {
         const timer = setTimeout(() => setSteady(true), 500);
@@ -27,28 +43,24 @@ export const CaretStyleScope: FC<CaretStyleScopeProps> = ({
     }, [selection]);
 
     return (
-        <CaretSteadyContext.Provider value={steady}>
-            <CaretStyleContext.Provider
-                value={style}
-                children={children}
-            />
-        </CaretSteadyContext.Provider>
+        <FlowCaretContext.Provider
+            value={value}
+            children={children}
+        />
     );
 };
 
 /**
- * @public
+ * @internal
  */
-export function useCaretStyle(): TextStyle {
-    return useContext(CaretStyleContext);
+export function useFlowCaretContext(): FlowCaretContextValue {
+    return useContext(FlowCaretContext);
 }
 
-/**
- * @public
- */
-export function useIsCaretSteady(): boolean {
-    return useContext(CaretSteadyContext);
-}
+const DEFAULT_VALUE: FlowCaretContextValue = Object.freeze({
+    style: TextStyle.empty,
+    steady: false,
+    native: false,
+});
 
-const CaretSteadyContext = createContext(false);
-const CaretStyleContext = createContext(TextStyle.empty);
+const FlowCaretContext = createContext(DEFAULT_VALUE);
