@@ -6,7 +6,9 @@ import { isMappedEditingHost } from "./flow-editing-host";
 import { 
     getFlowOffsetFromPreviousSiblings, 
     getFlowSizeFromDomNode, 
+    getFlowSizeFromTextNode, 
     getMappedFlowNode, 
+    getNormalizedTextNodeOffset, 
     isMappedFlowNode 
 } from "./flow-node";
 
@@ -36,7 +38,10 @@ export const mapDomPositionToFlow = (
         // Is the grand parent node mapped from a text run?
         const grandParentNode = parentNode.parentNode;
         if (grandParentNode !== null && getMappedFlowNode(grandParentNode) instanceof TextRun) {
-            // Normally a text run is mapped to a single text node,
+            // Some text segments have characters that take up zero flow space
+            offset = getNormalizedTextNodeOffset(node, offset);
+
+            // Normally a text segment is mapped to a single text node,
             // but here we handle the abnormal case when a text run is
             // mapped to multiple text nodes for some reason.
             // We need to make the offset value relative to the text run
@@ -44,7 +49,7 @@ export const mapDomPositionToFlow = (
             while (node.previousSibling) {
                 node = node.previousSibling;
                 if (node.nodeType === Node.TEXT_NODE) {
-                    offset += node.textContent?.length || 0;
+                    offset += getFlowSizeFromTextNode(node);
                 }
             }
 
@@ -57,7 +62,7 @@ export const mapDomPositionToFlow = (
             ) {
                 for (const childNode of prevParent.childNodes) {
                     if (childNode.nodeType === Node.TEXT_NODE) {
-                        offset += childNode.textContent?.length || 0;
+                        offset += getFlowSizeFromTextNode(node);
                     }
                 }
             }

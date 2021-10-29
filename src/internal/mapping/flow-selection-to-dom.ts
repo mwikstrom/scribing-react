@@ -1,6 +1,7 @@
 import { FlowSelection, FlowRangeSelection, NestedFlowSelection } from "scribing";
 import { getNextDomNode } from "../utils/dom-traversal";
 import { getMappedFlowAxis } from "./flow-axis";
+import { getFlowSizeFromTextNode } from "./flow-node";
 import { DomPosition, mapFlowPositionToDom } from "./flow-position-to-dom";
 
 /** @internal */
@@ -24,7 +25,7 @@ export function mapFlowSelectionToDom(
         const { node, offset } = parent;
 
         if (node.nodeType === Node.TEXT_NODE) {
-            const textLength = (node.nodeValue ?? "").length;
+            const textLength = getFlowSizeFromTextNode(node);
             container = node.parentNode ?? node;
             if (offset >= textLength) {
                 const nextNode = getNextDomNode(node);

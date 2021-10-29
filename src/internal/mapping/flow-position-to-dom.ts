@@ -1,6 +1,6 @@
 import { TextRun } from "scribing";
 import { isMappedEditingHost } from "./flow-editing-host";
-import { getFlowSizeFromDomNode, getMappedFlowNode } from "./flow-node";
+import { getFlowSizeFromDomNode, getFlowSizeFromTextNode, getMappedFlowNode } from "./flow-node";
 
 export interface DomPosition {
     node: Node,
@@ -57,7 +57,7 @@ const mapFlowPositionToDomCore = (
     if (mapped instanceof TextRun) {
         let result: DomPosition = { node: container, offset: 0 };
         for (const child of getDescendantTextNodes(container)) {
-            const size = child.textContent?.length || 0;
+            const size = getFlowSizeFromTextNode(child);
             result = { node: child, offset: Math.min(size, position) };
             if (position <= size) {
                 break;

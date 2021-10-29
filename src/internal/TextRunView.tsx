@@ -14,7 +14,7 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
                 const { first: caret } = range;
                 return (
                     <>
-                        {caret > 0 && <TextSegment style={style} text={text.substr(0, caret)}/> }
+                        {(caret > 0 || text.length === 0) && <TextSegment style={style} text={text.substr(0, caret)}/> }
                         <FlowCaret style={style}/>
                         {caret < text.length && <TextSegment style={style} text={text.substr(caret)}/> }
                     </>

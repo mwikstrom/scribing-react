@@ -1,6 +1,8 @@
 SCRIBING TODO
 =============
 - No caret is shown when content is empty
+- Empty flow fragment shall wrap node in paragraph
+- Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
 - Cannot move down using arrow key when caret is placed before/inside inline box
 - Shortcut: CTRL + UP/DOWN to set super/sub
@@ -16,6 +18,7 @@ SCRIBING TODO
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - FlowImage
+- Support any URL in OpenUrl interaction + add URL resolver scope
 - Tool: Set list counter
 - Tool: Set line height
 - Tool: Set font size

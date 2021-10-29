@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { FC } from "react";
-import { FlowRangeSelection, FlowSelection } from "scribing";
-import { FlowCaret } from "./FlowCaret";
+import { FlowSelection, TextRun, TextStyle } from "scribing";
+import { FlowNodeView } from "./FlowNodeView";
 
 /** @internal */
 export interface EmptyFlowFragmentProps {
@@ -9,14 +9,12 @@ export interface EmptyFlowFragmentProps {
 }
 
 /** @internal */
-export const EmptyFlowFragment: FC<EmptyFlowFragmentProps> = ({selection}) => (
-    <>
-        {"\u200b"}
-        {
-            selection instanceof FlowRangeSelection &&
-            selection.isCollapsed &&
-            selection.range.first === 0 && 
-            <FlowCaret/>
-        }
-    </>
-);
+export const EmptyFlowFragment: FC<EmptyFlowFragmentProps> = ({selection}) => {
+    const emptyTextRun = useMemo(() => new TextRun({ text: "", style: TextStyle.empty }), []);
+    return (
+        <FlowNodeView
+            node={emptyTextRun}
+            selection={selection}
+        />
+    );
+};

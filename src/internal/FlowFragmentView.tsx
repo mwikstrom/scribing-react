@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme, TextRun } from "scribing";
+import { FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme } from "scribing";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
@@ -15,7 +15,6 @@ export interface FlowFragmentViewProps {
     nodes: readonly FlowNode[];
     selection: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
-    emptyTrailingPara?: boolean;
 }
 
 /**
@@ -23,12 +22,12 @@ export interface FlowFragmentViewProps {
  * @internal
  */
 export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
-    const { nodes, prevBreak = null, emptyTrailingPara = false, selection } = props;
+    const { nodes, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(
-        () => splitToParagraphs(nodes, theme, prevBreak, emptyTrailingPara, selection),
-        [nodes, keyManager, theme, prevBreak, emptyTrailingPara, selection]
+        () => splitToParagraphs(nodes, theme, prevBreak, selection),
+        [nodes, keyManager, theme, prevBreak, selection]
     );
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.length === 0 ? (
@@ -51,7 +50,6 @@ const splitToParagraphs = (
     source: readonly FlowNode[],
     theme: FlowTheme,
     prevBreak: ParagraphBreak | null,
-    emptyTrailingPara: boolean,
     outerSelection: FlowSelection | boolean,
 ): SplitParaProps[] => {
     const result: SplitParaProps[] = [];
@@ -86,11 +84,6 @@ const splitToParagraphs = (
             startIndex = index;
             startPosition = position;
         }        
-    }
-
-    // Append a virtual text node in the trailing para?
-    if (children.length === 0 && emptyTrailingPara) {
-        children.push(TextRun.fromData(""));
     }
 
     if (children.length > 0) {

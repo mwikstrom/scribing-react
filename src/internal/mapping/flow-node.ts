@@ -37,4 +37,27 @@ export const getFlowOffsetFromPreviousSiblings = (node: Node | null): number => 
     return offset;
 };
 
+/** @internal */
+export const getFlowSizeFromTextNode = (node: Node | null): number => getNormalizedTextNodeOffset(node);
+
+/** @internal */
+export const getNormalizedTextNodeOffset = (node: Node | null, offset?: number): number => {
+    if (node?.nodeType !== Node.TEXT_NODE) {
+        return 0;
+    }
+    
+    const allText = node.textContent ?? "";
+
+    if (offset === void(0)) {
+        offset = allText.length;
+    } else if (offset <= 0) {
+        return 0;
+    }
+
+    const textBefore = allText.substr(0, offset);
+    const normalizedTextBefore = textBefore.replace(/\u200b/g, "");
+
+    return normalizedTextBefore.length;
+};
+
 const MAP = new WeakMap<Node, FlowNode>();

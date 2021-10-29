@@ -33,7 +33,7 @@ export const TextSegment: FC<TextSegmentProps> = props => {
         <span
             className={className}
             style={css}
-            children={text}
+            children={text || "\u200b"}
         />
     );
 };
