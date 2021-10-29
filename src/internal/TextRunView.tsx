@@ -3,12 +3,14 @@ import { FlowRangeSelection, TextRun } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { TextSegment } from "./TextSegment";
 import { FlowCaret } from "./FlowCaret";
+import { useFlowCaretContext } from "./FlowCaretScope";
 
 export const TextRunView = flowNode<TextRun>((props, ref) => {
     const { node, selection } = props;
     const { text, style } = node;
+    const { native } = useFlowCaretContext();
     const children = useMemo<ReactNode>(() => {
-        if (selection instanceof FlowRangeSelection) {
+        if (!native && selection instanceof FlowRangeSelection) {
             const { range } = selection;
             if (range.isCollapsed) {
                 const { first: caret } = range;
