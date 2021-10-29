@@ -10,12 +10,12 @@ import { getTextSizeCssProperties } from "./utils/text-style-to-css";
 
 /** @internal */
 export interface FlowCaretProps {
-    style: TextStyle;
+    style?: TextStyle;
 }
 
 /** @internal */
 export const FlowCaret: FC<FlowCaretProps> = props => {
-    const { style: givenStyle } = props;
+    const { style: givenStyle = TextStyle.empty } = props;
     const classes = useStyles();
     const [steady, setSteady] = useState(false);    
     const theme = useParagraphTheme();
