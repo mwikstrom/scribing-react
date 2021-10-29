@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- No caret is shown when content is empty
 - Empty flow fragment shall wrap node in paragraph
 - Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
