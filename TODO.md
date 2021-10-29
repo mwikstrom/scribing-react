@@ -3,6 +3,7 @@ SCRIBING TODO
 - Flow caret stable should be a contextual prop
 - Flow caret move causes flickering spell check
 - Spell check should be a contextual prop?
+- Shortcut: CTRL + UP/DOWN to set super/sub
 - Custom selection style?
 - Virtual caret causes custom caret to stop blinking (render loop)
 - Custom caret shall be hidden when scrolled out of view
