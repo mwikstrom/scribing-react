@@ -1,17 +1,18 @@
 import { CSSProperties } from "react";
-import { TextStyle } from "scribing";
+import { ParagraphStyle, TextStyle } from "scribing";
 import { toRem } from "./css-values";
+import { getLineHeightProperty } from "./paragraph-style-to-css";
 
 /** @internal */
-export const getTextCssProperties = (style: TextStyle): CSSProperties => {
+export const getTextCssProperties = (text: TextStyle, para: ParagraphStyle): CSSProperties => {
     const {
         bold,
         italic,
         underline,
         strike,
-    } = style;
+    } = text;
 
-    const css = getTextSizeCssProperties(style);
+    const css = getTextSizeCssProperties(text, para);
 
     if (typeof bold === "boolean") {
         css.fontWeight = bold ? "bold" : "normal";
@@ -36,20 +37,19 @@ export const getTextCssProperties = (style: TextStyle): CSSProperties => {
 };
 
 /** @internal */
-export const getTextSizeCssProperties = (style: TextStyle): CSSProperties => {
+export const getTextSizeCssProperties = (text: TextStyle, para: ParagraphStyle): CSSProperties => {
     const {
         baseline,
         fontSize,
-    } = style;
+    } = text;
 
-    const css: CSSProperties = {};
+    const css: CSSProperties = getLineHeightProperty(para);
     let fontSizeMultiplier = 0.01;
 
     if (baseline === "normal") {
         css.verticalAlign = "baseline";
     } else if (baseline !== void(0)) {
         css.verticalAlign = baseline;
-        css.lineHeight = "50%";
         fontSizeMultiplier *= 0.75;
     }
 

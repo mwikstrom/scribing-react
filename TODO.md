@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Baseline offset is broken in title paragraph variant
 - Tool: Insert box
 - New Ops: Wrap + Unwrap
 - Improve alert icon positioning (line-height)

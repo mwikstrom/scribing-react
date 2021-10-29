@@ -22,7 +22,7 @@ export const TextSegment: FC<TextSegmentProps> = props => {
         }
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
-    const css = useMemo(() => getTextCssProperties(style), [style]);
+    const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
     const className = useMemo(
         () => clsx(classes.root, selected && classes.selected, ...getTextStyleClassNames(style, classes)),

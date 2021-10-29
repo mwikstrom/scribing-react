@@ -29,7 +29,7 @@ export const getListMarkerClass = (
     const counterName = getListCounterName(level);
     const counterStyle = getListCounterStyle(kind, level);
     const marker: JssStyle = {
-        ...getTextCssProperties(text),
+        ...getTextCssProperties(text, para),
         ...getTextStyleClassProperites(text, palette),
         display: "inline-block",
         minWidth: listIndent(1),

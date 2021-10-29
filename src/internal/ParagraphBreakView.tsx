@@ -12,7 +12,7 @@ import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara}, setOuterRef) => {
     const theme = useParagraphTheme();
     const style = theme.getAmbientTextStyle();
-    const css = useMemo(() => getTextCssProperties(style), [style]);
+    const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
     const formattingMarks = useFormattingMarks();
     const [innerRef, setInnerRef] = useState<HTMLElement | null>(null);

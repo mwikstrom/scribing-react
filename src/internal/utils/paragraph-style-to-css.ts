@@ -7,7 +7,6 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
     const {
         alignment,
         direction,
-        lineSpacing,
         spaceAbove,
         spaceBelow,
     } = style;
@@ -22,10 +21,6 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
         css.direction = direction;
     }
 
-    if (typeof lineSpacing === "number") {
-        css.lineHeight = toPercent(lineSpacing * 1.5);
-    }
-
     if (typeof spaceAbove === "number") {
         css.marginTop = toRem(spaceAbove/100);
     }
@@ -34,5 +29,14 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
         css.marginBottom = toRem(spaceBelow/100);
     }
 
+    return css;
+};
+
+/** @internal */
+export const getLineHeightProperty = (style: ParagraphStyle): CSSProperties => {
+    const { lineSpacing } = style;
+    const css: CSSProperties = {
+        lineHeight: toPercent((lineSpacing ?? 100) * 1.5),
+    };
     return css;
 };

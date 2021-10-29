@@ -32,7 +32,11 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
         return ambient.merge(givenStyle).merge(caretStyle);
     }, [givenStyle, theme, caretStyle]);
     const { bold, italic, color } = style;
-    const css = useMemo(() => getTextSizeCssProperties(style), [style]);
+    const css = useMemo(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { lineHeight, ...rest } = getTextSizeCssProperties(style, theme.getAmbientParagraphStyle());
+        return rest;
+    }, [style, theme]);
     const className = clsx(
         classes.root,
         classes[getColorRule(color)],

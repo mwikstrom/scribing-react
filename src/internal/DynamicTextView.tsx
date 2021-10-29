@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { DynamicText, TextStyle, TextStyleProps } from "scribing";
+import { DynamicText, ParagraphStyle, TextStyle, TextStyleProps } from "scribing";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { flowNode } from "./FlowNodeComponent";
@@ -28,7 +28,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         }
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
-    
+
+    const para = useMemo(() => theme.getAmbientParagraphStyle(), [theme]);
     const classes = useStyles();
     
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
@@ -71,6 +72,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                 <RenderValue
                     classes={classes}
                     style={style.unset("color")}
+                    para={para}
                     value={expression ? locale.void_result : locale.void_script}
                 />
             );
@@ -81,6 +83,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                 <RenderValue
                     classes={classes}
                     style={style.unset("color")}
+                    para={para}
                     value={locale.script_error}
                 />
             );
@@ -90,6 +93,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             <RenderValue
                 classes={classes}
                 style={style}
+                para={para}
                 value={result}
             />
         );
@@ -165,6 +169,7 @@ const makeOutlineCssProps = (color: string) => ({
 interface RenderValueProps {
     classes: ReturnType<typeof useStyles>;
     style: TextStyle;
+    para: ParagraphStyle;
     value: unknown;
 }
 
@@ -187,7 +192,7 @@ const RenderValue: FC<RenderValueProps> = props => {
     } else if (isTextObject(value)) {
         const { text } = value;
         const style = isStyleObject(value) ? props.style.merge(new TextStyle(value.style)) : props.style;
-        return <RenderValueSpan classes={props.classes} style={style} value={text}/>;
+        return <RenderValueSpan classes={props.classes} style={style} value={text} para={props.para}/>;
     } else {
         return <RenderValueSpan {...props}/>;
     }    
@@ -214,8 +219,8 @@ function isRecordObject(thing: unknown): thing is Record<string, unknown> {
     );
 }
 
-const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value }) => {
-    const css = useMemo(() => getTextCssProperties(style), [style]);
+const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value, para }) => {
+    const css = useMemo(() => getTextCssProperties(style, para), [style, para]);
     const className = useMemo(() => clsx(...getTextStyleClassNames(style, classes)), [style, classes]);
     return <span style={css} className={className}>{String(value)}</span>;
 };
