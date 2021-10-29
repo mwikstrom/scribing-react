@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Toolbox over interaction point (link/button) makes hover UX crappy
 - Text style for disabling spell checker (usage example: math/code)
 - FlowImage
 - Support any URL in OpenUrl interaction + add URL resolver callback prop (FlowView + FlowEditor)
