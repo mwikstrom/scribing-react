@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { FC } from "react";
 import { FlowSelection, TextRun, TextStyle } from "scribing";
-import { FlowNodeView } from "./FlowNodeView";
+import { ParagraphView } from "./ParagraphView";
 
 /** @internal */
 export interface EmptyFlowFragmentProps {
@@ -10,10 +10,10 @@ export interface EmptyFlowFragmentProps {
 
 /** @internal */
 export const EmptyFlowFragment: FC<EmptyFlowFragmentProps> = ({selection}) => {
-    const emptyTextRun = useMemo(() => new TextRun({ text: "", style: TextStyle.empty }), []);
+    const children = useMemo(() => Object.freeze([new TextRun({ text: "", style: TextStyle.empty })]), []);
     return (
-        <FlowNodeView
-            node={emptyTextRun}
+        <ParagraphView
+            children={children}
             selection={selection}
         />
     );

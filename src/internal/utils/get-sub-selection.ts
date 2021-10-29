@@ -42,7 +42,7 @@ export function getFlowFragmentSelection(
     position: number = array.slice(0, index).reduce((prev, curr) => prev + curr.size, 0),
     size: number = array.slice(index, index + length).reduce((prev, curr) => prev + curr.size, 0),
 ): boolean | FlowSelection {
-    if (length === 0 || size === 0) {
+    if (length === 0) {
         return false;
     }
     const fragmentRange = FlowRange.at(position, size);

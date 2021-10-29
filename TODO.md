@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Empty flow fragment shall wrap node in paragraph
 - Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
 - Cannot move down using arrow key when caret is placed before/inside inline box

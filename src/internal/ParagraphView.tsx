@@ -26,14 +26,14 @@ import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
-    children: FlowNode[];
-    breakNode: ParagraphBreak | null;
-    prevBreak: ParagraphBreak | null;
+    children: readonly FlowNode[];
+    breakNode?: ParagraphBreak | null;
+    prevBreak?: ParagraphBreak | null;
 }
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode, prevBreak, selection } = props;
+    const { children: childNodes, breakNode = null, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
