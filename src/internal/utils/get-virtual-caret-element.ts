@@ -35,7 +35,6 @@ export function getVirtualSelectionElement(
 export function getClientRectFromDomRange(range: Range): DOMRect {
     let rect = range.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0 && range.collapsed) {
-        console.log(`x:${rect.x}, y:${rect.y}, w:${rect.width}, h:${rect.height}`);
         const tempNode = document.createTextNode("\ufeff");
         range.insertNode(tempNode);
         rect = range.getBoundingClientRect();
