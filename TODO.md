@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Edit mode is probably incorrect after regaining focus (caret not shown)
 - Shortcut: CTRL + UP/DOWN to set super/sub
 - Baseline offset is broken in title paragraph variant
 - Tool: Insert box
