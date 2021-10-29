@@ -21,6 +21,7 @@ Record<ColorLocaleKey, string> {
     ltr_reading_direction: string;
     rtl_reading_direction: string;
     full_width_box: string;
+    enable_spell_check: string;
 }
 
 /** @public */
@@ -74,6 +75,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     box_variant_outlined: "Outlined",
     box_variant_alert: "Alert",
     box_variant_quote: "Quote",
+    enable_spell_check: "Enable spell check",
 });
 
 /** @public */

@@ -34,6 +34,7 @@ export const TextSegment: FC<TextSegmentProps> = props => {
             className={className}
             style={css}
             children={text || "\u200b"}
+            spellCheck={style.spellcheck}
         />
     );
 };

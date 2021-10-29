@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Text style for disabling spell checker (usage example: math/code)
 - FlowImage
 - Support any URL in OpenUrl interaction + add URL resolver callback prop (FlowView + FlowEditor)
 - Deleting all when there's a final para break, shall result in an empty document with a para break

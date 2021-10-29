@@ -10,6 +10,7 @@ import {
     mdiFormatTextdirectionRToL,
     mdiArrowExpandHorizontal,
     mdiTextBoxOutline,
+    mdiSpellcheck,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -28,6 +29,14 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
+    const toggleSpellcheck = useCallback(() => {
+        commands.toggleSpellcheck();
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -120,6 +129,13 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         />
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.rtl_reading_direction}
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuDivider/>
+                    <ToolMenuItem onClick={toggleSpellcheck}>
+                        <Icon path={commands.isSpellcheckEnabled() ? mdiCheck : mdiSpellcheck} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.enable_spell_check}
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>

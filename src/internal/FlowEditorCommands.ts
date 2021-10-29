@@ -601,6 +601,14 @@ export class FlowEditorCommands {
     toggleFormattingMarks(): void {
         this.#state = this.#apply(this.#state.set("formattingMarks", !this.#state.formattingMarks));
     }
+
+    isSpellcheckEnabled(): boolean | undefined {
+        return this.getTextStyle().spellcheck;
+    }
+
+    toggleSpellcheck(): void {
+        this.formatText("spellcheck", !this.isSpellcheckEnabled());
+    }
 }
 
 export type BooleanTextStyleKeys = {
