@@ -22,7 +22,7 @@ export const FlowView: FC<FlowViewProps> = props => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <FlowFragmentView nodes={nodes} selection={selection ?? false}/>
+            <FlowFragmentView nodes={nodes} selection={selection ?? false} emptyTrailingPara/>
         </div>
     );
 };
