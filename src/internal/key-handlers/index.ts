@@ -1,4 +1,5 @@
 import { BackspaceHandler } from "./BackspaceHandler";
+import { BaselineHandler } from "./BaselineHandler";
 import { EndHandler } from "./EndHandler";
 import { KeyHandler } from "./KeyHandler";
 import { RedoHandler } from "./RedoHandler";
@@ -10,6 +11,7 @@ import { UndoHandler } from "./UndoHandler";
 
 const ALL_HANDLERS = [
     BackspaceHandler,
+    BaselineHandler,
     EndHandler,
     RedoHandler,
     SetListMarkerHandler,
