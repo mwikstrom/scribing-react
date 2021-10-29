@@ -3,8 +3,8 @@ SCRIBING TODO
 - Italic cursor does not work when it has display:inline, but that's needed to make it properly sized
 - Flow caret stable should be a contextual prop
 - Cannot move down using arrow key when caret is placed before/inside inline box
-- Spell check should be a contextual prop?
 - Shortcut: CTRL + UP/DOWN to set super/sub
+- Flow caret causes double click to select word to be broken
 - Custom selection style?
 - Virtual caret causes custom caret to stop blinking (render loop)
 - Custom caret shall be hidden when scrolled out of view
