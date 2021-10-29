@@ -550,6 +550,25 @@ LoremIpsum.args = {
     ])),
 };
 
+export const Alert = Template.bind({});
+Alert.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        {
+            box: [
+                { text: "Warning!", style: { bold: true } },
+                { break: "para" },
+                "This is a warning alert - check it out!",
+                { break: "para" },
+            ],
+            style: {
+                variant: "alert",
+                color: "warning"
+            }
+        },
+        { break: "para" },
+    ])),
+};
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""

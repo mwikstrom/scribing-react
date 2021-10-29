@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
 - FlowImage

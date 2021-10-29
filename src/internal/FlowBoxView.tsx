@@ -225,11 +225,11 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
     },
     alertBody: {
         position: "relative",
-        marginLeft: 30,
+        marginLeft: "2em",
     },
     alertIcon: {
         position: "absolute",
-        left: -30,
+        left: "-2.1em",
     },
     content: {
         outline: "none",

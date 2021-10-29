@@ -91,7 +91,7 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
         }
     },
     alert: {
-        padding: "2px 5px",
+        padding: "1em",
         borderWidth: 1,
         borderRadius: 4,
         borderStyle: "solid",
