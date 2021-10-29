@@ -396,11 +396,19 @@ export class FlowEditorCommands {
     }
 
     removeBackward(): void {
+        this.remove("removeBackward");
+    }
+
+    removeForward(): void {
+        this.remove("removeForward");
+    }
+
+    remove(whenCollapsed: RemoveFlowSelectionOptions["whenCollapsed"] = "noop"): void {
         const { selection } = this.#state;
         if (selection) {
             const options: RemoveFlowSelectionOptions = {
                 ...this.getTargetOptions(),
-                whenCollapsed: "removeBackward",
+                whenCollapsed,
             };
             this.#state = this.#apply(selection?.remove(options));
         }
@@ -428,7 +436,7 @@ export class FlowEditorCommands {
     insertContent(content: FlowContent): void {
         const { selection } = this.#state;
         if (selection) {
-            this.#apply(selection.insert(content));
+            this.#state = this.#apply(selection.insert(content));
         }
     }
 
@@ -439,6 +447,27 @@ export class FlowEditorCommands {
     setBoxInteraction(value: Interaction | null): void {
         // TODO: Interaction should be unset when null, this should be accomplished by having ambient box style
         this.formatBox("interaction", value);
+    }
+
+    isAtEndOfTrailingParagraph(): boolean {
+        const { selection } = this.#state;
+        return selection !== null && null !== selection.transformRanges((range, options) => {
+            if (options && options.target && range.last === options.target.size) {
+                return range;
+            } else {
+                return null;
+            }
+        }, this.getTargetOptions());
+    }
+
+    moveCaretBack(): boolean {
+        const { selection } = this.#state;
+        if (!selection) {
+            return false;
+        }
+        const newSelection = selection.transformRanges(range => FlowRange.at(Math.max(0, range.first - 1)));
+        this.#state = this.#apply(this.#state.set("selection", newSelection));
+        return true;
     }
 
     isBox(): boolean {
@@ -574,6 +603,6 @@ export class FlowEditorCommands {
     }
 }
 
-type BooleanTextStyleKeys = {
+export type BooleanTextStyleKeys = {
     [K in keyof TextStyleProps]-?: boolean extends TextStyleProps[K] ? K : never
 }[keyof TextStyleProps];

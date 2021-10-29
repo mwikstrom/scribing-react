@@ -19,7 +19,6 @@ import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
 import { TooltipScope, useShowTools } from "./internal/TooltipScope";
-import { PendingOperation } from "./internal/input-handlers/PendingOperation";
 import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorCommands } from "./internal/FlowEditorCommands";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
@@ -133,10 +132,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [autoFocus, editingHost]);
 
-    // Keep track of pending operation
-    const pendingOperation = useRef<PendingOperation | null>(null);
-    const completePendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
     // Keep track of undo stack shall be merged
     const shouldMergeUndo = useRef(false);
     const stopMergeUndoTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -150,19 +145,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         let after: FlowEditorState;
         let operation: FlowOperation | null;
         let didApplyMine = false;
-
-        if (pendingOperation.current !== null) {
-            const complete = pendingOperation.current.complete(state, editingHost);            
-            if (complete !== null) {
-                base = base.applyMine(complete, { mergeUndo });
-                didApplyMine = true;
-            }
-
-            pendingOperation.current = null;
-            if (completePendingTimeout.current !== null) {
-                clearTimeout(completePendingTimeout.current);
-            }
-        }
 
         if (result instanceof FlowOperation) {
             operation = result;
@@ -217,42 +199,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        try {
-            const inputHandler = getInputHandler(inputType);
-            if (!inputHandler) {
-                console.warn(`Unsupported input type: ${inputType}`, event);
-                return;
-            }
-
-            // It's safe to assume that editing host is not null, because otherwise
-            // this event handler wouldn't be invoked.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const result = inputHandler(event, editingHost!, state, pendingOperation.current);
-
-            if (result instanceof PendingOperation) {
-                pendingOperation.current = result;
-
-                if (completePendingTimeout.current !== null) {
-                    clearTimeout(completePendingTimeout.current);
-                }
-
-                completePendingTimeout.current = setTimeout(() => applyChange(null), 500);
-            } else {
-                event.preventDefault();
-                if (Array.isArray(result)) {
-                    let base = state;
-                    for (const item of result) {
-                        const change = typeof item === "function" ? item(base) : item;
-                        base = applyChange(change, base);
-                    }
-                } else {
-                    applyChange(result);
-                }
-            }
-        } catch (err) {
-            event.preventDefault();
-            console.error("Input handler threw exception:", err);
+        event.preventDefault();
+        
+        const inputHandler = getInputHandler(inputType);
+        if (!inputHandler) {
+            console.warn(`Unsupported input type: ${inputType}`, event);
+            return;
         }
+
+        const commands = new FlowEditorCommands(state, applyChange);
+        inputHandler(commands, event);
     }, [state, editingHost, applyChange]);
 
     // Keep track of DOM selection
@@ -264,7 +220,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         [],
     );
     useEffect(() => {
-        if (!editingHost || pendingOperation.current !== null) {
+        if (!editingHost) {
             return;
         }
 

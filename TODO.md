@@ -34,7 +34,6 @@ LOWER PRIO
 - Paratype: use actual name instead of "freezing"
 - React jest snapshots for view comps
 - Review react exports
-- Use FlowEditorCommands in input handlers
 - Unify interaction code in FlowButtonView and LinkView
 - @validating should verify new.target in ctor
 - XML name + attrs on flow box
