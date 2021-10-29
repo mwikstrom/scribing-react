@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import React, { useEffect, useMemo } from "react";
-import { FC, useState } from "react";
+import React, { useMemo } from "react";
+import { FC } from "react";
 import { FlowColor, TextStyle } from "scribing";
-import { useCaretStyle } from "./CaretStyleScope";
+import { useCaretStyle, useIsCaretSteady } from "./FlowCaretScope";
 import { useEditMode } from "./EditModeScope";
 import { createUseFlowStyles } from "./JssTheming";
 import { useParagraphTheme } from "./ParagraphThemeScope";
@@ -17,10 +17,10 @@ export interface FlowCaretProps {
 export const FlowCaret: FC<FlowCaretProps> = props => {
     const { style: givenStyle = TextStyle.empty } = props;
     const classes = useStyles();
-    const [steady, setSteady] = useState(false);    
     const theme = useParagraphTheme();
     const editMode = useEditMode();
     const caretStyle = useCaretStyle();
+    const steady = useIsCaretSteady();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {
@@ -37,12 +37,6 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
         bold && classes.bold,
         italic && classes.italic,
     );
-
-    useEffect(() => {
-        const timer = setTimeout(() => setSteady(true), 500);
-        return () => clearTimeout(timer);
-    }, []);
-
     return editMode !== true ? null : (
         <span className={className} style={css}/>
     );

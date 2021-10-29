@@ -30,7 +30,7 @@ import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition } from "./internal/utils/set-caret-position";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
-import { CaretStyleScope } from "./internal/CaretStyleScope";
+import { CaretStyleScope } from "./internal/FlowCaretScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -378,7 +378,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <CaretStyleScope style={state.caret}>
+                    <CaretStyleScope style={state.caret} selection={state.selection}>
                         <div 
                             ref={setEditingHost}
                             className={classes.root}
