@@ -62,7 +62,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         autoFocus,
         style,
         nativeCaret,
-        onStateChange,
+        onStateChange: onStateChangeProp,
     } = props;
 
     // JSS classes
@@ -76,6 +76,23 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultPropName: "defaultState",
         defaultValue: defaultState,
     });
+
+    // Track whether component is mounted
+    const mountedRef = useRef(false);
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => { mountedRef.current = false; };
+    }, []);
+
+    // State change handler
+    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>((after, ...rest) => {
+        if (mountedRef.current) {
+            setState(after);
+            if (onStateChangeProp) {
+                onStateChangeProp(after, ...rest);
+            }
+        }
+    }, [onStateChangeProp, setState]);
 
     // Keep track of editing host element
     const [editingHost, setEditingHostCore] = useState<HTMLElement | null>(null);
@@ -163,11 +180,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return state;
         }
         
-        if (onStateChange) {
-            onStateChange(after, operation, state);
-        }
-
-        setState(after);
+        onStateChange(after, operation, state);
 
         if (didApplyMine) {
             shouldMergeUndo.current = true;
@@ -285,11 +298,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             caret: TextStyle.empty,
         });
 
-        if (onStateChange) {
-            onStateChange(after, null, state);
-        }
-
-        setState(after);
+        onStateChange(after, null, state);
     }, [domSelectionChange, editingHost, state, onStateChange]);
    
     // Keep DOM selection in sync with editor selection
