@@ -65,12 +65,12 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     ), [childNodes]);
     const nodesAndLinks = useMemo(() => splitToLinks(adjustedNodes, selection), [adjustedNodes, selection]);
     const [spellCheck, setSpellCheck] = useState(false);
-    // Enable spell checker only after text and selection has been idle for a while
+    // Enable spell checker only after selection has been idle for a while
     useEffect(() => {
         const timeout = setTimeout(() => setSpellCheck(true), 500);
         setSpellCheck(false);
         return () => clearTimeout(timeout);
-    }, [childNodes, selection]);
+    }, [selection]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css} spellCheck={spellCheck}>
