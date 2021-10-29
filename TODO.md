@@ -1,10 +1,11 @@
 SCRIBING TODO
 =============
+- No caret is shown when content is empty
+- Edit mode is probably incorrect after regaining focus (caret not shown)
 - Cannot move down using arrow key when caret is placed before/inside inline box
 - Shortcut: CTRL + UP/DOWN to set super/sub
 - Flow caret causes double click to select word to be broken
 - Custom selection style?
-- Edit mode is probably incorrect after regaining focus (caret not shown)
 - Baseline offset is broken in title paragraph variant
 - Caret in empty para causes re-render loop
 - Fix pilcrow after full width flow box
