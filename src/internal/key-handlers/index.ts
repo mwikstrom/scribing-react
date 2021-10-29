@@ -1,10 +1,9 @@
 import { BackspaceHandler } from "./BackspaceHandler";
 import { BaselineHandler } from "./BaselineHandler";
-import { EndHandler } from "./EndHandler";
 import { KeyHandler } from "./KeyHandler";
 import { RedoHandler } from "./RedoHandler";
 import { SetListMarkerHandler } from "./SetListMarkerHandler";
-import { SetParagraphStyleHandler } from "./SetParagraphStyleHandler";
+import { SetParagraphVariantHandler } from "./SetParagraphVariantHandler";
 import { TabHandler } from "./TabHandler";
 import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
@@ -12,21 +11,19 @@ import { UndoHandler } from "./UndoHandler";
 const ALL_HANDLERS = [
     BackspaceHandler,
     BaselineHandler,
-    EndHandler,
     RedoHandler,
     SetListMarkerHandler,
-    SetParagraphStyleHandler,
+    SetParagraphVariantHandler,
     TabHandler,
     ToggleFormattingMarksHandler,
     UndoHandler,
 ];
 
-export const handleKeyEvent: KeyHandler = (e, state) => {
+export const handleKeyEvent: KeyHandler = (event, commands) => {
     for (const handler of ALL_HANDLERS) {
-        const result = handler(e, state);
-        if (result !== void(0)) {
-            e.preventDefault();
-            return result;
+        handler(event, commands);
+        if (event.defaultPrevented) {
+            break;
         }
     }
 };

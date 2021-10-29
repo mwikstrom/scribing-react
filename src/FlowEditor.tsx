@@ -197,12 +197,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [state, editingHost, onStateChange]);
 
     // Handle keyboard input
-    useNativeEventHandler(editingHost, "keydown", (event: KeyboardEvent) => {
-        const result = handleKeyEvent(event, state);
-        if (result) {
-            applyChange(result);
-        }
-    }, [state]);
+    useNativeEventHandler(
+        editingHost,
+        "keydown",
+        (event: KeyboardEvent) => handleKeyEvent(event, new FlowEditorCommands(state, applyChange)),
+        [state, applyChange]
+    );
 
     // Handle composition events  
     useNativeEventHandler(editingHost, "compositionend", (event: CompositionEvent) => {

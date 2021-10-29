@@ -1,14 +1,15 @@
 import { KeyHandler } from "./KeyHandler";
 
-export const TabHandler: KeyHandler = (e, state) => {
+export const TabHandler: KeyHandler = (e, commands) => {
     // Tab is used to increase/decreate list level
     if (e.key === "Tab") {
-        if (state.selection && !e.ctrlKey && !e.altKey) {
-            const delta = e.shiftKey ? -1 : 1;
-            const operation = state.selection.incrementListLevel(state.content, delta);
-            return operation;
+        e.preventDefault();
+        if (!e.ctrlKey && !e.altKey) {
+            if (e.shiftKey) {
+                commands.decrementListLevel();
+            } else {
+                commands.incrementListLevel();
+            }
         }
-        
-        return null;
     }
 };

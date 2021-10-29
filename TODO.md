@@ -16,6 +16,7 @@ SCRIBING TODO
 - Tool: Set line height
 - Tool: Set font size
 - Tool: Set font family
+- HOME/END keys doesn't work as expected
 
 LOWER PRIO
 ==========
@@ -33,7 +34,7 @@ LOWER PRIO
 - Paratype: use actual name instead of "freezing"
 - React jest snapshots for view comps
 - Review react exports
-- Use FlowEditorCommands in input handlers and key handlers
+- Use FlowEditorCommands in input handlers
 - Unify interaction code in FlowButtonView and LinkView
 - @validating should verify new.target in ctor
 - XML name + attrs on flow box

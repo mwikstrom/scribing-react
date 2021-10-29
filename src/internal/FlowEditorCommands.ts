@@ -14,6 +14,7 @@ import {
     ParagraphStyle, 
     ParagraphStyleProps, 
     ParagraphVariant, 
+    RemoveFlowSelectionOptions, 
     TargetOptions, 
     TextRun, 
     TextStyle, 
@@ -30,6 +31,16 @@ export class FlowEditorCommands {
         this.#state = state;
         this.#apply = apply;
     }
+
+    undo(): void {
+        this.#state = this.#apply(this.#state.undo());
+    }
+
+    redo(): void {
+        this.#state = this.#apply(this.#state.redo());
+    }
+
+
 
     isCaret(): boolean {
         const { selection } = this.#state;
@@ -89,6 +100,25 @@ export class FlowEditorCommands {
             return false;
         }
     }
+
+    increaseBaselineOffset(): void {
+        const baseline = this.getBaselineOffset();
+        console.log("current", baseline);
+        if (baseline === "normal") {
+            this.setBaselineOffset("super");
+        } else if (baseline === "sub") {
+            this.setBaselineOffset("normal");
+        }
+    }
+
+    decreaseBaselineOffset(): void {
+        const baseline = this.getBaselineOffset();
+        if (baseline === "normal") {
+            this.setBaselineOffset("sub");
+        } else if (baseline === "super") {
+            this.setBaselineOffset("normal");
+        }
+    }    
 
     toggleSubscript(): void {
         if (this.isSubscript()) {
@@ -362,6 +392,17 @@ export class FlowEditorCommands {
             const options = this.getTargetOptions();
             const operation = selection.formatParagraph(style, options);
             this.#state = this.#apply(operation);
+        }
+    }
+
+    removeBackward(): void {
+        const { selection } = this.#state;
+        if (selection) {
+            const options: RemoveFlowSelectionOptions = {
+                ...this.getTargetOptions(),
+                whenCollapsed: "removeBackward",
+            };
+            this.#state = this.#apply(selection?.remove(options));
         }
     }
 

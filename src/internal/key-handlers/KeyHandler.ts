@@ -1,7 +1,7 @@
-import { FlowEditorState, FlowOperation } from "scribing";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 
 /** @internal */
 export type KeyHandler = (
     event: KeyboardEvent,
-    state: FlowEditorState,
-) => FlowOperation | FlowEditorState | null | undefined;
+    commands: FlowEditorCommands,
+) => void;
