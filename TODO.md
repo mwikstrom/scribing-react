@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Italic cursor does not work when it has display:inline, but that's needed to make it properly sized
 - Cannot move down using arrow key when caret is placed before/inside inline box
 - Shortcut: CTRL + UP/DOWN to set super/sub
 - Flow caret causes double click to select word to be broken

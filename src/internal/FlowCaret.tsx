@@ -46,23 +46,37 @@ const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
     root: {
         display: "inline",
         pointerEvents: "none",
-        outlineColor: "currentcolor",
-        outlineStyle: "solid",
-        outlineOffset: 0,
-        outlineWidth: 1,
+        position: "relative",
+        width: 0,
         height: "1em",
+        "&::after": {
+            position: "absolute",
+            content: "''",
+            display: "inline",
+            backgroundColor: "currentcolor",
+            width: 2,
+            left: -1,
+            bottom: 0,
+            height: "1em",
+        }
     },
     bold: {
-        outlineWidth: 2,
+        "&::after": {
+            width: 3,
+        }
     },
     italic: {
-        transform: "rotate(10deg)",
+        "&::after": {
+            transform: "rotate(10deg)",
+        }
     },
     steady: {
-        animationName: "$blink",
-        animationDuration: "1060ms",
-        animationTimingFunction: "linear",
-        animationIterationCount: "infinite",
+        "&::after": {
+            animationName: "$blink",
+            animationDuration: "1060ms",
+            animationTimingFunction: "linear",
+            animationIterationCount: "infinite",
+        }
     },
     defaultColor: {
         color: palette.text,
