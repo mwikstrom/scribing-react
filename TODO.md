@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Italic cursor does not work when it has display:inline, but that's needed to make it properly sized
-- No caret when placed before box
 - Flow caret stable should be a contextual prop
 - Flow caret move causes flickering spell check
 - Spell check should be a contextual prop?
