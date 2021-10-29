@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Tool: Insert box
-- New Ops: Wrap + Unwrap
 - Improve alert icon positioning (line-height)
 - Text style for disabling spell checker (usage example: math/code)
 - Toolbox over interaction point (link/button) makes hover UX crappy
@@ -26,6 +25,7 @@ LOWER PRIO
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
 - Custom selection style?
 - New interaction?: Open Topic
+- New Ops: Wrap + Unwrap
 - FlowTable
 - Escape to close menu, but not toolbox
 - Double press CTRL + period shall select entire innermost flow box (press again to select next outer box)
