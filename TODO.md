@@ -1,6 +1,6 @@
 SCRIBING TODO
 =============
-- Custom caret messes up line breaking
+- Italic caret does not work
 - Double arrow is needed to move out of empty flow box
 - Edit mode is probably incorrect after regaining focus (caret not shown)
 - Cannot move down using arrow key when caret is placed before/inside inline box
@@ -8,7 +8,6 @@ SCRIBING TODO
 - Flow caret causes double click to select word to be broken
 - Custom selection style?
 - Baseline offset is broken in title paragraph variant
-- Caret in empty para causes re-render loop
 - Fix pilcrow after full width flow box
 - Fix insert content after full width flow box
 - New Ops: Wrap + Unwrap
