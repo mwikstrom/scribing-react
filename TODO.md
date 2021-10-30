@@ -1,12 +1,11 @@
 SCRIBING TODO
 =============
-- Fix flow box padding/margin
-- FlowIcon
-- Redesign alert box. No implicit icon. Use FlowIcon for that instead.
 - FlowImage
+- UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - FlowVideo
 - FlowAudio
-- UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- FlowIcon
+- Redesign alert box? No implicit icon. Use FlowIcon for that instead.
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
 - Flow caret causes double click to select word to be broken
