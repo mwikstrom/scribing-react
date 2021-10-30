@@ -1,7 +1,12 @@
 SCRIBING TODO
 =============
+- Fix flow box padding/margin
+- FlowIcon
+- Redesign alert box. No implicit icon. Use FlowIcon for that instead.
 - FlowImage
-- Support any URL in OpenUrl interaction + add URL resolver callback prop (FlowView + FlowEditor)
+- FlowVideo
+- FlowAudio
+- UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
 - Flow caret causes double click to select word to be broken
