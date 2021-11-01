@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react";
-import { createUseStyles } from "react-jss";
 import { IconPack } from "../IconPack";
-import { makeJssId } from "../utils/make-jss-id";
+import { createUseFlowStyles } from "../JssTheming";
 import { IconPackSelector } from "./IconPackSelector";
 import { MdiTagSelector } from "./MdiTagSelector";
 import { ToolDivider } from "./ToolDivider";
@@ -37,22 +36,30 @@ export const IconChooser: FC<IconChooserProps> = props => {
                     </>
                 )}
             </div>
+            <div className={classes.gallery}>            
+            </div>
         </div>
     );
 };
 
-const useStyles = createUseStyles({
+const useStyles = createUseFlowStyles("IconChooser", ({palette}) => ({
     root: {
         display: "flex",
         flexDirection: "column",
         padding: 4,
-
+        width: "calc(min(80vw, 800px))",
     },
     header: {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        paddingBottom: 4,
+    },
+    gallery: {
+        border: `1px solid ${palette.menuBorder}`,
+        borderRadius: 4,
+        backgroundColor: palette.paper,
+        height: 360,
+        overflowY: "auto",
     }
-}, {
-    generateId: makeJssId("IconChooser"),
-});
+}));
