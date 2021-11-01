@@ -26,7 +26,7 @@ export const ToolMenuItem: FC<ToolMenuItemProps> = ({onClick, disabled, children
             ref={setRootElem}
             className={className}
             children={children}
-            onClick={onClick}
+            onClick={disabled ? void(0) : onClick}
         />
     );
 };
