@@ -1,8 +1,17 @@
 SCRIBING TODO
 =============
-- FlowImage
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- FlowImage
+  - Insert image from file
+  - Drag & Drop to add image
+  - Use intersection observer to load images
+  - Extract and assign placeholder when replacing/inserting image
+  - Replace image from file
+  - Drag & Drop to replace image
 - FlowIcon
+  - Insert icon
+  - Change icon?
+  - Edit custom icon path
 - Redesign alert box? No implicit icon. Use FlowIcon for that instead.
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
