@@ -6,10 +6,12 @@ import { createUseFlowStyles } from "./JssTheming";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
+import Icon from "@mdi/react";
+import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 
 export const FlowIconView = flowNode<FlowIcon>((props, ref) => {
     const { node } = props;
-    const { style: givenStyle, name: givenName } = node;
+    const { style: givenStyle, data } = node;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -20,55 +22,47 @@ export const FlowIconView = flowNode<FlowIcon>((props, ref) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
-    const className = useMemo(() => {
-        const resolvedName = PREDEFINED.get(givenName) ?? givenName;
-        const iconClasses: string[] = [];
-
-        if (/^@mdi\//.test(resolvedName)) {
-            ensureMdiAvailable();
-            iconClasses.push("mdi", resolvedName.replace(/^@mdi\//, "mdi-"));
+    const path = useMemo(() => {
+        if (data in PREDEFINED_ICON_PATHS) {
+            return PREDEFINED_ICON_PATHS[data as PredefinedIcon];
+        } else if (ICON_NAME_PATTERN.test(data)) {
+            console.warn("Unsupported icon: ", data);
+            return "";
         } else {
-            console.warn("Unsupported icon name:", givenName);
-            iconClasses.push(classes.unsupported);
+            return data;
         }
+    }, [data]);
 
-        return clsx(
-            classes.root,
-            ...getTextStyleClassNames(style, classes),
-            ...iconClasses,
-        );
-    }, [style, classes, givenName]);
+    const className = useMemo(() => clsx(
+        classes.root,
+        ...getTextStyleClassNames(style, classes)
+    ), [style, classes]);
 
     return (
-        <span ref={ref} className={className} style={css} contentEditable={false}/>
+        <span ref={ref} className={className} style={css} contentEditable={false}>
+            <Icon path={path} className={classes.icon}/>
+        </span>
     );
 });
 
 const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
     ...textStyles(palette),
     root: {
-        "&::before": {
-            textDecoration: "inherit"
-        }
+        display: "inline",
     },
-    unsupported: {}
+    icon: {
+        display: "inline-block",
+        verticalAlign: "text-bottom",
+        width: "1.3em",
+        height: "1.3em",
+    },
 }));
 
+const ICON_NAME_PATTERN = /^[a-z-]+$/i;
 
-const _PREDEFINED: Record<PredefinedIcon, string> = Object.freeze({
-    information: "@mdi/information-outline",
-    warning: "@mdi/alert-outline",
-    error: "@mdi/alert-octagon-outline",
-    success: "@mdi/check-circle-outline",
+const PREDEFINED_ICON_PATHS: Readonly<Record<PredefinedIcon, string>> = Object.freeze({
+    information: mdiInformationOutline,
+    success: mdiCheckCircleOutline,
+    warning: mdiAlertOutline,
+    error: mdiAlertOctagonOutline,
 });
-
-const PREDEFINED: ReadonlyMap<string, string> = Object.freeze(new Map(Object.entries(_PREDEFINED)));
-
-function ensureMdiAvailable() {
-    if (document.querySelector("link[rel=stylesheet][href*=materialdesignicons]") === null) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css";
-        document.head.append(link);
-    }
-}
