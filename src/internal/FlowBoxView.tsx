@@ -20,15 +20,8 @@ import { createUseFlowStyles } from "./JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./mapping/flow-axis";
 import { getBoxCssProperties } from "./utils/box-style-to-css";
 import { boxStyles, getBoxStyleClassNames } from "./utils/box-style-to-classes";
-import {
-    mdiAlertOctagonOutline,
-    mdiAlertOutline,
-    mdiCheckCircleOutline,
-    mdiInformationOutline,
-    mdiLoading,
-} from "@mdi/js";
+import { mdiLoading } from "@mdi/js";
 import Icon from "@mdi/react";
-import { useFlowPalette } from "./FlowPaletteScope";
 import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useInteraction } from "./hooks/use-interaction";
@@ -83,7 +76,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             return [sourceResult];
         }
     }, [hasSource, sourceReady, sourceResult]);
-    const palette = useFlowPalette();
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
     const showSelectionOutline = !error && (
@@ -120,7 +112,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         selection: innerSelection,
     };
 
-    let children = !hasSource || sourceResult === true ? (
+    const children = !hasSource || sourceResult === true ? (
         <ContentElement {...contentElementProps}/>
     ) : !sourceReady ? (
         <div className={classes.sourcePending}>
@@ -137,29 +129,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             prevBreak={index > 0 ? lastBreak : null}
         />
     ));
-
-    if (style.variant === "alert" && style.color && style.color !== "default") {
-        let icon: string | undefined;
-
-        if (style.color === "information") {
-            icon = mdiInformationOutline;
-        } else if (style.color === "warning") {
-            icon = mdiAlertOutline;
-        } else if (style.color === "success") {
-            icon = mdiCheckCircleOutline;
-        } else if (style.color === "error") {
-            icon = mdiAlertOctagonOutline;
-        }
-
-        if (icon) {
-            children = (
-                <div className={classes.alertBody}>
-                    <Icon path={icon} size={1} className={classes.alertIcon} color={palette[style.color]}/>
-                    {children}
-                </div>
-            );
-        }
-    }
 
     return (
         <Component 
@@ -223,19 +192,8 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         outlineColor: palette.subtle,
         outlineOffset: 0,
     },
-    alertBody: {
-        position: "relative",
-        marginLeft: "2em",
-    },
-    alertIcon: {
-        position: "absolute",
-        left: "-2.1em",
-    },
     content: {
         outline: "none",
-        "$alert>&": {
-            flex: 1,
-        },
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
         },
