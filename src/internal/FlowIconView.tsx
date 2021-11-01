@@ -1,17 +1,15 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, MouseEvent, useState } from "react";
-import { FlowIcon, PredefinedIconType } from "scribing";
+import React, { useMemo } from "react";
+import { FlowIcon, PredefinedIcon } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
-import Icon from "@mdi/react";
-import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 
-export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
+export const FlowIconView = flowNode<FlowIcon>((props, ref) => {
     const { node } = props;
-    const { style: givenStyle, path: givenPath } = node;
+    const { style: givenStyle, name: givenName } = node;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -22,65 +20,55 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
+    const className = useMemo(() => {
+        const resolvedName = PREDEFINED.get(givenName) ?? givenName;
+        const iconClasses: string[] = [];
 
-    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const ref = useCallback((dom: HTMLElement | null) => {
-        outerRef(dom);
-        setRootElem(dom);
-    }, [outerRef]);
-
-    const path = useMemo(() => {
-        if (givenPath === "warning") {
-            return mdiAlertOutline;
-        } else if (givenPath === "error") {
-            return mdiAlertOctagonOutline;
-        } else if (givenPath === "information") {
-            return mdiInformationOutline;
-        } else if (givenPath === "success") {
-            return mdiCheckCircleOutline;
-        } else if (PredefinedIconType.test(givenPath)) {
-            console.warn("Unsupported predefined icon: ", givenPath);
-            return "";
+        if (/^@mdi\//.test(resolvedName)) {
+            ensureMdiAvailable();
+            iconClasses.push("mdi", resolvedName.replace(/^@mdi\//, "mdi-"));
         } else {
-            return givenPath;
+            console.warn("Unsupported icon name:", givenName);
+            iconClasses.push(classes.unsupported);
         }
-    }, [givenPath]);
 
-    const className = useMemo(() => clsx(
-        classes.root,
-        ...getTextStyleClassNames(style, classes)
-    ), [style, classes]);
+        return clsx(
+            classes.root,
+            ...getTextStyleClassNames(style, classes),
+            ...iconClasses,
+        );
+    }, [style, classes, givenName]);
 
-    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
-        const domSelection = document.getSelection();
-        if (domSelection && rootElem) {
-            if (domSelection && domSelection.rangeCount === 1) {
-                domSelection.getRangeAt(0).selectNode(rootElem);
-                e.stopPropagation();
-            }
-        }
-    }, [rootElem]);
     return (
-        <span ref={ref} className={className} style={css} contentEditable={false} onClick={onClick}>
-            <Icon path={path} className={classes.icon}/>
-        </span>
+        <span ref={ref} className={className} style={css} contentEditable={false}/>
     );
 });
 
 const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
     ...textStyles(palette),
     root: {
-        display: "inline",
+        "&::before": {
+            textDecoration: "inherit"
+        }
     },
-    icon: {
-        display: "inline",
-        width: "1.2em",
-        height: "1.2em",
-    },
-    selected: {
-        outlineStyle: "dashed",
-        outlineWidth: 1,
-        outlineColor: palette.subtle,
-        outlineOffset: "0.2rem",    
-    },
+    unsupported: {}
 }));
+
+
+const _PREDEFINED: Record<PredefinedIcon, string> = Object.freeze({
+    information: "@mdi/information-outline",
+    warning: "@mdi/alert-outline",
+    error: "@mdi/alert-octagon-outline",
+    success: "@mdi/check-circle-outline",
+});
+
+const PREDEFINED: ReadonlyMap<string, string> = Object.freeze(new Map(Object.entries(_PREDEFINED)));
+
+function ensureMdiAvailable() {
+    if (document.querySelector("link[rel=stylesheet][href*=materialdesignicons]") === null) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css";
+        document.head.append(link);
+    }
+}
