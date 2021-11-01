@@ -6,6 +6,7 @@ SCRIBING TODO
 - Selection style for LineBreakView
 - Selection style for ParagraphBreakView
 - FlowIcon
+  - Display unsupported
   - Insert icon
   - Change icon?
   - Edit custom icon path
