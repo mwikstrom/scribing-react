@@ -83,7 +83,7 @@ const mapFlowPositionToDomCore = (
         return { node, offset };
     }
 
-    return mapFlowPositionToDom(position, container, preferNested);
+    return mapFlowPositionToDom(position, container, preferNested && !mapped);
 };
 
 function* getDescendantTextNodes(container: Node): Iterable<Node> {
