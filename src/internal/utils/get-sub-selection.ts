@@ -4,8 +4,8 @@ import {
     FlowRange, 
     FlowRangeSelection, 
     FlowSelection, 
-    InlineNode, 
-    NestedFlowSelection, 
+    NestedFlowSelection,
+    ParagraphBreak, 
 } from "scribing";
 
 /** @internal */
@@ -78,12 +78,12 @@ export function getFlowFragmentSelection(
     }
 }
 
-// Caret shall be placed at tht start of a node when...
+// Caret shall be placed at the start of a node when...
 const placeCaretAtStartOfNode = (array: readonly FlowNode[], index: number) => (
     // ...it's the first node, or...
     index === 0 ||
-    // ...the previous node isn't an inline node
-    !(array[index - 1] instanceof InlineNode)
+    // ...the previous node is a paragraph break
+    array[index - 1] instanceof ParagraphBreak
 );
 
 // Caret shall be placed at the end of a node when...
