@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Generic selector: Paragraph Variant Selector, Icon Pack Selector, Box Variant Selector
 - MDI tag selector
 - Icon chooser
 - FlowIcon: Cannot use as link because click is intercepted for selection!
