@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DynamicText, FlowBox, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
+import { DynamicText, FlowBox, FlowIcon, FlowNode, LineBreak, ParagraphBreak, TextRun } from "scribing";
 import { useFlowComponentMap } from "../FlowComponentMapScope";
 import { FlowNodeComponent } from "../FlowNodeComponent";
 
@@ -20,7 +20,8 @@ type FlowNodeComponentKey = (
     "paragraphBreakView" | 
     "boxView" | 
     "dynamicTextView" |
-    "fallbackView"
+    "fallbackView" |
+    "iconView"
 );
 
 const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
@@ -34,6 +35,8 @@ const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
         return "boxView";
     } else if (node instanceof DynamicText) {
         return "dynamicTextView";
+    } else if (node instanceof FlowIcon) {
+        return "iconView";
     } else {
         return "fallbackView";
     }
