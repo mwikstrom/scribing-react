@@ -9,6 +9,7 @@ export const UnknownNodeView = flowNode((_, ref) => {
         <span
             ref={ref}
             className={classes.root}
+            contentEditable={false}
             children={"\uFFFC"}
         />
     );
