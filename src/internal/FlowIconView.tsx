@@ -42,6 +42,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
         classes.root,
         ...getTextStyleClassNames(style, classes),
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
+        !path && classes.empty,
     );
 
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
@@ -117,6 +118,15 @@ const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
         width: "1.3em",
         height: "1.3em",
     },
+    empty: {        
+        backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            currentcolor 0px,
+            currentcolor 3px,
+            transparent 3px,
+            transparent 6px
+        )`,
+    }
 }));
 
 const ICON_NAME_PATTERN = /^[a-z-]+$/i;

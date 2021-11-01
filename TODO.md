@@ -2,7 +2,6 @@ SCRIBING TODO
 =============
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
 - FlowIcon
-  - Display unsupported
   - Insert icon
   - Change icon?
   - Edit custom icon path
@@ -18,6 +17,7 @@ SCRIBING TODO
   - Image story
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
+- Cannot place caret after last "Void Script" in "Dynamic Text States" (trailing para)
 - Client/server/proto
 - Flow caret causes double click to select word to be broken
 - Copy flow content to clipboard
