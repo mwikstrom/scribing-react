@@ -555,8 +555,29 @@ Alert.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
         {
             box: [
-                { text: "Warning!", style: { bold: true } },
+                { icon: "warning" },
+                { text: " Warning!", style: { bold: true } },
                 { break: "para" },
+                "This is a warning alert - check it out!",
+                { break: "para" },
+            ],
+            style: {
+                variant: "alert",
+                color: "warning"
+            }
+        },
+        { break: "para" },
+    ])),
+};
+
+export const AlertWithHeading = Template.bind({});
+AlertWithHeading.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        {
+            box: [
+                { icon: "warning" },
+                { text: " Warning!" },
+                { break: "para", style: { variant: "h1" } },
                 "This is a warning alert - check it out!",
                 { break: "para" },
             ],
