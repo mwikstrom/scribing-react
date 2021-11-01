@@ -83,7 +83,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         (innerSelection instanceof FlowRangeSelection && !innerSelection.isCollapsed)
     );
     const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
-    const className = useMemo(() => clsx(
+    const className = clsx(
         classes.root,
         clickable ? classes.clickable : !!editMode && classes.editable,
         interactionPending && classes.interactionPending,
@@ -92,9 +92,10 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
         innerSelection === true && classes.selectedAll,
+        showSelectionOutline && editMode === "inactive" ? classes.selectedInactive : classes.selectedActive,
         showFormattingOutline && classes.formattingMarks,
         ...getBoxStyleClassNames(style, classes),
-    ), [clickable, interactionPending, error, editMode, style, classes]);
+    );
 
     const lastBreak = useMemo(() => {
         let result: ParagraphBreak | null = null;
@@ -185,15 +186,19 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         borderRadius: 0,
         outlineStyle: "dashed",
         outlineWidth: 1,
-        outlineColor: palette.selection,
         outlineOffset: 2,
     },
     selectedAll: {
         borderRadius: 0,
         outlineStyle: "solid",
         outlineWidth: 2,
-        outlineColor: palette.selection,
         outlineOffset: 2,
+    },
+    selectedActive: {
+        outlineColor: palette.selection,
+    },
+    selectedInactive: {
+        outlineColor: palette.inactiveSelection,
     },
     formattingMarks: {
         outlineStyle: "dashed",

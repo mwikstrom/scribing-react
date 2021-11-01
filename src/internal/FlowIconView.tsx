@@ -8,6 +8,8 @@ import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import Icon from "@mdi/react";
 import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
+import { useEditMode } from "./EditModeScope";
+import { useFlowCaretContext } from "./FlowCaretScope";
 
 export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     const { node, selection } = props;
@@ -34,11 +36,13 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     }, [data]);
 
     const selected = selection === true;
-    const className = useMemo(() => clsx(
+    const editMode = useEditMode();
+    const { native: nativeSelection } = useFlowCaretContext();
+    const className = clsx(
         classes.root,
         ...getTextStyleClassNames(style, classes),
-        selected && classes.selected,
-    ), [style, classes]);
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
+    );
 
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
@@ -73,6 +77,10 @@ const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
     selected: {
         backgroundColor: palette.selection,
         color: palette.selectionText,
+    },
+    selectedInactive: {
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
     },
     icon: {
         display: "inline-block",

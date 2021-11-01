@@ -15,6 +15,7 @@ import { useFlowLocale } from "./FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
 import { useHover } from "./hooks/use-hover";
 import { useScriptVariables } from "./ScriptVariablesScope";
+import { useFlowCaretContext } from "./FlowCaretScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node, selection } = props;
@@ -114,14 +115,15 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const isPending = !evaluated.ready;
     const hasError = evaluated.error !== null && !empty;
     const showEmpty = !!editMode && empty;
-    const className = useMemo(() => clsx(
+    const { native: nativeSelection } = useFlowCaretContext();
+    const className = clsx(
         classes.root, 
         isPending && classes.pending,
         hasError && classes.error,
         showEmpty && classes.empty,
         formattingMarks && !isPending && !hasError && !showEmpty && classes.formattingMarks,
-        selected && classes.selected,
-    ), [style, classes, evaluated]);
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
+    );
 
     const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {
         const domSelection = document.getSelection();
@@ -153,6 +155,10 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
     selected: {
         backgroundColor: palette.selection,
         color: palette.selectionText,
+    },
+    selectedInactive: {
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
     },
     formattingMarks: {
         outlineStyle: "dashed",

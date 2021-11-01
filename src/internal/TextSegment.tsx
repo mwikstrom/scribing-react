@@ -5,6 +5,8 @@ import { getTextCssProperties } from "./utils/text-style-to-css";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { useParagraphTheme } from "./ParagraphThemeScope";
+import { useFlowCaretContext } from "./FlowCaretScope";
+import { useEditMode } from "./EditModeScope";
 
 export interface TextSegmentProps {
     text: string;
@@ -24,10 +26,14 @@ export const TextSegment: FC<TextSegmentProps> = props => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
-    const className = useMemo(
-        () => clsx(classes.root, selected && classes.selected, ...getTextStyleClassNames(style, classes)),
-        [style, classes, selected]
+    const editMode = useEditMode();
+    const { native: nativeSelection } = useFlowCaretContext();
+    const className = clsx(
+        classes.root, 
+        ...getTextStyleClassNames(style, classes),
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
     );
+
     const [spellCheck, setSpellCheck] = useState(false);
     // Enable spell checker only after text has been idle for a while
     useEffect(() => {
@@ -55,5 +61,9 @@ const useStyles = createUseFlowStyles("TextSegment", ({palette}) => ({
     selected: {
         backgroundColor: palette.selection,
         color: palette.selectionText,
-    }
+    },
+    selectedInactive: {
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
+    },
 }));
