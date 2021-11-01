@@ -41,7 +41,7 @@ export interface FlowEditorProps {
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
     style?: CSSProperties;
-    nativeCaret?: boolean;
+    nativeSelection?: boolean;
     onStateChange?: (
         after: FlowEditorState,
         change: FlowOperation | null,
@@ -60,7 +60,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         autoFocus,
         style,
-        nativeCaret,
+        nativeSelection,
         onStateChange: onStateChangeProp,
     } = props;
 
@@ -346,10 +346,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <FlowCaretScope style={state.caret} selection={state.selection} native={nativeCaret}>
+                    <FlowCaretScope style={state.caret} selection={state.selection} native={nativeSelection}>
                         <div 
                             ref={setEditingHost}
-                            className={clsx(classes.root, !nativeCaret && classes.customCaret)}
+                            className={clsx(classes.root, !nativeSelection && classes.customSelection)}
                             style={style}
                             contentEditable={editMode !== false}
                             suppressContentEditableWarning={true}
@@ -367,8 +367,12 @@ const useStyles = createUseStyles({
         outline: "none",
         padding: "0 0.75rem",
     },
-    customCaret: {
+    customSelection: {
         caretColor: "transparent",
+        "& *::selection": {
+            backgroundColor: "transparent",
+        }
+
     },
 }, {
     generateId: makeJssId("FlowEditor"),

@@ -17,7 +17,7 @@ import { useHover } from "./hooks/use-hover";
 import { useScriptVariables } from "./ScriptVariablesScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
-    const { node } = props;
+    const { node, selection } = props;
     const { expression, style: givenStyle } = node;
     const theme = useParagraphTheme();
     
@@ -56,6 +56,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         }
     }, [expression, evaluated]);
 
+    const selected = selection === true;
     const children = useMemo(() => {
         const { result, error, ready } = evaluated;
         
@@ -74,6 +75,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                     style={style.unset("color")}
                     para={para}
                     value={expression ? locale.void_result : locale.void_script}
+                    selected={selected}
                 />
             );
         }
@@ -85,6 +87,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                     style={style.unset("color")}
                     para={para}
                     value={locale.script_error}
+                    selected={selected}
                 />
             );
         }
@@ -95,6 +98,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
                 style={style}
                 para={para}
                 value={result}
+                selected={selected}
             />
         );
     }, [evaluated, locale, empty, editMode, classes, style]);   
@@ -116,6 +120,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         hasError && classes.error,
         showEmpty && classes.empty,
         formattingMarks && !isPending && !hasError && !showEmpty && classes.formattingMarks,
+        selected && classes.selected,
     ), [style, classes, evaluated]);
 
     const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {
@@ -145,6 +150,10 @@ const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
         cursor: "default",
     },
+    selected: {
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
+    },
     formattingMarks: {
         outlineStyle: "dashed",
         outlineWidth: 1,
@@ -171,6 +180,7 @@ interface RenderValueProps {
     style: TextStyle;
     para: ParagraphStyle;
     value: unknown;
+    selected: boolean;
 }
 
 const RenderValue: FC<RenderValueProps> = props => {
@@ -190,9 +200,11 @@ const RenderValue: FC<RenderValueProps> = props => {
             </>
         );
     } else if (isTextObject(value)) {
-        const { text } = value;
+        const { text } = value;        
+        const { classes, para, selected } = rest;
+        const forward = { classes, para, selected };
         const style = isStyleObject(value) ? props.style.merge(new TextStyle(value.style)) : props.style;
-        return <RenderValueSpan classes={props.classes} style={style} value={text} para={props.para}/>;
+        return <RenderValueSpan {...forward} style={style} value={text}/>;
     } else {
         return <RenderValueSpan {...props}/>;
     }    
@@ -219,9 +231,12 @@ function isRecordObject(thing: unknown): thing is Record<string, unknown> {
     );
 }
 
-const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value, para }) => {
+const RenderValueSpan: FC<RenderValueProps> = ({ classes, style, value, para, selected }) => {
     const css = useMemo(() => getTextCssProperties(style, para), [style, para]);
-    const className = useMemo(() => clsx(...getTextStyleClassNames(style, classes)), [style, classes]);
+    const className = useMemo(() => clsx(
+        ...getTextStyleClassNames(style, classes), 
+        selected && classes.selected
+    ), [style, classes]);
     return <span style={css} className={className}>{String(value)}</span>;
 };
 

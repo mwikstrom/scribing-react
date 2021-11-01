@@ -69,6 +69,8 @@ export function getFlowFragmentSelection(
             const intersectedRange = range.intersect(FlowRange.at(position, size));
             if (intersectedRange.isCollapsed) {
                 return false;
+            } else if (intersectedRange.first === position && intersectedRange.size === size) {
+                return true;
             } else {
                 return outer.set("range", intersectedRange.translate(-position));
             }

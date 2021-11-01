@@ -91,6 +91,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         hasSource && sourceReady && data.length === 0 && classes.hidden,
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
+        innerSelection === true && classes.selectedAll,
         showFormattingOutline && classes.formattingMarks,
         ...getBoxStyleClassNames(style, classes),
     ), [clickable, interactionPending, error, editMode, style, classes]);
@@ -181,9 +182,17 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         )`,
     },
     selected: {
+        borderRadius: 0,
         outlineStyle: "dashed",
+        outlineWidth: 1,
+        outlineColor: palette.selection,
+        outlineOffset: 2,
+    },
+    selectedAll: {
+        borderRadius: 0,
+        outlineStyle: "solid",
         outlineWidth: 2,
-        outlineColor: palette.subtle,
+        outlineColor: palette.selection,
         outlineOffset: 2,
     },
     formattingMarks: {

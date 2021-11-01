@@ -52,5 +52,8 @@ const useStyles = createUseFlowStyles("TextSegment", ({palette}) => ({
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },
-    selected: {}
+    selected: {
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
+    }
 }));

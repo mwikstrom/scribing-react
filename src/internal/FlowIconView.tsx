@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState, MouseEvent } from "react";
 import { FlowIcon, PredefinedIcon } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
@@ -9,8 +9,8 @@ import { useParagraphTheme } from "./ParagraphThemeScope";
 import Icon from "@mdi/react";
 import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 
-export const FlowIconView = flowNode<FlowIcon>((props, ref) => {
-    const { node } = props;
+export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
+    const { node, selection } = props;
     const { style: givenStyle, data } = node;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
@@ -33,13 +33,32 @@ export const FlowIconView = flowNode<FlowIcon>((props, ref) => {
         }
     }, [data]);
 
+    const selected = selection === true;
     const className = useMemo(() => clsx(
         classes.root,
-        ...getTextStyleClassNames(style, classes)
+        ...getTextStyleClassNames(style, classes),
+        selected && classes.selected,
     ), [style, classes]);
 
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const ref = useCallback((dom: HTMLElement | null) => {
+        outerRef(dom);
+        setRootElem(dom);
+    }, [outerRef]);
+    const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
+        const domSelection = document.getSelection();
+        console.log("double click", domSelection, rootElem);
+        if (domSelection && rootElem) {
+            if (domSelection && domSelection.rangeCount === 1) {
+                domSelection.getRangeAt(0).selectNode(rootElem);
+                console.log("selected by double click!");
+                e.stopPropagation();
+            }
+        }
+    }, [rootElem]);
+
     return (
-        <span ref={ref} className={className} style={css} contentEditable={false}>
+        <span ref={ref} className={className} style={css} contentEditable={false} onDoubleClick={onDoubleClick}>
             <Icon path={path} className={classes.icon}/>
         </span>
     );
@@ -49,6 +68,11 @@ const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
     ...textStyles(palette),
     root: {
         display: "inline",
+        cursor: "text",
+    },
+    selected: {
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
     },
     icon: {
         display: "inline-block",

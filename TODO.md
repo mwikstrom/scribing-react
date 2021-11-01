@@ -1,12 +1,18 @@
 SCRIBING TODO
 =============
+- Support inactive selection color
+- Support native selection (do not apply selected class)
+- Double-click to select FlowIcon only works once - probably root ref update race...
+- Cannot click to place caret before/after FlowIcon
+- Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
+- Selection style for LineBreakView
+- Selection style for ParagraphBreakView
 - FlowIcon
-  - Style selected
   - Insert icon
   - Change icon?
   - Edit custom icon path
-- Custom selection style
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- Cannot step out of multi-output template box
 - FlowImage
   - Insert image from file
   - Drag & Drop to add image
@@ -15,7 +21,6 @@ SCRIBING TODO
   - Replace image from file
   - Drag & Drop to replace image
   - Image story
-- Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
 - Caret cannot be placed before icon nested at first position in flow box
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
