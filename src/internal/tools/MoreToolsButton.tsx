@@ -11,6 +11,7 @@ import {
     mdiArrowExpandHorizontal,
     mdiTextBoxOutline,
     mdiSpellcheck,
+    mdiCreation,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -19,10 +20,11 @@ import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
 import { BoxStyle, DynamicText, FlowBox, FlowContent, ParagraphBreak, ParagraphStyleProps } from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
+import { IconChooser } from "./IconChooser";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
-    const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text">(false);
+    const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text" | "icon">(false);
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -75,6 +77,13 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [setMenuOpen, editingHost]);
 
+    const beginIcon = useCallback(() => {
+        setMenuOpen("icon");
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [setMenuOpen, editingHost]);
+
     const insertDynamicText = useCallback((expression: string) => {
         commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
         closeMenu();
@@ -100,6 +109,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         <Icon path={mdiFunctionVariant} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.insert_dynamic_text}&hellip;
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuItem disabled={!commands.isCaret() && !commands.isIcon()} onClick={beginIcon}>
+                        <Icon path={mdiCreation} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {commands.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>
@@ -160,6 +175,18 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                             onCancel={closeMenu}
                             editingHost={editingHost}
                         />
+                    )}
+                />
+            )}
+            {buttonRef && isMenuOpen === "icon" && (
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={(
+                        <IconChooser editingHost={editingHost} boundary={boundary}/>
                     )}
                 />
             )}

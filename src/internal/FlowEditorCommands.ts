@@ -6,6 +6,7 @@ import {
     FlowColor,
     FlowContent,
     FlowEditorState, 
+    FlowIcon, 
     FlowNode, 
     FlowOperation, 
     FlowRange, 
@@ -480,6 +481,10 @@ export class FlowEditorCommands {
 
     isLink(): boolean {
         return this.isUniformNodes(node => node instanceof TextRun && !!node.style.link);
+    }
+
+    isIcon(): boolean {
+        return this.isUniformNodes(node => node instanceof FlowIcon);
     }
 
     isUniformNodes(predicate: (node: FlowNode) => boolean): boolean {

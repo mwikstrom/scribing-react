@@ -1,10 +1,12 @@
 import { ParagraphVariant, FlowColor, BoxVariant } from "scribing";
+import { IconPack } from "./IconPack";
 
 /** @public */
 export interface FlowLocale extends 
 Record<ParagraphVariantLocaleKey, string>, 
 Record<BoxVariantLocaleKey, string>, 
-Record<ColorLocaleKey, string> {
+Record<ColorLocaleKey, string>,
+Record<IconPackLocaleKey, string> {
     hold_ctrl_key_to_enable_interaction: string;
     script_error: string;
     void_script: string;
@@ -22,6 +24,8 @@ Record<ColorLocaleKey, string> {
     rtl_reading_direction: string;
     full_width_box: string;
     enable_spell_check: string;
+    insert_icon: string;
+    change_icon: string;
 }
 
 /** @public */
@@ -32,6 +36,9 @@ export type BoxVariantLocaleKey = `box_variant_${BoxVariant}`;
 
 /** @public */
 export type ColorLocaleKey = `color_${FlowColor}`;
+
+/** @public */
+export type IconPackLocaleKey = `icon_pack_${IconPack}`;
 
 /** @public */
 export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
@@ -76,6 +83,11 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     box_variant_alert: "Alert",
     box_variant_quote: "Quote",
     enable_spell_check: "Enable spell check",
+    insert_icon: "Insert icon",
+    change_icon: "Change icon",
+    icon_pack_predefined: "Predefined",
+    icon_pack_custom: "Custom",
+    icon_pack_mdi: "Material Design Icons",
 });
 
 /** @public */
@@ -89,6 +101,11 @@ export function getBoxVariantLocaleKey(variant: BoxVariant): BoxVariantLocaleKey
 }
 
 /** @public */
-export function getFlowColorLocaleKey(variant: FlowColor): ColorLocaleKey {
-    return `color_${variant}`;
+export function getFlowColorLocaleKey(color: FlowColor): ColorLocaleKey {
+    return `color_${color}`;
+}
+
+/** @public */
+export function getIconPackLocaleKey(pack: IconPack): IconPackLocaleKey {
+    return `icon_pack_${pack}`;
 }
