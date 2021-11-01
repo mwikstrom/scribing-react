@@ -19,7 +19,6 @@ SCRIBING TODO
 - Cannot place caret after last "Void Script" in "Dynamic Text States" (trailing para)
 - Client/server/proto
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
-- Flow caret causes double click to select word to be broken
 - Copy flow content to clipboard
 - Pase flow content when available
 - Fix pilcrow after full width flow box
