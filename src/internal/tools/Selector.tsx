@@ -13,6 +13,7 @@ export interface SelectorProps<T> {
     current?: T;
     options: readonly T[];
     icon?: string;
+    loading?: boolean;
     onChange: (option: T) => void;
     getLabel?: (option: T) => string;
 }

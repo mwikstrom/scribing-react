@@ -8,19 +8,6 @@ export const ICON_PACKS = Object.freeze([
     "custom",
 ] as const);
 
-export function useMaterialDesignIconTags(): readonly string[] | null {
-    const [result, setResult] = useState(MDI_TAGS_CACHE);
-    const meta = useMaterialDesignIconsMetadata();
-    
-    useEffect(() => {
-        if (!result && meta) {
-            setResult(MDI_TAGS_CACHE = Array.from(new Set(meta.flatMap(entry => entry.tags))).sort());
-        }
-    }, [result, meta]);
-
-    return result;
-}
-
 export function useMaterialDesignIconsMetadata(): MdiMetadata | null {
     const [result, setResult] = useState(MDI_META_CACHE);
 
@@ -57,7 +44,6 @@ export interface MdiMetaEntry {
 
 let MDI_META_CACHE: MdiMetadata | null = null;
 let MDI_META_PROMISE: Promise<MdiMetadata | null> | null = null;
-let MDI_TAGS_CACHE: readonly string[] | null = null;
 
 const fetchMdiMetadata = async () => {
     try {
