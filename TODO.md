@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Double-click to select FlowIcon only works once - probably root ref update race...
 - Cannot click to place caret before/after FlowIcon
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
 - Selection style for LineBreakView

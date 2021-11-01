@@ -51,13 +51,12 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     }, [outerRef]);
     const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
-        console.log("double click", domSelection, rootElem);
         if (domSelection && rootElem) {
-            if (domSelection && domSelection.rangeCount === 1) {
-                domSelection.getRangeAt(0).selectNode(rootElem);
-                console.log("selected by double click!");
-                e.stopPropagation();
+            if (domSelection.rangeCount === 0) {
+                domSelection.addRange(document.createRange());
             }
+            domSelection.getRangeAt(0).selectNode(rootElem);
+            e.stopPropagation();
         }
     }, [rootElem]);
 
