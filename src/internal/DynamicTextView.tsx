@@ -118,7 +118,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         formattingMarks && !isPending && !hasError && !showEmpty && classes.formattingMarks,
     ), [style, classes, evaluated]);
 
-    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {
+    const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {
         const domSelection = document.getSelection();
         if (domSelection && rootElem) {
             if (domSelection && domSelection.rangeCount === 1) {
@@ -134,7 +134,7 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
             contentEditable={false}
             className={className}
             children={children}
-            onClick={onClick}
+            onDoubleClick={onDoubleClick}
         />
     );
 });
