@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Cannot click to place caret before/after FlowIcon
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
 - Selection style for LineBreakView
 - Selection style for ParagraphBreakView
@@ -19,7 +18,6 @@ SCRIBING TODO
   - Replace image from file
   - Drag & Drop to replace image
   - Image story
-- Caret cannot be placed before icon nested at first position in flow box
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto

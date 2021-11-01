@@ -49,6 +49,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
         outerRef(dom);
         setRootElem(dom);
     }, [outerRef]);
+    
     const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
         if (domSelection && rootElem) {
@@ -60,10 +61,39 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
         }
     }, [rootElem]);
 
+    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
+        const domSelection = document.getSelection();
+        if (domSelection && rootElem) {
+            const { parentElement } = rootElem;
+            if (parentElement) {
+                let childOffset = 0;
+                for (let prev = rootElem.previousSibling; prev; prev = prev.previousSibling) {
+                    ++childOffset;
+                }
+                const { left, width } = rootElem.getBoundingClientRect();
+                if (e.clientX >= left + width / 2) {
+                    ++childOffset;
+                }
+                if (e.shiftKey) {
+                    domSelection.extend(parentElement, childOffset);
+                } else {
+                    domSelection.setBaseAndExtent(parentElement, childOffset, parentElement, childOffset);
+                }
+                e.stopPropagation();
+            }
+        }
+    }, [rootElem]);
+
     return (
-        <span ref={ref} className={className} style={css} contentEditable={false} onDoubleClick={onDoubleClick}>
-            <Icon path={path} className={classes.icon}/>
-        </span>
+        <span 
+            ref={ref}
+            className={className}
+            style={css}
+            contentEditable={false}
+            onDoubleClick={onDoubleClick}
+            onClick={onClick}
+            children={<Icon path={path} className={classes.icon}/>}
+        />
     );
 });
 
