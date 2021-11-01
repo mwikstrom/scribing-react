@@ -170,6 +170,8 @@ Rich.args = {
         { break: "para", style: { variant: "preamble" } },
         "Normal text",
         { break: "para" },
+        "Let's try an icon ", { icon: "information" }, ", did it work?",
+        { break: "para" },
         "Heading level 2",
         { break: "para", style: { variant: "h2" } },
         "Normal text ",
