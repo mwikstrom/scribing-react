@@ -16,8 +16,9 @@ export const FlowPaletteScope: FC<FlowPaletteScopeProps> = ({
     palette: partial,
     children,
 }) => {
+    const parent = useFlowPalette();
     const palette = useMemo<Readonly<FlowPalette>>(() => !partial ? DefaultFlowPalette : Object.freeze({
-        ...DefaultFlowPalette,
+        ...parent,
         ...partial,
     }), [partial]);
     return (
