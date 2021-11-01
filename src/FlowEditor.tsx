@@ -125,6 +125,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [activeElement, editingHost, documentHasFocus]);
 
+    // Should we use custom selection styling?
+    const customSelection = !nativeSelection && !!editMode;
+
     // Apply auto focus
     useEffect(() => {
         if (editingHost && autoFocus) {
@@ -346,10 +349,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <FlowCaretScope style={state.caret} selection={state.selection} native={nativeSelection}>
+                    <FlowCaretScope style={state.caret} selection={state.selection} native={!customSelection}>
                         <div 
                             ref={setEditingHost}
-                            className={clsx(classes.root, !nativeSelection && classes.customSelection)}
+                            className={clsx(classes.root, customSelection && classes.customSelection)}
                             style={style}
                             contentEditable={editMode !== false}
                             suppressContentEditableWarning={true}
