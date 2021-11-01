@@ -2,8 +2,6 @@ SCRIBING TODO
 =============
 - FlowImage
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
-- FlowVideo
-- FlowAudio
 - FlowIcon
 - Redesign alert box? No implicit icon. Use FlowIcon for that instead.
 - Deleting all when there's a final para break, shall result in an empty document with a para break
@@ -29,6 +27,8 @@ LOWER PRIO
 - ALT+ENTER shall open insert menu with keyboard focus
 - New Ops: Wrap + Unwrap
 - FlowTable
+- FlowVideo
+- FlowAudio
 - Escape to close menu, but not toolbox
 - Double press CTRL + period shall select entire innermost flow box (press again to select next outer box)
 - Hide toolbox arrow when selection includes para break
