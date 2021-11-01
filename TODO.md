@@ -1,5 +1,11 @@
 SCRIBING TODO
 =============
+- FlowIcon
+  - Style selected
+  - Insert icon
+  - Change icon?
+  - Edit custom icon path
+- Custom selection style
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - FlowImage
   - Insert image from file
@@ -8,11 +14,10 @@ SCRIBING TODO
   - Extract and assign placeholder when replacing/inserting image
   - Replace image from file
   - Drag & Drop to replace image
-- FlowIcon
-  - Insert icon
-  - Change icon?
-  - Edit custom icon path
-- Redesign alert box? No implicit icon. Use FlowIcon for that instead.
+  - Image story
+- Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
+- Caret cannot be placed before icon nested at first position in flow box
+- Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Client/server/proto
 - Flow caret causes double click to select word to be broken
@@ -31,7 +36,6 @@ SCRIBING TODO
 LOWER PRIO
 ==========
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
-- Custom selection style?
 - New interaction?: Open Topic
 - ALT+ENTER shall open insert menu with keyboard focus
 - New Ops: Wrap + Unwrap
