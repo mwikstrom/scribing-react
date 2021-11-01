@@ -1,8 +1,6 @@
 SCRIBING TODO
 =============
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
-- Selection style for LineBreakView
-- Selection style for ParagraphBreakView
 - FlowIcon
   - Display unsupported
   - Insert icon

@@ -8,8 +8,10 @@ import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classe
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
+import { useFlowCaretContext } from "./FlowCaretScope";
+import { useEditMode } from "./EditModeScope";
 
-export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara}, setOuterRef) => {
+export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara, selection}, setOuterRef) => {
     const theme = useParagraphTheme();
     const style = theme.getAmbientTextStyle();
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
@@ -21,13 +23,14 @@ export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara}, 
         setOuterRef(elem);
     }, [setInnerRef, setOuterRef]);
     
-    const className = useMemo(
-        () => clsx(
-            classes.root,
-            !formattingMarks && classes.hidden, 
-            ...getTextStyleClassNames(style, classes)
-        ),
-        [style, formattingMarks, classes]
+    const selected = selection === true;
+    const editMode = useEditMode();
+    const { native: nativeSelection } = useFlowCaretContext();
+    const className = clsx(
+        classes.root,
+        !formattingMarks && classes.hidden, 
+        ...getTextStyleClassNames(style, classes),
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),        
     );
 
     // It's actually never editable, but we need to fake it
@@ -71,6 +74,14 @@ const useStyles = createUseFlowStyles("ParagraphBreak", ({palette}) => ({
     ...textStyles(palette),
     root: {
         opacity: 0.5,
+    },
+    selected: {
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
+    },
+    selectedInactive: {
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
     },
     hidden: {
         opacity: 0,

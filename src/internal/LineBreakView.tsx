@@ -7,9 +7,11 @@ import { createUseFlowStyles } from "./JssTheming";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
+import { useFlowCaretContext } from "./FlowCaretScope";
+import { useEditMode } from "./EditModeScope";
 
 export const LineBreakView = flowNode<LineBreak>((props, ref) => {
-    const { node } = props;
+    const { node, selection } = props;
     const { style: givenStyle } = node;
     const theme = useParagraphTheme();
     const formattingMarks = useFormattingMarks();
@@ -22,9 +24,13 @@ export const LineBreakView = flowNode<LineBreak>((props, ref) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
-    const className = useMemo(
-        () => clsx(classes.root, ...getTextStyleClassNames(style, classes)),
-        [style, classes]
+    const selected = selection === true;
+    const editMode = useEditMode();
+    const { native: nativeSelection } = useFlowCaretContext();
+    const className = clsx(
+        classes.root,
+        ...getTextStyleClassNames(style, classes),
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
     );
     return (
         <span
@@ -41,5 +47,13 @@ const useStyles = createUseFlowStyles("LineBreak", ({palette}) => ({
     root: {
         opacity: 0.5,
         whiteSpace: "pre",
+    },
+    selected: {
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
+    },
+    selectedInactive: {
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
     },
 }));
