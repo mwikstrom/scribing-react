@@ -1,15 +1,14 @@
 import clsx from "clsx";
 import React, { useCallback, useMemo, useState, MouseEvent } from "react";
-import { FlowIcon, PredefinedIcon } from "scribing";
+import { FlowIcon } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
-import Icon from "@mdi/react";
-import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
 import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
+import { ResolvedIcon } from "./ResolvedIcon";
 
 export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     const { node, selection } = props;
@@ -24,17 +23,6 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
-    const path = useMemo(() => {
-        if (data in PREDEFINED_ICON_PATHS) {
-            return PREDEFINED_ICON_PATHS[data as PredefinedIcon];
-        } else if (ICON_NAME_PATTERN.test(data)) {
-            console.warn("Unsupported icon: ", data);
-            return "";
-        } else {
-            return data;
-        }
-    }, [data]);
-
     const selected = selection === true;
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
@@ -42,7 +30,6 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
         classes.root,
         ...getTextStyleClassNames(style, classes),
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
-        !path && classes.empty,
     );
 
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
@@ -93,7 +80,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={<Icon path={path} className={classes.icon}/>}
+            children={<ResolvedIcon data={data} className={classes.icon}/>}
         />
     );
 });
@@ -118,22 +105,4 @@ const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
         width: "1.3em",
         height: "1.3em",
     },
-    empty: {        
-        backgroundImage: `repeating-linear-gradient(
-            -45deg,
-            currentcolor 0px,
-            currentcolor 3px,
-            transparent 3px,
-            transparent 6px
-        )`,
-    }
 }));
-
-const ICON_NAME_PATTERN = /^[a-z-]+$/i;
-
-const PREDEFINED_ICON_PATHS: Readonly<Record<PredefinedIcon, string>> = Object.freeze({
-    information: mdiInformationOutline,
-    success: mdiCheckCircleOutline,
-    warning: mdiAlertOutline,
-    error: mdiAlertOctagonOutline,
-});

@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - MDI tag selector
+- Update popper when icon chooser (or menu?) is resized
 - Icon chooser
 - FlowIcon: Cannot use as link because click is intercepted for selection!
 - FlowIcon

@@ -9,11 +9,25 @@ export interface VirtualGridProps<T> {
     itemHeight: number;
     getItemKey: (item: T) => string | number;
     renderItem: (item: T) => ReactElement;
+    maxRows: number;
     resetScrollOnChange?: boolean;
+    itemClass?: string;
+    itemDisplay?: "inline-block" | "inline-flex";
 }
 
 export function VirtualGrid<T>(props: VirtualGridProps<T>): ReactElement {
-    const { className, children: allItems, itemWidth, itemHeight, getItemKey, renderItem, resetScrollOnChange } = props;
+    const { 
+        className, 
+        children: allItems, 
+        itemWidth, 
+        itemHeight, 
+        getItemKey, 
+        renderItem, 
+        resetScrollOnChange, 
+        maxRows,
+        itemClass,
+        itemDisplay = "inline-block",
+    } = props;
     const [gridElement, setGridElement] = useState<HTMLElement | null>(null);
     const { width: gridWidth, height: gridHeight } = useElementSize(gridElement);
     const { top: scrollTop } = useScrollPosition(gridElement);
@@ -30,12 +44,19 @@ export function VirtualGrid<T>(props: VirtualGridProps<T>): ReactElement {
         const visibleRowCount = 2 + Math.floor(gridHeight / itemHeight);
         return allRows.slice(indexOfFirstRow, indexOfFirstRow + visibleRowCount);
     }, [indexOfFirstRow, allRows, gridHeight, itemHeight]);
+    const gridStyle = useMemo(() => {
+        const css: CSSProperties = { overflowX: "hidden", overflowY: "auto" };
+        if (typeof maxRows === "number") {
+            css.height = Math.max(1, Math.min(maxRows, allRows.length)) * itemHeight;
+        }
+        return css;
+    }, [itemHeight, maxRows, allRows.length]);
     const itemStyle = useMemo<CSSProperties>(() => ({
-        display: "inline-block",
+        display: itemDisplay,
         overflow: "hidden",
         width: itemWidth,
         height: itemHeight,
-    }), [itemWidth, itemHeight]);
+    }), [itemDisplay, itemWidth, itemHeight]);
     useEffect(() => {
         if (resetScrollOnChange && gridElement) {
             gridElement.scrollTo({ top: 0 });
@@ -44,12 +65,12 @@ export function VirtualGrid<T>(props: VirtualGridProps<T>): ReactElement {
     const paddingTop = indexOfFirstRow * itemHeight;
     const paddingBottom = Math.max(0, allRows.length - visibleRows.length - indexOfFirstRow) * itemHeight;
     return (
-        <div ref={setGridElement} className={className} style={GRID_STYLE}>
+        <div ref={setGridElement} className={className} style={gridStyle}>
             <div style={{paddingTop, paddingBottom}}>
                 {visibleRows.map((row, index) => (
-                    <div key={indexOfFirstRow + index}>
+                    <div key={indexOfFirstRow + index} style={{height: itemHeight, overflow: "hidden"}}>
                         {row.map(item => (
-                            <span key={getItemKey(item)} style={itemStyle}>
+                            <span key={getItemKey(item)} style={itemStyle} className={itemClass}>
                                 {renderItem(item)}
                             </span>
                         ))}
@@ -59,8 +80,3 @@ export function VirtualGrid<T>(props: VirtualGridProps<T>): ReactElement {
         </div>
     );
 }
-
-const GRID_STYLE: CSSProperties = {
-    overflowY: "auto", 
-    overflowX: "hidden", 
-};

@@ -2,6 +2,7 @@ import React, { FC, useMemo, useState } from "react";
 import { PREDEFINED_ICONS } from "scribing";
 import { IconPack, useMaterialDesignIconsMetadata } from "../IconPack";
 import { createUseFlowStyles } from "../JssTheming";
+import { ResolvedIcon } from "../ResolvedIcon";
 import { IconPackSelector } from "./IconPackSelector";
 import { MdiTagSelector } from "./MdiTagSelector";
 import { ToolDivider } from "./ToolDivider";
@@ -27,7 +28,6 @@ export const IconChooser: FC<IconChooserProps> = props => {
             return mdiMeta.filter(entry => !mdiTag || entry.tags.includes(mdiTag)).map(entry => `@mdi/${entry.name}`);
         }
     }, [iconPack, mdiTag, mdiMeta]);
-    const iconSize = 64;
     return (
         <div className={classes.root}>
             <div className={classes.header}>
@@ -52,10 +52,15 @@ export const IconChooser: FC<IconChooserProps> = props => {
             <VirtualGrid 
                 className={classes.gallery}
                 children={iconsInGallery}
-                itemWidth={iconSize}
-                itemHeight={iconSize}
+                itemWidth={ITEM_SIZE}
+                itemHeight={ITEM_SIZE}
                 getItemKey={item => item}
-                renderItem={item => <span style={{color:"black"}}>{item}</span>}
+                renderItem={item => (
+                    <ResolvedIcon className={classes.icon} data={item}/>
+                )}
+                itemClass={classes.galleryItem}
+                itemDisplay={"inline-flex"}
+                maxRows={5}
                 resetScrollOnChange
             />
         </div>
@@ -67,7 +72,7 @@ const useStyles = createUseFlowStyles("IconChooser", ({palette}) => ({
         display: "flex",
         flexDirection: "column",
         padding: 4,
-        width: "calc(min(80vw, 800px))",
+        width: "calc(min(80vw, 816px))",
     },
     header: {
         display: "flex",
@@ -79,6 +84,34 @@ const useStyles = createUseFlowStyles("IconChooser", ({palette}) => ({
         border: `1px solid ${palette.menuBorder}`,
         borderRadius: 4,
         backgroundColor: palette.paper,
-        height: 360,
-    }
+        color: palette.text,
+        "&::-webkit-scrollbar": {
+            width: 8,
+            height: 8,
+        },
+        "&::-webkit-scrollbar-track": {
+            background: palette.menuBorder,
+            padding: 1,
+        },
+        "&::-webkit-scrollbar-corner": {
+            background: palette.menuBorder,
+        },
+        "&::-webkit-scrollbar-thumb": {
+            backgroundColor: palette.menuScrollbar,
+            borderRadius: 2,
+        },
+    },
+    galleryItem: {
+        width: ITEM_SIZE,
+        height: ITEM_SIZE,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    icon: {
+        width: ICON_SIZE,
+        height: ICON_SIZE,
+    },
 }));
+
+const ICON_SIZE = 48;
+const ITEM_SIZE = 80;

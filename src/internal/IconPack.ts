@@ -30,6 +30,25 @@ export function useMaterialDesignIconsMetadata(): MdiMetadata | null {
     return result;
 }
 
+export function useMaterialDesignIconPath(iconName: string): string {
+    const [path, setPath] = useState(() => MDI_ICON_PATH_CACHE.get(iconName) ?? "");
+    useEffect(() => {
+        let promise = MDI_ICON_PATH_PROMISES.get(iconName);
+        if (!promise) {
+            MDI_ICON_PATH_PROMISES.set(iconName, promise = fetchMdiIconPath(iconName));
+        }
+        let active = true;
+        promise.then(data => {
+            MDI_ICON_PATH_CACHE.set(iconName, data);
+            if (active) {
+                setPath(data);
+            }
+        });
+        return () => { active = false; };
+    }, [iconName]);
+    return path;
+}
+
 export type MdiMetadata = readonly MdiMetaEntry[];
 
 export interface MdiMetaEntry {
@@ -41,9 +60,6 @@ export interface MdiMetaEntry {
     readonly author: string;
     readonly version: string;
 }
-
-let MDI_META_CACHE: MdiMetadata | null = null;
-let MDI_META_PROMISE: Promise<MdiMetadata | null> | null = null;
 
 const fetchMdiMetadata = async () => {
     try {
@@ -59,5 +75,24 @@ const fetchMdiMetadata = async () => {
     }
 };
 
+const fetchMdiIconPath = async (iconName: string) => {
+    try {
+        const response = await fetch(MDI_SVG_URL(iconName));
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        const doc = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
+        return doc.querySelector("path")?.getAttribute("d") ?? "";        
+    } catch (error) {
+        console.error(`Failed to Material Design Icon '${iconName}:`, error);
+        return "";
+    }
+};
+
 const MDI_VERSION = "6.4.95";
 const MDI_META_URL = `https://cdn.jsdelivr.net/npm/@mdi/svg@${MDI_VERSION}/meta.json`;
+const MDI_SVG_URL = (iconName: string) => `https://cdn.jsdelivr.net/npm/@mdi/svg@${MDI_VERSION}/svg/${iconName}.svg`;
+let MDI_META_CACHE: MdiMetadata | null = null;
+let MDI_META_PROMISE: Promise<MdiMetadata | null> | null = null;
+const MDI_ICON_PATH_CACHE = new Map<string, string>();
+const MDI_ICON_PATH_PROMISES = new Map<string, Promise<string>>();
