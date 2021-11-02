@@ -27,6 +27,8 @@ SCRIBING TODO
 - Tool: Set font size
 - Tool: Set font family
 - HOME/END keys doesn't work as expected
+- Fix caret design when placed inside template.
+- Fix actual caret selection when placed inside template. Click in template should allow edit.
 
 LOWER PRIO
 ==========
