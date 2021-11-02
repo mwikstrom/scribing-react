@@ -1,5 +1,5 @@
 import Icon from "@mdi/react";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { ToolButton } from "./ToolButton";
 import {
     mdiDotsVertical,
@@ -12,6 +12,7 @@ import {
     mdiTextBoxOutline,
     mdiSpellcheck,
     mdiCreation,
+    mdiImage,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -30,6 +31,7 @@ import {
 } from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { IconChooser } from "./IconChooser";
+import { fileOpen } from "browser-fs-access";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
@@ -37,6 +39,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
+    const [imagePromise, setImagePromise] = useState<Promise<Blob> | null>(null);
     
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
@@ -113,6 +116,31 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [commands, closeMenu, editingHost]);
 
+    const beginImage = useCallback(() => {
+        setImagePromise(fileOpen({
+            mimeTypes: ["image/*"]
+        }));
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [setMenuOpen, editingHost]);
+
+    useEffect(() => {
+        if (imagePromise) {
+            let active = true;
+            imagePromise.then(blob => {
+                console.log("HAPPY DAY I'VE GOT AN IMAGE BLOB!", blob);
+            });
+            imagePromise.finally(() => {
+                if (active) {
+                    setImagePromise(null);
+                    closeMenu();
+                }
+            });
+            return () => { active = false; };
+        }
+    }, [imagePromise]);
+
     return (
         <>
             <ToolButton setRef={setButtonRef} onClick={toggleMenu} editingHost={editingHost}>
@@ -136,6 +164,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         <Icon path={mdiCreation} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {commands.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
+                        </span>
+                    </ToolMenuItem>
+                    <ToolMenuItem disabled={!commands.isCaret() && !commands.isImage()} onClick={beginImage}>
+                        <Icon path={mdiImage} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>

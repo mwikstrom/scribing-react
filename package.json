@@ -91,6 +91,7 @@
     "scripthost-react": "0.x"
   },
   "dependencies": {
+    "browser-fs-access": "^0.21.0",
     "color": "^3.2.1",
     "react-textarea-autosize": "^8.3.3"
   }

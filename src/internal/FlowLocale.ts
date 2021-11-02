@@ -27,6 +27,8 @@ Record<IconPackLocaleKey, string> {
     insert_icon: string;
     change_icon: string;
     all_tags: string;
+    insert_image: string;
+    change_image: string;
 }
 
 /** @public */
@@ -89,7 +91,9 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     icon_pack_predefined: "Predefined",
     icon_pack_custom: "Custom",
     icon_pack_mdi: "Material Design Icons",
-    all_tags: "All tags"
+    all_tags: "All tags",
+    insert_image: "Insert image",
+    change_image: "Change image",
 });
 
 /** @public */

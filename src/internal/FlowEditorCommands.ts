@@ -7,9 +7,11 @@ import {
     FlowContent,
     FlowEditorState, 
     FlowIcon, 
+    FlowImage, 
     FlowNode, 
     FlowOperation, 
     FlowRange, 
+    ImageSource, 
     Interaction, 
     OrderedListMarkerKindType, 
     ParagraphStyle, 
@@ -503,6 +505,29 @@ export class FlowEditorCommands {
         const { selection, content } = this.#state;
         if (selection) {
             this.#state = this.#apply(selection.setIcon(content, data));
+        }
+    }
+
+    isImage(): boolean {
+        return this.isUniformNodes(node => node instanceof FlowImage);
+    }
+
+    getImageSource(): ImageSource | null {
+        let image: ImageSource | null | undefined;
+        this.forEachNode(node => {
+            if (node instanceof FlowImage && image !== null && (image === void(0) || node.source.equals(image))) {
+                image = node.source;
+            } else {
+                image = null;
+            }
+        });
+        return image ?? null;
+    }
+
+    setImageSource(source: ImageSource): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setImageSource(content, source));
         }
     }
 
