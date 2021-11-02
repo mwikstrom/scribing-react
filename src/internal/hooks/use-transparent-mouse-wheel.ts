@@ -7,21 +7,21 @@ export function useTransparentMouseWheel(
     useNativeEventHandler(transparent, "wheel", (e: WheelEvent) => {
         let { deltaX, deltaY } = e;
         if (boundary) {
-            if (transparent) {
+            for (const element of document.elementsFromPoint(e.clientX, e.clientY)) {
                 if (
-                    (deltaY < 0 && transparent.scrollTop > 0) ||
-                    (deltaY > 0 && transparent.scrollHeight - transparent.clientHeight > transparent.scrollTop)
+                    (deltaY < 0 && element.scrollTop > 0) ||
+                    (deltaY > 0 && element.scrollHeight - element.clientHeight > element.scrollTop)
                 ) {
                     deltaY = 0;
                 }               
 
                 if (
-                    (deltaX < 0 && transparent.scrollLeft > 0) ||
-                    (deltaX > 0 && transparent.scrollWidth > transparent.scrollLeft)
+                    (deltaX < 0 && element.scrollLeft > 0) ||
+                    (deltaX > 0 && element.scrollWidth > element.scrollLeft)
                 ) {
                     deltaX = 0;
                 }                
-            }
+            }            
 
             if (deltaX !== 0 || deltaY !== 0) {
                 const { scrollTop, scrollLeft } = boundary;
