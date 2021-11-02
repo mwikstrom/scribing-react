@@ -51,7 +51,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
-        if (domSelection && rootElem) {
+        if (domSelection && rootElem && !e.ctrlKey && editMode) {
             const { parentElement } = rootElem;
             if (parentElement) {
                 let childOffset = 0;
@@ -70,7 +70,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
                 e.stopPropagation();
             }
         }
-    }, [rootElem]);
+    }, [rootElem, editMode]);
 
     return (
         <span 
@@ -89,7 +89,6 @@ const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
     ...textStyles(palette),
     root: {
         display: "inline",
-        cursor: "text",
     },
     selected: {
         backgroundColor: palette.selection,

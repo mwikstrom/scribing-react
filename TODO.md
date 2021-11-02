@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- FlowIcon: Cannot use as link because click is intercepted for selection!
 - FlowIcon
   - Edit custom icon path
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
