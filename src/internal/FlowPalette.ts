@@ -20,6 +20,7 @@ export interface FlowPalette {
     menu: string;
     menuText: string;
     menuBorder: string;
+    menuScrollbar: string;
     hoverMenu: string;
     toolInput: string;
     toolInputText: string;
@@ -51,6 +52,7 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     menu: "#333333",
     menuText: "#ffffff",
     menuBorder: "#444444",
+    menuScrollbar: "#777777",
     hoverMenu: "#444444",
     toolInput: "#eeeeee",
     toolInputText: "#111111",

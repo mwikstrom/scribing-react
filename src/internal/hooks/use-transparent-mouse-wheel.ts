@@ -5,13 +5,33 @@ export function useTransparentMouseWheel(
     boundary: HTMLElement | null | undefined,
 ): void {
     useNativeEventHandler(transparent, "wheel", (e: WheelEvent) => {
-        const { deltaX, deltaY } = e;
+        let { deltaX, deltaY } = e;
         if (boundary) {
-            const { scrollTop, scrollLeft } = boundary;
-            boundary.scrollTo({
-                top: scrollTop + deltaY,
-                left: scrollLeft + deltaX,
-            });
+            if (transparent) {
+                if (
+                    (deltaY < 0 && transparent.scrollTop > 0) ||
+                    (deltaY > 0 && transparent.scrollHeight - transparent.clientHeight > transparent.scrollTop)
+                ) {
+                    deltaY = 0;
+                }               
+
+                if (
+                    (deltaX < 0 && transparent.scrollLeft > 0) ||
+                    (deltaX > 0 && transparent.scrollWidth > transparent.scrollLeft)
+                ) {
+                    deltaX = 0;
+                }                
+            }
+
+            if (deltaX !== 0 || deltaY !== 0) {
+                const { scrollTop, scrollLeft } = boundary;
+                boundary.scrollTo({
+                    top: scrollTop + deltaY,
+                    left: scrollLeft + deltaX,
+                });
+            }
+
+            e.stopPropagation();
         }
     }, [boundary], {
         passive: true,

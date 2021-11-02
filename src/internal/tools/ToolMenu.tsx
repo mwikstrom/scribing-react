@@ -30,9 +30,10 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { styles, attributes, update } = usePopper(anchor, popper, {
         placement,
+        strategy: "fixed",
         modifiers: [
             { name: "computeStyles", options: { gpuAcceleration: false, adaptive: false } },
-            { name: "preventOverflow", options: { boundary, altAxis: true, padding: 2 } },
+            { name: "preventOverflow", options: { boundary, altAxis: true, padding: 10 } },
         ],
     });
 
@@ -99,5 +100,22 @@ const useStyles = createUseFlowStyles("ToolMenu", ({palette}) => ({
         borderColor: palette.menuBorder,
         boxShadow: "0 8px 8px rgba(0,0,0,0.25)",
         zIndex: 1000,
+        maxHeight: "calc(80vh - 40px)",
+        maxWidth: "calc(80vw - 40px)",
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+            width: 4,
+            height: 4,
+        },
+        "&::-webkit-scrollbar-track": {
+            background: "transparent",
+        },
+        "&::-webkit-scrollbar-corner": {
+            background: "transparent",
+        },
+        "&::-webkit-scrollbar-thumb": {
+            backgroundColor: palette.menuScrollbar,
+            borderRadius: 2,
+        },
     },
 }));
