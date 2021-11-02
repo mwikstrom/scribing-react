@@ -1,9 +1,10 @@
-import React, { FC, ReactNode, useCallback, useRef, useState } from "react";
+import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import { useTransparentMouseWheel } from "../hooks/use-transparent-mouse-wheel";
 import { useNativeEventHandler } from "../hooks/use-native-event-handler";
 import { createUseFlowStyles } from "../JssTheming";
 import { SYSTEM_FONT } from "../utils/system-font";
+import { useElementSize } from "../hooks/use-element-size";
 
 /** @internal */
 export interface ToolMenuProps {
@@ -79,6 +80,12 @@ export const ToolMenu: FC<ToolMenuProps> = props => {
     }, [update]);
 
     useTransparentMouseWheel(popper, givenBoundary);
+    const { width, height } = useElementSize(popper);
+    useEffect(() => {
+        if (update) {
+            update();
+        }
+    }, [width, height, update]);
 
     return (
         <div ref={setPopper} {...popperProps}>

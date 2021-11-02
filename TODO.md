@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Update popper when icon chooser (or menu?) is resized
 - FlowIcon: Cannot use as link because click is intercepted for selection!
 - FlowIcon
   - Edit custom icon path
