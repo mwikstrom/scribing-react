@@ -26,6 +26,7 @@ Record<IconPackLocaleKey, string> {
     enable_spell_check: string;
     insert_icon: string;
     change_icon: string;
+    all_tags: string;
 }
 
 /** @public */
@@ -88,6 +89,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     icon_pack_predefined: "Predefined",
     icon_pack_custom: "Custom",
     icon_pack_mdi: "Material Design Icons",
+    all_tags: "All tags"
 });
 
 /** @public */

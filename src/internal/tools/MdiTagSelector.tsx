@@ -1,7 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { mdiTag } from "@mdi/js";
 import { useMaterialDesignIconsMetadata } from "../IconPack";
 import { Selector } from "./Selector";
+import { useFlowLocale } from "../FlowLocaleScope";
 
 export interface MdiTagSelectorProps {
     editingHost: HTMLElement | null;
@@ -11,12 +12,15 @@ export interface MdiTagSelectorProps {
 }
 
 export const MdiTagSelector: FC<MdiTagSelectorProps> = props => {
-    const options = useMaterialDesignIconTags();
+    const tags = useMaterialDesignIconTags();
+    const options = useMemo(() => tags ? ["", ...tags] : null, [tags]);
+    const locale = useFlowLocale();
     return !options ? null : (
         <Selector
             {...props}
             options={options}
             icon={mdiTag}
+            getLabel={option => option || `(${locale.all_tags})`}
         />
     );
 };
