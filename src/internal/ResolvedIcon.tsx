@@ -25,7 +25,6 @@ const MdiIcon: FC<ResolvedIconProps> = ({className, data = ""}) => {
         transition: "opacity ease-out 0.2s",
         opacity: path ? 1 : 0,
     }), [path]);
-    console.log("render ", iconName, " has path ", !!path);
     return (<Icon path={path} className={className} style={iconStyle}/>);
 };
 

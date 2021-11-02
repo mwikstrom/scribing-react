@@ -8,16 +8,30 @@ export function useTransparentMouseWheel(
         let { deltaX, deltaY } = e;
         if (boundary) {
             for (const element of document.elementsFromPoint(e.clientX, e.clientY)) {
+                if (element === boundary || element.contains(boundary)) {
+                    continue;
+                }
+
+                if (element !== transparent && !transparent?.contains(element)) {
+                    continue;
+                }
+
+                const { overflowX, overflowY } = getComputedStyle(element);                                
+
                 if (
-                    (deltaY < 0 && element.scrollTop > 0) ||
-                    (deltaY > 0 && element.scrollHeight - element.clientHeight > element.scrollTop)
+                    (overflowY === "scroll" || overflowY === "auto") && (
+                        (deltaY < 0 && element.scrollTop > 0) ||
+                        (deltaY > 0 && element.scrollHeight - element.clientHeight > element.scrollTop)
+                    )
                 ) {
                     deltaY = 0;
                 }               
 
                 if (
-                    (deltaX < 0 && element.scrollLeft > 0) ||
-                    (deltaX > 0 && element.scrollWidth > element.scrollLeft)
+                    (overflowX === "scroll" || overflowX === "auto") && (
+                        (deltaX < 0 && element.scrollLeft > 0) ||
+                        (deltaX > 0 && element.scrollWidth > element.scrollLeft)
+                    )
                 ) {
                     deltaX = 0;
                 }                
