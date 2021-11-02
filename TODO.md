@@ -34,6 +34,7 @@ SCRIBING TODO
 
 LOWER PRIO
 ==========
+- When changing icon, select the current icon pack + tag and scroll it into view.
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...
 - New interaction?: Open Topic
 - ALT+ENTER shall open insert menu with keyboard focus
