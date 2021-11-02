@@ -18,7 +18,8 @@ export const IconPackSelector: FC<IconPackSelectorProps> = props => {
     return (
         <Selector
             {...props}
-            options={ICON_PACKS}
+            // TODO: Add back custom pack for enabling selection/editing of custom (path data) icons
+            options={ICON_PACKS.filter(pack => pack !== "custom")}
             icon={current === "custom" ? mdiArchiveEdit : mdiArchive}
             getLabel={option => locale[getIconPackLocaleKey(option)]}
         />
