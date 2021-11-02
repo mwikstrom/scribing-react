@@ -1,12 +1,8 @@
 SCRIBING TODO
 =============
-- MDI tag selector
 - Update popper when icon chooser (or menu?) is resized
-- Icon chooser
 - FlowIcon: Cannot use as link because click is intercepted for selection!
 - FlowIcon
-  - Insert icon
-  - Change icon?
   - Edit custom icon path
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - Cannot step out of multi-output template box

@@ -18,7 +18,16 @@ import { ToolMenu } from "./ToolMenu";
 import { ToolMenuItem } from "./ToolMenuItem";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
-import { BoxStyle, DynamicText, FlowBox, FlowContent, ParagraphBreak, ParagraphStyleProps } from "scribing";
+import { 
+    BoxStyle, 
+    DynamicText, 
+    FlowBox, 
+    FlowContent, 
+    FlowIcon, 
+    ParagraphBreak, 
+    ParagraphStyleProps, 
+    TextStyle 
+} from "scribing";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { IconChooser } from "./IconChooser";
 
@@ -77,6 +86,14 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [setMenuOpen, editingHost]);
 
+    const insertDynamicText = useCallback((expression: string) => {
+        commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
     const beginIcon = useCallback(() => {
         setMenuOpen("icon");
         if (editingHost) {
@@ -84,8 +101,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [setMenuOpen, editingHost]);
 
-    const insertDynamicText = useCallback((expression: string) => {
-        commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
+    const applyIcon = useCallback((data: string) => {
+        if (commands.isIcon()) {
+            commands.setIcon(data);
+        } else {
+            commands.insertNode(new FlowIcon({ data, style: TextStyle.empty }));
+        }
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -186,7 +207,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                     closeOnMouseLeave={false}
                     boundary={boundary}
                     children={(
-                        <IconChooser editingHost={editingHost} boundary={boundary}/>
+                        <IconChooser
+                            editingHost={editingHost}
+                            boundary={boundary}
+                            current={commands.getIcon()}
+                            onIconSelected={applyIcon}
+                        />
                     )}
                 />
             )}

@@ -487,34 +487,56 @@ export class FlowEditorCommands {
         return this.isUniformNodes(node => node instanceof FlowIcon);
     }
 
+    getIcon(): string | null {
+        let icon: string | null | undefined;
+        this.forEachNode(node => {
+            if (node instanceof FlowIcon && (icon === void(0) || icon === node.data)) {
+                icon = node.data;
+            } else {
+                icon = null;
+            }
+        });
+        return icon ?? null;
+    }
+
+    setIcon(data: string): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setIcon(content, data));
+        }
+    }
+
     isUniformNodes(predicate: (node: FlowNode) => boolean): boolean {
         const { found, other } = this.matchNodes(predicate);
         return found && !other;
     }
 
-    matchNodes(predicate: (node: FlowNode) => boolean): { found: boolean, other: boolean } {
-        const { selection } = this.#state;
-        
+    matchNodes(predicate: (node: FlowNode) => boolean): { found: boolean, other: boolean } {      
         let found = false;
         let other = false;
+        this.forEachNode(node => {
+            if (predicate(node)) {
+                found = true;
+            } else {
+                other = true;
+            }
+        });
+        return { found, other };
+    }
 
+    forEachNode(callback: (node: FlowNode) => void): void {
+        const { selection } = this.#state;
         selection?.transformRanges((range, options = {}) => {
             const { target } = options;
 
             if (target) {
                 for (const node of target.peek(range.first).range(range.size)) {
-                    if (predicate(node)) {
-                        found = true;
-                    } else {
-                        other = true;
-                    }
+                    callback(node);
                 }
             }
 
             return null;
         }, this.getTargetOptions());
-
-        return { found, other };
     }
 
     getDynamicExpression(): string | null | undefined {

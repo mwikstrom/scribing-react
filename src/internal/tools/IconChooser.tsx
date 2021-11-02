@@ -1,3 +1,5 @@
+import clsx from "clsx";
+import Color from "color";
 import React, { FC, useMemo, useState } from "react";
 import { PREDEFINED_ICONS } from "scribing";
 import { IconPack, useMaterialDesignIconsMetadata } from "../IconPack";
@@ -11,14 +13,17 @@ import { VirtualGrid } from "./VirtualGrid";
 export interface IconChooserProps {
     editingHost: HTMLElement | null;
     boundary?: HTMLElement | null;
+    current?: string | null;
+    onIconSelected?: (icon: string) => void;
 }
 
 export const IconChooser: FC<IconChooserProps> = props => {
-    const { editingHost, boundary } = props;
+    const { editingHost, boundary, current, onIconSelected = () => void(0) } = props;
     const [iconPack, setIconPack] = useState<IconPack>("predefined");
     const [mdiTag, setMdiTag] = useState("");
     const classes = useStyles();
     const mdiMeta = useMaterialDesignIconsMetadata();
+    const [hoverIcon, setHoverIcon] = useState<string | null>(null);
     const iconsInGallery = useMemo<readonly string[]>(() => {
         if (iconPack === "predefined") {
             return PREDEFINED_ICONS;
@@ -56,7 +61,17 @@ export const IconChooser: FC<IconChooserProps> = props => {
                 itemHeight={ITEM_SIZE}
                 getItemKey={item => item}
                 renderItem={item => (
-                    <ResolvedIcon className={classes.icon} data={item}/>
+                    <span
+                        className={clsx(
+                            classes.iconButton,
+                            hoverIcon === item && classes.iconButtonHover,
+                            current === item && classes.iconButtonCurrent,
+                        )}
+                        onMouseOver={() => setHoverIcon(item)}
+                        onMouseOut={() => setHoverIcon(before => before === item ? null : before)}
+                        onClick={() => onIconSelected(item)}
+                        children={<ResolvedIcon className={classes.icon} data={item}/>}
+                    />
                 )}
                 itemClass={classes.galleryItem}
                 itemDisplay={"inline-flex"}
@@ -106,6 +121,27 @@ const useStyles = createUseFlowStyles("IconChooser", ({palette}) => ({
         height: ITEM_SIZE,
         alignItems: "center",
         justifyContent: "center",
+    },
+    iconButton: {
+        cursor: "pointer",
+        color: Color(palette.text).fade(0.2).toString(),
+        borderRadius: 4,
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderColor: "transparent",
+        display: "inline-flex",
+        width: ITEM_SIZE - 4,
+        height: ITEM_SIZE - 4,
+        alignItems: "center",
+        justifyContent: "center",
+        boxSizing: "border-box",
+    },
+    iconButtonHover: {
+        color: palette.text,
+        backgroundColor: Color(palette.text).fade(0.8).toString(),
+    },
+    iconButtonCurrent: {
+        borderColor: palette.selection,
     },
     icon: {
         width: ICON_SIZE,
