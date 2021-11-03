@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState, MouseEvent } from "react";
+import React, { useCallback, useMemo, useState, MouseEvent, useEffect, CSSProperties } from "react";
 import { FlowImage } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
@@ -71,6 +71,22 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [rootElem, editMode]);
 
+    const [srcUrl, setSrcUrl] = useState(source.url);
+    useEffect(() => {
+        const { placeholder } = source;
+        if (placeholder) {
+            setSrcUrl(`data:;base64,${placeholder}`);
+        }
+    }, [source]);
+
+    const imageStyle = useMemo<CSSProperties>(() => {
+        const { width, height } = source;
+        return {
+            maxWidth: `calc(min(100%, ${width}px))`,
+            maxHeight: `calc(min(100%, ${height}px))`,
+        };
+    }, [source]);
+
     return (
         <span 
             ref={ref}
@@ -79,7 +95,13 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={"<img data={data} className={classes.image}/>" + String(source)}
+            children={(
+                <img
+                    className={classes.image}
+                    src={srcUrl}
+                    style={imageStyle}
+                />
+            )}
         />
     );
 });
@@ -88,19 +110,20 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
     ...textStyles(palette),
     root: {
         display: "inline",
+        position: "relative",
+        outlineColor: "transparent",
+        outlineStyle: "solid",
+        outlineWidth: 2,
+        outlineOffset: 4,
     },
     selected: {
-        backgroundColor: palette.selection,
-        color: palette.selectionText,
+        outlineColor: palette.selection,
     },
     selectedInactive: {
-        backgroundColor: palette.inactiveSelection,
-        color: palette.inactiveSelectionText,
+        outlineColor: palette.inactiveSelection,
     },
     image: {
-        display: "inline-block",
         verticalAlign: "text-bottom",
-        width: "1.3em",
-        height: "1.3em",
+        border: "none",
     },
 }));
