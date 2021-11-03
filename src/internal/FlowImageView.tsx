@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState, MouseEvent, useEffect, CSSProperties } from "react";
+import React, { useCallback, useMemo, useState, MouseEvent, CSSProperties } from "react";
 import { FlowImage } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
@@ -8,6 +8,7 @@ import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
+import Color from "color";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -71,21 +72,18 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [rootElem, editMode]);
 
-    const [srcUrl, setSrcUrl] = useState(source.url);
-    useEffect(() => {
-        const { placeholder } = source;
-        if (placeholder) {
-            setSrcUrl(`data:;base64,${placeholder}`);
-        }
-    }, [source]);
-
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         return {
-            maxWidth: `calc(min(100%, ${width}px))`,
-            maxHeight: `calc(min(100%, ${height}px))`,
+            width: `calc(min(100%, ${width}px))`,
+            aspectRatio: `${width}/${height}`,
         };
-    }, [source]);
+    }, [source.width, source.height]);
+
+    // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
+    const url = source.placeholder ? `data:;base64,${source.placeholder}` : source.url;
+    const broken = source.url === "broken";
+    const pending = false;
 
     return (
         <span 
@@ -95,10 +93,18 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={(
+            children={url ? (
                 <img
                     className={classes.image}
-                    src={srcUrl}
+                    src={url}
+                    style={imageStyle}
+                />
+            ) : (
+                <span
+                    className={clsx(
+                        classes.image, 
+                        pending ? classes.pending : broken ? classes.broken : classes.empty
+                    )}
                     style={imageStyle}
                 />
             )}
@@ -123,7 +129,30 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
         outlineColor: palette.inactiveSelection,
     },
     image: {
+        display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
+    },
+    pending: {
+        background: palette.subtle,
+        opacity: 0.2,
+    },
+    empty: {
+        background: `repeating-linear-gradient(
+            45deg,
+            ${Color(palette.subtle).fade(0.85)},
+            ${Color(palette.subtle).fade(0.85)} 10px,
+            ${Color(palette.subtle).fade(0.98)} 10px,
+            ${Color(palette.subtle).fade(0.98)} 20px
+        )`,
+    },
+    broken: {
+        background: `repeating-linear-gradient(
+            45deg,
+            ${Color(palette.error).fade(0.85)},
+            ${Color(palette.error).fade(0.85)} 10px,
+            ${Color(palette.error).fade(0.98)} 10px,
+            ${Color(palette.error).fade(0.98)} 20px
+        )`,
     },
 }));

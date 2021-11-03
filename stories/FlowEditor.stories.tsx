@@ -616,7 +616,7 @@ Images.args = {
         "In the next paragraph there should be 300x225 image that is centered",
         { break: "para" },
         // eslint-disable-next-line max-len
-        { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 300, height: 225 } },
+        { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=300", width: 300, height: 225 } },
         { break: "para", style: { alignment: "center"} },
         "On the next line there should be a big image",
         { break: "line" },
