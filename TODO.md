@@ -10,6 +10,12 @@ SCRIBING TODO
   - Replace image from file
   - Drag & Drop to replace image
   - Image story
+    - Inline
+    - Full width
+    - No source no placeholder
+    - Placeholder only (no source)
+    - Error source
+    - Deferred loading
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Inserting a dynamic text ("apa") at end of preamble in "Rich" story and then double clicking it to select it does cause toolbox to appear. (selection is out-of-sync?)
