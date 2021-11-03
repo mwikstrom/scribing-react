@@ -12,10 +12,12 @@ import {
     FlowBox,
     DynamicText,
     FlowIcon,
+    FlowImage,
 } from "scribing";
 import { DynamicTextView } from "./DynamicTextView";
 import { FlowBoxView } from "./FlowBoxView";
 import { FlowIconView } from "./FlowIconView";
+import { FlowImageView } from "./FlowImageView";
 import { FlowNodeComponent } from "./FlowNodeComponent";
 import { LineBreakView } from "./LineBreakView";
 import { ParagraphBreakView } from "./ParagraphBreakView";
@@ -44,6 +46,7 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
     dynamicTextView: DynamicTextView,
     fallbackView: UnknownNodeView,
     iconView: FlowIconView,
+    imageView: FlowImageView,
 });
 
 /** @public */
@@ -57,6 +60,7 @@ export interface FlowComponentMap extends Record<ParagraphVariant, ParagraphComp
     dynamicTextView: FlowNodeComponent<DynamicText>;
     fallbackView: FlowNodeComponent;
     iconView: FlowNodeComponent<FlowIcon>;
+    imageView: FlowNodeComponent<FlowImage>;
 }
 
 /** @public */
