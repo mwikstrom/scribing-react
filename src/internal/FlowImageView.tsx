@@ -82,7 +82,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
 
     // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
     const url = source.placeholder ? `data:;base64,${source.placeholder}` : source.url;
-    const broken = source.url === "broken";
+    const broken = url === "broken";
     const pending = false;
 
     return (
@@ -93,7 +93,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={url ? (
+            children={url && !broken ? (
                 <img
                     className={classes.image}
                     src={url}
