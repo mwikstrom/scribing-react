@@ -605,6 +605,40 @@ Icons.args = {
     ])),
 };
 
+export const Images = Template.bind({});
+Images.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "There should be an inline image here ",
+        // eslint-disable-next-line max-len
+        { image: { url: "https://images.unsplash.com/photo-1471879832106-c7ab9e0cee23?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=24", width: 24, height: 18 } },
+        " and this text should flow after it.",
+        { break: "para" },
+        "In the next paragraph there should be 300x225 image that is centered",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 300, height: 225 } },
+        { break: "para", style: { alignment: "center"} },
+        "On the next line there should be a big image",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1441 } },
+        { break: "para" },
+        "On the next line there should be an image with placeholder only",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { image: { url: "", placeholder: "/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWiAH3AABABkAAwApADlhY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWxjbXMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApkZXNjAAAA/AAAAF5jcHJ0AAABXAAAAAt3dHB0AAABaAAAABRia3B0AAABfAAAABRyWFlaAAABkAAAABRnWFlaAAABpAAAABRiWFlaAAABuAAAABRyVFJDAAABzAAAAEBnVFJDAAABzAAAAEBiVFJDAAABzAAAAEBkZXNjAAAAAAAAAANjMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0ZXh0AAAAAElYAABYWVogAAAAAAAA9tYAAQAAAADTLVhZWiAAAAAAAAADFgAAAzMAAAKkWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeFAAAY2lhZWiAAAAAAAAAkoAAAD4QAALbPY3VydgAAAAAAAAAaAAAAywHJA2MFkghrC/YQPxVRGzQh8SmQMhg7kkYFUXdd7WtwegWJsZp8rGm/fdPD6TD////bAIQAAgMDAwQDBAUFBAYGBgYGCAgHBwgIDQkKCQoJDRMMDgwMDgwTERQRDxEUER4YFRUYHiMdHB0jKiUlKjUyNUVFXAECAwMDBAMEBQUEBgYGBgYICAcHCAgNCQoJCgkNEwwODAwODBMRFBEPERQRHhgVFRgeIx0cHSMqJSUqNTI1RUVc/8AAEQgADAAQAwEiAAIRAQMRAf/EAGQAAQEBAAAAAAAAAAAAAAAAAAgFBxAAAQQCAgMBAAAAAAAAAAAAAQIDBBEABQYHEyFRQQEBAQAAAAAAAAAAAAAAAAAABQYRAAEDAwUAAAAAAAAAAAAAAAEAAxECBAUGEjFRYf/aAAwDAQACEQMRAD8A1fXdrMnWMlQVXjFEg0R9BwqdhdpyjJdQ0seN1GGPivItzEjS2mZa0pDa01f5dZR5dsFTI2rZWwyhKooJKE0SQCbv76wRrD2tDo5I6JUK9qC+fZgV7CImB7C//9k=", width: 100, height: 75 } },
+        { break: "para" },
+        "On the next line there should be an image empty url and without placeholder",
+        { break: "line" },
+        { image: { url: "", width: 100, height: 75 } },
+        { break: "para" },
+        "On the next line there should be a broken image",
+        { break: "line" },
+        { image: { url: "broken", width: 100, height: 75 } },
+        { break: "para" },
+    ])),
+};
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""
