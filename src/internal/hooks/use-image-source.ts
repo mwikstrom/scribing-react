@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ImageSource } from "scribing";
+import { useAssetLoader } from "../AssetLoaderScope";
 
 export interface ImageSourceInUse {
     url: string;
@@ -18,7 +19,53 @@ export function useImageSource(source: ImageSource): ImageSourceInUse {
 }
 
 function useOriginalImageSource(sourceUrl: string): ImageSourceInUse {
-    return useVerifiedImageUrl(sourceUrl);
+    const assetLoader = useAssetLoader();
+    const [blobUrl, setBlobUrl] = useState("");
+    const [broken, setBroken] = useState(false);
+    const [unverifiedUrl, setUnverifiedUrl] = useState("");
+    const verified = useVerifiedImageUrl(unverifiedUrl);
+    
+    useEffect(() => {
+        setBroken(false);
+        setBlobUrl("");
+        if (sourceUrl) {
+            let active = true;
+            assetLoader(sourceUrl).then(
+                blob => {
+                    if (active) {
+                        if (blob) {
+                            const createdUrl = URL.createObjectURL(blob);
+                            setBlobUrl(createdUrl);
+                            setUnverifiedUrl(createdUrl);
+                        } else {
+                            setUnverifiedUrl(sourceUrl);
+                        }
+                    }
+                },
+                () => {
+                    if (active) {
+                        setBroken(true);
+                    }
+                }
+            );
+            return () => { active = false; };
+        }
+    }, [sourceUrl, assetLoader]);
+    
+    useEffect(() => {
+        const revokeUrl = blobUrl;
+        if (revokeUrl) {
+            return () => URL.revokeObjectURL(revokeUrl);
+        }
+    }, [blobUrl]);
+
+    if (broken) {
+        return { broken, ready: true, url: sourceUrl };
+    } else if (!unverifiedUrl && sourceUrl) {
+        return { broken: false, ready: false, url: "" };
+    } else {
+        return verified;
+    }
 }
 
 function useImageSourcePlaceholder(placeholder: string | null | undefined): ImageSourceInUse {
