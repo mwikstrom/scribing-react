@@ -74,7 +74,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [rootElem, editMode]);
 
-    // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
     const visible = useIsScrolledIntoView(imageElem);
