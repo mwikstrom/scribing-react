@@ -10,6 +10,7 @@ import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
+import { useImageSource } from "./hooks/use-image-source";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -74,11 +75,9 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     }, [rootElem, editMode]);
 
     // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
-    const url = source.placeholder ? `data:;base64,${source.placeholder}` : source.url;
-    const broken = url === "broken";
+    const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
     const visible = useIsScrolledIntoView(imageElem);
-    const ready = visible;
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         const css: CSSProperties = {
@@ -106,7 +105,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                     style={imageStyle}
                     className={clsx(
                         classes.image, 
-                        ready && classes.ready,
+                        visible && ready && classes.ready,
                         imageElem && classes.bound,
                         broken && classes.broken,
                         !url && classes.empty,
