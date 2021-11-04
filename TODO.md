@@ -8,6 +8,7 @@ SCRIBING TODO
   - Extract and assign placeholder when replacing/inserting image
   - Replace image from file
   - Drag & Drop to replace image
+  - Image upload progress? Or maybe weakmap between image source and pending blob?
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Inserting a dynamic text ("apa") at end of preamble in "Rich" story and then double clicking it to select it doesnt cause toolbox to appear. (selection is out-of-sync?)
