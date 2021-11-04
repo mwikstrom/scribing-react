@@ -5,7 +5,6 @@ SCRIBING TODO
 - FlowImage
   - Insert image from file
   - Drag & Drop to add image
-  - Use intersection observer to load images
   - Extract and assign placeholder when replacing/inserting image
   - Replace image from file
   - Drag & Drop to replace image
