@@ -1,6 +1,11 @@
 SCRIBING TODO
 =============
+- IMPORTANT: FlowEditorCommands shall only be able to apply changes if its state is current!
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- Declare asset loader scope in flow view
+- Declare asset uploader scope in flow editor
+- Use asset uploader when creating image source
+- Show image upload progress/error
 - Cannot step out of multi-output template box
 - FlowImage
   - Insert image from file
