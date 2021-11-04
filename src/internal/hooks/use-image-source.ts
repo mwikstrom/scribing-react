@@ -9,7 +9,7 @@ export interface ImageSourceInUse {
 }
 
 export function useImageSource(source: ImageSource): ImageSourceInUse {
-    const original = useOriginalImageSource(source.url);
+    const original = useImageSourceUrl(source.url);
     const placeholder = useImageSourcePlaceholder(source.placeholder);
     if (placeholder.url && placeholder.ready && (!original.url || !original.ready)) {
         return placeholder;
@@ -18,7 +18,7 @@ export function useImageSource(source: ImageSource): ImageSourceInUse {
     }
 }
 
-function useOriginalImageSource(sourceUrl: string): ImageSourceInUse {
+function useImageSourceUrl(sourceUrl: string): ImageSourceInUse {
     const assetLoader = useAssetLoader();
     const [blobUrl, setBlobUrl] = useState("");
     const [broken, setBroken] = useState(false);
@@ -28,6 +28,7 @@ function useOriginalImageSource(sourceUrl: string): ImageSourceInUse {
     useEffect(() => {
         setBroken(false);
         setBlobUrl("");
+        setUnverifiedUrl("");        
         if (sourceUrl) {
             let active = true;
             assetLoader(sourceUrl).then(
