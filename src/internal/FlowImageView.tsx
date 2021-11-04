@@ -73,19 +73,24 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [rootElem, editMode]);
 
-    const imageStyle = useMemo<CSSProperties>(() => {
-        const { width, height } = source;
-        return {
-            width: `calc(min(100%, ${width}px))`,
-            aspectRatio: `${width}/${height}`,
-        };
-    }, [source.width, source.height]);
-
     // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
     const url = source.placeholder ? `data:;base64,${source.placeholder}` : source.url;
     const broken = url === "broken";
-    const visible = useIsScrolledIntoView(rootElem);
+    const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
+    const visible = useIsScrolledIntoView(imageElem);
     const ready = visible;
+    const imageStyle = useMemo<CSSProperties>(() => {
+        const { width, height } = source;
+        const css: CSSProperties = {
+            width: `calc(min(100%, ${width}px))`,
+            aspectRatio: `${width}/${height}`,
+        };
+        if (url && !broken) {
+            css.backgroundImage = `url(${url})`;
+            css.backgroundSize = "cover";
+        }
+        return css;
+    }, [source.width, source.height, url, broken]);
 
     return (
         <span 
@@ -95,20 +100,17 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={url && !broken ? (
-                <img
-                    className={clsx(classes.image, ready && classes.ready)}
-                    src={url}
-                    style={imageStyle}
-                />
-            ) : (
+            children={(
                 <span
+                    ref={setImageElem}
+                    style={imageStyle}
                     className={clsx(
                         classes.image, 
                         ready && classes.ready,
-                        broken ? classes.broken : classes.empty
+                        imageElem && classes.bound,
+                        broken && classes.broken,
+                        !url && classes.empty,
                     )}
-                    style={imageStyle}
                 />
             )}
         />
@@ -135,8 +137,10 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
         display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
+    },
+    bound: {
+        transition: "opacity ease-out 0.1s",
         opacity: 0,
-        transition: "opacity ease-out 1s",
     },
     ready: {
         opacity: 1,
