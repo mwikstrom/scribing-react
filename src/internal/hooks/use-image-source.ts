@@ -1,55 +1,63 @@
 import { useEffect, useState } from "react";
 import { ImageSource } from "scribing";
 
-export function useImageSource(source: ImageSource): { url: string, broken: boolean, ready: boolean } {
+export interface ImageSourceInUse {
+    url: string;
+    broken: boolean;
+    ready: boolean;
+}
+
+export function useImageSource(source: ImageSource): ImageSourceInUse {
+    const original = useOriginalImageSource(source.url);
+    const placeholder = useImageSourcePlaceholder(source.placeholder);
+    if (placeholder.url && placeholder.ready && (!original.url || !original.ready)) {
+        return placeholder;
+    } else {
+        return original;
+    }
+}
+
+function useOriginalImageSource(sourceUrl: string): ImageSourceInUse {
+    return useVerifiedImageUrl(sourceUrl);
+}
+
+function useImageSourcePlaceholder(placeholder: string | null | undefined): ImageSourceInUse {
+    const url = placeholder ? `data:;base64,${placeholder}` : "";
+    return useVerifiedImageUrl(url);
+}
+
+function useVerifiedImageUrl(unverified: string): ImageSourceInUse {
     const [url, setUrl] = useState("");
     const [broken, setBroken] = useState(false);
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        const { url: sourceUrl, placeholder } = source;
         let active = true;
-        let sourceDone = false;
         
-        setUrl("");
-        setReady(false);
+        setReady(!unverified);
         setBroken(false);
 
-        if (placeholder) {
+        if (unverified) {
             const img = new Image();
             img.onload = () => {
-                if (active && !sourceDone) {
-                    setUrl(img.src);
-                    setReady(true);
-                }
-            };
-            img.src = `data:;base64,${placeholder}`;
-        }
-
-        if (sourceUrl) {
-            const img = new Image();
-            img.onload = () => {
-                sourceDone = true;
                 if (active) {
                     setUrl(img.src);
                     setReady(true);
+                    setBroken(false);
                 }
             };
             img.onerror = () => {
-                sourceDone = true;
                 if (active) {
                     setUrl("");
-                    setBroken(true);
                     setReady(true);
+                    setBroken(true);
                 }
             };
-            img.src = sourceUrl;
-        } else {
-            setReady(true);
+            img.src = unverified;
         }
 
-        return () => { active = sourceDone = false; };
-    }, [source]);
+        return () => { active = false; };
+    }, [unverified]);
 
     return { url, broken, ready };
 }
