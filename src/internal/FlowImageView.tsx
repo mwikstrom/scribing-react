@@ -9,6 +9,7 @@ import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
+import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -83,7 +84,8 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     // TODO: THIS IS JUST TEMPORARY! url, broken + pending shall be assigned real stuff...
     const url = source.placeholder ? `data:;base64,${source.placeholder}` : source.url;
     const broken = url === "broken";
-    const pending = false;
+    const visible = useIsScrolledIntoView(rootElem);
+    const ready = visible;
 
     return (
         <span 
@@ -95,7 +97,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             onClick={onClick}
             children={url && !broken ? (
                 <img
-                    className={classes.image}
+                    className={clsx(classes.image, ready && classes.ready)}
                     src={url}
                     style={imageStyle}
                 />
@@ -103,7 +105,8 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                 <span
                     className={clsx(
                         classes.image, 
-                        pending ? classes.pending : broken ? classes.broken : classes.empty
+                        ready && classes.ready,
+                        broken ? classes.broken : classes.empty
                     )}
                     style={imageStyle}
                 />
@@ -132,10 +135,11 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
         display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
+        opacity: 0,
+        transition: "opacity ease-out 1s",
     },
-    pending: {
-        background: palette.subtle,
-        opacity: 0.2,
+    ready: {
+        opacity: 1,
     },
     empty: {
         background: `repeating-linear-gradient(
