@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ImageSource } from "scribing";
 import { useAssetLoader } from "../AssetLoaderScope";
+import { useUploadManager } from "../UploadManagerScope";
 
 export interface ImageSourceInUse {
     url: string;
@@ -9,7 +10,7 @@ export interface ImageSourceInUse {
 }
 
 export function useImageSource(source: ImageSource): ImageSourceInUse {
-    const original = useImageSourceUrl(source.url);
+    const original = useImageSourceUrl(source.url, source.upload);
     const placeholder = useImageSourcePlaceholder(source.placeholder);
     if (placeholder.url && placeholder.ready && (!original.url || !original.ready)) {
         return placeholder;
@@ -18,19 +19,26 @@ export function useImageSource(source: ImageSource): ImageSourceInUse {
     }
 }
 
-function useImageSourceUrl(sourceUrl: string): ImageSourceInUse {
+function useImageSourceUrl(sourceUrl: string, uploadId?: string): ImageSourceInUse {
     const assetLoader = useAssetLoader();
     const [blobUrl, setBlobUrl] = useState("");
     const [broken, setBroken] = useState(false);
     const [unverifiedUrl, setUnverifiedUrl] = useState("");
     const verified = useVerifiedImageUrl(unverifiedUrl);
+    const uploadManager = useUploadManager();
+    const upload = useMemo(() => uploadId ? uploadManager.get(uploadId) : null, [uploadManager, uploadId]);
     
     useEffect(() => {
-        setBroken(false);
-        setBlobUrl("");
-        setUnverifiedUrl("");        
-        if (sourceUrl) {
+        if (upload) {
+            const createdUrl = URL.createObjectURL(upload.blob);
+            setBroken(false);
+            setBlobUrl(createdUrl);
+            setUnverifiedUrl(createdUrl);
+        } else if (sourceUrl) {
             let active = true;
+            setBroken(false);
+            setBlobUrl("");
+            setUnverifiedUrl("");
             assetLoader(sourceUrl).then(
                 blob => {
                     if (active) {
@@ -51,7 +59,7 @@ function useImageSourceUrl(sourceUrl: string): ImageSourceInUse {
             );
             return () => { active = false; };
         }
-    }, [sourceUrl, assetLoader]);
+    }, [upload, sourceUrl, assetLoader]);
     
     useEffect(() => {
         const revokeUrl = blobUrl;

@@ -1,6 +1,6 @@
 import { ImageSource, ImageSourceProps } from "scribing";
 
-export const createImageSource = async (blob: Blob): Promise<ImageSource> => {
+export const createImageSource = async (blob: Blob, upload: string): Promise<ImageSource> => {
     const url = URL.createObjectURL(blob);
     try {
         const image = await loadImage(url);
@@ -13,14 +13,13 @@ export const createImageSource = async (blob: Blob): Promise<ImageSource> => {
             width: image.width,
             height: image.height,
             url: "",
+            upload,
         };
         if (context) {
             context.drawImage(image, 0, 0, canvas.width, canvas.height);
             props.placeholder = getPlaceholderData(canvas);
         }
-        const source = new ImageSource(props);
-        // TOOD: Run asset uploader!
-        return source;
+        return new ImageSource(props);
     } finally {
         URL.revokeObjectURL(url);
     }

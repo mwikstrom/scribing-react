@@ -1,19 +1,16 @@
 SCRIBING TODO
 =============
 - IMPORTANT: FlowEditorCommands shall only be able to apply changes if its state is current!
+- IMPORTANT: Implement FlowEditorCommands.refresh();
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- Flow image is flickering (with empty background) when changing pargraph list level
 - Declare asset loader scope in flow view
 - Declare asset uploader scope in flow editor
-- Use asset uploader when creating image source
 - Show image upload progress/error
 - Cannot step out of multi-output template box
 - FlowImage
-  - Insert image from file
   - Drag & Drop to add image
-  - Extract and assign placeholder when replacing/inserting image
-  - Replace image from file
   - Drag & Drop to replace image
-  - Image upload progress? Or maybe weakmap between image source and pending blob?
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
 - Lynk & Co needs:

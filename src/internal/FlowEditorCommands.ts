@@ -43,7 +43,9 @@ export class FlowEditorCommands {
         this.#state = this.#apply(this.#state.redo());
     }
 
-
+    refresh(): void {
+        // TODO: IMPORTANT: Refresh shall update commands with current state (incl. apply func)
+    }
 
     isCaret(): boolean {
         const { selection } = this.#state;

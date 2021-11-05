@@ -34,6 +34,7 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { IconChooser } from "./IconChooser";
 import { fileOpen } from "browser-fs-access";
 import { createImageSource } from "../utils/create-image-source";
+import { useUploadManager } from "../UploadManagerScope";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
@@ -41,6 +42,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
+    const uploadManager = useUploadManager();
     
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
@@ -123,13 +125,16 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             editingHost.focus();
         }
         const blob = await fileOpen({mimeTypes: ["image/*"]});
-        const source = await createImageSource(blob);
+        const upload = uploadManager.begin(blob);
+        const source = await createImageSource(blob, upload.id);
+
+        commands.refresh();        
         if (commands.isImage()) {
             commands.setImageSource(source);
         } else {
             commands.insertNode(new FlowImage({ source, style: TextStyle.empty }));
         }
-    }, [commands, closeMenu, editingHost]);
+    }, [commands, closeMenu, editingHost, uploadManager]);
 
     return (
         <>
