@@ -20,6 +20,7 @@ SCRIBING TODO
   - Expand/collapse (summary/details)
   - Task stepper (maybe a kind of list marker? + ability to set whether it is "active"?)
   - Feedback during long running operation
+  - Progress bar
 - Insert emoji by typing (using WIN+PERIOD) is broken
 - Deleting all when there's a final para break, shall result in an empty document with a para break
 - Inserting a dynamic text ("apa") at end of preamble in "Rich" story and then double clicking it to select it doesnt cause toolbox to appear. (selection is out-of-sync?)
