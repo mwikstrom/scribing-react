@@ -2,7 +2,6 @@ SCRIBING TODO
 =============
 - IMPORTANT: FlowEditorCommands shall only be able to apply changes if its state is current!
 - IMPORTANT: Implement FlowEditorCommands.refresh();
-- Insert content handler: Promise -> Insert deferred content (replace when resolved/rejected)
 - UploadManager in flow editor commands, not in a scope context
 - Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Paste flow content
@@ -46,6 +45,7 @@ SCRIBING TODO
 - Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary. MAYBE EVENT JSX in SCRIPTHOST?!
 - Cannot select all and toggle spell check style when selection includes code (ambient spell check = false)
 - Caret color is not correct when placed adjacent to flow image
+- Provide feedback while creating flow image placeholder and in case that operation fail
 
 LOWER PRIO
 ==========
