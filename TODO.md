@@ -2,8 +2,12 @@ SCRIBING TODO
 =============
 - IMPORTANT: FlowEditorCommands shall only be able to apply changes if its state is current!
 - IMPORTANT: Implement FlowEditorCommands.refresh();
-- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary.
-- Paste image
+- Insert content handler: Promise -> Insert deferred content (replace when resolved/rejected)
+- UploadManager in flow editor commands, not in a scope context
+- Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
+- Paste flow content
+- Copy flow content
+- Copy image
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - Flow image is flickering (with empty background) when changing pargraph list level
 - Declare asset loader scope in flow view
@@ -39,9 +43,11 @@ SCRIBING TODO
 - HOME/END keys doesn't work as expected
 - Fix caret design when placed inside template.
 - Fix actual caret selection when placed inside template. Click in template should allow edit.
+- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary.
 
 LOWER PRIO
 ==========
+- Paste HTML
 - When changing icon, select the current icon pack + tag and scroll it into view.
 - Select/Edit custom flow icon
 - Italic caret does not work. It needs to be inline with outline so that it doesn't mess with line breaking. But tranform requires inline-block...

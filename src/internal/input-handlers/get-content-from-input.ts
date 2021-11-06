@@ -1,15 +1,19 @@
-import { FlowContent, FlowNode, LineBreak, ParagraphBreak, TextRun, TextStyle } from "scribing";
+import { FlowContent, LineBreak, ParagraphBreak, TextStyle } from "scribing";
+import { UploadManager } from "../UploadManager";
+import { createFlowContent, getFlowContentFromDataTransfer, getFlowContentFromPlainText } from "../utils/data-transfer";
 
 /** @internal */
-export const getContentFromInput = (event: InputEvent, caret: TextStyle): FlowContent | null => {
-    const { inputType, dataTransfer } = event;
-    let { data } = event;
-    const nodes: FlowNode[] = [];
+export const getContentFromInput = (
+    event: InputEvent,
+    caret: TextStyle,
+    uploadManager: UploadManager
+): FlowContent | null | Promise<FlowContent> => {
+    const { inputType, dataTransfer, data } = event;
 
     if (inputType === "insertParagraph") {
-        nodes.push(new ParagraphBreak());
+        return createFlowContent(new ParagraphBreak());
     } else if (inputType === "insertLineBreak") {
-        nodes.push(new LineBreak({ style: caret }));
+        return createFlowContent(new LineBreak({ style: caret }));
     } else if (
         inputType !== "insertFromPaste" &&
         inputType !== "insertFromPasteAsQuotation" &&
@@ -25,26 +29,15 @@ export const getContentFromInput = (event: InputEvent, caret: TextStyle): FlowCo
     }
 
     if (dataTransfer !== null) {
-        const plain = dataTransfer.getData("text/plain");
-
-        if (!plain) {
-            // TODO: Add support for text/html too!
-            console.warn("Only plain text data transfer is supported");
-            return null;
+        const content = getFlowContentFromDataTransfer(dataTransfer, caret, uploadManager);
+        if (content !== null) {
+            return content;
         }
-
-        data = plain;
     }
     
     if (data !== null) {
-        // TODO: Split plain text into line breaks and paragraph breaks
-        nodes.push(TextRun.fromData({ text: data, style: caret }));
+        return getFlowContentFromPlainText(data, caret);
     }
 
-    if (nodes.length === 0) {
-        return null;
-    }
-
-    Object.freeze(nodes);
-    return new FlowContent({ nodes });
+    return null;
 };

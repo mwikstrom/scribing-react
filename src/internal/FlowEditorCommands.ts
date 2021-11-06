@@ -24,6 +24,8 @@ import {
     TextStyleProps,
     UnorderedListMarkerKindType
 } from "scribing";
+import { TransientUploadManager } from "./TransientUploadManager";
+import { UploadManager } from "./UploadManager";
 
 /** @internal */
 export class FlowEditorCommands {
@@ -45,6 +47,11 @@ export class FlowEditorCommands {
 
     refresh(): void {
         // TODO: IMPORTANT: Refresh shall update commands with current state (incl. apply func)
+    }
+
+    getUploadManager(): UploadManager {
+        // TODO: IMPLEMENT FOR REAL!
+        return TransientUploadManager.instance;
     }
 
     isCaret(): boolean {

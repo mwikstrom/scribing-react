@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isImageFileTransfer } from "../utils/data-transfer";
 import { fixCaretPosition } from "../utils/fix-caret-position";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
 import { setCaretPosition } from "../utils/set-caret-position";
@@ -22,7 +23,7 @@ export function useDropTarget(editingHost: HTMLElement | null): DropTarget {
         e.preventDefault();
         e.stopPropagation();
         if (dataTransfer) {
-            dataTransfer.dropEffect = hasImageFile(dataTransfer) ? "copy" : "none";
+            dataTransfer.dropEffect = isImageFileTransfer(dataTransfer) ? "copy" : "none";
         }
     }, []);
 
@@ -55,14 +56,4 @@ const setCaretPositionFromDragEvent = (e: DragEvent) => {
 
     const fixed = fixCaretPosition(domPos);
     setCaretPosition(fixed ?? domPos);
-};
-
-const hasImageFile = (dataTransfer: DataTransfer): boolean => {
-    for (let i = 0; i < dataTransfer.items.length; ++i) {
-        const item = dataTransfer.items[i];
-        if (item.kind === "file" && /^image\//.test(item.type)) {
-            return true;
-        }
-    }
-    return false;
 };
