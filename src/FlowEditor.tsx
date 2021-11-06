@@ -85,13 +85,22 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, []);
 
     // State change handler
-    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>((after, ...rest) => {
+    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>((after, change, before) => {
+        let changed = false;
         if (mountedRef.current) {
-            setState(after);
-            if (onStateChangeProp) {
-                onStateChangeProp(after, ...rest);
+            setState(current => {
+                if (current.equals(before) && !current.equals(after)) {
+                    changed = true;
+                    return after;
+                } else {
+                    return current;
+                }
+            });
+            if (changed && onStateChangeProp) {
+                onStateChangeProp(after, change, before);
             }
         }
+        return changed;
     }, [onStateChangeProp, setState]);
 
     // Keep track of editing host element
@@ -143,7 +152,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Handle new state or operation
     const applyChange = useCallback((
         result: FlowOperation | FlowEditorState | null, 
-        base: FlowEditorState = state
+        base: FlowEditorState,
     ): FlowEditorState => {
         const { current: mergeUndo } = shouldMergeUndo;
         let after: FlowEditorState;
@@ -161,12 +170,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             operation = null;
             after = base;
         }
-
-        if (state.equals(after)) {
-            return state;
-        }
         
-        onStateChange(after, operation, state);
+        onStateChange(after, operation, base);
 
         if (didApplyMine) {
             shouldMergeUndo.current = true;
@@ -180,20 +185,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         return after;
-    }, [state, editingHost, onStateChange]);
+    }, [onStateChange]);
+
+    // Keep editor commands fresh. We expose a singleton that we update with
+    // current state as needed.
+    const commands = useMemo(() => new FlowEditorCommands(state, applyChange), []);
+    useLayoutEffect(() => commands._sync(state, applyChange), [commands, state, applyChange]);
 
     // Handle keyboard input
     useNativeEventHandler(
         editingHost,
         "keydown",
-        (event: KeyboardEvent) => handleKeyEvent(event, new FlowEditorCommands(state, applyChange)),
-        [state, applyChange]
+        (event: KeyboardEvent) => handleKeyEvent(event, commands),
+        [commands]
     );
 
     // Handle composition events  
-    useNativeEventHandler(editingHost, "compositionend", (event: CompositionEvent) => {
-        new FlowEditorCommands(state, applyChange).insertText(event.data);
-    }, [state, applyChange]);
+    useNativeEventHandler(
+        editingHost,
+        "compositionend",
+        (event: CompositionEvent) => commands.insertText(event.data),
+        [commands]
+    );
     
     // Handle native "beforeinput"
     useNativeEventHandler(editingHost, "beforeinput", (event: InputEvent) => {
@@ -211,9 +224,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        const commands = new FlowEditorCommands(state, applyChange);
         inputHandler(commands, event);
-    }, [state, editingHost, applyChange]);
+    }, [commands]);
 
     // Keep track of DOM selection
     const [domSelectionChange, setDomSelectionChange] = useState(0);
@@ -321,10 +333,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         ) {
             const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
-                return showTools(virtualElem, new FlowEditorCommands(state, applyChange));
+                return showTools(virtualElem, commands);
             }
         }            
-    }, [editingHost, state, documentHasFocus]);
+    }, [editingHost, state, commands, documentHasFocus]);
 
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
     // when caret is moved by the cursor

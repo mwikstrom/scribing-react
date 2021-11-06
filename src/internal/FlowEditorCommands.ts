@@ -11,6 +11,7 @@ import {
     FlowNode, 
     FlowOperation, 
     FlowRange, 
+    FlowSelection, 
     ImageSource, 
     Interaction, 
     OrderedListMarkerKindType, 
@@ -29,12 +30,27 @@ import { UploadManager } from "./UploadManager";
 
 /** @internal */
 export class FlowEditorCommands {
-    #state: FlowEditorState;
-    readonly #apply: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
+    #state!: FlowEditorState;
+    #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
 
-    constructor(state: FlowEditorState, apply: (change: FlowOperation | FlowEditorState | null) => FlowEditorState) {
+    constructor(
+        state: FlowEditorState,
+        apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+    ) {
+        this._sync(state, apply);
+    }
+
+    /** @internal */
+    _sync(
+        state: FlowEditorState,
+        apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+    ): void {
         this.#state = state;
-        this.#apply = apply;
+        this.#apply = change => apply(change, state);
+    }
+
+    getSelection(): FlowSelection | null {
+        return this.#state.selection;
     }
 
     undo(): void {
@@ -43,10 +59,6 @@ export class FlowEditorCommands {
 
     redo(): void {
         this.#state = this.#apply(this.#state.redo());
-    }
-
-    refresh(): void {
-        // TODO: IMPORTANT: Refresh shall update commands with current state (incl. apply func)
     }
 
     getUploadManager(): UploadManager {

@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- IMPORTANT: FlowEditorCommands shall only be able to apply changes if its state is current!
-- IMPORTANT: Implement FlowEditorCommands.refresh();
 - UploadManager in flow editor commands, not in a scope context
 - Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Paste flow content

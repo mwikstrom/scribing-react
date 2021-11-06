@@ -128,7 +128,6 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         const upload = uploadManager.begin(blob);
         const source = await createImageSource(blob, upload.id);
 
-        commands.refresh();        
         if (commands.isImage()) {
             commands.setImageSource(source);
         } else {
