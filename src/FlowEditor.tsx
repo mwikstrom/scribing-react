@@ -32,6 +32,8 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
+import { TransientUploadManager } from "./internal/TransientUploadManager";
+import { UploadManagerScope } from "./internal/UploadManagerScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -187,10 +189,16 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         return after;
     }, [onStateChange]);
 
+    // Manage uploads
+    const uploadManager = useMemo(() => TransientUploadManager.instance, []);
+
     // Keep editor commands fresh. We expose a singleton that we update with
     // current state as needed.
-    const commands = useMemo(() => new FlowEditorCommands(state, applyChange), []);
-    useLayoutEffect(() => commands._sync(state, applyChange), [commands, state, applyChange]);
+    const commands = useMemo(() => new FlowEditorCommands(state, applyChange, uploadManager), []);
+    useLayoutEffect(
+        () => commands._sync(state, applyChange, uploadManager),
+        [commands, state, applyChange, uploadManager]
+    );
 
     // Handle keyboard input
     useNativeEventHandler(
@@ -362,28 +370,30 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const { active: isActiveDropTarget } = useDropTarget(editingHost);
 
     return (
-        <TooltipScope manager={tooltipManager} boundary={editingHost}>
-            <EditModeScope mode={editMode}>
-                <FormattingMarksScope show={state.formattingMarks}>
-                    <FlowCaretScope
-                        style={isActiveDropTarget ? TextStyle.empty : state.caret}
-                        selection={state.selection}
-                        native={!customSelection}
-                        isDropTarget={isActiveDropTarget}
-                        children={(
-                            <div 
-                                ref={setEditingHost}
-                                className={clsx(classes.root, customSelection && classes.customSelection)}
-                                style={style}
-                                contentEditable={editMode !== false}
-                                suppressContentEditableWarning={true}
-                                children={<FlowView content={state.content} selection={state.selection}/>}
-                            />
-                        )}
-                    />
-                </FormattingMarksScope>
-            </EditModeScope>
-        </TooltipScope>
+        <UploadManagerScope manager={uploadManager}>
+            <TooltipScope manager={tooltipManager} boundary={editingHost}>
+                <EditModeScope mode={editMode}>
+                    <FormattingMarksScope show={state.formattingMarks}>
+                        <FlowCaretScope
+                            style={isActiveDropTarget ? TextStyle.empty : state.caret}
+                            selection={state.selection}
+                            native={!customSelection}
+                            isDropTarget={isActiveDropTarget}
+                            children={(
+                                <div 
+                                    ref={setEditingHost}
+                                    className={clsx(classes.root, customSelection && classes.customSelection)}
+                                    style={style}
+                                    contentEditable={editMode !== false}
+                                    suppressContentEditableWarning={true}
+                                    children={<FlowView content={state.content} selection={state.selection}/>}
+                                />
+                            )}
+                        />
+                    </FormattingMarksScope>
+                </EditModeScope>
+            </TooltipScope>
+        </UploadManagerScope>
     );
 };
 

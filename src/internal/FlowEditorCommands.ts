@@ -25,28 +25,31 @@ import {
     TextStyleProps,
     UnorderedListMarkerKindType
 } from "scribing";
-import { TransientUploadManager } from "./TransientUploadManager";
 import { UploadManager } from "./UploadManager";
 
 /** @internal */
 export class FlowEditorCommands {
     #state!: FlowEditorState;
     #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
+    #uploadManager!: UploadManager;
 
     constructor(
         state: FlowEditorState,
         apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+        uploadManager: UploadManager,
     ) {
-        this._sync(state, apply);
+        this._sync(state, apply, uploadManager);
     }
 
     /** @internal */
     _sync(
         state: FlowEditorState,
         apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+        uploadManager: UploadManager,
     ): void {
         this.#state = state;
         this.#apply = change => apply(change, state);
+        this.#uploadManager = uploadManager;
     }
 
     getSelection(): FlowSelection | null {
@@ -62,8 +65,7 @@ export class FlowEditorCommands {
     }
 
     getUploadManager(): UploadManager {
-        // TODO: IMPLEMENT FOR REAL!
-        return TransientUploadManager.instance;
+        return this.#uploadManager;
     }
 
     isCaret(): boolean {

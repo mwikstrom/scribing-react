@@ -1,14 +1,13 @@
 SCRIBING TODO
 =============
-- UploadManager in flow editor commands, not in a scope context
+- Use editor callback for non-transient upload manager
+- Declare asset loader scope in flow view
 - Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Paste flow content
 - Copy flow content
 - Copy image
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
 - Flow image is flickering (with empty background) when changing pargraph list level
-- Declare asset loader scope in flow view
-- Declare asset uploader scope in flow editor
 - Show image upload progress/error
 - Cannot step out of multi-output template box
 - FlowImage
