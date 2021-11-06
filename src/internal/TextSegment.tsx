@@ -34,15 +34,16 @@ export const TextSegment: FC<TextSegmentProps> = props => {
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
     );
 
+    // Enable spell checker only after text has been idle for a while and editing is active
     const [spellCheck, setSpellCheck] = useState(false);
-    // Enable spell checker only after text has been idle for a while
     useEffect(() => {
         setSpellCheck(false);
-        if (style.spellcheck) {
+        if (style.spellcheck && editMode === true) {
             const timeout = setTimeout(() => setSpellCheck(true), 500);
             return () => clearTimeout(timeout);
         }
-    }, [text, style.spellcheck]);
+    }, [text, style.spellcheck, editMode]);
+
     return (
         <span
             className={className}

@@ -22,6 +22,7 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
     const {
         style: caretStyle,
         steady,
+        isDropTarget,
         native,
     } = useFlowCaretContext();
     const style = useMemo(() => {
@@ -40,13 +41,14 @@ export const FlowCaret: FC<FlowCaretProps> = props => {
     const className = clsx(
         classes.root,
         classes[getColorRule(color)],
-        steady && classes.steady,
+        isDropTarget && classes.dropTarget,
+        steady && !isDropTarget && classes.blink,
         bold && classes.bold,
         italic && classes.italic,
     );
-    return native || editMode !== true ? null : (
+    return isDropTarget || (!native && editMode === true) ? (
         <span className={className} style={css}/>
-    );
+    ) : null;
 };
 
 const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
@@ -60,11 +62,15 @@ const useStyles = createUseFlowStyles("FlowCaret", ({palette}) => ({
     italic: {
         transform: "rotate(10deg)",
     },
-    steady: {
+    blink: {
         animationName: "$blink",
         animationDuration: "1060ms",
         animationTimingFunction: "linear",
         animationIterationCount: "infinite",
+    },
+    dropTarget: {
+        outlineStyle: "dotted",
+        outlineWidth: 2,
     },
     defaultColor: {
         color: palette.text,

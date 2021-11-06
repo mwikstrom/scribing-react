@@ -8,6 +8,7 @@ export interface FlowCaretScopeProps {
     style?: TextStyle;
     selection?: FlowSelection | null;
     children?: ReactNode;
+    isDropTarget?: boolean;
     native?: boolean;
 }
 
@@ -17,6 +18,7 @@ export interface FlowCaretScopeProps {
 export interface FlowCaretContextValue {
     readonly style: TextStyle;
     readonly steady: boolean;
+    readonly isDropTarget: boolean;
     readonly native: boolean;
 }
 
@@ -26,6 +28,7 @@ export interface FlowCaretContextValue {
 export const FlowCaretScope: FC<FlowCaretScopeProps> = ({
     style = TextStyle.empty,
     selection,
+    isDropTarget = false,
     native = false,
     children,
 }) => {
@@ -33,8 +36,9 @@ export const FlowCaretScope: FC<FlowCaretScopeProps> = ({
     const value = useMemo<FlowCaretContextValue>(() => ({
         style,
         steady,
+        isDropTarget,
         native,
-    }), [style, steady, native]);
+    }), [style, steady, isDropTarget, native]);
 
     useEffect(() => {
         const timer = setTimeout(() => setSteady(true), 500);
@@ -60,6 +64,7 @@ export function useFlowCaretContext(): FlowCaretContextValue {
 const DEFAULT_VALUE: FlowCaretContextValue = Object.freeze({
     style: TextStyle.empty,
     steady: false,
+    isDropTarget: false,
     native: false,
 });
 

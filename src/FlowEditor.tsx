@@ -31,6 +31,7 @@ import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
+import { useDropTarget } from "./internal/hooks/use-drop-target";
 
 /**
  * Component props for {@link FlowEditor}
@@ -345,20 +346,29 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [], { capture: true });
 
+    // Handle drop
+    const { active: isActiveDropTarget } = useDropTarget(editingHost);
+
     return (
         <TooltipScope manager={tooltipManager} boundary={editingHost}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={state.formattingMarks}>
-                    <FlowCaretScope style={state.caret} selection={state.selection} native={!customSelection}>
-                        <div 
-                            ref={setEditingHost}
-                            className={clsx(classes.root, customSelection && classes.customSelection)}
-                            style={style}
-                            contentEditable={editMode !== false}
-                            suppressContentEditableWarning={true}
-                            children={<FlowView content={state.content} selection={state.selection}/>}
-                        />
-                    </FlowCaretScope>
+                    <FlowCaretScope
+                        style={isActiveDropTarget ? TextStyle.empty : state.caret}
+                        selection={state.selection}
+                        native={!customSelection}
+                        isDropTarget={isActiveDropTarget}
+                        children={(
+                            <div 
+                                ref={setEditingHost}
+                                className={clsx(classes.root, customSelection && classes.customSelection)}
+                                style={style}
+                                contentEditable={editMode !== false}
+                                suppressContentEditableWarning={true}
+                                children={<FlowView content={state.content} selection={state.selection}/>}
+                            />
+                        )}
+                    />
                 </FormattingMarksScope>
             </EditModeScope>
         </TooltipScope>

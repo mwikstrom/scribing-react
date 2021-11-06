@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useMemo } from "react";
 import clsx from "clsx";
 import { createUseStyles } from "react-jss";
 import { 
@@ -64,16 +64,9 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
             [...childNodes, TextRun.fromData(" ")] : childNodes
     ), [childNodes]);
     const nodesAndLinks = useMemo(() => splitToLinks(adjustedNodes, selection), [adjustedNodes, selection]);
-    const [spellCheck, setSpellCheck] = useState(false);
-    // Enable spell checker only after selection has been idle for a while
-    useEffect(() => {
-        const timeout = setTimeout(() => setSpellCheck(true), 500);
-        setSpellCheck(false);
-        return () => clearTimeout(timeout);
-    }, [selection]);
     const keyRenderer = keyManager.createRenderer();
     return (
-        <Component className={className} style={css} spellCheck={spellCheck}>
+        <Component className={className} style={css}>
             {nodesAndLinks.map(nodeOrLinkProps => (
                 isNodeProps(nodeOrLinkProps) ? (
                     <FlowNodeView
