@@ -43,7 +43,7 @@ SCRIBING TODO
 - HOME/END keys doesn't work as expected
 - Fix caret design when placed inside template.
 - Fix actual caret selection when placed inside template. Click in template should allow edit.
-- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary.
+- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary. MAYBE EVENT JSX in SCRIPTHOST?!
 - Cannot select all and toggle spell check style when selection includes code (ambient spell check = false)
 
 LOWER PRIO
