@@ -1,8 +1,5 @@
 SCRIBING TODO
 =============
-- Copy flow content
-- Paste flow content
-- Copy image
 - UrlResolver (callback event): Use for OpenUrl interaction. Results in broken/resolved (with title and/or external-flag)
 - Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Cannot step out of multi-output template box
@@ -74,3 +71,4 @@ LOWER PRIO
 - FlowTypography (default is SYSTEM_FONT)
 - Named para/text styles
 - Show asset upload progress/error
+- Copy image (idea, when selection is just an image, then we can copy it as image/png to clipboard)

@@ -19,6 +19,11 @@ export const getFlowContentFromDataTransfer = (
     data: DataTransfer,
     commands: FlowEditorCommands,
 ): FlowContent | null | Promise<FlowContent>=> {
+    const jsonFlowContent = data.getData(FlowContent.jsonMimeType);
+    if (jsonFlowContent) {
+        return FlowContent.fromJsonValue(JSON.parse(jsonFlowContent));
+    }
+
     if (isImageFileTransfer(data)) {
         return getFlowContentFromImageFileTransfer(data, commands);
     }

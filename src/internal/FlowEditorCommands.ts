@@ -67,6 +67,35 @@ export class FlowEditorCommands {
         this.#state = this.#apply(this.#state.redo());
     }
 
+    copy(): FlowContent[] {
+        const { selection } = this.#state;
+        const result: FlowContent[] = [];
+        
+        selection?.transformRanges((range, options) => {
+            if (!options) {
+                return null;
+            }
+            const { target } = options;
+            if (!target) {
+                return null;
+            }
+            result.push(target.copy(range));
+            return range;
+        }, this.getTargetOptions());
+
+        return result;
+    }
+
+    copyJsonString(): string | null {
+        const contentArray = this.copy();
+        if (contentArray.length === 1) {
+            return JSON.stringify(contentArray[0].toJsonValue());
+        }
+        else {
+            return null;
+        }
+    }
+
     uploadAsset(blob: Blob): string {
         const id = nanoid();
         const store = this.#onStoreAsset;

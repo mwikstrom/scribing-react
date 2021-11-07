@@ -1,5 +1,6 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
+    FlowContent,
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
@@ -388,6 +389,25 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Handle drop
     const { active: isActiveDropTarget } = useDropTarget(editingHost, commands);
+
+    // Handle copy
+    useNativeEventHandler(editingHost, "copy", (e: ClipboardEvent) => {
+        const data = commands.copyJsonString();
+        e.preventDefault();
+        if (data) {
+            e.clipboardData?.setData(FlowContent.jsonMimeType, data);
+        }
+    }, [commands]);
+
+    // Handle cut
+    useNativeEventHandler(editingHost, "cut", (e: ClipboardEvent) => {
+        const data = commands.copyJsonString();
+        e.preventDefault();
+        if (data) {
+            e.clipboardData?.setData(FlowContent.jsonMimeType, data);
+            commands.remove();
+        }
+    }, [commands]);
 
     return (
         <FlowEditorCommandsScope commands={commands}>
