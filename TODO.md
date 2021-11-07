@@ -15,8 +15,6 @@ SCRIBING TODO
 - Cannot place caret after last "Void Script" in "Dynamic Text States" (trailing para)
 - Client/server/proto
 - Unify inline components: DynamicTextView, FlowIconView, LineBreakView?
-- Copy flow content to clipboard
-- Pase flow content when available
 - Fix pilcrow after full width flow box
 - Fix insert content after full width flow box
 - Cannot move down using arrow key when caret is placed before/inside inline box surrounded by text
@@ -28,7 +26,7 @@ SCRIBING TODO
 - HOME/END keys doesn't work as expected
 - Fix caret design when placed inside template.
 - Fix actual caret selection when placed inside template. Click in template should allow edit.
-- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary. MAYBE EVENT JSX in SCRIPTHOST?!
+- Custom component node. Script shall be used to apply component props. It shall be wrapped in an error boundary. MAYBE EVEN JSX in SCRIPTHOST?!
 - Cannot select all and toggle spell check style when selection includes code (ambient spell check = false)
 - Caret color is not correct when placed adjacent to flow image
 - Provide feedback while creating flow image placeholder and in case that operation fail
