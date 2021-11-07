@@ -40,14 +40,14 @@ function useImageSourceUrl(sourceUrl: string, uploadId?: string): ImageSourceInU
             setBlobUrl("");
             setUnverifiedUrl("");
             assetLoader(sourceUrl).then(
-                blob => {
+                result => {
                     if (active) {
-                        if (blob) {
-                            const createdUrl = URL.createObjectURL(blob);
+                        if (typeof result === "string") {
+                            setUnverifiedUrl(result);
+                        } else {
+                            const createdUrl = URL.createObjectURL(result);
                             setBlobUrl(createdUrl);
                             setUnverifiedUrl(createdUrl);
-                        } else {
-                            setUnverifiedUrl(sourceUrl);
                         }
                     }
                 },

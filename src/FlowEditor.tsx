@@ -33,12 +33,13 @@ import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
 import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
+import { FlowViewProps } from ".";
 
 /**
  * Component props for {@link FlowEditor}
  * @public
  */
-export interface FlowEditorProps {
+export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset"> {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
