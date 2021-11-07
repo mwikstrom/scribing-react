@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { isImageFileTransfer } from "../utils/data-transfer";
+import { FlowEditorCommands } from "../FlowEditorCommands";
+import { getFlowContentFromDataTransfer, isImageFileTransfer } from "../utils/data-transfer";
 import { fixCaretPosition } from "../utils/fix-caret-position";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
 import { setCaretPosition } from "../utils/set-caret-position";
@@ -11,7 +12,7 @@ export interface DropTarget {
 }
 
 /** @internal */
-export function useDropTarget(editingHost: HTMLElement | null): DropTarget {
+export function useDropTarget(editingHost: HTMLElement | null, commands: FlowEditorCommands): DropTarget {
     const [active, setActive] = useState(false);
     const [leaving, setLeaving] = useState(false);
 
@@ -25,13 +26,23 @@ export function useDropTarget(editingHost: HTMLElement | null): DropTarget {
         if (dataTransfer) {
             dataTransfer.dropEffect = isImageFileTransfer(dataTransfer) ? "copy" : "none";
         }
-    }, []);
+    }, [commands]);
 
     const handleDrop = useCallback((e: DragEvent) => {
+        const { dataTransfer } = e;
         setActive(false);
         e.preventDefault();
         e.stopPropagation();
-    }, []);
+        if (editingHost) {
+            editingHost.focus();
+        }
+        if (dataTransfer) {
+            const content = getFlowContentFromDataTransfer(dataTransfer, commands);
+            if (content) {
+                commands.insertContentOrPromise(content);
+            }
+        }
+    }, [commands, editingHost]);
 
     useEffect(() => {
         if (active && leaving) {

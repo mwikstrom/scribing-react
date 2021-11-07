@@ -387,7 +387,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [], { capture: true });
 
     // Handle drop
-    const { active: isActiveDropTarget } = useDropTarget(editingHost);
+    const { active: isActiveDropTarget } = useDropTarget(editingHost, commands);
 
     return (
         <FlowEditorCommandsScope commands={commands}>

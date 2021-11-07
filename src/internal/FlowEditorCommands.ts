@@ -69,14 +69,27 @@ export class FlowEditorCommands {
 
     uploadAsset(blob: Blob): string {
         const id = nanoid();
+        const store = this.#onStoreAsset;
         this.#uploads.set(id, blob);
 
-        if (this.#onStoreAsset) {
-            let url = "";
-            this.#onStoreAsset(blob, id).then(result => url = result).finally(() => {
-                this.#state = this.#apply(new CompleteUpload({ id, url }));
-                this.#uploads.delete(id);
-            });
+        if (store) {
+            (async () => {
+                let url: string | undefined;
+                try {
+                    url = await store(blob, id);
+                    if (typeof url !== "string") {
+                        console.warn("Asset store did not provide a string URL. Asset will remain transient only.");
+                        url = void(0);
+                    }
+                } catch (error) {
+                    console.error("Failed to store asset:", error);
+                } finally {
+                    if (typeof url === "string") {
+                        this.#state = this.#apply(new CompleteUpload({ id, url }));
+                        this.#uploads.delete(id);
+                    }
+                }
+            })();
         }
 
         return id;
@@ -475,6 +488,25 @@ export class FlowEditorCommands {
     insertNode(node: FlowNode): void {
         const content = new FlowContent({ nodes: Object.freeze([node])});
         this.insertContent(content);
+    }
+
+    async insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void> {
+        if (FlowContent.classType.test(content)) {
+            this.insertContent(content);
+        } else {
+            await this.insertPromise(content);
+        }
+    }
+
+    async insertPromise(content: Promise<FlowContent>): Promise<void> {
+        const { selection: designatedSelection } = this.#state;
+        if (designatedSelection) {
+            await content.then(resolved => {
+                if (FlowSelection.baseType.equals(designatedSelection, this.#state.selection)) {
+                    this.insertContent(resolved);
+                }
+            });
+        }        
     }
 
     insertContent(content: FlowContent): void {
