@@ -3,7 +3,7 @@ SCRIBING TODO
 - Copy flow content
 - Paste flow content
 - Copy image
-- UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
+- UrlResolver (callback event): Use for OpenUrl interaction. Results in broken/resolved (with title and/or external-flag)
 - Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Cannot step out of multi-output template box
 - Double click to select word is broken
@@ -39,6 +39,8 @@ SCRIBING TODO
 
 LOWER PRIO
 ==========
+- Copy plain text
+- Copy HTML
 - Paste HTML
 - When changing icon, select the current icon pack + tag and scroll it into view.
 - Select/Edit custom flow icon
