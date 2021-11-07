@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Flow image is flickering (with empty background) when changing pargraph list level
 - Copy flow content
 - Paste flow content
 - Copy image

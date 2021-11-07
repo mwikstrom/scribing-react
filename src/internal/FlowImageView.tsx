@@ -83,12 +83,12 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             width: `calc(min(100%, ${width}px))`,
             aspectRatio: `${width}/${height}`,
         };
-        if (url && !broken) {
+        if (ready && !broken) {
             css.backgroundImage = `url(${url})`;
             css.backgroundSize = "cover";
         }
         return css;
-    }, [source.width, source.height, url, broken]);
+    }, [source.width, source.height, url, broken, ready]);
 
     return (
         <span 
@@ -106,7 +106,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                         classes.image, 
                         visible && ready && classes.ready,
                         imageElem && classes.bound,
-                        broken && classes.broken,
+                        broken && url && classes.broken,
                         !url && classes.empty,
                     )}
                 />
