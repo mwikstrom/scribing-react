@@ -1,5 +1,5 @@
 import { FlowContent, FlowImage, FlowNode, TextRun, TextStyle } from "scribing";
-import { UploadManager } from "../UploadManager";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createImageSource } from "./create-image-source";
 
 export const isImageFileTransfer = (data: DataTransfer): boolean => getImageFileTransferItems(data).length > 0;
@@ -17,16 +17,15 @@ export const getImageFileTransferItems = (data: DataTransfer): DataTransferItem[
 
 export const getFlowContentFromDataTransfer = (
     data: DataTransfer,
-    caret: TextStyle,
-    uploadManager: UploadManager,
+    commands: FlowEditorCommands,
 ): FlowContent | null | Promise<FlowContent>=> {
     if (isImageFileTransfer(data)) {
-        return getFlowContentFromImageFileTransfer(data, caret, uploadManager);
+        return getFlowContentFromImageFileTransfer(data, commands);
     }
 
     const plainText = data.getData("text/plain");
     if (plainText) {
-        return getFlowContentFromPlainText(plainText, caret);
+        return getFlowContentFromPlainText(plainText, commands.getCaretStyle());
     }
 
     return null;
@@ -40,16 +39,15 @@ export const getFlowContentFromPlainText = (data: string, caret: TextStyle): Flo
 
 export const getFlowContentFromImageFileTransfer = async (
     data: DataTransfer,
-    caret: TextStyle,
-    uploadManager: UploadManager,
+    commands: FlowEditorCommands,
 ): Promise<FlowContent> => {
     const nodes: FlowNode[] = [];
     for (const item of getImageFileTransferItems(data)) {
         const file = item.getAsFile();
         if (file !== null) {
-            const upload = uploadManager.begin(file);
-            const source = await createImageSource(file, upload.id);
-            nodes.push(new FlowImage({ source, style: caret }));
+            const uploadId = commands.uploadAsset(file);
+            const source = await createImageSource(file, uploadId);
+            nodes.push(new FlowImage({ source, style: commands.getCaretStyle() }));
         }
     }
     return createFlowContent(...nodes);

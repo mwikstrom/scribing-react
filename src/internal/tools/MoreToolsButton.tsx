@@ -123,8 +123,8 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             editingHost.focus();
         }
         const blob = await fileOpen({mimeTypes: ["image/*"]});
-        const upload = commands.getUploadManager().begin(blob);
-        const source = await createImageSource(blob, upload.id);
+        const uploadId = commands.uploadAsset(blob);
+        const source = await createImageSource(blob, uploadId);
 
         if (commands.isImage()) {
             commands.setImageSource(source);

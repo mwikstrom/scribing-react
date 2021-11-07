@@ -32,8 +32,7 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
-import { TransientUploadManager } from "./internal/TransientUploadManager";
-import { UploadManagerScope } from "./internal/UploadManagerScope";
+import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -44,12 +43,34 @@ export interface FlowEditorProps {
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
     style?: CSSProperties;
+
+    /**
+     * FOR DEBUGGING PURPOSES ONLY
+     * @internal
+     */
     nativeSelection?: boolean;
+
+    /**
+     * Invoked when the editor state is changed. Must be handled when the editor component is controlled.
+     * @param after - The new editor state
+     * @param change - The operation that caused the change to occur, or `null` when the change wasn't caused by 
+     *                 an operation, for example when selection is changed.
+     * @param before - The old editor state
+     */
     onStateChange?: (
         after: FlowEditorState,
         change: FlowOperation | null,
         before: FlowEditorState,
     ) => void;
+
+    /**
+     * Invoked when a new asset is added to the editor. This callback must be implemented to support non-transient
+     * assets.
+     * @param blob - The asset blob that was added
+     * @param id - Identifies the store operation
+     * @returns A promise that shall resolve to a persistent URL for the asset
+     */
+    onStoreAsset?: (blob: Blob, id: string) => Promise<string>;
 }
 
 /**
@@ -65,6 +86,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         style,
         nativeSelection,
         onStateChange: onStateChangeProp,
+        onStoreAsset,
     } = props;
 
     // JSS classes
@@ -189,15 +211,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         return after;
     }, [onStateChange]);
 
-    // Manage uploads
-    const uploadManager = useMemo(() => TransientUploadManager.instance, []);
-
     // Keep editor commands fresh. We expose a singleton that we update with
     // current state as needed.
-    const commands = useMemo(() => new FlowEditorCommands(state, applyChange, uploadManager), []);
+    const commands = useMemo(() => new FlowEditorCommands(state, applyChange, onStoreAsset), []);
     useLayoutEffect(
-        () => commands._sync(state, applyChange, uploadManager),
-        [commands, state, applyChange, uploadManager]
+        () => commands._sync(state, applyChange, onStoreAsset),
+        [commands, state, applyChange, onStoreAsset]
     );
 
     // Handle keyboard input
@@ -370,7 +389,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const { active: isActiveDropTarget } = useDropTarget(editingHost);
 
     return (
-        <UploadManagerScope manager={uploadManager}>
+        <FlowEditorCommandsScope commands={commands}>
             <TooltipScope manager={tooltipManager} boundary={editingHost}>
                 <EditModeScope mode={editMode}>
                     <FormattingMarksScope show={state.formattingMarks}>
@@ -393,7 +412,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     </FormattingMarksScope>
                 </EditModeScope>
             </TooltipScope>
-        </UploadManagerScope>
+        </FlowEditorCommandsScope>
     );
 };
 

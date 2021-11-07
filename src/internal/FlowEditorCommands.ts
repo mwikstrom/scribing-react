@@ -1,6 +1,8 @@
+import { nanoid } from "nanoid";
 import { 
     BoxStyle,
     BoxStyleProps,
+    CompleteUpload,
     DynamicText,
     FlowBox,
     FlowColor,
@@ -25,31 +27,32 @@ import {
     TextStyleProps,
     UnorderedListMarkerKindType
 } from "scribing";
-import { UploadManager } from "./UploadManager";
+import { FlowEditorProps } from "..";
 
 /** @internal */
 export class FlowEditorCommands {
     #state!: FlowEditorState;
     #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
-    #uploadManager!: UploadManager;
+    #onStoreAsset: FlowEditorProps["onStoreAsset"];
+    readonly #uploads = new Map<string, Blob>();
 
     constructor(
         state: FlowEditorState,
         apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
-        uploadManager: UploadManager,
+        onStoreAsset: FlowEditorProps["onStoreAsset"],
     ) {
-        this._sync(state, apply, uploadManager);
+        this._sync(state, apply, onStoreAsset);
     }
 
     /** @internal */
     _sync(
         state: FlowEditorState,
         apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
-        uploadManager: UploadManager,
+        onStoreAsset: FlowEditorProps["onStoreAsset"],
     ): void {
         this.#state = state;
         this.#apply = change => apply(change, state);
-        this.#uploadManager = uploadManager;
+        this.#onStoreAsset = onStoreAsset;
     }
 
     getSelection(): FlowSelection | null {
@@ -64,8 +67,23 @@ export class FlowEditorCommands {
         this.#state = this.#apply(this.#state.redo());
     }
 
-    getUploadManager(): UploadManager {
-        return this.#uploadManager;
+    uploadAsset(blob: Blob): string {
+        const id = nanoid();
+        this.#uploads.set(id, blob);
+
+        if (this.#onStoreAsset) {
+            let url = "";
+            this.#onStoreAsset(blob, id).then(result => url = result).finally(() => {
+                this.#state = this.#apply(new CompleteUpload({ id, url }));
+                this.#uploads.delete(id);
+            });
+        }
+
+        return id;
+    }
+
+    getUpload(id: string): Blob | null {
+        return this.#uploads.get(id) ?? null;
     }
 
     isCaret(): boolean {

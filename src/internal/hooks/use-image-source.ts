@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ImageSource } from "scribing";
 import { useAssetLoader } from "../AssetLoaderScope";
-import { useUploadManager } from "../UploadManagerScope";
+import { useFlowEditorCommands } from "../FlowEditorCommandsScope";
 
 export interface ImageSourceInUse {
     url: string;
@@ -25,12 +25,12 @@ function useImageSourceUrl(sourceUrl: string, uploadId?: string): ImageSourceInU
     const [broken, setBroken] = useState(false);
     const [unverifiedUrl, setUnverifiedUrl] = useState("");
     const verified = useVerifiedImageUrl(unverifiedUrl);
-    const uploadManager = useUploadManager();
-    const upload = useMemo(() => uploadId ? uploadManager.get(uploadId) : null, [uploadManager, uploadId]);
+    const commands = useFlowEditorCommands();
+    const upload = useMemo(() => uploadId ? commands?.getUpload(uploadId) : null, [commands, uploadId]);
     
     useEffect(() => {
         if (upload) {
-            const createdUrl = URL.createObjectURL(upload.blob);
+            const createdUrl = URL.createObjectURL(upload);
             setBroken(false);
             setBlobUrl(createdUrl);
             setUnverifiedUrl(createdUrl);

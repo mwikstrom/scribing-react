@@ -1,19 +1,18 @@
-import { FlowContent, LineBreak, ParagraphBreak, TextStyle } from "scribing";
-import { UploadManager } from "../UploadManager";
+import { FlowContent, LineBreak, ParagraphBreak } from "scribing";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createFlowContent, getFlowContentFromDataTransfer, getFlowContentFromPlainText } from "../utils/data-transfer";
 
 /** @internal */
 export const getContentFromInput = (
     event: InputEvent,
-    caret: TextStyle,
-    uploadManager: UploadManager
+    commands: FlowEditorCommands,
 ): FlowContent | null | Promise<FlowContent> => {
     const { inputType, dataTransfer, data } = event;
 
     if (inputType === "insertParagraph") {
         return createFlowContent(new ParagraphBreak());
     } else if (inputType === "insertLineBreak") {
-        return createFlowContent(new LineBreak({ style: caret }));
+        return createFlowContent(new LineBreak({ style: commands.getCaretStyle() }));
     } else if (
         inputType !== "insertFromPaste" &&
         inputType !== "insertFromPasteAsQuotation" &&
@@ -29,14 +28,14 @@ export const getContentFromInput = (
     }
 
     if (dataTransfer !== null) {
-        const content = getFlowContentFromDataTransfer(dataTransfer, caret, uploadManager);
+        const content = getFlowContentFromDataTransfer(dataTransfer, commands);
         if (content !== null) {
             return content;
         }
     }
     
     if (data !== null) {
-        return getFlowContentFromPlainText(data, caret);
+        return getFlowContentFromPlainText(data, commands.getCaretStyle());
     }
 
     return null;

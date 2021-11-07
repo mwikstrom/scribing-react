@@ -1,18 +1,15 @@
 SCRIBING TODO
 =============
-- Use editor callback for non-transient upload manager
 - Declare asset loader scope in flow view
-- Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
-- Paste flow content
+- Drag & Drop to add image
+- Drag & Drop to replace image
+- Flow image is flickering (with empty background) when changing pargraph list level
 - Copy flow content
+- Paste flow content
 - Copy image
 - UrlResolver (callback event): Use for OpenUrl + Media interaction. Results in broken/resolved (with title and/or external-flag)
-- Flow image is flickering (with empty background) when changing pargraph list level
-- Show image upload progress/error
+- Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Cannot step out of multi-output template box
-- FlowImage
-  - Drag & Drop to add image
-  - Drag & Drop to replace image
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
 - Lynk & Co needs:
@@ -78,3 +75,4 @@ LOWER PRIO
 - FlowTheme vs EditorTheme
 - FlowTypography (default is SYSTEM_FONT)
 - Named para/text styles
+- Show asset upload progress/error

@@ -4,7 +4,7 @@ import { InputHandler } from "./InputHandler";
 
 /** @internal */
 export const insertContent: InputHandler = (commands, event) => {
-    const content = getContentFromInput(event, commands.getCaretStyle(), commands.getUploadManager());
+    const content = getContentFromInput(event, commands);
     if (FlowContent.classType.test(content)) {
         commands.insertContent(content);
     } else if (content) {
