@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - UrlResolver (callback event): Use for OpenUrl interaction. Results in broken/resolved (with title and/or external-flag)
-- Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Cannot step out of multi-output template box
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
@@ -37,6 +36,7 @@ SCRIBING TODO
 LOWER PRIO
 ==========
 - Copy plain text
+- Paste plain text (convert to flow content - line breaks, paragraph breaks, lists?)
 - Copy HTML
 - Paste HTML
 - When changing icon, select the current icon pack + tag and scroll it into view.
