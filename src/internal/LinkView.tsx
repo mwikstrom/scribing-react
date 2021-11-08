@@ -22,7 +22,7 @@ export const LinkView: FC<LinkViewProps> = props => {
     const { link: Component } = useFlowComponentMap();
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const { clickable, pending, error, href } = useInteraction(link, rootElem);
+    const { clickable, pending, error, href, target } = useInteraction(link, rootElem);
     const editMode = useEditMode();
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const children = useMemo(() => {
@@ -44,6 +44,7 @@ export const LinkView: FC<LinkViewProps> = props => {
         <Component
             ref={setRootElem}
             href={href}
+            target={target}
             className={clsx(
                 classes.root,
                 clickable ? classes.clickable : !!editMode && classes.editable,

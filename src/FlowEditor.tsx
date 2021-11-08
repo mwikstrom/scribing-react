@@ -41,7 +41,7 @@ import { StateChangeEvent } from "./StateChangeEvent";
  * Component props for {@link FlowEditor}
  * @public
  */
-export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset"> {
+export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;

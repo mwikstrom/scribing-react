@@ -3,8 +3,10 @@ import { createUseStyles } from "react-jss";
 import { FlowContent, FlowSelection } from "scribing";
 import { AssetLoaderScope } from "./internal/AssetLoaderScope";
 import { FlowFragmentView } from "./internal/FlowFragmentView";
+import { LinkResolverScope } from "./internal/LinkResolverScope";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { LoadAssetEvent } from "./LoadAssetEvent";
+import { ResolveLinkEvent } from "./ResolveLinkEvent";
 
 /**
  * Component props for {@link FlowView}
@@ -14,6 +16,7 @@ export interface FlowViewProps {
     content: FlowContent;   
     selection?: FlowSelection | null;
     onLoadAsset?: (event: LoadAssetEvent) => void;
+    onResolveLink?: (event: ResolveLinkEvent) => void;
 }
 
 /**
@@ -21,13 +24,15 @@ export interface FlowViewProps {
  * @public
  */
 export const FlowView: FC<FlowViewProps> = props => {
-    const { content: { nodes }, selection, onLoadAsset } = props;
+    const { content: { nodes }, selection, onLoadAsset, onResolveLink } = props;
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <AssetLoaderScope handler={onLoadAsset}>
-                <FlowFragmentView nodes={nodes} selection={selection ?? false}/>
-            </AssetLoaderScope>
+            <LinkResolverScope handler={onResolveLink}>
+                <AssetLoaderScope handler={onLoadAsset}>
+                    <FlowFragmentView nodes={nodes} selection={selection ?? false}/>
+                </AssetLoaderScope>
+            </LinkResolverScope>
         </div>
     );
 };

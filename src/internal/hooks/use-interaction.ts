@@ -7,6 +7,7 @@ import { useShowTip } from "../TooltipScope";
 import { useHover } from "./use-hover";
 import { useCtrlKey, useShiftKey } from "./use-modifier-key";
 import { useNativeEventHandler } from "./use-native-event-handler";
+import { useResolvedLink } from "../LinkResolverScope";
 
 /** @internal */
 interface InteractionState {
@@ -15,6 +16,7 @@ interface InteractionState {
     pending: boolean;
     error: boolean;
     href: string;
+    target: string;
 }
 
 /** @internal */
@@ -28,6 +30,7 @@ export function useInteraction(
     const ctrlKey = useCtrlKey();
     const shiftKey = useShiftKey();
     const invokeAction = useInteractionInvoker(interaction);
+    const resolvedLink = useResolvedLink(interaction instanceof OpenUrl ? interaction.url : "");
     const showTip = useShowTip();
     const locale = useFlowLocale();
     const [pending, setPending] = useState<Promise<void> | null>(null);
@@ -42,8 +45,8 @@ export function useInteraction(
         [!!editMode, clickable, locale, !!interaction, !pending, error]
     );
     const href = useMemo(() => {
-        if (rootElem != null && rootElem.tagName.toUpperCase() === "A" && interaction instanceof OpenUrl) {
-            return interaction.url;
+        if (rootElem != null && rootElem.tagName.toUpperCase() === "A" && resolvedLink) {
+            return resolvedLink.url;
         } else {
             return "";
         }
@@ -102,5 +105,6 @@ export function useInteraction(
         pending: !!pending,
         error: !!error,
         href,
+        target: resolvedLink?.target ?? "",
     };
 }

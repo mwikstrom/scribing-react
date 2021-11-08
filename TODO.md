@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- UrlResolver (callback event): Use for OpenUrl interaction. Results in broken/resolved (with title and/or external-flag)
 - Cannot step out of multi-output template box
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
