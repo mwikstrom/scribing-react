@@ -29,7 +29,7 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
         return () => clearTimeout(timerId);
     }, [state]);
     const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>(
-        state => void(setState(state)),
+        ({after: state}) => void(setState(state)),
         [setState]
     );
     const wrapperStyle = useMemo<CSSProperties>(() => ({

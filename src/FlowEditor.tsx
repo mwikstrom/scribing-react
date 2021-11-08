@@ -35,6 +35,7 @@ import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
 import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
 import { StoreAssetEvent } from "./StoreAssetEvent";
+import { StateChangeEvent } from "./StateChangeEvent";
 
 /**
  * Component props for {@link FlowEditor}
@@ -52,26 +53,8 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset"> {
      */
     nativeSelection?: boolean;
 
-    /**
-     * Invoked when the editor state is changed. Must be handled when the editor component is controlled.
-     * @param after - The new editor state
-     * @param change - The operation that caused the change to occur, or `null` when the change wasn't caused by 
-     *                 an operation, for example when selection is changed.
-     * @param before - The old editor state
-     */
-    onStateChange?: (
-        after: FlowEditorState,
-        change: FlowOperation | null,
-        before: FlowEditorState,
-    ) => void;
+    onStateChange?: (event: StateChangeEvent) => void;
 
-    /**
-     * Invoked when a new asset is added to the editor. This callback must be implemented to support non-transient
-     * assets.
-     * @param blob - The asset blob that was added
-     * @param id - Identifies the store operation
-     * @returns A promise that shall resolve to a persistent URL for the asset
-     */
     onStoreAsset?: (event: StoreAssetEvent) => void;
 }
 
@@ -111,7 +94,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, []);
 
     // State change handler
-    const onStateChange = useCallback<Exclude<FlowEditorProps["onStateChange"], undefined>>((after, change, before) => {
+    const onStateChange = useCallback((
+        after: FlowEditorState,
+        change: FlowOperation | null,
+        before: FlowEditorState
+    ) => {
         let changed = false;
         if (mountedRef.current) {
             setState(current => {
@@ -123,7 +110,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                 }
             });
             if (changed && onStateChangeProp) {
-                onStateChangeProp(after, change, before);
+                onStateChangeProp(new StateChangeEvent(before, change, after));
             }
         }
         return changed;

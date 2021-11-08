@@ -4,6 +4,7 @@
  */
 
 // Events
+export * from "./StateChangeEvent";
 export * from "./DeferrableEvent";
 export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
