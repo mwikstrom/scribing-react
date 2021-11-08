@@ -50,7 +50,14 @@ export function useInteraction(
         } else {
             return "";
         }
-    }, [rootElem, interaction]);
+    }, [rootElem, resolvedLink]);
+    const target = useMemo(() => {
+        if (href && resolvedLink) {
+            return resolvedLink.target;
+        } else {
+            return "";
+        }
+    }, [href, resolvedLink]);
 
     useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {        
         if (clickable && !pending) {
@@ -105,6 +112,6 @@ export function useInteraction(
         pending: !!pending,
         error: !!error,
         href,
-        target: resolvedLink?.target ?? "",
+        target,
     };
 }
