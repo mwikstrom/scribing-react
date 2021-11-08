@@ -9,8 +9,7 @@ export abstract class DeferrableEvent {
     }
 
     /** @internal */
-    async _complete(): Promise<this> {
+    async _complete(): Promise<void> {
         await Promise.all(Array.from(this.#deferringCallbacks).map(callback => callback()));
-        return this;
     }
 }

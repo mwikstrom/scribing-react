@@ -1,4 +1,5 @@
-import React, { createContext, FC, ReactNode, useContext } from "react";
+import React, { createContext, FC, ReactNode, useContext, useMemo } from "react";
+import { LoadAssetEvent } from "../LoadAssetEvent";
 
 /**
  * @internal
@@ -9,7 +10,7 @@ export type AssetLoader = (url: string) => Promise<Blob | string>;
  * @internal
  */
 export interface AssetLoaderScopeProps {
-    loader?: AssetLoader;
+    handler?: (event: LoadAssetEvent) => void;
     children?: ReactNode;
 }
 
@@ -17,14 +18,28 @@ export interface AssetLoaderScopeProps {
  * @internal
  */
 export const AssetLoaderScope: FC<AssetLoaderScopeProps> = ({
-    loader = DefaultAssetLoader,
+    handler,
     children,
-}) => (
-    <AssetLoaderContext.Provider
-        value={loader}
-        children={children}
-    />
-);
+}) => {
+    const loader = useMemo<AssetLoader>(() => {
+        if (!handler) {
+            return DefaultAssetLoader;
+        } else {
+            return async (url: string) => {
+                const args = new LoadAssetEvent(url);                
+                handler(args);
+                await args._complete();
+                return args.blob ?? args.url;
+            };
+        }
+    }, [handler]);
+    return (
+        <AssetLoaderContext.Provider
+            value={loader}
+            children={children}
+        />
+    );
+};
 
 /**
  * @internal
