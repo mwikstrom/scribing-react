@@ -27,7 +27,8 @@ import {
     TextStyleProps,
     UnorderedListMarkerKindType
 } from "scribing";
-import { FlowEditorProps } from "..";
+import { FlowEditorProps } from "../FlowEditor";
+import { StoreAssetEvent } from "../StoreAssetEvent";
 
 /** @internal */
 export class FlowEditorCommands {
@@ -103,18 +104,18 @@ export class FlowEditorCommands {
 
         if (store) {
             (async () => {
-                let url: string | undefined;
+                const args = new StoreAssetEvent(blob, id);
                 try {
-                    url = await store(blob, id);
-                    if (typeof url !== "string") {
-                        console.warn("Asset store did not provide a string URL. Asset will remain transient only.");
-                        url = void(0);
+                    store(args);
+                    await args._complete();
+                    if (args.url === null) {
+                        console.warn("Asset wasn't stored and will remain transient only.");
                     }
                 } catch (error) {
                     console.error("Failed to store asset:", error);
                 } finally {
-                    if (typeof url === "string") {
-                        this.#state = this.#apply(new CompleteUpload({ id, url }));
+                    if (args.url !== null) {
+                        this.#state = this.#apply(new CompleteUpload({ id, url: args.url }));
                         this.#uploads.delete(id);
                     }
                 }

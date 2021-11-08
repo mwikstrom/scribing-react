@@ -6,7 +6,7 @@ import {
     FlowSelection, 
     TextStyle
 } from "scribing";
-import { FlowView } from "./FlowView";
+import { FlowView, FlowViewProps } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
 import { mapDomSelectionToFlow } from "./internal/mapping/dom-selection-to-flow";
@@ -34,7 +34,7 @@ import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
 import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
-import { FlowViewProps } from ".";
+import { StoreAssetEvent } from "./StoreAssetEvent";
 
 /**
  * Component props for {@link FlowEditor}
@@ -72,7 +72,7 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset"> {
      * @param id - Identifies the store operation
      * @returns A promise that shall resolve to a persistent URL for the asset
      */
-    onStoreAsset?: (blob: Blob, id: string) => Promise<string>;
+    onStoreAsset?: (event: StoreAssetEvent) => void;
 }
 
 /**
