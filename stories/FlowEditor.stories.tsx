@@ -645,6 +645,101 @@ Images.args = {
     ])),
 };
 
+export const Table = Template.bind({});
+Table.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "A1": ["A1", { break: "para" }],
+                "B1": ["B1", { break: "para" }],
+                "C1": ["C1", { break: "para" }],
+                "A2": ["A2", { break: "para" }],
+                "B2": ["B2", { break: "para" }],
+                "C2": ["C2", { break: "para" }],
+                "A3": ["A3", { break: "para" }],
+                "B3": ["B3", { break: "para" }],
+                "C3": ["C3", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])),
+};
+
+export const InlineTable = Template.bind({});
+InlineTable.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before ",
+        {
+            table: {
+                "A1": ["A1", { break: "para" }],
+                "B1": ["B1", { break: "para" }],
+                "C1": ["C1", { break: "para" }],
+                "A2": ["A2", { break: "para" }],
+                "B2": ["B2", { break: "para" }],
+                "C2": ["C2", { break: "para" }],
+                "A3": ["A3", { break: "para" }],
+                "B3": ["B3", { break: "para" }],
+                "C3": ["C3", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+            style: {
+                inline: true,
+            },
+        },
+        " After",
+        { break: "para" },
+    ])),
+};
+
+export const TableWithSpans = Template.bind({});
+TableWithSpans.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "A1": { content: ["A1", { break: "para" }], colSpan: 2 },
+                "C1": ["C1", { break: "para" }],
+                "D1": ["D1", { break: "para" }],
+                "A2": { content: ["A2", { break: "para" }], rowSpan: 3 },
+                "B2": { content: ["B2", { break: "para" }], colSpan: 2, rowSpan: 2 },
+                "D2": ["D2", { break: "para" }],
+                "D3": ["D3", { break: "para" }],
+                "B4": ["B4", { break: "para" }],
+                "C4": ["C4", { break: "para" }],
+                "D4": ["D4", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])),
+};
+
+export const SparseTable = Template.bind({});
+SparseTable.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "G7": ["G7", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])),
+};
+
+
 function button(
     content: Array<JsonValue>, 
     scriptOrOptions: string | { script?: string, variant?: BoxVariant, color?: FlowColor} = ""
