@@ -1,9 +1,11 @@
 import { 
+    CellPosition,
     FlowBoxSelection,
     FlowNode, 
     FlowRange, 
     FlowRangeSelection, 
     FlowSelection, 
+    FlowTableCellSelection, 
     NestedFlowSelection,
     ParagraphBreak, 
 } from "scribing";
@@ -25,6 +27,21 @@ export function getFlowBoxContentSelection(
     position = 0,
 ): boolean | FlowSelection {
     if (outer instanceof FlowBoxSelection && outer.position === position) {
+        return outer.content;
+    } else if (outer instanceof FlowRangeSelection) {
+        return outer.range.contains(position);
+    } else {
+        return outer === true;
+    }
+}
+
+/** @internal */
+export function getFlowTableCellSelection(
+    outer: boolean | FlowSelection,
+    cell: CellPosition,
+    position = 0,
+): boolean | FlowSelection {
+    if (outer instanceof FlowTableCellSelection && outer.position === position && outer.cell.equals(cell)) {
         return outer.content;
     } else if (outer instanceof FlowRangeSelection) {
         return outer.range.contains(position);

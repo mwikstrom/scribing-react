@@ -142,6 +142,7 @@ export const mapDomPositionToFlow = (
     // to do now is to traverse the DOM tree left/upward and accumulate the
     // flow space that we traverse. We'll stop when we've reached the editing
     // host.
+    let insideMappingFlow = true;
     while (node !== editingHost) {        
         // If we reached another editing host we're out of luck
         if (isMappedEditingHost(node)) {
@@ -156,12 +157,17 @@ export const mapDomPositionToFlow = (
                 outerAxis,
             });
             offset = 0;
+            insideMappingFlow = false;
+        }
+
+        if (!insideMappingFlow && isMappedFlowNode(node)) {
+            insideMappingFlow = true;
         }
 
         // Move left as long as we can and sum up the flow space, unless the
         // current node is a template in which case siblings are clones that
         // occupy the same flow space.
-        if (!isMappedTemplateNode(node)) {
+        if (!isMappedTemplateNode(node) && insideMappingFlow) {
             while (node.previousSibling) {
                 node = node.previousSibling;
                 offset += getFlowSizeFromDomNode(node);

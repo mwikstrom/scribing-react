@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
 import { TableStyle, FlowTable, CellPosition } from "scribing";
-import { FlowFragmentView } from "./FlowFragmentView";
 import { flowNode } from "./FlowNodeComponent";
+import { FlowTableCellView } from "./FlowTableCellView";
 import { createUseFlowStyles } from "./JssTheming";
 
 export const FlowTableView = flowNode<FlowTable>((props, ref) => {
-    const { node } = props;
+    const { node, selection: outerSelection } = props;
     const { content } = node;
     const { style: givenStyle } = node;
     const classes = useStyles();   
@@ -27,12 +27,12 @@ export const FlowTableView = flowNode<FlowTable>((props, ref) => {
                     {rows.map((row, index) => (
                         <tr key={index}>
                             {row.map(pos => (
-                                <td key={pos.toString()} colSpan={content.getCell(pos)?.colSpan} rowSpan={content.getCell(pos)?.rowSpan}>
-                                    <FlowFragmentView
-                                        nodes={content.getCell(pos)?.content.nodes ?? []}
-                                        selection={false}
-                                    />
-                                </td>
+                                <FlowTableCellView
+                                    key={pos.toString()}
+                                    position={pos}
+                                    cell={node.content.getCell(pos, true)}
+                                    outerSelection={outerSelection}
+                                />
                             ))}
                         </tr>
                     ))}
@@ -48,18 +48,6 @@ const useStyles = createUseFlowStyles("FlowTable", ({palette}) => ({
         tableLayout: "fixed",
         width: "100%",
         borderCollapse: "collapse",
-        "& td, & tr": {
-            border: `1px solid ${palette.subtle}`,
-            padding: "0.2rem 0.5rem",
-            outline: "none",
-            verticalAlign: "top",
-            "&>.ScribingParagraph-root:first-child": {
-                marginTop: "0 !important",
-            },
-            "&>.ScribingParagraph-root:last-child": {
-                marginBottom: "0 !important",
-            },
-        }
     },
     inline: {
         display: "inline-table",
