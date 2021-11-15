@@ -1,6 +1,7 @@
 import { TextRun } from "scribing";
+import { getNextDomNode } from "../utils/dom-traversal";
 import { isMappedEditingHost } from "./flow-editing-host";
-import { getFlowSizeFromDomNode, getFlowSizeFromTextNode, getMappedFlowNode } from "./flow-node";
+import { getFlowSizeFromDomNode, getFlowSizeFromTextNode, getMappedFlowNode, isMappedFlowNode } from "./flow-node";
 
 export interface DomPosition {
     node: Node,
@@ -35,6 +36,36 @@ export const mapFlowPositionToDom = (
                 return mapped;
             }
         }
+    }
+    return null;
+};
+
+export const mapFlowPositionToDomNode = (
+    position: number,
+    container: Node,
+): Node | null => {
+    const domPos = mapFlowPositionToDom(position, container);
+    const root = container;
+    if (domPos) {
+        const { node, offset } = domPos;
+        if (node.nodeType === Node.TEXT_NODE) {
+            const textLength = getFlowSizeFromTextNode(node);
+            container = node.parentNode ?? node;
+            if (offset >= textLength) {
+                const nextNode = getNextDomNode(node);
+                if (nextNode) {
+                    container = nextNode;
+                }
+            }
+        } else if (offset >= 0 && offset < node.childNodes.length) {
+            container = node.childNodes.item(offset);
+        } else {
+            container = node;
+        }
+        while (!isMappedFlowNode(container) && container.parentNode && container.parentNode !== root) {
+            container = container.parentNode;
+        }
+        return container;
     }
     return null;
 };

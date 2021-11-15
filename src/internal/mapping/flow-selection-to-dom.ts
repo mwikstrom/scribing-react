@@ -1,8 +1,7 @@
 import { FlowSelection, FlowRangeSelection, NestedFlowSelection } from "scribing";
-import { getNextDomNode } from "../utils/dom-traversal";
-import { getMappedFlowAxis } from "./flow-axis";
-import { getFlowSizeFromTextNode } from "./flow-node";
-import { DomPosition, mapFlowPositionToDom } from "./flow-position-to-dom";
+import { FlowAxis, getMappedFlowAxis } from "./flow-axis";
+import { isMappedFlowNode } from "./flow-node";
+import { DomPosition, mapFlowPositionToDom, mapFlowPositionToDomNode } from "./flow-position-to-dom";
 
 /** @internal */
 export interface DomRange {
@@ -16,43 +15,25 @@ export function mapFlowSelectionToDom(
     container: Node,
 ): DomRange | null {
     while (flowSelection instanceof NestedFlowSelection) {
-        const parent = mapFlowPositionToDom(flowSelection.position, container, true);
+        const mapped = mapFlowPositionToDomNode(flowSelection.position, container);
         
-        if (parent === null) {
+        if (!mapped) {
             break;
         }
 
-        const { node, offset } = parent;
-
-        if (node.nodeType === Node.TEXT_NODE) {
-            const textLength = getFlowSizeFromTextNode(node);
-            container = node.parentNode ?? node;
-            if (offset >= textLength) {
-                const nextNode = getNextDomNode(node);
-                if (nextNode) {
-                    container = nextNode;
-                }
+        let inner: FlowSelection | null = null;
+        for (const [axis, node] of getAxisMappings(mapped, true)) {
+            inner = axis.getInnerSelection(flowSelection);
+            if (inner !== null) {
+                flowSelection = inner;
+                container = node;
+                break;
             }
-        } else if (offset >= 0 && offset < node.childNodes.length) {
-            container = node.childNodes.item(offset);
-        } else {
-            container = node;
         }
 
-        let axis = getMappedFlowAxis(container);
-        while (axis === null && container.parentNode !== null) {
-            container = container.parentNode;
-            axis = getMappedFlowAxis(container);
-        }
-
-        const inner = axis?.getInnerSelection(flowSelection);
-        if (!inner) {
-            console.warn("Unmapped nested flow axis", axis, "for selection", flowSelection);
-            flowSelection = null;
+        if (inner === null) {
             break;
         }
-
-        flowSelection = inner;
     }
 
     if (flowSelection instanceof FlowRangeSelection) {
@@ -88,4 +69,19 @@ export function applyFlowSelectionToDom(
     } else {
         domSelection.removeAllRanges();
     }
+}
+
+function getAxisMappings(root: Node, descend?: boolean): Iterable<[FlowAxis, Node]> {
+    const result: [FlowAxis, Node][] = [];
+    const axis = getMappedFlowAxis(root);
+    if (axis) {
+        result.push([axis, root]);
+    } else if (!isMappedFlowNode(root) || descend) {
+        for (const child of root.childNodes) {
+            for (const entry of getAxisMappings(child)) {
+                result.push(entry);
+            }
+        }
+    }
+    return result;
 }
