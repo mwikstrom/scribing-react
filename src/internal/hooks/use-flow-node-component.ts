@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import {
     DynamicText, 
+    EndMarkup, 
     FlowBox, 
     FlowIcon, 
     FlowImage, 
@@ -8,6 +9,7 @@ import {
     FlowTable, 
     LineBreak, 
     ParagraphBreak, 
+    StartMarkup, 
     TextRun 
 } from "scribing";
 import { useFlowComponentMap } from "../FlowComponentMapScope";
@@ -33,7 +35,9 @@ type FlowNodeComponentKey = (
     "fallbackView" |
     "iconView" |
     "imageView" |
-    "tableView"
+    "tableView" |
+    "startMarkupView" |
+    "endMarkupView"
 );
 
 const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
@@ -53,6 +57,10 @@ const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
         return "imageView";
     } else if (node instanceof FlowTable) {
         return "tableView";
+    } else if (node instanceof StartMarkup) {
+        return "startMarkupView";
+    } else if (node instanceof EndMarkup) {
+        return "endMarkupView";
     } else {
         return "fallbackView";
     }
