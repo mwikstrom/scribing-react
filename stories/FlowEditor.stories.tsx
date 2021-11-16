@@ -5,10 +5,14 @@ import { FlowEditorProps } from "../src";
 import {
     BoxVariant,
     BOX_VARIANTS,
+    CellPosition,
+    CellRange,
     FlowColor,
     FlowContent,
     FlowEditorState,
     FlowSelection,
+    FlowTableCellSelection,
+    FlowTableSelection,
     FLOW_COLORS
 } from "scribing";
 import { JsonObject, JsonValue } from "paratype";
@@ -739,6 +743,37 @@ SparseTable.args = {
     ])),
 };
 
+export const TableSelection = Template.bind({});
+TableSelection.args = {
+    autoFocus: true,
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "A1": ["A1", { break: "para" }],
+                "B1": ["B1", { break: "para" }],
+                "C1": ["C1", { break: "para" }],
+                "A2": ["A2", { break: "para" }],
+                "B2": ["B2", { break: "para" }],
+                "C2": ["C2", { break: "para" }],
+                "A3": ["A3", { break: "para" }],
+                "B3": ["B3", { break: "para" }],
+                "C3": ["C3", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])).set("selection", new FlowTableSelection({
+        position: 7,
+        range: new CellRange({
+            anchor: CellPosition.parse("B1", true),
+            focus: CellPosition.parse("C2", true),
+        })
+    }))
+};
 
 function button(
     content: Array<JsonValue>, 
