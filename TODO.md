@@ -2,7 +2,8 @@ SCRIBING TODO
 =============
 - Insert markup
 - Insert box shall place caret inside the box
-- Change markup
+- Highlight corresponding markup tag
+- Indicate when markup tag is unbalanced
 - Table cell caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
 - Insert table
@@ -17,6 +18,7 @@ SCRIBING TODO
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
 - Chrevron markup tags instead of rounded
+- Change markup tag
 - Markup attributes
 - Empty markup tag
 - Lynk & Co needs:
