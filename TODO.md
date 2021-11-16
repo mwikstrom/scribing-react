@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Insert markup
+- Insert box shall place caret inside the box
 - Change markup
 - Table cell caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
