@@ -4,6 +4,8 @@ import {
     BoxStyleProps,
     CompleteUpload,
     DynamicText,
+    EndMarkup,
+    FlowBatch,
     FlowBox,
     FlowBoxSelection,
     FlowColor,
@@ -24,6 +26,7 @@ import {
     ParagraphStyleProps, 
     ParagraphVariant, 
     RemoveFlowSelectionOptions, 
+    StartMarkup, 
     TargetOptions, 
     TextRun, 
     TextStyle, 
@@ -616,6 +619,44 @@ export class FlowEditorCommands {
 
         if (selectionInsideBox) {
             this.setSelection(selectionInsideBox);
+        }
+    }
+
+    insertMarkup(tag: string): void {
+        const { selection } = this.#state;
+        
+        if (!selection) {
+            return;
+        }
+
+        const ops: FlowOperation[] = [];
+        let newSelection: FlowSelection | undefined | null;
+        selection.visitRanges((range, {wrap}) => {
+            if (range instanceof FlowRange) {
+                const start = wrap(FlowRange.at(range.first))?.insert(                    
+                    new FlowContent({ nodes: Object.freeze([new StartMarkup({ tag, style: TextStyle.empty })])}),
+                    this.getTargetOptions(),
+                );
+                
+                const end = wrap(FlowRange.at(range.last))?.insert(                    
+                    new FlowContent({ nodes: Object.freeze([new EndMarkup({ tag, style: TextStyle.empty })])}),
+                    this.getTargetOptions(),
+                );
+
+                if (start && end) {
+                    ops.push(end, start);
+                    if (range.isCollapsed) {
+                        newSelection = wrap(FlowRange.at(range.first + 1));
+                    } else {
+                        newSelection = null;
+                    }
+                }
+            }
+        });
+
+        this.#state = this.#apply(FlowBatch.fromArray(ops));
+        if (newSelection) {
+            this.setSelection(newSelection);
         }
     }
 

@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Insert markup
+- Cannot step out of empty markup
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
 - Nested caret is moved when opening more tools menu
