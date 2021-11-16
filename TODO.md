@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Table cell caret is moved when opening more tools menu
-- Uniform paragraph style shall not be derived from nested content
 - Enter/modify cell range selection mode
 - Insert table
 - Insert row
