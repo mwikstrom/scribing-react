@@ -207,6 +207,7 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         outlineOffset: 0,
     },
     content: {
+        textIndent: 0,
         outline: "none",
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
