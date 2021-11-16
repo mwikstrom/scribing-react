@@ -37,7 +37,7 @@ export default [
                 extensions: [".js", ".ts"],
             }),
             babel({
-                babelHelpers: "bundled",
+                babelHelpers: "runtime",
                 configFile: path.resolve(__dirname, ".babelrc"),
             }),
             pluginNodeResolve({

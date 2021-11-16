@@ -4,6 +4,9 @@
         "@babel/preset-react"
     ],
     "plugins": [
-        "@babel/plugin-proposal-numeric-separator"
+        "@babel/plugin-proposal-numeric-separator",
+        ["@babel/plugin-transform-runtime", {
+            "regenerator": true
+        }]
     ]
 }
