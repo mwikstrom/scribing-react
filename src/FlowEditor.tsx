@@ -46,6 +46,7 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
+    className?: string;
     style?: CSSProperties;
 
     /**
@@ -70,6 +71,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         defaultState = FlowEditorState.empty,
         autoFocus,
         style,
+        className,
         nativeSelection,
         onStateChange: onStateChangeProp,
         onStoreAsset,
@@ -418,7 +420,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                             children={(
                                 <div 
                                     ref={setEditingHost}
-                                    className={clsx(classes.root, customSelection && classes.customSelection)}
+                                    className={clsx(
+                                        classes.root,
+                                        customSelection && classes.customSelection,
+                                        className
+                                    )}
                                     style={style}
                                     contentEditable={editMode !== false}
                                     suppressContentEditableWarning={true}
