@@ -2,9 +2,6 @@ SCRIBING TODO
 =============
 - Insert markup
 - Change markup
-- Markup attributes
-- Empty markup tag
-- Chrevron markup tags instead of rounded
 - Table cell caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
 - Insert table
@@ -18,6 +15,9 @@ SCRIBING TODO
 - Cannot step out of multi-output template box
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
+- Chrevron markup tags instead of rounded
+- Markup attributes
+- Empty markup tag
 - Lynk & Co needs:
   - Expand/collapse (summary/details)
   - Task stepper (maybe a kind of list marker? + ability to set whether it is "active"?)
