@@ -371,12 +371,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
+        // Exit table selection mode if needed
+        if (state.selection instanceof FlowTableSelection) {
+            applyChange(state.set("selection", null), state);
+        }
+
         const fixed = fixCaretPosition(domPos);
         if (fixed) {
             setCaretPosition(fixed, true);
             e.preventDefault();
         }
-    }, [], { capture: true });
+    }, [state, applyChange], { capture: true });
 
     // Handle drop
     const { active: isActiveDropTarget } = useDropTarget(editingHost, commands);
