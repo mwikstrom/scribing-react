@@ -1,7 +1,10 @@
 SCRIBING TODO
 =============
-- Cell range selection
 - Paragraph style is no longer reflected in toolbox
+- Do not apply paragraph changes to nested content
+- Table cell caret is moved when opening more tools menu
+- Uniform paragraph style shall not be derived from nested content
+- Enter/modify cell range selection mode
 - Insert table
 - Insert row
 - Delete row
