@@ -43,7 +43,6 @@ LOWER PRIO
 - New interaction?: Open Topic
 - ALT+ENTER shall open insert menu with keyboard focus
 - New Ops: Wrap + Unwrap
-- FlowTable
 - FlowVideo
 - FlowAudio
 - Escape to close menu, but not toolbox
