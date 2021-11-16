@@ -6,6 +6,7 @@ import {
     FlowRangeSelection, 
     FlowSelection, 
     FlowTableCellSelection, 
+    FlowTableSelection, 
     NestedFlowSelection,
     ParagraphBreak, 
 } from "scribing";
@@ -43,6 +44,8 @@ export function getFlowTableCellSelection(
 ): boolean | FlowSelection {
     if (outer instanceof FlowTableCellSelection && outer.position === position && outer.cell.equals(cell)) {
         return outer.content;
+    } else if (outer instanceof FlowTableSelection && outer.position === position) {
+        return outer.range.contains(cell);
     } else if (outer instanceof FlowRangeSelection) {
         return outer.range.contains(position);
     } else {
@@ -64,6 +67,12 @@ export function getFlowFragmentSelection(
     }
     const fragmentRange = FlowRange.at(position, size);
     if (outer instanceof NestedFlowSelection) {
+        if (fragmentRange.contains(outer.position)) {
+            return outer.set("position", outer.position - position);
+        } else {
+            return false;
+        }
+    } else if (outer instanceof FlowTableSelection) {
         if (fragmentRange.contains(outer.position)) {
             return outer.set("position", outer.position - position);
         } else {

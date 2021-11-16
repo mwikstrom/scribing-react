@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
-import { TableStyle, FlowTable, CellPosition, FlowRangeSelection } from "scribing";
+import { TableStyle, FlowTable, CellPosition, FlowRangeSelection, FlowTableSelection } from "scribing";
 import { useEditMode } from "./EditModeScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowTableCellView } from "./FlowTableCellView";
@@ -13,18 +13,22 @@ export const FlowTableView = flowNode<FlowTable>((props, ref) => {
     const classes = useStyles();   
     const style = useMemo(() => TableStyle.ambient.merge(givenStyle), [givenStyle]);
     const editMode = useEditMode();
-    const isFullySelected = (
+    const showSelectionOutline = (
         outerSelection === true || 
         (
             outerSelection instanceof FlowRangeSelection &&
             outerSelection.range.first === 0 &&
             outerSelection.range.last >= 1
+        ) ||
+        (
+            outerSelection instanceof FlowTableSelection &&
+            outerSelection.position === 0
         )
     );
     const className = clsx(
         classes.root,
         style.inline && classes.inline,
-        isFullySelected && (editMode === true ? classes.selectedActive : classes.selectedInactive),
+        showSelectionOutline && (editMode === true ? classes.selectedActive : classes.selectedInactive),
     );
     const { positions, rowCount } = content;
     const rows = useMemo(() => splitPositionsIntoRows(positions, rowCount), [positions, rowCount]);

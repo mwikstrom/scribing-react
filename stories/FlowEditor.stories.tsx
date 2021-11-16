@@ -768,8 +768,8 @@ TableSelection.args = {
     ])).set("selection", new FlowTableSelection({
         position: 7,
         range: new CellRange({
-            anchor: CellPosition.parse("B1", true),
-            focus: CellPosition.parse("C2", true),
+            anchor: CellPosition.parse("A2", true),
+            focus: CellPosition.parse("B3", true),
         })
     }))
 };

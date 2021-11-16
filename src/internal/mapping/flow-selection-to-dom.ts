@@ -1,4 +1,4 @@
-import { FlowSelection, FlowRangeSelection, NestedFlowSelection } from "scribing";
+import { FlowSelection, FlowRangeSelection, NestedFlowSelection, FlowTableSelection } from "scribing";
 import { FlowAxis, getMappedFlowAxis } from "./flow-axis";
 import { isMappedFlowNode } from "./flow-node";
 import { DomPosition, mapFlowPositionToDom, mapFlowPositionToDomNode } from "./flow-position-to-dom";
@@ -13,7 +13,7 @@ export interface DomRange {
 export function mapFlowSelectionToDom(
     flowSelection: FlowSelection | null,
     container: Node,
-): DomRange | null {
+): DomRange | null | false {
     while (flowSelection instanceof NestedFlowSelection) {
         const mapped = mapFlowPositionToDomNode(flowSelection.position, container);
         
@@ -45,6 +45,11 @@ export function mapFlowSelectionToDom(
         }
     }
 
+    if (flowSelection instanceof FlowTableSelection) {
+        // Table selection cannot be mapped to dom
+        return false;
+    }
+
     if (flowSelection) {
         console.warn("Unmappable flow selection", flowSelection);
     }
@@ -66,7 +71,7 @@ export function applyFlowSelectionToDom(
             mapped.focus.node,
             mapped.focus.offset
         );
-    } else {
+    } else if (mapped === null) {
         domSelection.removeAllRanges();
     }
 }

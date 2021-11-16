@@ -4,6 +4,7 @@ import {
     FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
+    FlowTableSelection, 
     TextStyle
 } from "scribing";
 import { FlowView, FlowViewProps } from "./FlowView";
@@ -252,7 +253,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         [],
     );
     useEffect(() => {
-        if (!editingHost) {
+        // Table selection cannot be mapped to DOM so we'll ignore DOM selection
+        // changes while we're in "table selection mode".
+        if (!editingHost || state.selection instanceof FlowTableSelection) {
             return;
         }
 
@@ -343,6 +346,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         if (
             domSelection && 
             state.selection && 
+            !(state.selection instanceof FlowTableSelection) &&
             editingHost && 
             isSelectionInside(editingHost, domSelection, true) && 
             documentHasFocus
