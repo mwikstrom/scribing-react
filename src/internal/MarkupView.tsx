@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState, MouseEvent, FC, RefCallback } fr
 import { EndMarkup, StartMarkup } from "scribing";
 import { flowNode, FlowNodeComponentProps } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
-import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
@@ -43,7 +42,6 @@ const MarkupView: FC<MarkupViewProps> = props => {
     const { native: nativeSelection } = useFlowCaretContext();
     const className = clsx(
         classes.root,
-        ...getTextStyleClassNames(style, classes),
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
         node instanceof StartMarkup && classes.startTag,
         node instanceof EndMarkup && classes.endTag,
@@ -100,11 +98,11 @@ const MarkupView: FC<MarkupViewProps> = props => {
 };
 
 const useStyles = createUseFlowStyles("Markup", ({palette}) => ({
-    ...textStyles(palette),
     root: {
         display: "inline-block",
         whiteSpace: "pre",
         fontFamily: SYSTEM_FONT,
+        fontWeight: "normal",
         color: palette.subtle,
         border: "1px solid currentColor",
         padding: "0.1rem 0.2rem",
@@ -112,6 +110,7 @@ const useStyles = createUseFlowStyles("Markup", ({palette}) => ({
         marginRight: "0.2rem",
         cursor: "default",
         borderBottomWidth: 2,
+        textIndent: 0,
     },
     startTag: {
         borderTopRightRadius: "1em",
