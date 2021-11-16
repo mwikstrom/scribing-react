@@ -1,11 +1,12 @@
 SCRIBING TODO
 =============
+- Insert table
+- Double click to select word is broken
 - Cannot step out of empty markup
-- Highlight corresponding markup tag
-- Indicate when markup tag is unbalanced
 - Nested caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
-- Insert table
+- Highlight corresponding markup tag
+- Indicate when markup tag is unbalanced
 - Insert row
 - Delete row
 - Insert column
@@ -14,7 +15,6 @@ SCRIBING TODO
 - Split merged cell
 - Resize column
 - Cannot step out of multi-output template box
-- Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
 - Chrevron markup tags instead of rounded
 - Change markup tag
