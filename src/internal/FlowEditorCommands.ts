@@ -571,7 +571,7 @@ export class FlowEditorCommands {
         if (!content) {
             let paraStyle = this.getParagraphStyle();
             const ambient = theme.getParagraphTheme(paraStyle.variant ?? "normal").getAmbientParagraphStyle();
-            paraStyle = paraStyle.unmerge(ambient);
+            paraStyle = paraStyle.unmerge(ambient.unset("variant"));
             const paraBreak = new ParagraphBreak({ style: paraStyle });
             if (selection.isCollapsed) {
                 content = new FlowContent({ nodes: Object.freeze([paraBreak])});
