@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- Cannot click after pilcrow inside table cell
-- Cannot insert icon/image inside table cell before pilcrow
 - Cannot step out of multi-output template box
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
