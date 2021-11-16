@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-onStateChange?: (after: FlowEditorState, change: FlowOperation | null, before: FlowEditorState) => void;
+onStateChange?: (event: StateChangeEvent) => void;
 ```

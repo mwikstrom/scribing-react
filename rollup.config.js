@@ -19,6 +19,7 @@ export default [
                 sourcemap: true,
                 banner,
                 exports: "named",
+                inlineDynamicImports: true,
             },
         ],
         external: [

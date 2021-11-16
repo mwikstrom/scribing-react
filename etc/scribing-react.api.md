@@ -5,131 +5,40 @@
 ```ts
 
 import { CSSProperties } from 'react';
-import { DynamicText } from 'scribing';
 import { FC } from 'react';
-import { FlowButton } from 'scribing';
 import { FlowContent } from 'scribing';
 import { FlowEditorState } from 'scribing';
-import { FlowNode } from 'scribing';
 import { FlowOperation } from 'scribing';
-import { FlowTheme } from 'scribing';
-import { Interaction } from 'scribing';
-import { LineBreak } from 'scribing';
-import { MouseEventHandler } from 'react';
-import { ParagraphBreak } from 'scribing';
-import { ParagraphStyleVariant } from 'scribing';
-import { ParagraphTheme } from 'scribing';
-import { ReactElement } from 'react';
-import { ReactNode } from 'react';
-import { RefCallback } from 'react';
-import { TextRun } from 'scribing';
+import { FlowSelection } from 'scribing';
 
 // @public (undocumented)
-export type ButtonComponent = "button" | FC<ButtonComponentProps>;
-
-// @public (undocumented)
-export interface ButtonComponentProps {
+export abstract class DeferrableEvent {
+    // @internal (undocumented)
+    _complete(): Promise<void>;
     // (undocumented)
-    children: ReactNode;
-    // (undocumented)
-    className: string;
-    // (undocumented)
-    onClick: MouseEventHandler;
-    // (undocumented)
-    onMouseEnter: MouseEventHandler;
-    // (undocumented)
-    onMouseLeave: MouseEventHandler;
-    // (undocumented)
-    ref: RefCallback<HTMLElement>;
+    defer(callback: () => Promise<void>): void;
 }
-
-// @public (undocumented)
-export const DefaultFlowNodeComponents: Readonly<FlowNodeComponentMap>;
-
-// @public (undocumented)
-export const DefaultFlowNodeLocalization: Readonly<FlowNodeLocalization>;
-
-// @public (undocumented)
-export const DynamicTextView: FlowNodeComponent<DynamicText>;
-
-// @public (undocumented)
-export const FlowButtonView: FlowNodeComponent<FlowButton>;
 
 // @public
 export const FlowEditor: FC<FlowEditorProps>;
 
 // @public
-export interface FlowEditorProps {
+export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> {
     // (undocumented)
     autoFocus?: boolean;
     // (undocumented)
-    components?: Partial<Readonly<FlowNodeComponentMap>>;
-    // (undocumented)
     defaultState?: FlowEditorState;
+    // @internal
+    nativeSelection?: boolean;
     // (undocumented)
-    onStateChange?: (after: FlowEditorState, change: FlowOperation | null, before: FlowEditorState) => void;
+    onStateChange?: (event: StateChangeEvent) => void;
+    // (undocumented)
+    onStoreAsset?: (event: StoreAssetEvent) => void;
     // (undocumented)
     state?: FlowEditorState;
     // (undocumented)
     style?: CSSProperties;
-    // (undocumented)
-    theme?: FlowTheme;
 }
-
-// @public (undocumented)
-export const flowNode: <T extends FlowNode>(render: (props: Omit<FlowNodeComponentProps<T>, "ref">, ref: RefCallback<HTMLElement>) => (ReactElement | null)) => FlowNodeComponent<T>;
-
-// @public (undocumented)
-export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
-
-// @public (undocumented)
-export interface FlowNodeComponentMap {
-    // (undocumented)
-    button: ButtonComponent;
-    // (undocumented)
-    buttonView: FlowNodeComponent<FlowButton>;
-    // (undocumented)
-    dynamicTextView: FlowNodeComponent<DynamicText>;
-    // (undocumented)
-    fallbackView: FlowNodeComponent;
-    // (undocumented)
-    lineBreakView: FlowNodeComponent<LineBreak>;
-    // (undocumented)
-    link: LinkComponent;
-    // (undocumented)
-    paragraph: (variant: ParagraphStyleVariant) => ParagraphComponent;
-    // (undocumented)
-    paragraphBreakView: FlowNodeComponent<ParagraphBreak>;
-    // (undocumented)
-    textRunView: FlowNodeComponent<TextRun>;
-}
-
-// @public (undocumented)
-export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
-    // (undocumented)
-    components: Readonly<FlowNodeComponentMap>;
-    // (undocumented)
-    editMode: boolean;
-    // (undocumented)
-    formattingMarks: boolean;
-    // (undocumented)
-    localization: Readonly<FlowNodeLocalization>;
-    // (undocumented)
-    node: T;
-    // (undocumented)
-    ref: RefCallback<HTMLElement>;
-    // (undocumented)
-    theme: ParagraphTheme;
-}
-
-// @public (undocumented)
-export interface FlowNodeLocalization {
-    // (undocumented)
-    holdCtrlKeyToEnableLink: string;
-}
-
-// @public (undocumented)
-export const FlowNodeView: FC<Omit<FlowNodeComponentProps, "ref">>;
 
 // @public
 export const FlowView: FC<FlowViewProps>;
@@ -137,66 +46,58 @@ export const FlowView: FC<FlowViewProps>;
 // @public
 export interface FlowViewProps {
     // (undocumented)
-    components?: Partial<Readonly<FlowNodeComponentMap>>;
-    // (undocumented)
     content: FlowContent;
     // (undocumented)
-    editMode?: boolean;
+    onLoadAsset?: (event: LoadAssetEvent) => void;
     // (undocumented)
-    formattingMarks?: boolean;
+    onResolveLink?: (event: ResolveLinkEvent) => void;
     // (undocumented)
-    localization?: Partial<Readonly<FlowNodeLocalization>>;
-    // (undocumented)
-    theme?: FlowTheme;
+    selection?: FlowSelection | null;
 }
 
 // @public (undocumented)
-export const LineBreakView: FlowNodeComponent<LineBreak>;
-
-// @public (undocumented)
-export type LinkComponent = "a" | FC<LinkComponentProps>;
-
-// @public (undocumented)
-export interface LinkComponentProps {
+export class LoadAssetEvent extends DeferrableEvent {
+    constructor(url: string);
     // (undocumented)
-    children: ReactNode;
+    get blob(): Blob | null;
+    set blob(value: Blob | null);
     // (undocumented)
-    className: string;
-    // (undocumented)
-    href: string;
-    // (undocumented)
-    onClick: MouseEventHandler;
-    // (undocumented)
-    onMouseEnter: MouseEventHandler;
-    // (undocumented)
-    onMouseLeave: MouseEventHandler;
-    // (undocumented)
-    title?: string;
+    get url(): string;
+    set url(value: string);
 }
 
 // @public (undocumented)
-export const ParagraphBreakView: FlowNodeComponent<ParagraphBreak>;
-
-// @public (undocumented)
-export type ParagraphComponent = ("div" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | FC<ParagraphComponentProps>);
-
-// @public (undocumented)
-export interface ParagraphComponentProps {
+export class ResolveLinkEvent extends DeferrableEvent {
+    constructor(href: string, target: string);
     // (undocumented)
-    children: ReactNode;
+    get href(): string;
+    set href(value: string);
     // (undocumented)
-    className: string;
-    // (undocumented)
-    style: CSSProperties;
+    get target(): string;
+    set target(value: string);
 }
 
 // @public (undocumented)
-export const TextRunView: FlowNodeComponent<TextRun>;
+export class StateChangeEvent {
+    constructor(before: FlowEditorState, change: FlowOperation | null, after: FlowEditorState);
+    // (undocumented)
+    get after(): FlowEditorState;
+    // (undocumented)
+    get before(): FlowEditorState;
+    // (undocumented)
+    get change(): FlowOperation | null;
+}
 
 // @public (undocumented)
-export const UnknownNodeView: FlowNodeComponent<FlowNode>;
-
-// @public (undocumented)
-export function useInteractionInvoker(interaction: Interaction | null): () => void | Promise<void>;
+export class StoreAssetEvent extends DeferrableEvent {
+    constructor(blob: Blob, uploadId: string);
+    // (undocumented)
+    get blob(): Blob | null;
+    // (undocumented)
+    get uploadId(): string;
+    // (undocumented)
+    get url(): string | null;
+    set url(value: string | null);
+}
 
 ```

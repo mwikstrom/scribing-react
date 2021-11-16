@@ -9,18 +9,18 @@ Component props for [FlowEditor](./scribing-react.floweditor.md)
 <b>Signature:</b>
 
 ```typescript
-export interface FlowEditorProps 
+export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> 
 ```
+<b>Extends:</b> Pick&lt;[FlowViewProps](./scribing-react.flowviewprops.md)<!-- -->, "onLoadAsset" \| "onResolveLink"&gt;
 
 ## Properties
 
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [autoFocus?](./scribing-react.floweditorprops.autofocus.md) | boolean | <i>(Optional)</i> |
-|  [components?](./scribing-react.floweditorprops.components.md) | Partial&lt;Readonly&lt;[FlowNodeComponentMap](./scribing-react.flownodecomponentmap.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
 |  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | FlowEditorState | <i>(Optional)</i> |
-|  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (after: FlowEditorState, change: FlowOperation \| null, before: FlowEditorState) =&gt; void | <i>(Optional)</i> |
+|  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (event: [StateChangeEvent](./scribing-react.statechangeevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
+|  [onStoreAsset?](./scribing-react.floweditorprops.onstoreasset.md) | (event: [StoreAssetEvent](./scribing-react.storeassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [state?](./scribing-react.floweditorprops.state.md) | FlowEditorState | <i>(Optional)</i> |
 |  [style?](./scribing-react.floweditorprops.style.md) | CSSProperties | <i>(Optional)</i> |
-|  [theme?](./scribing-react.floweditorprops.theme.md) | FlowTheme | <i>(Optional)</i> |
 

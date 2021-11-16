@@ -16,10 +16,8 @@ export interface FlowViewProps
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [components?](./scribing-react.flowviewprops.components.md) | Partial&lt;Readonly&lt;[FlowNodeComponentMap](./scribing-react.flownodecomponentmap.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
 |  [content](./scribing-react.flowviewprops.content.md) | FlowContent |  |
-|  [editMode?](./scribing-react.flowviewprops.editmode.md) | boolean | <i>(Optional)</i> |
-|  [formattingMarks?](./scribing-react.flowviewprops.formattingmarks.md) | boolean | <i>(Optional)</i> |
-|  [localization?](./scribing-react.flowviewprops.localization.md) | Partial&lt;Readonly&lt;[FlowNodeLocalization](./scribing-react.flownodelocalization.md)<!-- -->&gt;&gt; | <i>(Optional)</i> |
-|  [theme?](./scribing-react.flowviewprops.theme.md) | FlowTheme | <i>(Optional)</i> |
+|  [onLoadAsset?](./scribing-react.flowviewprops.onloadasset.md) | (event: [LoadAssetEvent](./scribing-react.loadassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
+|  [onResolveLink?](./scribing-react.flowviewprops.onresolvelink.md) | (event: [ResolveLinkEvent](./scribing-react.resolvelinkevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
+|  [selection?](./scribing-react.flowviewprops.selection.md) | FlowSelection \| null | <i>(Optional)</i> |
 
