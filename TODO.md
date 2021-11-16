@@ -4,7 +4,7 @@ SCRIBING TODO
 - Insert box shall place caret inside the box
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
-- Table cell caret is moved when opening more tools menu
+- Nested caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
 - Insert table
 - Insert row

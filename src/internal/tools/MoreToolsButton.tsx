@@ -20,13 +20,9 @@ import { ToolMenuItem } from "./ToolMenuItem";
 import { ToolMenuDivider } from "./ToolMenuDivider";
 import { ScriptEditor } from "./ScriptEditor";
 import { 
-    BoxStyle, 
     DynamicText, 
-    FlowBox, 
-    FlowContent, 
     FlowIcon, 
     FlowImage, 
-    ParagraphBreak, 
     ParagraphStyleProps, 
     TextStyle 
 } from "scribing";
@@ -76,7 +72,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     }, [commands, closeMenu, editingHost]);
 
     const insertBox = useCallback(() => {
-        commands.insertNode(EMPTY_FLOW_BOX);
+        commands.insertBox();
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -140,7 +136,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end" boundary={boundary}>
-                    <ToolMenuItem disabled={!commands.isCaret()} onClick={insertBox}>
+                    <ToolMenuItem disabled={commands.isMultiRange()} onClick={insertBox}>
                         <Icon path={mdiTextBoxOutline} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.insert_box}
@@ -245,6 +241,3 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         </>
     );
 };
-
-const SINGLE_PARA_CONTENT = new FlowContent({ nodes: Object.freeze([ new ParagraphBreak() ])});
-const EMPTY_FLOW_BOX = new FlowBox({ content: SINGLE_PARA_CONTENT, style: BoxStyle.empty.set("variant", "outlined") });

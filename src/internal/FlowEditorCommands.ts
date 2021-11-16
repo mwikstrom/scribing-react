@@ -17,6 +17,7 @@ import {
     ImageSource, 
     Interaction, 
     OrderedListMarkerKindType, 
+    ParagraphBreak, 
     ParagraphStyle, 
     ParagraphStyleProps, 
     ParagraphVariant, 
@@ -73,6 +74,10 @@ export class FlowEditorCommands {
 
     getSelection(): FlowSelection | null {
         return this.#state.selection;
+    }
+
+    setSelection(selection: FlowSelection | null): void {
+        this.#state = this.#apply(this.#state.set("selection", selection));
     }
 
     undo(): void {
@@ -533,6 +538,44 @@ export class FlowEditorCommands {
     insertNode(node: FlowNode): void {
         const content = new FlowContent({ nodes: Object.freeze([node])});
         this.insertContent(content);
+    }
+
+    isMultiRange(): boolean {
+        const { selection } = this.#state;
+        let count = 0;
+        if (selection) {
+            selection.transformRanges(range => {
+                ++count;
+                return range;
+            });
+        }
+        return count > 1;
+    }
+
+    insertBox(style?: BoxStyle, content?: FlowContent): void {
+        const { selection } = this.#state;
+        if (!selection) {
+            return;
+        }
+        if (!style) {
+            style = BoxStyle.empty.set("variant", "outlined");
+        }
+        if (!content) {
+            const paraBreak = new ParagraphBreak({ style: this.getParagraphStyle() });
+            if (selection.isCollapsed) {
+                content = new FlowContent({ nodes: Object.freeze([paraBreak])});
+            } else {
+                const contentArray = this.copy();
+                if (contentArray.length !== 1) {
+                    return;
+                }
+                content = contentArray[0];
+                if (content.size === 0 || !(content.peek(content.size - 1).node instanceof ParagraphBreak)) {
+                    content = content.set("nodes", Object.freeze([...content.nodes, paraBreak]));
+                }
+            }
+        }
+        this.insertNode(new FlowBox({ content, style }));
     }
 
     async insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void> {
