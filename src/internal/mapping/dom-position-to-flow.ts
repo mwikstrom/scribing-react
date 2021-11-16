@@ -127,7 +127,12 @@ export const mapDomPositionToFlow = (
         // child offset. So we'll select the closest anchestor mapped from a flow
         // node and compute flow offset by summing up size of preceding siblings
         offset = getFlowOffsetFromPreviousSiblings(node.childNodes.item(offset));
-        while (!isMappedFlowNode(node) && !isMappedEditingHost(node) && node.parentNode) {
+        while (
+            !isMappedFlowNode(node) && 
+            !isMappedEditingHost(node) && 
+            getMappedFlowAxis(node) === null && 
+            node.parentNode
+        ) {
             offset += getFlowOffsetFromPreviousSiblings(node);
             node = node.parentNode;
         }
