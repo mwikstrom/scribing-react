@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useMemo } from "react";
-import { TableStyle, FlowTable, CellPosition } from "scribing";
+import { TableStyle, FlowTable, CellPosition, FlowRangeSelection } from "scribing";
+import { useEditMode } from "./EditModeScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowTableCellView } from "./FlowTableCellView";
 import { createUseFlowStyles } from "./JssTheming";
@@ -11,9 +12,19 @@ export const FlowTableView = flowNode<FlowTable>((props, ref) => {
     const { style: givenStyle } = node;
     const classes = useStyles();   
     const style = useMemo(() => TableStyle.ambient.merge(givenStyle), [givenStyle]);
+    const editMode = useEditMode();
+    const isFullySelected = (
+        outerSelection === true || 
+        (
+            outerSelection instanceof FlowRangeSelection &&
+            outerSelection.range.first === 0 &&
+            outerSelection.range.last >= 1
+        )
+    );
     const className = clsx(
         classes.root,
         style.inline && classes.inline,
+        isFullySelected && (editMode === true ? classes.selectedActive : classes.selectedInactive),
     );
     const { positions, rowCount } = content;
     const rows = useMemo(() => splitPositionsIntoRows(positions, rowCount), [positions, rowCount]);
@@ -52,7 +63,13 @@ const useStyles = createUseFlowStyles("FlowTable", ({palette}) => ({
     inline: {
         display: "inline-table",
         width: "auto",
-    }
+    },
+    selectedActive: {
+        outline: `1px solid ${palette.selection}`,
+    },
+    selectedInactive: {
+        outline: `1px solid ${palette.inactiveSelection}`,
+    },
 }));
 
 const splitPositionsIntoRows = (positions: readonly CellPosition[], rowCount: number): CellPosition[][] => {

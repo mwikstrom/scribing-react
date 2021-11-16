@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { CellPosition, FlowSelection, FlowTableCell, FlowTableCellSelection, NestedFlowSelection } from "scribing";
 import { useEditMode } from "./EditModeScope";
@@ -30,7 +31,10 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
     );
     const editMode = useEditMode();
     const classes = useStyles();
-    const className = classes.root;
+    const className = clsx(
+        classes.root,
+        innerSelection === true && (editMode === true ? classes.selectedActive : classes.selectedInactive),
+    );
     return (
         <td 
             ref={ref}
@@ -61,6 +65,16 @@ const useStyles = createUseFlowStyles("FlowTableCell", ({palette}) => ({
         "&>.ScribingParagraph-root:last-child": {
             marginBottom: "0 !important",
         },
+    },
+    selectedActive: {
+        borderColor: palette.selectionText,
+        backgroundColor: palette.selection,
+        color: palette.selectionText,
+    },
+    selectedInactive: {
+        borderColor: palette.inactiveSelectionText,
+        backgroundColor: palette.inactiveSelection,
+        color: palette.inactiveSelectionText,
     },
 }));
 
