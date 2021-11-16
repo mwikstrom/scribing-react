@@ -11,7 +11,6 @@ import {
     FlowContent,
     FlowEditorState,
     FlowSelection,
-    FlowTableCellSelection,
     FlowTableSelection,
     FLOW_COLORS
 } from "scribing";
