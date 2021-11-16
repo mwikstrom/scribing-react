@@ -29,6 +29,7 @@ import {
 } from "scribing";
 import { FlowEditorProps } from "../FlowEditor";
 import { StoreAssetEvent } from "../StoreAssetEvent";
+import { PubSub } from "./utils/PubSub";
 
 /** @internal */
 export class FlowEditorCommands {
@@ -36,6 +37,7 @@ export class FlowEditorCommands {
     #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
     #onStoreAsset: FlowEditorProps["onStoreAsset"];
     readonly #uploads = new Map<string, Blob>();
+    #fresh: PubSub<FlowEditorCommands> | undefined;
 
     constructor(
         state: FlowEditorState,
@@ -54,6 +56,19 @@ export class FlowEditorCommands {
         this.#state = state;
         this.#apply = change => apply(change, state);
         this.#onStoreAsset = onStoreAsset;
+        if (this.#fresh) {
+            this.#fresh.pub(new FlowEditorCommands(state, apply, onStoreAsset));
+        }
+    }
+
+    /** @internal */
+    _observe(
+        callback: (fresh: FlowEditorCommands) => void,
+    ): () => void {
+        if (!this.#fresh) {
+            this.#fresh = new PubSub<FlowEditorCommands>(this);
+        }
+        return this.#fresh.sub(callback);
     }
 
     getSelection(): FlowSelection | null {

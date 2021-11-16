@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { FlowEditorCommands } from "../FlowEditorCommands";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
@@ -34,54 +34,56 @@ export interface ToolbarProps {
 
 /** @internal */
 export const Toolbar: FC<ToolbarProps> = props => {
-    const { commands } = props;
+    const { commands: givenCommands, ...rest } = props;
+    const commands = useFreshCommands(givenCommands);
+    const toolProps = { commands, ...rest };
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.line}>
                 {commands.isBox() ? (
-                    <BoxVariantButton {...props}/>
+                    <BoxVariantButton {...toolProps}/>
                 ) : (
-                    <ParagraphVariantButton {...props}/>
+                    <ParagraphVariantButton {...toolProps}/>
                 )}                
                 <ToolDivider/>
                 <ToolGroup>
-                    <BoldButton {...props}/>
-                    <ItalicButton {...props}/>
-                    <UnderlineButton {...props}/>
-                    <StrikeButton {...props}/>
+                    <BoldButton {...toolProps}/>
+                    <ItalicButton {...toolProps}/>
+                    <UnderlineButton {...toolProps}/>
+                    <StrikeButton {...toolProps}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <SubscriptButton {...props}/>
-                    <SuperscriptButton {...props}/>
+                    <SubscriptButton {...toolProps}/>
+                    <SuperscriptButton {...toolProps}/>
                 </ToolGroup>
                 <ToolDivider/>
-                <ColorButton {...props}/>
+                <ColorButton {...toolProps}/>
                 <ToolDivider/>
-                <MoreToolsButton {...props}/>
+                <MoreToolsButton {...toolProps}/>
             </div>
             <div className={classes.line}>
                 <ToolGroup>
-                    <TextAlignLeftButton {...props}/>
-                    <TextAlignCenterButton {...props}/>
-                    <TextAlignRightButton {...props}/>
-                    <TextAlignJustifyButton {...props}/>
+                    <TextAlignLeftButton {...toolProps}/>
+                    <TextAlignCenterButton {...toolProps}/>
+                    <TextAlignRightButton {...toolProps}/>
+                    <TextAlignJustifyButton {...toolProps}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <UnorderedListButton {...props}/>
-                    <OrderedListButton {...props}/>
+                    <UnorderedListButton {...toolProps}/>
+                    <OrderedListButton {...toolProps}/>
                 </ToolGroup>
                 <ToolDivider/>
                 <ToolGroup>
-                    <DecrementListLevelButton {...props}/>
-                    <IncrementListLevelButton {...props}/>
+                    <DecrementListLevelButton {...toolProps}/>
+                    <IncrementListLevelButton {...toolProps}/>
                 </ToolGroup>
                 <ToolDivider/>
-                <InteractionButton {...props}/>
+                <InteractionButton {...toolProps}/>
                 <ToolDivider/>
-                <DynamicExpressionButton {...props}/>
+                <DynamicExpressionButton {...toolProps}/>
             </div>
         </div>
     );
@@ -103,3 +105,21 @@ const useStyles = createUseStyles({
 }, {
     generateId: makeJssId("Toolbar"),
 });
+
+const useFreshCommands = (given: FlowEditorCommands) => {
+    const [fresh, setFresh] = useState(given);
+    useEffect(() => {
+        let active = true;
+        setFresh(given);
+        const dispose = given._observe(next => {
+            if (active) {
+                setFresh(next);
+            }
+        });
+        return () => {
+            active = false;
+            dispose();
+        };
+    },[given]);
+    return fresh;
+};
