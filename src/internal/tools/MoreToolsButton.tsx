@@ -13,6 +13,7 @@ import {
     mdiSpellcheck,
     mdiCreation,
     mdiImage,
+    mdiCodeTags,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -30,10 +31,11 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { IconChooser } from "./IconChooser";
 import { fileOpen } from "browser-fs-access";
 import { createImageSource } from "../utils/create-image-source";
+import { InputEditor } from "./InputEditor";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
-    const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text" | "icon">(false);
+    const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text" | "icon" | "insert_markup">(false);
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -88,6 +90,21 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
 
     const insertDynamicText = useCallback((expression: string) => {
         commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
+    const beginInsertMarkup = useCallback(() => {
+        setMenuOpen("insert_markup");
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [setMenuOpen, editingHost]);
+
+    const insertMarkup = useCallback((tag: string) => {
+        commands.insertMarkup(tag);
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -160,6 +177,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                             {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
                         </span>
                     </ToolMenuItem>
+                    <ToolMenuItem onClick={beginInsertMarkup}>
+                        <Icon path={mdiCodeTags} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.insert_markup}&hellip;
+                        </span>
+                    </ToolMenuItem>
                     <ToolMenuDivider/>
                     <ToolMenuItem disabled={!commands.isBox()} onClick={toggleInlineBox}>
                         <Icon
@@ -215,6 +238,23 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                     children={(
                         <ScriptEditor
                             onSave={insertDynamicText}
+                            onCancel={closeMenu}
+                            editingHost={editingHost}
+                        />
+                    )}
+                />
+            )}
+            {buttonRef && isMenuOpen === "insert_markup" && (
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={(
+                        <InputEditor
+                            placeholder={locale.enter_tag_name}
+                            onSave={insertMarkup}
                             onCancel={closeMenu}
                             editingHost={editingHost}
                         />

@@ -29,6 +29,8 @@ Record<IconPackLocaleKey, string> {
     all_tags: string;
     insert_image: string;
     change_image: string;
+    insert_markup: string;
+    enter_tag_name: string;
 }
 
 /** @public */
@@ -94,6 +96,8 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     all_tags: "All tags",
     insert_image: "Insert image",
     change_image: "Change image",
+    insert_markup: "Insert markup",
+    enter_tag_name: "Enter tag name",
 });
 
 /** @public */
