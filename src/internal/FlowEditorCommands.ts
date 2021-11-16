@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import { 
     BoxStyle,
     BoxStyleProps,
+    CellPosition,
     CompleteUpload,
     DynamicText,
     EndMarkup,
@@ -18,6 +19,10 @@ import {
     FlowRange, 
     FlowRangeSelection, 
     FlowSelection, 
+    FlowTable, 
+    FlowTableCell, 
+    FlowTableCellSelection, 
+    FlowTableContent, 
     ImageSource, 
     Interaction, 
     OrderedListMarkerKindType, 
@@ -27,6 +32,7 @@ import {
     ParagraphVariant, 
     RemoveFlowSelectionOptions, 
     StartMarkup, 
+    TableStyle, 
     TargetOptions, 
     TextRun, 
     TextStyle, 
@@ -619,6 +625,34 @@ export class FlowEditorCommands {
 
         if (selectionInsideBox) {
             this.setSelection(selectionInsideBox);
+        }
+    }
+
+    insertTable(cols: number, rows: number): void {
+        const { selection } = this.#state;
+        if (cols > 0 && rows > 0 && selection && selection.isCollapsed) {
+            const defaultContent = new FlowContent({ nodes: Object.freeze([new ParagraphBreak()])});
+            const emptyCell = new FlowTableCell({ content: defaultContent, colSpan: 1, rowSpan: 1 });
+            const cells = new Map<string, FlowTableCell>();
+            cells.set(CellPosition.at(rows - 1, cols - 1).toString(), emptyCell);
+            this.insertNode(new FlowTable({
+                content: new FlowTableContent(cells, { defaultContent }),
+                columns: new Map(),
+                style: TableStyle.empty,
+            }));
+            let newSelection: FlowSelection | undefined | null;
+            selection.visitRanges((range, {wrap}) => {
+                if (range instanceof FlowRange && range.isCollapsed) {
+                    newSelection = wrap(new FlowTableCellSelection({
+                        position: range.first,
+                        cell: CellPosition.at(0, 0),
+                        content: new FlowRangeSelection({ range: FlowRange.at(0) }),
+                    }));
+                }
+            }, this.getTargetOptions());
+            if (newSelection) {
+                this.setSelection(newSelection);
+            }
         }
     }
 

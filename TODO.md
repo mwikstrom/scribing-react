@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
-- Insert table
+- Cannot edit newly inserted cells (except the bottom/right cell)
+- Cannot insert box inside table
 - Double click to select word is broken
 - Cannot step out of empty markup
 - Nested caret is moved when opening more tools menu

@@ -14,6 +14,7 @@ import {
     mdiCreation,
     mdiImage,
     mdiCodeTags,
+    mdiTable,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -32,10 +33,17 @@ import { IconChooser } from "./IconChooser";
 import { fileOpen } from "browser-fs-access";
 import { createImageSource } from "../utils/create-image-source";
 import { InputEditor } from "./InputEditor";
+import { TableSizeSelector } from "./TableSizeSelector";
 
 export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
-    const [isMenuOpen, setMenuOpen] = useState<boolean | "insert_dynamic_text" | "icon" | "insert_markup">(false);
+    const [isMenuOpen, setMenuOpen] = useState<
+        boolean | 
+        "insert_dynamic_text" | 
+        "icon" | 
+        "insert_markup" | 
+        "insert_table"
+    >(false);
     const locale = useFlowLocale();
     const toggleMenu = useCallback(() => setMenuOpen(before => !before), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -102,9 +110,24 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             editingHost.focus();
         }
     }, [setMenuOpen, editingHost]);
-
+    
     const insertMarkup = useCallback((tag: string) => {
         commands.insertMarkup(tag);
+        closeMenu();
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [commands, closeMenu, editingHost]);
+
+    const beginInsertTable = useCallback(() => {
+        setMenuOpen("insert_table");
+        if (editingHost) {
+            editingHost.focus();
+        }
+    }, [setMenuOpen, editingHost]);
+    
+    const insertTable = useCallback((cols: number, rows: number) => {
+        commands.insertTable(cols, rows);
         closeMenu();
         if (editingHost) {
             editingHost.focus();
@@ -177,6 +200,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                             {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
                         </span>
                     </ToolMenuItem>
+                    <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertTable}>
+                        <Icon path={mdiTable} size={0.75}/>
+                        <span style={{margin: "0 0.5rem"}}>
+                            {locale.insert_table}&hellip;
+                        </span>
+                    </ToolMenuItem>
                     <ToolMenuItem onClick={beginInsertMarkup}>
                         <Icon path={mdiCodeTags} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
@@ -242,6 +271,16 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                             editingHost={editingHost}
                         />
                     )}
+                />
+            )}
+            {buttonRef && isMenuOpen === "insert_table" && (
+                <ToolMenu
+                    anchor={buttonRef}
+                    onClose={closeMenu}
+                    placement="bottom"
+                    closeOnMouseLeave={false}
+                    boundary={boundary}
+                    children={<TableSizeSelector onSelected={insertTable}/>}
                 />
             )}
             {buttonRef && isMenuOpen === "insert_markup" && (
