@@ -95,26 +95,26 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, []);
 
     // State change handler
+    const stateRef = useRef(state);
+    useLayoutEffect(() => {
+        stateRef.current = state;
+    }, [state]);
     const onStateChange = useCallback((
         after: FlowEditorState,
         change: FlowOperation | null,
         before: FlowEditorState
     ) => {
-        let changed = false;
+        if (!stateRef.current.equals(before)) {
+            return false;
+        }
+        stateRef.current = after;
         if (mountedRef.current) {
-            setState(current => {
-                if (current.equals(before) && !current.equals(after)) {
-                    changed = true;
-                    return after;
-                } else {
-                    return current;
-                }
-            });
-            if (changed && onStateChangeProp) {
+            setState(after);
+            if (onStateChangeProp) {
                 onStateChangeProp(new StateChangeEvent(before, change, after));
             }
         }
-        return changed;
+        return true;
     }, [onStateChangeProp, setState]);
 
     // Keep track of editing host element

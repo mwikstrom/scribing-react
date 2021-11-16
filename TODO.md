@@ -1,7 +1,6 @@
 SCRIBING TODO
 =============
 - Insert markup
-- Insert box shall place caret inside the box
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
 - Nested caret is moved when opening more tools menu

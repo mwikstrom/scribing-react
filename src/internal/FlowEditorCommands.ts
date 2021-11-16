@@ -5,6 +5,7 @@ import {
     CompleteUpload,
     DynamicText,
     FlowBox,
+    FlowBoxSelection,
     FlowColor,
     FlowContent,
     FlowEditorState, 
@@ -13,6 +14,7 @@ import {
     FlowNode, 
     FlowOperation, 
     FlowRange, 
+    FlowRangeSelection, 
     FlowSelection, 
     ImageSource, 
     Interaction, 
@@ -55,7 +57,7 @@ export class FlowEditorCommands {
         onStoreAsset: FlowEditorProps["onStoreAsset"],
     ): void {
         this.#state = state;
-        this.#apply = change => apply(change, state);
+        this.#apply = change => apply(change, this.#state);
         this.#onStoreAsset = onStoreAsset;
         if (this.#fresh) {
             this.#fresh.pub(new FlowEditorCommands(state, apply, onStoreAsset));
@@ -553,15 +555,21 @@ export class FlowEditorCommands {
     }
 
     insertBox(style?: BoxStyle, content?: FlowContent): void {
-        const { selection } = this.#state;
+        const { selection, theme } = this.#state;
+        
         if (!selection) {
             return;
         }
+        
         if (!style) {
             style = BoxStyle.empty.set("variant", "outlined");
         }
+
         if (!content) {
-            const paraBreak = new ParagraphBreak({ style: this.getParagraphStyle() });
+            let paraStyle = this.getParagraphStyle();
+            const ambient = theme.getParagraphTheme(paraStyle.variant ?? "normal").getAmbientParagraphStyle();
+            paraStyle = paraStyle.unmerge(ambient);
+            const paraBreak = new ParagraphBreak({ style: paraStyle });
             if (selection.isCollapsed) {
                 content = new FlowContent({ nodes: Object.freeze([paraBreak])});
             } else {
@@ -573,9 +581,42 @@ export class FlowEditorCommands {
                 if (content.size === 0 || !(content.peek(content.size - 1).node instanceof ParagraphBreak)) {
                     content = content.set("nodes", Object.freeze([...content.nodes, paraBreak]));
                 }
-            }
-        }
+            }            
+        }        
+        
         this.insertNode(new FlowBox({ content, style }));
+
+        let selectionInsideBox: FlowSelection | undefined | null;
+        selection.visitRanges((range, {wrap, target}) => {
+            if (range instanceof FlowRange && range.first > 0) {
+                const box = target?.peek(range.first).node;
+                if (box instanceof FlowBox) {
+                    const endOfBoxContent = (
+                        box.content.size > 0 &&
+                        box.content.nodes.slice(-1)[0] instanceof ParagraphBreak
+                    ) ? box.content.size - 1 : box.content.size;
+                    let cursor = box.content.peek(Math.max(0, box.content.size - 1));
+                    while (cursor.node instanceof ParagraphBreak) {
+                        const prev = cursor.moveToStartOfPreviousNode();
+                        if (prev) {
+                            cursor = prev;
+                        } else {
+                            break;
+                        }
+                    }
+                    selectionInsideBox = wrap(new FlowBoxSelection({
+                        position: range.first,
+                        content: new FlowRangeSelection({
+                            range: FlowRange.at(endOfBoxContent),
+                        }),
+                    }));
+                }
+            }
+        }, this.getTargetOptions());
+
+        if (selectionInsideBox) {
+            this.setSelection(selectionInsideBox);
+        }
     }
 
     async insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void> {

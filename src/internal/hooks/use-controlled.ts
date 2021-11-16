@@ -12,7 +12,7 @@ export interface UseControllableOptions<T> {
 /** @internal */
 export const useControllable = <T>(
     options: UseControllableOptions<T>
-): [T, (action: (prev: T) => T) => void] => {
+): [T, (value: T) => void] => {
     const {
         componentName,
         controlledPropName,
@@ -25,11 +25,9 @@ export const useControllable = <T>(
     const { current: isControlled } = useRef(shouldBeControlled);
     const [value, setValue] = useState(defaultValue);
     const { current: initialValue } = useRef(defaultValue);
-    const setValueIfUncontrolled = useCallback((action: (prev: T) => T) => {
-        if (isControlled) {
-            action(value);
-        } else {
-            setValue(action);
+    const setValueIfUncontrolled = useCallback((newValue: T) => {
+        if (!isControlled) {
+            setValue(newValue);
         }
     }, [setValue]);
 
