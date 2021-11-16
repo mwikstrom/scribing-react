@@ -1,6 +1,15 @@
 SCRIBING TODO
 =============
+- Cell range selection
 - Paragraph style is no longer reflected in toolbox
+- Insert table
+- Insert row
+- Delete row
+- Insert column
+- Delete column
+- Merge cells
+- Split merged cell
+- Resize column
 - Cannot step out of multi-output template box
 - Double click to select word is broken
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
