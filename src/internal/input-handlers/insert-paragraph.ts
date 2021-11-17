@@ -8,7 +8,15 @@ export const insertParagraph: InputHandler = commands => {
     if (commands.isAtEndOfTrailingParagraph()) {        
         commands.insertContent(new FlowContent({ nodes: Object.freeze([new ParagraphBreak(), new ParagraphBreak()]) }));
         commands.moveCaretBack();
-    } else {
-        commands.insertNode(new ParagraphBreak());
+        return;
     }
+
+    // Special handling when inserting paragraph break inside an empty list item.
+    // In this case we'll decrement the list level and potentially exit the list.
+    if (commands.isInEmptyListItem()) {
+        commands.decrementListLevel();
+        return;
+    }
+
+    commands.insertNode(new ParagraphBreak());
 };

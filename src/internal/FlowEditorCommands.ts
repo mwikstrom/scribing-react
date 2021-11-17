@@ -740,6 +740,28 @@ export class FlowEditorCommands {
         }, this.getTargetOptions());
     }
 
+    isInEmptyListItem(): boolean {
+        const { selection } = this.#state;
+        return selection !== null && null !== selection.transformRanges((range, options) => {
+            if (options && options.target && range.isCollapsed) {
+                const cursor = options.target.peek(range.first);
+                if (cursor.node instanceof ParagraphBreak) {
+                    const { listLevel } = cursor.node.style;
+                    if (
+                        typeof listLevel === "number" && listLevel > 0 &&
+                        (
+                            cursor.position === 0 ||
+                            cursor.moveToStartOfPreviousNode()?.node instanceof ParagraphBreak
+                        )
+                    ) {
+                        return range;
+                    }
+                }
+            }
+            return null;
+        }, this.getTargetOptions());
+    }
+
     moveCaretBack(): boolean {
         const { selection } = this.#state;
         if (!selection) {
