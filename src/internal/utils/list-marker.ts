@@ -1,4 +1,5 @@
-import jss, { JssStyle } from "jss";
+import { JssStyle, create as createJss } from "jss";
+import defaultJssPreset from "jss-preset-default";
 import { ListMarkerKind, OrderedListMarkerKindType, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
 import { FlowPalette } from "../FlowPalette";
 import { makeDynamicJssId } from "./make-jss-id";
@@ -62,7 +63,10 @@ export const getListMarkerClass = (
     let className = MARKER_CACHE.get(cacheKey);
 
     if (!className) {
-        className = jss.createStyleSheet({
+        if (!JSS) {
+            JSS = createJss().setup(defaultJssPreset());
+        }
+        className = JSS.createStyleSheet({
             li
         }, {
             generateId: makeDynamicJssId("Paragraph"),
@@ -72,6 +76,8 @@ export const getListMarkerClass = (
 
     return className;
 };
+
+let JSS: ReturnType<typeof createJss> | undefined;
 
 /** @internal */
 export const getListCounterName = (level: number):string => `li${level}`;

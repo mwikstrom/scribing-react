@@ -18,6 +18,7 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [autoFocus?](./scribing-react.floweditorprops.autofocus.md) | boolean | <i>(Optional)</i> |
+|  [className?](./scribing-react.floweditorprops.classname.md) | string | <i>(Optional)</i> |
 |  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | FlowEditorState | <i>(Optional)</i> |
 |  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (event: [StateChangeEvent](./scribing-react.statechangeevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onStoreAsset?](./scribing-react.floweditorprops.onstoreasset.md) | (event: [StoreAssetEvent](./scribing-react.storeassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |

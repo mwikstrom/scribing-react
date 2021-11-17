@@ -27,6 +27,8 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
     // (undocumented)
     autoFocus?: boolean;
     // (undocumented)
+    className?: string;
+    // (undocumented)
     defaultState?: FlowEditorState;
     // @internal
     nativeSelection?: boolean;
