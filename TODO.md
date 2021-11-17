@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Cannot edit newly inserted cells (except the bottom/right cell)
 - Cannot insert box inside table
 - Double click to select word is broken
 - Cannot step out of empty markup
