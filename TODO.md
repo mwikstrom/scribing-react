@@ -2,6 +2,7 @@ SCRIBING TODO
 =============
 - Ensure SHIFT+RIGHT at end of table cell doesnt select a cell that is out of column count
 - Toolbox is broken for table selection
+- Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
 - Highlight corresponding markup tag
@@ -13,6 +14,9 @@ SCRIBING TODO
 - Merge cells
 - Split merged cell
 - Resize column
+- Arrow handler for moving between table cells
+    Note: This must support spanning cells, and be able to discover when on last line.
+    Also note: The same logic shall be used for moving cell selection.
 - "Lookup table": Use script to select content from a table cell (to be shown instead of table)
 - Insert external content
 - Insert symbol
