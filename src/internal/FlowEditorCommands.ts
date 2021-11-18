@@ -3,6 +3,7 @@ import {
     BoxStyle,
     BoxStyleProps,
     CellPosition,
+    CellRange,
     CompleteUpload,
     DynamicText,
     EndMarkup,
@@ -41,6 +42,7 @@ import {
 } from "scribing";
 import { FlowEditorProps } from "../FlowEditor";
 import { StoreAssetEvent } from "../StoreAssetEvent";
+import { getEndOfFlow } from "./utils/get-end-of-flow";
 import { PubSub } from "./utils/PubSub";
 
 /** @internal */
@@ -81,6 +83,29 @@ export class FlowEditorCommands {
             this.#fresh = new PubSub<FlowEditorCommands>(this);
         }
         return this.#fresh.sub(callback);
+    }
+
+    isTableSelection(): boolean {
+        const { selection } = this.#state;
+        let result: boolean | undefined;
+        selection?.visitRanges(range => result = result !== false && range instanceof CellRange);
+        return !!result;
+    }
+
+    isAtStartOfTableCell(): boolean {
+        const { selection } = this.#state;
+        let result: boolean | undefined;
+        selection?.visitRanges(range => result = result !== false && range instanceof FlowRange && range.focus === 0);
+        return !!result;
+    }
+
+    isAtEndOfTableCell(): boolean {
+        const { selection } = this.#state;
+        let result: boolean | undefined;
+        selection?.visitRanges((range, { target }) => (
+            result = result !== false && target && range instanceof FlowRange && range.focus >= getEndOfFlow(target)
+        ), this.getTargetOptions());
+        return !!result;
     }
 
     getSelection(): FlowSelection | null {
@@ -600,10 +625,7 @@ export class FlowEditorCommands {
             if (range instanceof FlowRange) {
                 const box = target?.peek(range.first).node;
                 if (box instanceof FlowBox) {
-                    const endOfBoxContent = (
-                        box.content.size > 0 &&
-                        box.content.nodes.slice(-1)[0] instanceof ParagraphBreak
-                    ) ? box.content.size - 1 : box.content.size;
+                    const endOfBoxContent = getEndOfFlow(box.content);
                     let cursor = box.content.peek(Math.max(0, box.content.size - 1));
                     while (cursor.node instanceof ParagraphBreak) {
                         const prev = cursor.moveToStartOfPreviousNode();

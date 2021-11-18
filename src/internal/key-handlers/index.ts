@@ -1,5 +1,6 @@
 import { BackspaceHandler } from "./BackspaceHandler";
 import { BaselineHandler } from "./BaselineHandler";
+import { TableSelectionHandler } from "./TableSelectionHandler";
 import { KeyHandler } from "./KeyHandler";
 import { RedoHandler } from "./RedoHandler";
 import { SetListMarkerHandler } from "./SetListMarkerHandler";
@@ -15,6 +16,7 @@ const ALL_HANDLERS = [
     SetListMarkerHandler,
     SetParagraphVariantHandler,
     TabHandler,
+    TableSelectionHandler,
     ToggleFormattingMarksHandler,
     UndoHandler,
 ];

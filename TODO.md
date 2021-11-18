@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
-- Enter/modify cell range selection mode using shift+arrow key
+- Ensure SHIFT+RIGHT at end of table cell doesnt select a cell that is out of column count
+- Toolbox is broken for table selection
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
 - Highlight corresponding markup tag
