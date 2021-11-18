@@ -41,11 +41,16 @@ export const TableSelectionHandler: KeyHandler = (e, commands) => {
         });
     } else if (e.key === "ArrowRight" && e.shiftKey && commands.isAtEndOfTableCell()) {
         e.preventDefault();
-        commands.getSelection()?.visitRanges((_, {outer, replace}) => {
+        commands.getSelection()?.visitRanges((_, {outer, replace, parent, position}) => {
             if (outer instanceof FlowTableCellSelection) {
                 const anchor = outer.cell;
-                const focus = anchor.set("column", anchor.column + 1);
-                // TODO: MAKE SURE FOCUS ISNT PLACED OUTSIDE OF TABLE (CHECK COLUMN COUNT)
+                let focus = anchor;
+                if (typeof position === "number") {
+                    const node = parent?.target?.peek(position).node;
+                    if (node instanceof FlowTable && anchor.column < node.content.columnCount - 1) {
+                        focus = anchor.set("column", anchor.column + 1);
+                    }
+                }
                 const range = CellRange.at(anchor, focus);
                 commands.setSelection(replace(new FlowTableSelection({
                     position: outer.position,
