@@ -4,7 +4,6 @@ SCRIBING TODO
 - Image is flickering when inserted into a table cell and the cell is edited
 - Double click to select word is broken
 - Cannot step out of empty markup
-- Nested caret is moved when opening more tools menu
 - Enter/modify cell range selection mode
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
