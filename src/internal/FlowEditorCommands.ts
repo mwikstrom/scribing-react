@@ -597,7 +597,7 @@ export class FlowEditorCommands {
 
         let selectionInsideBox: FlowSelection | undefined | null;
         selection.visitRanges((range, {wrap, target}) => {
-            if (range instanceof FlowRange && range.first > 0) {
+            if (range instanceof FlowRange) {
                 const box = target?.peek(range.first).node;
                 if (box instanceof FlowBox) {
                     const endOfBoxContent = (

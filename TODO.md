@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Insert box in empty cell causes caret to be placed after box instead of inside it
 - Image is flickering when inserted into a table cell and the cell is edited
 - Next para variant is not working anymore
 - Double click to select word is broken
