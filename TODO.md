@@ -1,10 +1,8 @@
 SCRIBING TODO
 =============
-- Image is flickering when inserted into a table cell and the cell is edited
-- Next para variant is not working anymore
-- Double click to select word is broken
+- Enter/modify cell range selection mode using shift+arrow key
+- Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
-- Enter/modify cell range selection mode
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
 - Insert row
@@ -14,6 +12,13 @@ SCRIBING TODO
 - Merge cells
 - Split merged cell
 - Resize column
+- "Lookup table": Use script to select content from a table cell (to be shown instead of table)
+- Insert external content
+- Insert symbol
+- Insert external component
+- Image is flickering when inserted into a table cell and the cell is edited
+- Next para variant is not working anymore
+- Double click to select word is broken
 - Cannot step out of multi-output template box
 - Virtual element for image is not covering entire image. Toolbox is malplaced.
 - Chrevron markup tags instead of rounded
