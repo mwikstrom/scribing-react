@@ -348,7 +348,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         if (
             domSelection && 
             state.selection && 
-            !(state.selection instanceof FlowTableSelection) &&
             editingHost && 
             isSelectionInside(editingHost, domSelection, true) && 
             documentHasFocus

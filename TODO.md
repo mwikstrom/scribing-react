@@ -1,12 +1,11 @@
 SCRIBING TODO
 =============
-- Toolbox is broken for table selection
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
-- When extending selection to become a cell range and moving to the last column, exiting by ESC, then caret is frozen (not focused?)
+- When escaping cell selection mode (by ESC key) then focus is not applied
 - Emoji is duplicated when inserted?!
 - Insert row
 - Delete row
