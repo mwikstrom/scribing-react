@@ -7,6 +7,7 @@ SCRIBING TODO
 - Cannot step out of empty markup
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
+- When extending selection to become a cell range and moving to the last column, exiting by ESC, then caret is frozen (not focused?)
 - Emoji is duplicated when inserted?!
 - Insert row
 - Delete row
