@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Cannot insert box inside table
 - Double click to select word is broken
 - Cannot step out of empty markup
 - Nested caret is moved when opening more tools menu
