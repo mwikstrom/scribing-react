@@ -1,7 +1,7 @@
 SCRIBING TODO
 =============
-- Selection is not properly synced to tools
 - Insert box in empty cell causes caret to be placed after box instead of inside it
+- Image is flickering when inserted into a table cell and the cell is edited
 - Double click to select word is broken
 - Cannot step out of empty markup
 - Nested caret is moved when opening more tools menu

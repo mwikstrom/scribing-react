@@ -51,94 +51,58 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     const toggleFormattingMarks = useCallback(() => {
         commands.toggleFormattingMarks();
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const toggleSpellcheck = useCallback(() => {
         commands.toggleSpellcheck();
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const toggleInlineBox = useCallback(() => {
         const { inline = true } = commands.getBoxStyle();
         commands.formatBox("inline", !inline);
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const setReadingDirection = useCallback((value: Exclude<ParagraphStyleProps["direction"], undefined>) => {
         commands.setReadingDirection(value);
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const insertBox = useCallback(() => {
         commands.insertBox();
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const beginInsertDynamicText = useCallback(() => {
         setMenuOpen("insert_dynamic_text");
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [setMenuOpen, editingHost]);
 
     const insertDynamicText = useCallback((expression: string) => {
         commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const beginInsertMarkup = useCallback(() => {
         setMenuOpen("insert_markup");
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [setMenuOpen, editingHost]);
     
     const insertMarkup = useCallback((tag: string) => {
         commands.insertMarkup(tag);
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const beginInsertTable = useCallback(() => {
         setMenuOpen("insert_table");
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [setMenuOpen, editingHost]);
     
     const insertTable = useCallback((cols: number, rows: number) => {
         commands.insertTable(cols, rows);
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const beginIcon = useCallback(() => {
         setMenuOpen("icon");
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [setMenuOpen, editingHost]);
 
     const applyIcon = useCallback((data: string) => {
@@ -148,16 +112,10 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             commands.insertNode(new FlowIcon({ data, style: TextStyle.empty }));
         }
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [commands, closeMenu, editingHost]);
 
     const setOrInsertImage = useCallback(async () => {
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
         const blob = await fileOpen({mimeTypes: ["image/*"]});
         const uploadId = commands.uploadAsset(blob);
         const source = await createImageSource(blob, uploadId);

@@ -38,9 +38,6 @@ export function Selector<T extends string>(props: SelectorProps<T>): ReactElemen
             onChange(option);
         }
         closeMenu();
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [closeMenu, editingHost]);
     return (
         <>

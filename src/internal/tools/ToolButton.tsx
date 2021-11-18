@@ -18,7 +18,6 @@ export const ToolButton: FC<ToolButtonProps> = ({
     disabled,
     onClick,
     setRef: setOuterRef,
-    editingHost,
     children,
 }) => {
     const classes = useStyles();
@@ -35,10 +34,6 @@ export const ToolButton: FC<ToolButtonProps> = ({
     const handleClick = useCallback(() => {
         if (onClick) {
             onClick();
-        }
-
-        if (editingHost) {
-            editingHost.focus();
         }
     }, [onClick]);
 

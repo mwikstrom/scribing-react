@@ -28,9 +28,6 @@ export const ColorButton: FC<ToolbarProps> = ({commands, boundary, editingHost})
     const applyColor = useCallback((option: FlowColor) => {
         closeMenu();
         commands.setColor(option);
-        if (editingHost) {
-            editingHost.focus();
-        }
     }, [closeMenu, commands, editingHost]);
     const color = commands.getColor();
     let icon: ReactElement<IconProps> = <Icon size={1} path={mdiFormatColorFill}/>;
