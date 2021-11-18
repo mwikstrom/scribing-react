@@ -7,6 +7,7 @@ SCRIBING TODO
 - Cannot step out of empty markup
 - Highlight corresponding markup tag
 - Indicate when markup tag is unbalanced
+- Emoji is duplicated when inserted?!
 - Insert row
 - Delete row
 - Insert column
