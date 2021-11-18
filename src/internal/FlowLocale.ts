@@ -32,6 +32,14 @@ Record<IconPackLocaleKey, string> {
     insert_markup: string;
     enter_tag_name: string;
     insert_table: string;
+    insert_row_above: string,
+    insert_row_below: string,
+    insert_column_before: string,
+    insert_column_after: string,
+    merge_cells: string,
+    split_cell: string,
+    delete_row: string,
+    delete_column: string,
 }
 
 /** @public */
@@ -100,6 +108,14 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     insert_markup: "Insert markup",
     enter_tag_name: "Enter tag name",
     insert_table: "Insert table",
+    insert_row_above: "Insert row above",
+    insert_row_below: "Insert row below",
+    insert_column_before: "Insert column before",
+    insert_column_after: "Insert column after",
+    merge_cells: "Merge cells",
+    split_cell: "Split cell",
+    delete_row: "Delete row",
+    delete_column: "Delete column",
 });
 
 /** @public */

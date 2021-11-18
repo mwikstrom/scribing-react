@@ -15,6 +15,14 @@ import {
     mdiImage,
     mdiCodeTags,
     mdiTable,
+    mdiTableMergeCells,
+    mdiTableRowRemove,
+    mdiTableRowPlusBefore,
+    mdiTableRowPlusAfter,
+    mdiTableSplitCell,
+    mdiTableColumnRemove,
+    mdiTableColumnPlusBefore,
+    mdiTableColumnPlusAfter,
 } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
@@ -127,6 +135,38 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
         }
     }, [commands, closeMenu, editingHost]);
 
+    const insertRowAbove = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const insertRowBelow = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const insertColumnBefore = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const insertColumnAfter = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const mergeCells = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const splitCell = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const removeRow = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
+    const removeColumn = useCallback(() => {
+        closeMenu();
+    }, [commands, closeMenu]);
+
     return (
         <>
             <ToolButton setRef={setButtonRef} onClick={toggleMenu} editingHost={editingHost}>
@@ -134,52 +174,116 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end" boundary={boundary}>
-                    <ToolMenuItem disabled={commands.isMultiRange()} onClick={insertBox}>
-                        <Icon path={mdiTextBoxOutline} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {locale.insert_box}
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertDynamicText}>
-                        <Icon path={mdiFunctionVariant} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {locale.insert_dynamic_text}&hellip;
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuItem disabled={!commands.isCaret() && !commands.isIcon()} onClick={beginIcon}>
-                        <Icon path={mdiCreation} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {commands.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuItem disabled={!commands.isCaret() && !commands.isImage()} onClick={setOrInsertImage}>
-                        <Icon path={mdiImage} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertTable}>
-                        <Icon path={mdiTable} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {locale.insert_table}&hellip;
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuItem onClick={beginInsertMarkup}>
-                        <Icon path={mdiCodeTags} size={0.75}/>
-                        <span style={{margin: "0 0.5rem"}}>
-                            {locale.insert_markup}&hellip;
-                        </span>
-                    </ToolMenuItem>
-                    <ToolMenuDivider/>
-                    <ToolMenuItem disabled={!commands.isBox()} onClick={toggleInlineBox}>
-                        <Icon
-                            path={(commands.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
-                            size={0.75}
-                        />
-                        <span style={{margin: "0 0.5rem"}}>
-                            {locale.full_width_box}
-                        </span>
-                    </ToolMenuItem>
+                    {commands.isTableSelection() ? (
+                        <>
+                            <ToolMenuItem onClick={insertRowAbove}>
+                                <Icon path={mdiTableRowPlusBefore} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_row_above}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={insertRowBelow}>
+                                <Icon path={mdiTableRowPlusAfter} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_row_below}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={insertColumnBefore}>
+                                <Icon path={mdiTableColumnPlusBefore} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_column_before}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={insertColumnAfter}>
+                                <Icon path={mdiTableColumnPlusAfter} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_column_after}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuDivider/>
+                            <ToolMenuItem onClick={mergeCells}>
+                                <Icon path={mdiTableMergeCells} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.merge_cells}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={splitCell}>
+                                <Icon path={mdiTableSplitCell} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.split_cell}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuDivider/>
+                            <ToolMenuItem onClick={removeRow}>
+                                <Icon path={mdiTableRowRemove} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.delete_row}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={removeColumn}>
+                                <Icon path={mdiTableColumnRemove} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.delete_column}
+                                </span>
+                            </ToolMenuItem>
+                        </>
+                    ) : (
+                        <>
+                            <ToolMenuItem disabled={commands.isMultiRange()} onClick={insertBox}>
+                                <Icon path={mdiTextBoxOutline} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_box}
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertDynamicText}>
+                                <Icon path={mdiFunctionVariant} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_dynamic_text}&hellip;
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem disabled={!commands.isCaret() && !commands.isIcon()} onClick={beginIcon}>
+                                <Icon path={mdiCreation} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {commands.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem
+                                disabled={!commands.isCaret() && !commands.isImage()}
+                                onClick={setOrInsertImage}
+                            >
+                                <Icon path={mdiImage} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertTable}>
+                                <Icon path={mdiTable} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_table}&hellip;
+                                </span>
+                            </ToolMenuItem>
+                            <ToolMenuItem onClick={beginInsertMarkup}>
+                                <Icon path={mdiCodeTags} size={0.75}/>
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.insert_markup}&hellip;
+                                </span>
+                            </ToolMenuItem>
+                        </>
+                    )}
+                    {commands.isBox() && (
+                        <>
+                            <ToolMenuDivider/>
+                            <ToolMenuItem disabled={!commands.isBox()} onClick={toggleInlineBox}>
+                                <Icon
+                                    path={(commands.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
+                                    size={0.75}
+                                />
+                                <span style={{margin: "0 0.5rem"}}>
+                                    {locale.full_width_box}
+                                </span>
+                            </ToolMenuItem>
+                        </>
+                    )}
                     <ToolMenuDivider/>
                     <ToolMenuItem onClick={setReadingDirection.bind(void(0), "ltr")}>
                         <Icon
