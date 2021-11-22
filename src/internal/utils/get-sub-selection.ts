@@ -39,18 +39,22 @@ export function getFlowBoxContentSelection(
 /** @internal */
 export function getFlowTableCellSelection(
     outer: boolean | FlowSelection,
-    cell: CellPosition,
+    spanned: readonly CellPosition[],
     position = 0,
 ): boolean | FlowSelection {
-    if (outer instanceof FlowTableCellSelection && outer.position === position && outer.cell.equals(cell)) {
+    if (
+        outer instanceof FlowTableCellSelection && 
+        outer.position === position && 
+        spanned.some(cell => outer.cell.equals(cell))
+    ) {
         return outer.content;
     } else if (outer instanceof FlowTableSelection && outer.position === position) {
-        return outer.range.contains(cell);
+        return spanned.some(cell => outer.range.contains(cell));
     } else if (outer instanceof FlowRangeSelection) {
         return outer.range.contains(position);
     } else {
         return outer === true;
-    }
+    }    
 }
 
 /** @internal */

@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Cell shall be displayed as selected when one of its spanned cells are included in selection
 - CTRL+A does not work inside cell content
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse

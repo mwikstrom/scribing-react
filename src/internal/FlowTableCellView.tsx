@@ -26,8 +26,8 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
     }, [position]);
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const innerSelection = useMemo(
-        () => getFlowTableCellSelection(outerSelection, position),
-        [outerSelection, position]
+        () => getFlowTableCellSelection(outerSelection, cell.getSpannedPositions(position, true)),
+        [outerSelection, position, cell]
     );
     const editMode = useEditMode();
     const classes = useStyles();
