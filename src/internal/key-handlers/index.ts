@@ -8,11 +8,13 @@ import { SetParagraphVariantHandler } from "./SetParagraphVariantHandler";
 import { TabHandler } from "./TabHandler";
 import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
+import { SelectAllHandler } from "./SelectAllHandler";
 
 const ALL_HANDLERS = [
     BackspaceHandler,
     BaselineHandler,
     RedoHandler,
+    SelectAllHandler,
     SetListMarkerHandler,
     SetParagraphVariantHandler,
     TabHandler,

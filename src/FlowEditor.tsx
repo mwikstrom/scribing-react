@@ -28,7 +28,7 @@ import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
 import { fixCaretPosition } from "./internal/utils/fix-caret-position";
-import { setCaretPosition } from "./internal/utils/set-caret-position";
+import { setCaretPosition, setFocusPosition } from "./internal/utils/set-caret-position";
 import { createUseStyles } from "react-jss";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowCaretScope } from "./internal/FlowCaretScope";
@@ -37,6 +37,8 @@ import { useDropTarget } from "./internal/hooks/use-drop-target";
 import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
+import { mapDomPositionToFlow } from "./internal/mapping/dom-position-to-flow";
+import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
 
 /**
  * Component props for {@link FlowEditor}
@@ -360,29 +362,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [editingHost, state, commands, documentHasFocus]);
 
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
-    // when caret is moved by the cursor
+    // when caret is moved by mouse
     useNativeEventHandler(editingHost, "mousedown", (e: MouseEvent) => {
         const domPos = getDomPositionFromPoint(e);
         if (!domPos) {
             return;
         }
 
-        if (e.shiftKey) {
-            // Selection is extended - this is not a caret move operation
-            return;
-        }
-
         // Exit table selection mode if needed
-        if (state.selection instanceof FlowTableSelection) {
+        if (!e.shiftKey && state.selection instanceof FlowTableSelection) {
             applyChange(state.set("selection", null), state);
         }
 
         const fixed = fixCaretPosition(domPos);
         if (fixed) {
-            setCaretPosition(fixed, true);
+            if (e.shiftKey) {
+                setFocusPosition(fixed, true);
+            } else {
+                setCaretPosition(fixed, true);
+            }
             e.preventDefault();
         }
-    }, [state, applyChange], { capture: true });
+    }, [state, applyChange, editingHost], { capture: true });
 
     // Handle drop
     const { active: isActiveDropTarget } = useDropTarget(editingHost, commands);

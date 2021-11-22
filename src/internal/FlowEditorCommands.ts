@@ -116,6 +116,11 @@ export class FlowEditorCommands {
         this.#state = this.#apply(this.#state.set("selection", selection));
     }
 
+    selectAll(): void {
+        const endOfFlow = getEndOfFlow(this.#state.content);
+        this.setSelection(new FlowRangeSelection({range: FlowRange.at(0, endOfFlow)}));
+    }
+
     undo(): void {
         this.#state = this.#apply(this.#state.undo());
     }

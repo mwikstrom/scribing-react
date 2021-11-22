@@ -17,3 +17,20 @@ export function setCaretPosition(domPos: DomPosition, focus?: boolean): boolean 
 
     return true;
 }
+
+/** @internal */
+export function setFocusPosition(domPos: DomPosition, focus?: boolean): boolean {
+    const { node, offset } = domPos;
+    const domSelection = document.getSelection();
+    if (!domSelection) {
+        return false;
+    }
+
+    domSelection.extend(node, offset);
+
+    if (focus) {
+        getEditingHost(node)?.focus();
+    }
+
+    return true;
+}
