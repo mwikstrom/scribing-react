@@ -1,5 +1,6 @@
 SCRIBING TODO
 =============
+- Cell shall be displayed as selected when one of its spanned cells are included in selection
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
