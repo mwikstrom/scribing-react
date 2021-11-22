@@ -982,6 +982,20 @@ export class FlowEditorCommands {
     toggleSpellcheck(): void {
         this.formatText("spellcheck", !this.isSpellcheckEnabled());
     }
+
+    mergeTableCells(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.mergeTableCell(content));
+        }
+    }
+
+    splitTableCell(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.splitTableCell(content));
+        }
+    }
 }
 
 export type BooleanTextStyleKeys = {

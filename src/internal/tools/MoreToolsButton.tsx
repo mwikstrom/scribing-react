@@ -152,10 +152,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     }, [commands, closeMenu]);
 
     const mergeCells = useCallback(() => {
+        commands.mergeTableCells();
         closeMenu();
     }, [commands, closeMenu]);
 
     const splitCell = useCallback(() => {
+        commands.splitTableCell();
         closeMenu();
     }, [commands, closeMenu]);
 
