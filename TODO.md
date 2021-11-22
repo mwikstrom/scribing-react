@@ -1,6 +1,7 @@
 SCRIBING TODO
 =============
 - Cell shall be displayed as selected when one of its spanned cells are included in selection
+- CTRL+A does not work inside cell content
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
@@ -22,7 +23,6 @@ SCRIBING TODO
 - Insert external content
 - Insert symbol
 - Insert external component
-- Image is flickering when inserted into a table cell and the cell is edited
 - Next para variant is not working anymore
 - Double click to select word is broken
 - Cannot step out of multi-output template box
