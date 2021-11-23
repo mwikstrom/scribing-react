@@ -1001,6 +1001,48 @@ export class FlowEditorCommands {
             this.#state = this.#apply(selection.splitTableCell(content));
         }
     }
+
+    insertTableRowBefore(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.insertTableRowBefore(content));
+        }
+    }
+
+    insertTableRowAfter(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.insertTableRowAfter(content));
+        }
+    }
+
+    insertTableColumnBefore(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.insertTableColumnBefore(content));
+        }
+    }
+
+    insertTableColumnAfter(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.insertTableColumnAfter(content));
+        }
+    }
+
+    removeTableRow(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.removeTableRow(content));
+        }
+    }    
+
+    removeTableColumn(): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.removeTableColumn(content));
+        }
+    }    
 }
 
 export type BooleanTextStyleKeys = {

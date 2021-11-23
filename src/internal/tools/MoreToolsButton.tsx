@@ -136,18 +136,22 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     }, [commands, closeMenu, editingHost]);
 
     const insertRowAbove = useCallback(() => {
+        commands.insertTableRowBefore();
         closeMenu();
     }, [commands, closeMenu]);
 
     const insertRowBelow = useCallback(() => {
+        commands.insertTableRowAfter();
         closeMenu();
     }, [commands, closeMenu]);
 
     const insertColumnBefore = useCallback(() => {
+        commands.insertTableColumnBefore();
         closeMenu();
     }, [commands, closeMenu]);
 
     const insertColumnAfter = useCallback(() => {
+        commands.insertTableColumnAfter();
         closeMenu();
     }, [commands, closeMenu]);
 
@@ -162,10 +166,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     }, [commands, closeMenu]);
 
     const removeRow = useCallback(() => {
+        commands.removeTableRow();
         closeMenu();
     }, [commands, closeMenu]);
 
     const removeColumn = useCallback(() => {
+        commands.removeTableColumn();
         closeMenu();
     }, [commands, closeMenu]);
 
