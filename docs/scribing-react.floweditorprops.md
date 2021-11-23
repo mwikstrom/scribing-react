@@ -19,9 +19,9 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
 |  --- | --- | --- |
 |  [autoFocus?](./scribing-react.floweditorprops.autofocus.md) | boolean | <i>(Optional)</i> |
 |  [className?](./scribing-react.floweditorprops.classname.md) | string | <i>(Optional)</i> |
-|  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | FlowEditorState | <i>(Optional)</i> |
+|  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | [FlowEditorState](./scribing-react.floweditorstate.md) | <i>(Optional)</i> |
 |  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (event: [StateChangeEvent](./scribing-react.statechangeevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onStoreAsset?](./scribing-react.floweditorprops.onstoreasset.md) | (event: [StoreAssetEvent](./scribing-react.storeassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
-|  [state?](./scribing-react.floweditorprops.state.md) | FlowEditorState | <i>(Optional)</i> |
+|  [state?](./scribing-react.floweditorprops.state.md) | [FlowEditorState](./scribing-react.floweditorstate.md) | <i>(Optional)</i> |
 |  [style?](./scribing-react.floweditorprops.style.md) | CSSProperties | <i>(Optional)</i> |
 

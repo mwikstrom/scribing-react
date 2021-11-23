@@ -21,7 +21,7 @@ export declare class StateChangeEvent
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [after](./scribing-react.statechangeevent.after.md) |  | FlowEditorState |  |
-|  [before](./scribing-react.statechangeevent.before.md) |  | FlowEditorState |  |
+|  [after](./scribing-react.statechangeevent.after.md) |  | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
+|  [before](./scribing-react.statechangeevent.before.md) |  | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  [change](./scribing-react.statechangeevent.change.md) |  | FlowOperation \| null |  |
 

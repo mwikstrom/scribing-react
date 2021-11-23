@@ -7,9 +7,21 @@
 import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { FlowContent } from 'scribing';
-import { FlowEditorState } from 'scribing';
 import { FlowOperation } from 'scribing';
 import { FlowSelection } from 'scribing';
+import { FlowTheme } from 'scribing';
+import { ParagraphStyle } from 'scribing';
+import { ParagraphStyleProps } from 'scribing';
+import { RecordConstructor } from 'paratype';
+import { TextStyle } from 'scribing';
+import { TextStyleProps } from 'scribing';
+import { Type } from 'paratype';
+
+// @public
+export interface ApplyMineOptions {
+    // (undocumented)
+    mergeUndo?: boolean;
+}
 
 // @public (undocumented)
 export abstract class DeferrableEvent {
@@ -40,6 +52,51 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
     state?: FlowEditorState;
     // (undocumented)
     style?: CSSProperties;
+}
+
+// @public @sealed
+export class FlowEditorState extends FlowEditorStateBase {
+    applyMine(operation: FlowOperation, options?: ApplyMineOptions): FlowEditorState;
+    applyTheirs(operation: FlowOperation): FlowEditorState;
+    static readonly classType: Type<FlowEditorState>;
+    static get empty(): FlowEditorState;
+    static fromData(data: FlowEditorStateData): FlowEditorState;
+    getUniformParagraphStyle(diff?: Set<keyof ParagraphStyleProps>): ParagraphStyle;
+    getUniformTextStyle(diff?: Set<keyof TextStyleProps>): TextStyle;
+    redo(): FlowEditorState;
+    toggleFormattingMarks(): FlowEditorState;
+    undo(): FlowEditorState;
+}
+
+// @public
+export const FlowEditorStateBase: RecordConstructor<FlowEditorStateProps, Object, FlowEditorStateData>;
+
+// @public
+export interface FlowEditorStateData extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStack">> {
+    // (undocumented)
+    redo?: readonly FlowOperation[];
+    // (undocumented)
+    selection?: FlowSelection;
+    // (undocumented)
+    undo?: readonly FlowOperation[];
+}
+
+// @public
+export interface FlowEditorStateProps {
+    // (undocumented)
+    caret: TextStyle;
+    // (undocumented)
+    content: FlowContent;
+    // (undocumented)
+    formattingMarks: boolean;
+    // (undocumented)
+    redoStack: readonly FlowOperation[];
+    // (undocumented)
+    selection: FlowSelection | null;
+    // (undocumented)
+    theme: FlowTheme;
+    // (undocumented)
+    undoStack: readonly FlowOperation[];
 }
 
 // @public

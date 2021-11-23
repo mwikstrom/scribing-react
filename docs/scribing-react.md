@@ -11,6 +11,7 @@ React components for collaborative rich text editing
 |  Class | Description |
 |  --- | --- |
 |  [DeferrableEvent](./scribing-react.deferrableevent.md) |  |
+|  [FlowEditorState](./scribing-react.floweditorstate.md) | Immutable state record for a flow content editor |
 |  [LoadAssetEvent](./scribing-react.loadassetevent.md) |  |
 |  [ResolveLinkEvent](./scribing-react.resolvelinkevent.md) |  |
 |  [StateChangeEvent](./scribing-react.statechangeevent.md) |  |
@@ -20,7 +21,10 @@ React components for collaborative rich text editing
 
 |  Interface | Description |
 |  --- | --- |
+|  [ApplyMineOptions](./scribing-react.applymineoptions.md) | Options for the [FlowEditorState.applyMine()](./scribing-react.floweditorstate.applymine.md) method |
 |  [FlowEditorProps](./scribing-react.floweditorprops.md) | Component props for [FlowEditor](./scribing-react.floweditor.md) |
+|  [FlowEditorStateData](./scribing-react.floweditorstatedata.md) | Data for [FlowEditorState](./scribing-react.floweditorstate.md) |
+|  [FlowEditorStateProps](./scribing-react.floweditorstateprops.md) | Properties for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
 
 ## Variables
@@ -28,5 +32,6 @@ React components for collaborative rich text editing
 |  Variable | Description |
 |  --- | --- |
 |  [FlowEditor](./scribing-react.floweditor.md) | Flow editor component |
+|  [FlowEditorStateBase](./scribing-react.floweditorstatebase.md) | The base record class for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
 

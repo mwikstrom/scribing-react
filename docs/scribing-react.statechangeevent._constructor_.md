@@ -16,7 +16,7 @@ constructor(before: FlowEditorState, change: FlowOperation | null, after: FlowEd
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  before | FlowEditorState |  |
+|  before | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  change | FlowOperation \| null |  |
-|  after | FlowEditorState |  |
+|  after | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 
