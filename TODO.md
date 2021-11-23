@@ -1,6 +1,6 @@
 SCRIBING TODO
 =============
-- SHIFT+ARROW shall start table cell selection at current cell only
+- ARROW+SHIFT when inside (and at edge of) box shall select entire box (just like table cells)
 - ARROW keys shall consider cell spanning when moving selection
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse

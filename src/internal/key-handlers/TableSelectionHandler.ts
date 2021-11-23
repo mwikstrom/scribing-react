@@ -26,38 +26,24 @@ export const TableSelectionHandler: KeyHandler = (e, commands) => {
                 }
             }
         }, commands.getTargetOptions());
-    } else if (e.key === "ArrowLeft" && e.shiftKey && commands.isAtStartOfTableCell()) {
+    } else if (
+        e.shiftKey &&
+        (
+            (e.key === "ArrowLeft" && commands.isAtStartOfTableCell()) ||
+            (e.key === "ArrowRight" && commands.isAtEndOfTableCell())
+        )
+    ) {
         e.preventDefault();
         commands.getSelection()?.visitRanges((_, {outer, replace}) => {
             if (outer instanceof FlowTableCellSelection) {
                 const anchor = outer.cell;
-                const focus = anchor.column > 0 ? anchor.set("column", anchor.column - 1) : anchor;
-                const range = CellRange.at(anchor, focus);
+                const range = CellRange.at(anchor);
                 commands.setSelection(replace(new FlowTableSelection({
                     position: outer.position,
                     range,
                 })));
             }
         });
-    } else if (e.key === "ArrowRight" && e.shiftKey && commands.isAtEndOfTableCell()) {
-        e.preventDefault();
-        commands.getSelection()?.visitRanges((_, {outer, replace, parent, position}) => {
-            if (outer instanceof FlowTableCellSelection) {
-                const anchor = outer.cell;
-                let focus = anchor;
-                if (typeof position === "number") {
-                    const node = parent?.target?.peek(position).node;
-                    if (node instanceof FlowTable && anchor.column < node.content.columnCount - 1) {
-                        focus = anchor.set("column", anchor.column + 1);
-                    }
-                }
-                const range = CellRange.at(anchor, focus);
-                commands.setSelection(replace(new FlowTableSelection({
-                    position: outer.position,
-                    range,
-                })));
-            }
-        }, commands.getTargetOptions());
     }
 };
 
