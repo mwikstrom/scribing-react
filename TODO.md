@@ -1,5 +1,8 @@
 SCRIBING TODO
 =============
+- Merge content when merging cells
+- Disable merge cells command unless it can be done
+- Disable split cell command unless it can be done
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
@@ -7,12 +10,6 @@ SCRIBING TODO
 - Indicate when markup tag is unbalanced
 - When escaping cell selection mode (by ESC key) then focus is not applied
 - Emoji is duplicated when inserted?!
-- Insert row
-- Delete row
-- Insert column
-- Delete column
-- Merge cells
-- Split merged cell
 - Resize column
 - Arrow handler for moving between table cells
     Note: This must support spanning cells, and be able to discover when on last line.
