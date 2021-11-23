@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Merge content when merging cells
 - Disable merge cells command unless it can be done
 - Disable split cell command unless it can be done
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
