@@ -4,7 +4,7 @@
  */
 
 // State
-// export * from "./FlowEditorState";
+export * from "./FlowEditorState";
 
 // Events
 export * from "./StateChangeEvent";

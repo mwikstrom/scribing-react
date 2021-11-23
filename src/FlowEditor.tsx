@@ -1,7 +1,6 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
     FlowContent,
-    FlowEditorState, 
     FlowOperation, 
     FlowSelection, 
     FlowTableSelection, 
@@ -37,8 +36,7 @@ import { useDropTarget } from "./internal/hooks/use-drop-target";
 import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
-import { mapDomPositionToFlow } from "./internal/mapping/dom-position-to-flow";
-import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
+import { FlowEditorState } from "./FlowEditorState";
 
 /**
  * Component props for {@link FlowEditor}
