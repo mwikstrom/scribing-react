@@ -1,4 +1,5 @@
-import { FlowEditorState, FlowOperation } from "scribing";
+import { FlowOperation } from "scribing";
+import { FlowEditorState } from "./FlowEditorState";
 
 /**
  * @public

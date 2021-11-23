@@ -1,7 +1,6 @@
 import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { FlowEditor } from "../src/FlowEditor";
-import { FlowEditorProps } from "../src";
+import { FlowEditor, FlowEditorProps } from "../src/FlowEditor";
 import {
     BoxVariant,
     BOX_VARIANTS,
@@ -9,12 +8,12 @@ import {
     CellRange,
     FlowColor,
     FlowContent,
-    FlowEditorState,
     FlowSelection,
     FlowTableSelection,
     FLOW_COLORS
 } from "scribing";
 import { JsonObject, JsonValue } from "paratype";
+import { FlowEditorState } from "../src/FlowEditorState";
 
 export default {
     title: "FlowEditor",

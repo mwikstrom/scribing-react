@@ -3,6 +3,9 @@
  * @packageDocumentation
  */
 
+// State
+// export * from "./FlowEditorState";
+
 // Events
 export * from "./StateChangeEvent";
 export * from "./DeferrableEvent";

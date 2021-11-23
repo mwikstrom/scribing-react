@@ -1,4 +1,4 @@
-import { FlowEditorState } from "scribing";
+import { FlowEditorState } from "../../FlowEditorState";
 
 /** @internal */
 export const setupEditingHostMapping = (

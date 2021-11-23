@@ -12,7 +12,6 @@ import {
     FlowBoxSelection,
     FlowColor,
     FlowContent,
-    FlowEditorState, 
     FlowIcon, 
     FlowImage, 
     FlowNode, 
@@ -41,6 +40,7 @@ import {
     UnorderedListMarkerKindType
 } from "scribing";
 import { FlowEditorProps } from "../FlowEditor";
+import { FlowEditorState } from "../FlowEditorState";
 import { StoreAssetEvent } from "../StoreAssetEvent";
 import { getEndOfFlow } from "./utils/get-end-of-flow";
 import { PubSub } from "./utils/PubSub";
