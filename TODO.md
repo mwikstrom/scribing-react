@@ -2,6 +2,8 @@ SCRIBING TODO
 =============
 - Disable merge cells command unless it can be done
 - Disable split cell command unless it can be done
+- SHIFT+ARROW shall start table cell selection at current cell only
+- ARROW keys shall consider cell spanning when moving selection
 - Support SHIFT+UP/DOWN to extend/enter cell range selection mode
 - Enter/modify cell range selection mode using shift+mouse
 - Cannot step out of empty markup
