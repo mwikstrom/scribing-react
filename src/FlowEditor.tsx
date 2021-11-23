@@ -179,7 +179,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             operation = result;
             after = base.applyMine(operation, { mergeUndo });
             didApplyMine = true;
-        } else if (result instanceof FlowEditorState) {
+        } else if (FlowEditorState.classType.test(result)) {
             operation = null;
             after = result;
         } else {
