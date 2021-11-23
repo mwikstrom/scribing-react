@@ -988,11 +988,73 @@ export class FlowEditorCommands {
         this.formatText("spellcheck", !this.isSpellcheckEnabled());
     }
 
+    canMergeTableCells(): boolean {
+        const { selection } = this.#state;
+        let result: boolean | undefined;
+        if (selection) {
+            selection.visitRanges((range, {target, position}) => {
+                const first = result === void(0);
+                result = false;
+                if (
+                    range instanceof CellRange &&
+                    !range.isSingleCell &&
+                    typeof position === "number" &&
+                    target &&
+                    first
+                ) {
+                    const table = target.peek(position).node;
+                    if (table instanceof FlowTable) {
+                        result = true;
+                        for (let r = range.firstRowIndex; r <= range.lastRowIndex; ++r) {
+                            for (let c = range.firstColumnIndex; c <= range.lastColumnIndex; ++c) {
+                                const cell = table.content.getCell(CellPosition.at(r, c));
+                                if (!cell || cell.colSpan !== 1 || cell.rowSpan !== 1) {
+                                    result = false;
+                                }
+                            }
+                        }                        
+                    }
+                }
+            }, this.getTargetOptions());
+        }
+        return !!result;
+    }
+
     mergeTableCells(): void {
         const { selection, content } = this.#state;
         if (selection) {
             this.#state = this.#apply(selection.mergeTableCell(content));
         }
+    }
+
+    canSplitTableCell(): boolean {
+        const { selection } = this.#state;
+        let result: boolean | undefined;
+        if (selection) {
+            selection.visitRanges((range, {target, position}) => {
+                const first = result === void(0);
+                result = false;
+                if (
+                    range instanceof CellRange &&
+                    range.isSingleCell &&
+                    typeof position === "number" &&
+                    target &&
+                    first
+                ) {
+                    const table = target.peek(position).node;
+                    if (table instanceof FlowTable) {
+                        const cell = table.content.getCell(CellPosition.at(
+                            range.firstRowIndex,
+                            range.firstColumnIndex
+                        ));
+                        if (cell) {
+                            result = cell.colSpan > 1 || cell.rowSpan > 1;
+                        }
+                    }
+                }
+            }, this.getTargetOptions());
+        }
+        return !!result;
     }
 
     splitTableCell(): void {

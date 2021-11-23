@@ -209,13 +209,13 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                                 </span>
                             </ToolMenuItem>
                             <ToolMenuDivider/>
-                            <ToolMenuItem onClick={mergeCells}>
+                            <ToolMenuItem disabled={!commands.canMergeTableCells()} onClick={mergeCells}>
                                 <Icon path={mdiTableMergeCells} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.merge_cells}
                                 </span>
                             </ToolMenuItem>
-                            <ToolMenuItem onClick={splitCell}>
+                            <ToolMenuItem disabled={!commands.canSplitTableCell()} onClick={splitCell}>
                                 <Icon path={mdiTableSplitCell} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.split_cell}
