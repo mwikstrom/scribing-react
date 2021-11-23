@@ -8,9 +8,7 @@ import {
     recordClassType, 
     RecordType, 
     recordType, 
-    type, 
     unionType, 
-    validating 
 } from "paratype";
 import { 
     DefaultFlowTheme, 
@@ -139,7 +137,6 @@ export interface ApplyMineOptions {
  * @sealed
  */
 @frozen
-@validating 
 export class FlowEditorState extends FlowEditorStateBase {
     /** The run-time type that represents this class */
     public static readonly classType = recordClassType(() => FlowEditorState);
@@ -149,7 +146,7 @@ export class FlowEditorState extends FlowEditorStateBase {
      * @param data - A tuple with two values, the first is the anchor position and the second is the
      *               focus position
      */
-    public static fromData(@type(DataType) data: FlowEditorStateData): FlowEditorState {
+    public static fromData(data: FlowEditorStateData): FlowEditorState {
         const {
             content,
             selection,
@@ -217,9 +214,7 @@ export class FlowEditorState extends FlowEditorStateBase {
      * @param operation - The operation to apply
      * @param options - Optional options that control how the operation is applied.
      */
-    public applyMine(
-        @type(FlowOperation.baseType) operation: FlowOperation,
-            options?: ApplyMineOptions,
+    public applyMine(operation: FlowOperation, options?: ApplyMineOptions,
     ): FlowEditorState {
         return this.#apply(operation, true, options);
     }
@@ -229,9 +224,7 @@ export class FlowEditorState extends FlowEditorStateBase {
      * operation applied.
      * @param operation - The operation to apply
      */
-    public applyTheirs(
-        @type(FlowOperation.baseType) operation: FlowOperation,
-    ): FlowEditorState {
+    public applyTheirs(operation: FlowOperation): FlowEditorState {
         return this.#apply(operation, false);
     }
 

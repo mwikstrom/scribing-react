@@ -5,6 +5,7 @@
     ],
     "plugins": [
         "@babel/plugin-proposal-numeric-separator",
+        "@babel/plugin-proposal-decorators",
         ["@babel/plugin-transform-runtime", {
             "regenerator": true
         }]
