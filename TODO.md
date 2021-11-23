@@ -11,6 +11,8 @@ SCRIBING TODO
 - When escaping cell selection mode (by ESC key) then focus is not applied
 - Emoji is duplicated when inserted?!
 - Resize column
+- Mark row as header
+- Mark column as header
 - Arrow handler for moving between table cells
     Note: This must support spanning cells, and be able to discover when on last line.
     Also note: The same logic shall be used for moving cell selection.
