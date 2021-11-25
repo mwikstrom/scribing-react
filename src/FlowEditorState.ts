@@ -15,6 +15,8 @@ import {
     filterNotNull, 
     FlowContent, 
     FlowOperation, 
+    FlowPresence, 
+    FlowPresenceType, 
     FlowSelection, 
     FlowTheme, 
     mapNotNull, 
@@ -36,8 +38,9 @@ export interface FlowEditorStateProps {
     theme: FlowTheme;
     caret: TextStyle;
     undoStack: readonly FlowOperation[];
-    redoStack: readonly FlowOperation[];
+    redoStack: readonly FlowOperation[];    
     formattingMarks: boolean;
+    presence: readonly FlowPresence[];
 }
 
 /**
@@ -49,6 +52,7 @@ extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStac
     selection?: FlowSelection;
     undo?: readonly FlowOperation[],
     redo?: readonly FlowOperation[],
+    presence?: readonly FlowPresence[],
 }
 
 const Props = {
@@ -59,6 +63,7 @@ const Props = {
     undoStack: operationStackType,
     redoStack: operationStackType,
     formattingMarks: booleanType,
+    presence: arrayType(FlowPresenceType).frozen(),
 };
 
 const Data = {
@@ -69,6 +74,7 @@ const Data = {
     undo: Props.undoStack,
     redo: Props.redoStack,
     formattingMarks: Props.formattingMarks,
+    presence: Props.presence,
 };
 
 const PropsType: RecordType<FlowEditorStateProps> = recordType(Props);
@@ -83,6 +89,7 @@ const propsToData = (props: FlowEditorStateProps): FlowEditorStateData => {
         undoStack, 
         redoStack,
         formattingMarks,
+        presence,
     } = props;
     const data: FlowEditorStateData = {};
     
@@ -112,6 +119,10 @@ const propsToData = (props: FlowEditorStateProps): FlowEditorStateData => {
 
     if (formattingMarks) {
         data.formattingMarks = formattingMarks;
+    }
+
+    if (presence.length > 0) {
+        data.presence = presence;
     }
 
     return data;
@@ -155,6 +166,7 @@ export class FlowEditorState extends FlowEditorStateBase {
             undo: undoStack,
             redo: redoStack,
             formattingMarks,
+            presence,
         } = data;
 
         return FlowEditorState.empty.merge({
@@ -165,6 +177,7 @@ export class FlowEditorState extends FlowEditorStateBase {
             undoStack,
             redoStack,
             formattingMarks,
+            presence,
         });
     }
 
@@ -179,6 +192,7 @@ export class FlowEditorState extends FlowEditorStateBase {
                 undoStack: Object.freeze([]),
                 redoStack: Object.freeze([]),
                 formattingMarks: false,
+                presence: Object.freeze([]),
             });
         }
         return EMPTY_CACHE;
