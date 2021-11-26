@@ -16,3 +16,6 @@ export * from "./StoreAssetEvent";
 // Components
 export * from "./FlowView";
 export * from "./FlowEditor";
+
+// Client hook
+export * from "./FlowEditorClient";
