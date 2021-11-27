@@ -14,6 +14,7 @@ import {
 import { FlowEditorState } from "./FlowEditorState";
 import { StateChangeEvent } from "./StateChangeEvent";
 
+/** @public */
 export interface FlowEditorClient {
     readonly state: FlowEditorState | null;
     readonly connection: ConnectionStatus;
@@ -24,6 +25,7 @@ export interface FlowEditorClient {
     sync(): void;
 }
 
+/** @public */
 export type ConnectionStatus = (
     "disconnected" |
     "connecting" |
@@ -33,12 +35,15 @@ export type ConnectionStatus = (
     "broken"
 );
 
+/** @public */
 export interface FlowEditorClientOptions {
     autoSync?: boolean;
     clientKey?: string;
 }
 
+/** @public */
 export function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;
+/** @public */
 export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
 export function useFlowEditorClient(
     urlOrProtocol: FlowSyncProtocol | string, 

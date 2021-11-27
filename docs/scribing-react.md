@@ -17,11 +17,20 @@ React components for collaborative rich text editing
 |  [StateChangeEvent](./scribing-react.statechangeevent.md) |  |
 |  [StoreAssetEvent](./scribing-react.storeassetevent.md) |  |
 
+## Functions
+
+|  Function | Description |
+|  --- | --- |
+|  [useFlowEditorClient(url, options)](./scribing-react.usefloweditorclient.md) |  |
+|  [useFlowEditorClient(protocol, options)](./scribing-react.usefloweditorclient_1.md) |  |
+
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
 |  [ApplyMineOptions](./scribing-react.applymineoptions.md) | Options for the [FlowEditorState.applyMine()](./scribing-react.floweditorstate.applymine.md) method |
+|  [FlowEditorClient](./scribing-react.floweditorclient.md) |  |
+|  [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
 |  [FlowEditorProps](./scribing-react.floweditorprops.md) | Component props for [FlowEditor](./scribing-react.floweditor.md) |
 |  [FlowEditorStateData](./scribing-react.floweditorstatedata.md) | Data for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowEditorStateProps](./scribing-react.floweditorstateprops.md) | Properties for [FlowEditorState](./scribing-react.floweditorstate.md) |
@@ -34,4 +43,10 @@ React components for collaborative rich text editing
 |  [FlowEditor](./scribing-react.floweditor.md) | Flow editor component |
 |  [FlowEditorStateBase](./scribing-react.floweditorstatebase.md) | The base record class for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
+
+## Type Aliases
+
+|  Type Alias | Description |
+|  --- | --- |
+|  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
 

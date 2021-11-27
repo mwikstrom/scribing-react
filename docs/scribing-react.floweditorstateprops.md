@@ -19,6 +19,7 @@ export interface FlowEditorStateProps
 |  [caret](./scribing-react.floweditorstateprops.caret.md) | TextStyle |  |
 |  [content](./scribing-react.floweditorstateprops.content.md) | FlowContent |  |
 |  [formattingMarks](./scribing-react.floweditorstateprops.formattingmarks.md) | boolean |  |
+|  [presence](./scribing-react.floweditorstateprops.presence.md) | readonly FlowPresence\[\] |  |
 |  [redoStack](./scribing-react.floweditorstateprops.redostack.md) | readonly FlowOperation\[\] |  |
 |  [selection](./scribing-react.floweditorstateprops.selection.md) | FlowSelection \| null |  |
 |  [theme](./scribing-react.floweditorstateprops.theme.md) | FlowTheme |  |

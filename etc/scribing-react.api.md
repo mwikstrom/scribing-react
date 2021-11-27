@@ -8,7 +8,9 @@ import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { FlowContent } from 'scribing';
 import { FlowOperation } from 'scribing';
+import { FlowPresence } from 'scribing';
 import { FlowSelection } from 'scribing';
+import { FlowSyncProtocol } from 'scribing';
 import { FlowTheme } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
@@ -24,6 +26,9 @@ export interface ApplyMineOptions {
 }
 
 // @public (undocumented)
+export type ConnectionStatus = ("disconnected" | "connecting" | "clean" | "dirty" | "syncing" | "broken");
+
+// @public (undocumented)
 export abstract class DeferrableEvent {
     // @internal (undocumented)
     _complete(): Promise<void>;
@@ -33,6 +38,32 @@ export abstract class DeferrableEvent {
 
 // @public
 export const FlowEditor: FC<FlowEditorProps>;
+
+// @public (undocumented)
+export interface FlowEditorClient {
+    // (undocumented)
+    apply(event: StateChangeEvent): boolean;
+    // (undocumented)
+    readonly autoSync: boolean;
+    // (undocumented)
+    readonly connection: ConnectionStatus;
+    // (undocumented)
+    disconnect(): void;
+    // (undocumented)
+    reconnect(): void;
+    // (undocumented)
+    readonly state: FlowEditorState | null;
+    // (undocumented)
+    sync(): void;
+}
+
+// @public (undocumented)
+export interface FlowEditorClientOptions {
+    // (undocumented)
+    autoSync?: boolean;
+    // (undocumented)
+    clientKey?: string;
+}
 
 // @public
 export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> {
@@ -74,6 +105,8 @@ export const FlowEditorStateBase: RecordConstructor<FlowEditorStateProps, Object
 // @public
 export interface FlowEditorStateData extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStack">> {
     // (undocumented)
+    presence?: readonly FlowPresence[];
+    // (undocumented)
     redo?: readonly FlowOperation[];
     // (undocumented)
     selection?: FlowSelection;
@@ -89,6 +122,8 @@ export interface FlowEditorStateProps {
     content: FlowContent;
     // (undocumented)
     formattingMarks: boolean;
+    // (undocumented)
+    presence: readonly FlowPresence[];
     // (undocumented)
     redoStack: readonly FlowOperation[];
     // (undocumented)
@@ -158,5 +193,11 @@ export class StoreAssetEvent extends DeferrableEvent {
     get url(): string | null;
     set url(value: string | null);
 }
+
+// @public (undocumented)
+export function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;
+
+// @public (undocumented)
+export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
 
 ```
