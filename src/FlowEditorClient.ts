@@ -301,7 +301,7 @@ export function useFlowEditorClient(
             return;
         }
 
-        const delay = Math.max(0, Date.now() - lastSync.current - interval);
+        const delay = Math.max(0, Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current - interval));
         const timerId = setTimeout(() => setConnection("syncing"), delay);
         return () => clearTimeout(timerId);
     }, [autoSync, connection, lastSync, lastRemoteChange, setConnection]);
@@ -364,6 +364,7 @@ const DIRTY_SYNC_INTERVAL = 500;
 const SELECTION_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
 const MIN_CLEAN_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
 const MAX_CLEAN_SYNC_INTERVAL = 4000;
+const MAX_SYNC_INTERVAL = 5000;
 const MAX_SYNC_ATTEMPTS = 10;
 const MIN_BACKOFF_DELAY = 1000;
 const RANDOM_BACKOFF_DELAY = 2000;
