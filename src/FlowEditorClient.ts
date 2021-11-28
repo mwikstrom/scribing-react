@@ -244,6 +244,7 @@ export function useFlowEditorClient(
                         // Apply new synced state
                         setConnection(pendingChange.current === null ? "clean" : "dirty");
                         setSyncedSelection(mergedSelection);
+                        syncVersion.current = output.version;
                         lastSync.current = Date.now();
                         if (
                             output.merge !== null || 
