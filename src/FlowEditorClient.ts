@@ -301,7 +301,10 @@ export function useFlowEditorClient(
             return;
         }
 
-        const delay = Math.max(0, Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current - interval));
+        const delay = Math.max(
+            MIN_SYNC_INTERVAL,
+            Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current - interval)
+        );
         const timerId = setTimeout(() => setConnection("syncing"), delay);
         return () => clearTimeout(timerId);
     }, [autoSync, connection, lastSync, lastRemoteChange, setConnection]);
@@ -360,7 +363,8 @@ const areEqualMaps = <T>(
     return true;
 };
 
-const DIRTY_SYNC_INTERVAL = 500;
+const MIN_SYNC_INTERVAL = 500;
+const DIRTY_SYNC_INTERVAL = MIN_SYNC_INTERVAL;
 const SELECTION_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
 const MIN_CLEAN_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
 const MAX_CLEAN_SYNC_INTERVAL = 4000;
