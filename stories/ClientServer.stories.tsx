@@ -1,26 +1,49 @@
-import React, { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, FC, useMemo } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { FlowEditor } from "../src/FlowEditor";
+import { FlowEditor, FlowEditorProps } from "../src/FlowEditor";
 import { FlowSyncServer } from "scribing-server";
 import { FlowContent, FlowSyncInputType, FlowSyncProtocol } from "scribing";
 import { useFlowEditorClient } from "../src";
 
+interface ClientFlowEditorProps extends FlowEditorProps {
+    id: string;
+    server: FlowSyncServer;
+    manual?: boolean;
+}
+
+const ClientFlowEditor: FC<ClientFlowEditorProps> = props => {
+    const { id, server, manual, style, className, ...rest } = props;
+    const proto = useMemo(() => createTestProtocol(server, id), [server, id]);
+    const client = useFlowEditorClient(proto, { clientKey: id, autoSync: !manual });
+    return (
+        <div style={style} className={className}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+                <button onClick={() => client.sync()}>Sync</button>
+                <div style={{flex: 1}}><pre>{client.connection}</pre></div>
+            </div>
+            {client.state && (
+                <FlowEditor
+                    {...rest}
+                    state={client.state}
+                    onStateChange={client.apply}
+                />
+            )}
+        </div>
+    );
+};
+
 export default {
     title: "ClientServer",
-    component: FlowEditor,
-} as ComponentMeta<typeof FlowEditor>;
+    component: ClientFlowEditor,
+} as ComponentMeta<typeof ClientFlowEditor>;
 
 const initialContent = FlowContent.fromJsonValue([
     "This is the initial server content",
     { break: "para" },
 ]);
   
-const Template: ComponentStory<typeof FlowEditor> = args => {
+const Template: ComponentStory<typeof ClientFlowEditor> = args => {
     const server = useMemo(() => new FlowSyncServer({ initialContent }), []);
-    const protoA = useMemo(() => createTestProtocol(server, "A"), [server]);
-    const protoB = useMemo(() => createTestProtocol(server, "B"), [server]);
-    const clientA = useFlowEditorClient(protoA, { clientKey: "A" });
-    const clientB = useFlowEditorClient(protoB, { clientKey: "B" });
 
     const wrapperStyle = useMemo<CSSProperties>(() => ({
         display: "flex",
@@ -37,33 +60,32 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
     const editorBStyle = useMemo<CSSProperties>(() => ({
         flex: 0.5,
         overflow: "auto",
-        borderLeft: clientA.state !== null && clientB.state !== null ? "1px solid #888" : "none",
-    }), [clientA.state !== null && clientB.state !== null]);
+        borderLeft: "1px solid #888",
+    }), []);
 
     return (
         <div style={wrapperStyle}>
-            {clientA.state && (
-                <FlowEditor 
-                    {...args}
-                    style={editorAStyle}
-                    state={clientA.state}
-                    onStateChange={clientA.apply}
-                />
-            )}
-            {clientB.state && (
-                <FlowEditor 
-                    {...args}
-                    style={editorBStyle}
-                    state={clientB.state}
-                    onStateChange={clientB.apply}
-                />
-            )}
+            <ClientFlowEditor 
+                {...args}
+                style={editorAStyle}
+                server={server}
+                id={"A"}
+            />
+            <ClientFlowEditor 
+                {...args}
+                style={editorBStyle}
+                server={server}
+                id={"B"}
+            />
         </div>
     );
 };
 
 export const AutoSync = Template.bind({});
 AutoSync.args = {};
+
+export const ManualSync = Template.bind({});
+ManualSync.args = { manual: true };
 
 const createTestProtocol = (server: FlowSyncServer, user: string): FlowSyncProtocol => ({
     read: () => server.read(),
