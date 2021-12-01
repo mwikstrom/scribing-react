@@ -11,6 +11,7 @@ import {
     FlowSyncProtocol, 
     HttpFlowSyncProtocol,
 } from "scribing";
+import { DeferrableEvent } from ".";
 import { FlowEditorState } from "./FlowEditorState";
 import { StateChangeEvent } from "./StateChangeEvent";
 
@@ -39,6 +40,7 @@ export type ConnectionStatus = (
 export interface FlowEditorClientOptions {
     autoSync?: boolean;
     clientKey?: string;
+    onSyncing?: (event: DeferrableEvent) => void;
 }
 
 /** @public */
@@ -49,7 +51,7 @@ export function useFlowEditorClient(
     urlOrProtocol: FlowSyncProtocol | string, 
     options: FlowEditorClientOptions = {}
 ): FlowEditorClient {
-    const { autoSync = true, clientKey: givenClientKey } = options;
+    const { autoSync = true, clientKey: givenClientKey, onSyncing } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
     const [connection, setConnection] = useState<ConnectionStatus>("connecting");
     const [syncedSelection, setSyncedSelection] = useState<FlowSelection | null>(null);
@@ -185,6 +187,11 @@ export function useFlowEditorClient(
         }
         let active = true;
         (async function syncing() {
+            if (onSyncing) {
+                const event = new DeferrableEvent();
+                onSyncing(event);
+                await event._complete();
+            }
             try {
                 for (let attempt = 1; attempt <= MAX_SYNC_ATTEMPTS && active; ++attempt) {
                     if (attempt > 1) {
@@ -280,7 +287,7 @@ export function useFlowEditorClient(
             }
         })();
         return () => { active = false; };
-    }, syncDependencies);
+    }, [...syncDependencies, onSyncing]);
 
     // Trigger sync when needed
     useEffect(() => {

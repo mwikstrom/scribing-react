@@ -1,7 +1,7 @@
 /**
  * @public
  */
-export abstract class DeferrableEvent {
+export class DeferrableEvent {
     readonly #deferringCallbacks = new Set<() => Promise<void>>();
 
     defer(callback: () => Promise<void>): void {

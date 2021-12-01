@@ -1,7 +1,5 @@
 SCRIBING TODO
 =============
-- Test manual sync
-- Test pending operation while syncing
 - Remove toolbar and tooltips and localization from this lib?!
 - ARROW+SHIFT when inside (and at edge of) box shall select entire box (just like table cells)
 - ARROW keys shall consider cell spanning when moving selection

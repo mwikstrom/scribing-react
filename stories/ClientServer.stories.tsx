@@ -1,9 +1,9 @@
-import React, { CSSProperties, FC, useMemo } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor, FlowEditorProps } from "../src/FlowEditor";
 import { FlowSyncServer } from "scribing-server";
 import { FlowContent, FlowSyncInputType, FlowSyncProtocol } from "scribing";
-import { useFlowEditorClient } from "../src";
+import { DeferrableEvent, useFlowEditorClient } from "../src";
 
 interface ClientFlowEditorProps extends FlowEditorProps {
     id: string;
@@ -14,12 +14,35 @@ interface ClientFlowEditorProps extends FlowEditorProps {
 const ClientFlowEditor: FC<ClientFlowEditorProps> = props => {
     const { id, server, manual, style, className, ...rest } = props;
     const proto = useMemo(() => createTestProtocol(server, id), [server, id]);
-    const client = useFlowEditorClient(proto, { clientKey: id, autoSync: !manual });
+    const [isDeferred, setDeferred] = useState(false);
+    const queue = useRef<Array<() => void>>([]);
+    const onSyncing = useCallback((e: DeferrableEvent) => {
+        if (isDeferred) {
+            e.defer(() => new Promise(resolve => queue.current.push(resolve)));
+        }
+    }, [isDeferred]);
+    const client = useFlowEditorClient(proto, { clientKey: id, autoSync: !manual, onSyncing });
+    const canSync = client.connection === "clean" || client.connection === "dirty";
+    const canEndSync = client.connection === "syncing" && isDeferred;
+    const syncNow = useCallback(() => client.sync(), [client]);
+    const beginSync = useCallback(() => {
+        setDeferred(true);
+        client.sync();
+    }, [client, setDeferred]);
+    const endSync = useCallback(() => setDeferred(false), [setDeferred]);
+    useEffect(() => {
+        if (!isDeferred) {
+            queue.current.forEach(callback => callback());
+            queue.current = [];
+        }
+    }, [isDeferred]);
     return (
         <div style={style} className={className}>
             <div style={{ display: "flex", flexDirection: "row" }}>
-                <button onClick={() => client.sync()}>Sync</button>
-                <div style={{flex: 1}}><pre>{client.connection}</pre></div>
+                <button onClick={syncNow} disabled={!canSync}>Sync Now</button>
+                <button onClick={beginSync} disabled={!canSync}>Begin Sync</button>
+                <button onClick={endSync} disabled={!canEndSync}>End Sync</button>
+                <pre style={{flex: 1, paddingLeft: 10}}>{client.connection}</pre>
             </div>
             {client.state && (
                 <FlowEditor
