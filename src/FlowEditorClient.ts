@@ -176,6 +176,8 @@ export function useFlowEditorClient(
         return () => { active = false; };
     }, syncDependencies);
 
+    useEffect(() => console.log(`[${effectiveClientKey}] is ${connection}`), [connection]);
+
     // Handle syncing connection
     useEffect(() => {
         if (connection !== "syncing") {
@@ -191,16 +193,14 @@ export function useFlowEditorClient(
                     }
                     
                     // Determine what to sync
-                    const baseContent = pendingChange.current?.baseContent;
+                    const outgoingChange = pendingChange.current;
+                    pendingChange.current = null;
                     const input: FlowSyncInput = {
                         client: effectiveClientKey,
                         version: syncVersion.current,
-                        operation: pendingChange.current?.operation ?? null,
+                        operation: outgoingChange?.operation ?? null,
                         selection: pendingSelection.current,
                     };
-
-                    // Clear pending change (we're syncing it)
-                    pendingChange.current = null;
                     
                     let output: FlowSyncOutput | null = null;
                     try {
@@ -224,21 +224,21 @@ export function useFlowEditorClient(
                         }
 
                         // Compute merged content
-                        let mergedContent = baseContent ?? local.current.content;
-                        if (mergedContent === baseContent) {
-                            if (output.merge) {
-                                mergedContent = output.merge.applyToContent(mergedContent);
-                            }
+                        let mergedContent = outgoingChange ? outgoingChange.baseContent : local.current.content;
+                        if (output.merge) {
+                            mergedContent = output.merge.applyToContent(mergedContent);
+                        }
 
-                            if (input.operation) {
-                                mergedContent = input.operation.applyToContent(mergedContent);
-                            }
+                        // Apply outgoing change
+                        if (outgoingChange) {
+                            mergedContent = outgoingChange.operation.applyToContent(mergedContent);
+                        }
 
-                            if (pendingChange.current) {
-                                const pending: PendingChange = pendingChange.current;
-                                pending.baseContent = mergedContent;
-                                mergedContent = pending.operation.applyToContent(mergedContent);
-                            }
+                        // Apply next pending change
+                        if (pendingChange.current) {
+                            const pending: PendingChange = pendingChange.current;
+                            pending.baseContent = mergedContent;
+                            mergedContent = pending.operation.applyToContent(mergedContent);
                         }
 
                         // Apply new synced state
@@ -256,7 +256,7 @@ export function useFlowEditorClient(
                             content: mergedContent,
                             selection: mergedSelection,
                             presence: Object.freeze(output.presence),
-                        }));   
+                        }));
                     }
 
                     return;

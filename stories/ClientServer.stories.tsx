@@ -2,7 +2,7 @@ import React, { CSSProperties, useMemo } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor } from "../src/FlowEditor";
 import { FlowSyncServer } from "scribing-server";
-import { FlowContent, FlowSyncProtocol } from "scribing";
+import { FlowContent, FlowSyncInputType, FlowSyncProtocol } from "scribing";
 import { useFlowEditorClient } from "../src";
 
 export default {
@@ -68,9 +68,9 @@ AutoSync.args = {};
 const createTestProtocol = (server: FlowSyncServer, user: string): FlowSyncProtocol => ({
     read: () => server.read(),
     sync: async input => {
-        console.log(`[${user}] sync:`, input);
+        console.log(`[${user}] sync:`, FlowSyncInputType.toJsonValue(input));
         const output = await server.sync(input, user);
-        console.log(`[${user}] merge:`, output?.version, output?.merge);
+        console.log(`[${user}] merge:`, output?.version, output?.merge?.toJsonValue());
         return output;
     },
 });
