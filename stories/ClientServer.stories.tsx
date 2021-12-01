@@ -67,5 +67,10 @@ AutoSync.args = {};
 
 const createTestProtocol = (server: FlowSyncServer, user: string): FlowSyncProtocol => ({
     read: () => server.read(),
-    sync: input => server.sync(input, user),
+    sync: async input => {
+        console.log(`[${user}] sync:`, input);
+        const output = await server.sync(input, user);
+        console.log(`[${user}] merge:`, output?.version, output?.merge);
+        return output;
+    },
 });

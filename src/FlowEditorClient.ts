@@ -304,7 +304,7 @@ export function useFlowEditorClient(
 
         const delay = Math.max(
             MIN_SYNC_INTERVAL,
-            Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current - interval)
+            Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current + interval)
         );
         const timerId = setTimeout(() => setConnection("syncing"), delay);
         return () => clearTimeout(timerId);
