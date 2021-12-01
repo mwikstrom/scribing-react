@@ -231,7 +231,13 @@ export function useFlowEditorClient(
 
                         // Apply outgoing change
                         if (outgoingChange) {
-                            mergedContent = outgoingChange.operation.applyToContent(mergedContent);
+                            let mergedOperation: FlowOperation | null = outgoingChange.operation;
+                            if (output.merge) {
+                                mergedOperation = output.merge.transform(mergedOperation);
+                            }
+                            if (mergedOperation) {
+                                mergedContent = mergedOperation.applyToContent(mergedContent);
+                            }
                         }
 
                         // Apply next pending change
