@@ -298,7 +298,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useLayoutEffect(() => {
         const domSelection = document.getSelection();
 
-        if (!editingHost || !domSelection) {
+        if (!editingHost || !domSelection || !isSelectionInside(editingHost, domSelection)) {
             return;
         }
 

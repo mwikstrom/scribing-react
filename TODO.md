@@ -1,6 +1,5 @@
 SCRIBING TODO
 =============
-- Focus is transferred when syncing
 - Test manual sync
 - Test pending operation while syncing
 - Remove toolbar and tooltips and localization from this lib?!
