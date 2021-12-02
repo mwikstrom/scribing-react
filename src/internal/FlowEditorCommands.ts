@@ -658,12 +658,11 @@ export class FlowEditorCommands {
     insertTable(cols: number, rows: number): void {
         const { selection } = this.#state;
         if (cols > 0 && rows > 0 && selection && selection.isCollapsed) {
-            const defaultContent = new FlowContent({ nodes: Object.freeze([new ParagraphBreak()])});
-            const emptyCell = new FlowTableCell({ content: defaultContent, colSpan: 1, rowSpan: 1 });
+            const emptyCell = FlowTableCell.emptyParagraph;
             const cells = new Map<string, FlowTableCell>();
             cells.set(CellPosition.at(rows - 1, cols - 1).toString(), emptyCell);
             this.insertNode(new FlowTable({
-                content: new FlowTableContent(cells, { defaultContent }),
+                content: new FlowTableContent(cells, { defaultContent: emptyCell.content }),
                 columns: new Map(),
                 style: TableStyle.empty,
             }));
