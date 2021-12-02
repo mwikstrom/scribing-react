@@ -261,8 +261,6 @@ export function useFlowEditorClient(
                         }
 
                         // Apply new synced state
-                        setConnection(pendingChange.current === null ? "clean" : "dirty");
-                        setSyncedSelection(mergedSelection);
                         syncVersion.current = output.version;
                         lastSync.current = Date.now();
                         if (
@@ -271,6 +269,8 @@ export function useFlowEditorClient(
                         ) {
                             lastRemoteChange.current = lastSync.current;
                         }
+                        setConnection(pendingChange.current === null ? "clean" : "dirty");
+                        setSyncedSelection(mergedSelection);
                         setState(local.current = local.current.merge({
                             content: mergedContent,
                             selection: mergedSelection,
@@ -310,7 +310,7 @@ export function useFlowEditorClient(
                         MIN_CLEAN_SYNC_INTERVAL,
                         Math.min(
                             MAX_CLEAN_SYNC_INTERVAL,
-                            Date.now() - lastRemoteChange.current,
+                            Math.round((Date.now() - lastRemoteChange.current) / 3),
                         ),
                     );
                 }
@@ -386,7 +386,7 @@ const areEqualMaps = <T>(
 const MIN_SYNC_INTERVAL = 500;
 const DIRTY_SYNC_INTERVAL = MIN_SYNC_INTERVAL;
 const SELECTION_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
-const MIN_CLEAN_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
+const MIN_CLEAN_SYNC_INTERVAL = 1000;
 const MAX_CLEAN_SYNC_INTERVAL = 4000;
 const MAX_SYNC_INTERVAL = 5000;
 const MAX_SYNC_ATTEMPTS = 10;
