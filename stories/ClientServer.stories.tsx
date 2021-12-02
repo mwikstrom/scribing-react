@@ -9,11 +9,12 @@ interface ClientFlowEditorProps extends FlowEditorProps {
     id: string;
     server: FlowSyncServer;
     manual?: boolean;
+    debug?: boolean;
 }
 
 const ClientFlowEditor: FC<ClientFlowEditorProps> = props => {
-    const { id, server, manual, style, className, ...rest } = props;
-    const proto = useMemo(() => createTestProtocol(server, id), [server, id]);
+    const { id, server, manual, debug, style, className, ...rest } = props;
+    const proto = useMemo(() => createTestProtocol(server, id, debug), [server, id, debug]);
     const [isDeferred, setDeferred] = useState(false);
     const queue = useRef<Array<() => void>>([]);
     const onSyncing = useCallback((e: DeferrableEvent) => {
@@ -116,12 +117,16 @@ AutoSync.args = {};
 export const ManualSync = Template.bind({});
 ManualSync.args = { manual: true };
 
-const createTestProtocol = (server: FlowSyncServer, user: string): FlowSyncProtocol => ({
+const createTestProtocol = (server: FlowSyncServer, user: string, debug: boolean | undefined): FlowSyncProtocol => ({
     read: () => server.read(),
     sync: async input => {
-        console.log(`[${user}] sync:`, FlowSyncInputType.toJsonValue(input));
+        if (debug) {
+            console.log(`[${user}] sync:`, FlowSyncInputType.toJsonValue(input));
+        }
         const output = await server.sync(input, user);
-        console.log(`[${user}] merge:`, output?.version, output?.merge?.toJsonValue());
+        if (debug) {
+            console.log(`[${user}] merge:`, output?.version, output?.merge?.toJsonValue());
+        }
         return output;
     },
 });
