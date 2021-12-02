@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { EffectCallback, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { 
     FlowBatch, 
     FlowContent, 
@@ -54,6 +54,11 @@ export function useFlowEditorClient(
     const { autoSync = true, clientKey: givenClientKey, onSyncing } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
     const [connection, setConnection] = useState<ConnectionStatus>("connecting");
+    const useConnectionEffect = (when: ConnectionStatus, effect: EffectCallback) => useEffect(() => {
+        if (connection === when) {
+            return effect();
+        }
+    }, [connection]);
     const [syncedSelection, setSyncedSelection] = useState<FlowSelection | null>(null);
     const local = useRef<FlowEditorState | null>(null);
     const syncVersion = useRef(0);
@@ -62,9 +67,9 @@ export function useFlowEditorClient(
     const pendingChange = useRef<PendingChange | null>(null);
     const pendingSelection = useRef<FlowSelection | null>(null);
 
-    const disconnect = useCallback(() => setConnection("disconnected"), [setConnection]);
-    const reconnect = useCallback(() => setConnection("connecting"), [setConnection]);
-    const sync = useCallback(() => setConnection("syncing"), [setConnection]);
+    const disconnect = useCallback(() => setConnection("disconnected"), []);
+    const reconnect = useCallback(() => setConnection("connecting"), []);
+    const sync = useCallback(() => setConnection("syncing"), []);
 
     // Setup effective client key
     const effectiveClientKey = useMemo(
@@ -111,7 +116,7 @@ export function useFlowEditorClient(
         // Store new local state
         setState(local.current = event.after);
         return true;
-    }, [setState, local, pendingChange, pendingSelection, setConnection]);
+    }, []);
 
     // Derive protocol from url
     const protocol = useMemo(() => {
@@ -122,30 +127,11 @@ export function useFlowEditorClient(
         }
     }, [urlOrProtocol]);
 
-    // Dependencies for "connecting" and "syncing"
-    const syncDependencies = [
-        protocol,
-        connection,
-        setConnection,
-        setState,
-        setSyncedSelection,
-        pendingChange,
-        pendingSelection,
-        syncVersion,
-        lastSync,
-        lastRemoteChange,
-        local,
-        effectiveClientKey,
-    ];
-
     // Reconnect when protocol changes
-    useEffect(() => setConnection("connecting"), [setConnection, protocol]);
+    useEffect(() => setConnection("connecting"), [protocol]);
 
     // Fetch snapshot when connecting
-    useEffect(() => {
-        if (connection !== "connecting") {
-            return;
-        }
+    useConnectionEffect("connecting", () => {
         let active = true;
         (async function connecting() {
             try {
@@ -176,38 +162,36 @@ export function useFlowEditorClient(
             }
         })();
         return () => { active = false; };
-    }, syncDependencies);
-
-    useEffect(() => console.log(`[${effectiveClientKey}] is ${connection}`), [connection]);
+    });
 
     // Handle syncing connection
-    useEffect(() => {
-        if (connection !== "syncing") {
-            return;
-        }
+    useConnectionEffect("syncing", () => {
         let active = true;
         (async function syncing() {
-            if (onSyncing) {
-                const event = new DeferrableEvent();
-                onSyncing(event);
-                await event._complete();
-            }
             try {
+                // Determine what to sync
+                const outgoingChange = pendingChange.current;
+                pendingChange.current = null;
+
+                const input: FlowSyncInput = {
+                    client: effectiveClientKey,
+                    version: syncVersion.current,
+                    operation: outgoingChange?.operation ?? null,
+                    selection: pendingSelection.current,
+                };
+
+                if (onSyncing) {
+                    const event = new DeferrableEvent();
+                    onSyncing(event);
+                    await event._complete();
+                }        
+
+                // Run with retry to support flaky connection
                 for (let attempt = 1; attempt <= MAX_SYNC_ATTEMPTS && active; ++attempt) {
                     if (attempt > 1) {
                         const backoff = MIN_BACKOFF_DELAY + Math.random() * RANDOM_BACKOFF_DELAY;
                         await new Promise(resolve => setTimeout(resolve, backoff));
-                    }
-                    
-                    // Determine what to sync
-                    const outgoingChange = pendingChange.current;
-                    pendingChange.current = null;
-                    const input: FlowSyncInput = {
-                        client: effectiveClientKey,
-                        version: syncVersion.current,
-                        operation: outgoingChange?.operation ?? null,
-                        selection: pendingSelection.current,
-                    };
+                    }                   
                     
                     let output: FlowSyncOutput | null = null;
                     try {
@@ -245,25 +229,35 @@ export function useFlowEditorClient(
                             if (mergedOperation) {
                                 mergedContent = mergedOperation.applyToContent(mergedContent);
                             }
+
+                            // Verify content digest
+                            const digest = await mergedContent.digest();
+                            if (digest !== output.digest) {
+                                console.error("Flow editor connection is broken. Content digest mismatch.");
+                                setConnection("broken");
+                                console.debug(
+                                    "Client content:", mergedContent.toJsonValue(),
+                                    "\nServer content:", (await protocol.read())?.content.toJsonValue()
+                                );
+                                return;
+                            }
                         }
 
                         // Apply next pending change
                         if (pendingChange.current) {
                             const pending: PendingChange = pendingChange.current;
-                            pending.baseContent = mergedContent;
-                            mergedContent = pending.operation.applyToContent(mergedContent);
-                        }
-
-                        // Verify content digest
-                        const digest = await mergedContent.digest();
-                        if (digest !== output.digest) {
-                            console.error("Flow editor connection is broken. Content digest mismatch.");
-                            setConnection("broken");
-                            console.debug(
-                                "Client content:", mergedContent.toJsonValue(),
-                                "\nServer content:", (await protocol.read())?.content.toJsonValue()
-                            );
-                            return;
+                            if (output.merge) {
+                                const mergedPending = output.merge.transform(pending.operation);
+                                if (mergedPending) {
+                                    pending.operation = mergedPending;
+                                } else {
+                                    pendingChange.current = null;
+                                }
+                            }
+                            if (pendingChange.current) {
+                                pending.baseContent = mergedContent;
+                                mergedContent = pending.operation.applyToContent(mergedContent);
+                            }
                         }
 
                         // Apply new synced state
@@ -299,7 +293,7 @@ export function useFlowEditorClient(
             }
         })();
         return () => { active = false; };
-    }, [...syncDependencies, onSyncing]);
+    });
 
     // Trigger sync when needed
     useEffect(() => {
@@ -333,7 +327,7 @@ export function useFlowEditorClient(
         );
         const timerId = setTimeout(() => setConnection("syncing"), delay);
         return () => clearTimeout(timerId);
-    }, [autoSync, connection, lastSync, lastRemoteChange, setConnection]);
+    }, [autoSync, connection]);
 
     return { state, connection, autoSync, apply, disconnect, reconnect, sync };
 }
