@@ -24,12 +24,16 @@ const ClientFlowEditor: FC<ClientFlowEditorProps> = props => {
     const client = useFlowEditorClient(proto, { clientKey: id, autoSync: !manual, onSyncing });
     const canSync = client.connection === "clean" || client.connection === "dirty";
     const canEndSync = client.connection === "syncing" && isDeferred;
+    const canDisconnect = canSync || client.connection === "broken";
+    const canReconnect = canDisconnect || client.connection === "disconnected";
     const syncNow = useCallback(() => client.sync(), [client]);
     const beginSync = useCallback(() => {
         setDeferred(true);
         client.sync();
     }, [client, setDeferred]);
     const endSync = useCallback(() => setDeferred(false), [setDeferred]);
+    const disconnect = useCallback(() => client.disconnect(), [client]);
+    const reconnect = useCallback(() => client.reconnect(), [client]);
     useEffect(() => {
         if (!isDeferred) {
             queue.current.forEach(callback => callback());
@@ -42,6 +46,8 @@ const ClientFlowEditor: FC<ClientFlowEditorProps> = props => {
                 <button onClick={syncNow} disabled={!canSync}>Sync Now</button>
                 <button onClick={beginSync} disabled={!canSync}>Begin Sync</button>
                 <button onClick={endSync} disabled={!canEndSync}>End Sync</button>
+                <button onClick={disconnect} disabled={!canDisconnect}>Disconnect</button>
+                <button onClick={reconnect} disabled={!canReconnect}>Reconnect</button>
                 <pre style={{flex: 1, paddingLeft: 10}}>{client.connection}</pre>
             </div>
             {client.state && (
