@@ -259,6 +259,10 @@ export function useFlowEditorClient(
                         if (digest !== output.digest) {
                             console.error("Flow editor connection is broken. Content digest mismatch.");
                             setConnection("broken");
+                            console.debug(
+                                "Client content:", mergedContent.toJsonValue(),
+                                "\nServer content:", (await protocol.read())?.content.toJsonValue()
+                            );
                             return;
                         }
 
