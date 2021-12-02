@@ -254,6 +254,14 @@ export function useFlowEditorClient(
                             mergedContent = pending.operation.applyToContent(mergedContent);
                         }
 
+                        // Verify content digest
+                        const digest = await mergedContent.digest();
+                        if (digest !== output.digest) {
+                            console.error("Flow editor connection is broken. Content digest mismatch.");
+                            setConnection("broken");
+                            return;
+                        }
+
                         // Apply new synced state
                         setConnection(pendingChange.current === null ? "clean" : "dirty");
                         setSyncedSelection(mergedSelection);
