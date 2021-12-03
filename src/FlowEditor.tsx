@@ -58,6 +58,8 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
     onStateChange?: (event: StateChangeEvent) => void;
 
     onStoreAsset?: (event: StoreAssetEvent) => void;
+
+    onControllerChange?: (controller: FlowEditorController | null) => void;
 }
 
 /**
@@ -75,6 +77,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         nativeSelection,
         onStateChange: onStateChangeProp,
         onStoreAsset,
+        onControllerChange,
     } = props;
 
     // JSS classes
@@ -210,6 +213,19 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         () => controller._sync(state, applyChange, onStoreAsset),
         [controller, state, applyChange, onStoreAsset]
     );
+
+    // Notify parent of controller
+    useEffect(() =>  {
+        const handler = onControllerChange;
+        if (handler) {
+            handler(controller);
+            const dispose = controller._observe(handler);
+            return () => {
+                dispose();
+                handler(null);
+            };
+        }
+    }, [controller, onControllerChange]);
 
     // Handle keyboard input
     useNativeEventHandler(

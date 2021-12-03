@@ -355,6 +355,8 @@ export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "on
     // @internal
     nativeSelection?: boolean;
     // (undocumented)
+    onControllerChange?: (controller: FlowEditorController | null) => void;
+    // (undocumented)
     onStateChange?: (event: StateChangeEvent) => void;
     // (undocumented)
     onStoreAsset?: (event: StoreAssetEvent) => void;

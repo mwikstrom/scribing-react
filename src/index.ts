@@ -13,13 +13,13 @@ export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
 
+// Controller
+export * from "./FlowEditorController";
+
 // Components
 export * from "./DataIcon";
 export * from "./FlowView";
 export * from "./FlowEditor";
-
-// Controller
-export * from "./FlowEditorController";
 
 // Client hook
 export * from "./FlowEditorClient";
