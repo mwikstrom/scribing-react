@@ -57,8 +57,10 @@ export class FlowEditorCommands {
         state: FlowEditorState,
         apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
         onStoreAsset: FlowEditorProps["onStoreAsset"],
+        uploads = new Map<string, Blob>(),
     ) {
         this._sync(state, apply, onStoreAsset);
+        this.#uploads = uploads;
     }
 
     /** @internal */
@@ -71,7 +73,7 @@ export class FlowEditorCommands {
         this.#apply = change => apply(change, this.#state);
         this.#onStoreAsset = onStoreAsset;
         if (this.#fresh) {
-            this.#fresh.pub(new FlowEditorCommands(state, apply, onStoreAsset));
+            this.#fresh.pub(new FlowEditorCommands(state, apply, onStoreAsset, this.#uploads));
         }
     }
 
