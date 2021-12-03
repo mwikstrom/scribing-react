@@ -283,7 +283,9 @@ export const MoreToolsButton: FC<ToolbarProps> = ({controller, boundary, editing
                             <ToolMenuDivider/>
                             <ToolMenuItem disabled={!controller.isBox()} onClick={toggleInlineBox}>
                                 <Icon
-                                    path={(controller.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
+                                    path={(
+                                        controller.getBoxStyle().inline ?? true
+                                    ) ? mdiArrowExpandHorizontal : mdiCheck}
                                     size={0.75}
                                 />
                                 <span style={{margin: "0 0.5rem"}}>
