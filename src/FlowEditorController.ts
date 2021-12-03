@@ -1108,6 +1108,7 @@ export class FlowEditorController {
     }    
 }
 
+/** @public */
 export type BooleanTextStyleKeys = {
     [K in keyof TextStyleProps]-?: boolean extends TextStyleProps[K] ? K : never
 }[keyof TextStyleProps];

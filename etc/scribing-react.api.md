@@ -4,17 +4,26 @@
 
 ```ts
 
+import { BoxStyle } from 'scribing';
+import { BoxStyleProps } from 'scribing';
 import { CSSProperties } from 'react';
 import { FC } from 'react';
+import { FlowColor } from 'scribing';
 import { FlowContent } from 'scribing';
+import { FlowNode } from 'scribing';
 import { FlowOperation } from 'scribing';
 import { FlowPresence } from 'scribing';
 import { FlowSelection } from 'scribing';
 import { FlowSyncProtocol } from 'scribing';
 import { FlowTheme } from 'scribing';
+import { ImageSource } from 'scribing';
+import { Interaction } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
+import { ParagraphVariant } from 'scribing';
 import { RecordConstructor } from 'paratype';
+import { RemoveFlowSelectionOptions } from 'scribing';
+import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
 import { TextStyleProps } from 'scribing';
 import { Type } from 'paratype';
@@ -26,10 +35,15 @@ export interface ApplyMineOptions {
 }
 
 // @public (undocumented)
+export type BooleanTextStyleKeys = {
+    [K in keyof TextStyleProps]-?: boolean extends TextStyleProps[K] ? K : never;
+}[keyof TextStyleProps];
+
+// @public (undocumented)
 export type ConnectionStatus = ("disconnected" | "connecting" | "clean" | "dirty" | "syncing" | "broken");
 
 // @public (undocumented)
-export abstract class DeferrableEvent {
+export class DeferrableEvent {
     // @internal (undocumented)
     _complete(): Promise<void>;
     // (undocumented)
@@ -63,6 +77,260 @@ export interface FlowEditorClientOptions {
     autoSync?: boolean;
     // (undocumented)
     clientKey?: string;
+    // (undocumented)
+    onSyncing?: (event: DeferrableEvent) => void;
+}
+
+// @public (undocumented)
+export class FlowEditorController {
+    constructor(state: FlowEditorState, apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
+    // (undocumented)
+    canMergeTableCells(): boolean;
+    // (undocumented)
+    canSplitTableCell(): boolean;
+    // (undocumented)
+    copy(): FlowContent[];
+    // (undocumented)
+    copyJsonString(): string | null;
+    // (undocumented)
+    decreaseBaselineOffset(): void;
+    // (undocumented)
+    decrementListLevel(): void;
+    // (undocumented)
+    expandCaretToTextRun(): void;
+    // (undocumented)
+    forEachNode(callback: (node: FlowNode) => void): void;
+    // (undocumented)
+    formatBox<K extends keyof BoxStyleProps>(key: K, value: BoxStyleProps[K]): void;
+    // (undocumented)
+    formatList(kind: "ordered" | "unordered" | null): void;
+    // (undocumented)
+    formatParagraph<K extends keyof ParagraphStyleProps>(key: K, value: ParagraphStyleProps[K]): void;
+    // (undocumented)
+    formatText<K extends keyof TextStyleProps>(key: K, value: TextStyleProps[K]): void;
+    // (undocumented)
+    getBaselineOffset(): TextStyleProps["baseline"];
+    // (undocumented)
+    getBoxColor(): FlowColor | undefined;
+    // (undocumented)
+    getBoxInteraction(): Interaction | null | undefined;
+    // (undocumented)
+    getBoxStyle(): BoxStyle;
+    // (undocumented)
+    getCaretStyle(): TextStyle;
+    // (undocumented)
+    getColor(): TextStyleProps["color"];
+    // (undocumented)
+    getDynamicExpression(): string | null | undefined;
+    // (undocumented)
+    getDynamicTextExpression(): string | null | undefined;
+    // (undocumented)
+    getFontFamily(): TextStyleProps["fontFamily"];
+    // (undocumented)
+    getFontSize(): TextStyleProps["fontSize"];
+    // (undocumented)
+    getFormattingMarks(): boolean;
+    // (undocumented)
+    getIcon(): string | null;
+    // (undocumented)
+    getImageSource(): ImageSource | null;
+    // (undocumented)
+    getInteraction(): Interaction | null | undefined;
+    // (undocumented)
+    getLineSpacing(): ParagraphStyleProps["lineSpacing"];
+    // (undocumented)
+    getLink(): TextStyleProps["link"];
+    // (undocumented)
+    getListLevel(): number | undefined;
+    // (undocumented)
+    getParagraphStyle(): ParagraphStyle;
+    // (undocumented)
+    getParagraphVariant(): ParagraphVariant | undefined;
+    // (undocumented)
+    getReadingDirection(): ParagraphStyleProps["direction"];
+    // (undocumented)
+    getSelection(): FlowSelection | null;
+    // (undocumented)
+    getTargetOptions(): TargetOptions;
+    // (undocumented)
+    getTextAlignment(): ParagraphStyleProps["alignment"];
+    // (undocumented)
+    getTextColor(): FlowColor | undefined;
+    // (undocumented)
+    getTextDirection(): ParagraphStyleProps["direction"];
+    // (undocumented)
+    getTextStyle(): TextStyle;
+    // (undocumented)
+    getUpload(id: string): Blob | null;
+    // (undocumented)
+    increaseBaselineOffset(): void;
+    // (undocumented)
+    incrementListLevel(): void;
+    // (undocumented)
+    insertBox(style?: BoxStyle, content?: FlowContent): void;
+    // (undocumented)
+    insertContent(content: FlowContent): void;
+    // (undocumented)
+    insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void>;
+    // (undocumented)
+    insertMarkup(tag: string): void;
+    // (undocumented)
+    insertNode(node: FlowNode): void;
+    // (undocumented)
+    insertPromise(content: Promise<FlowContent>): Promise<void>;
+    // (undocumented)
+    insertTable(cols: number, rows: number): void;
+    // (undocumented)
+    insertTableColumnAfter(): void;
+    // (undocumented)
+    insertTableColumnBefore(): void;
+    // (undocumented)
+    insertTableRowAfter(): void;
+    // (undocumented)
+    insertTableRowBefore(): void;
+    // (undocumented)
+    insertText(text: string): void;
+    // (undocumented)
+    isAtEndOfTableCell(): boolean;
+    // (undocumented)
+    isAtEndOfTrailingParagraph(): boolean;
+    // (undocumented)
+    isAtStartOfTableCell(): boolean;
+    // (undocumented)
+    isBold(): boolean | undefined;
+    // (undocumented)
+    isBox(): boolean;
+    // (undocumented)
+    isCaret(): boolean;
+    // (undocumented)
+    isDynamicText(): boolean;
+    // (undocumented)
+    isIcon(): boolean;
+    // (undocumented)
+    isImage(): boolean;
+    // (undocumented)
+    isInEmptyListItem(): boolean;
+    // (undocumented)
+    isItalic(): boolean | undefined;
+    // (undocumented)
+    isLink(): boolean;
+    // (undocumented)
+    isMultiRange(): boolean;
+    // (undocumented)
+    isOrderedList(): boolean | undefined;
+    // (undocumented)
+    isSpellcheckEnabled(): boolean | undefined;
+    // (undocumented)
+    isStricken(): boolean | undefined;
+    // (undocumented)
+    isSubscript(): boolean | undefined;
+    // (undocumented)
+    isSuperscript(): boolean | undefined;
+    // (undocumented)
+    isTableSelection(): boolean;
+    // (undocumented)
+    isTextAlignment(value: ParagraphStyleProps["alignment"]): boolean | undefined;
+    // (undocumented)
+    isTextDirection(value: ParagraphStyleProps["direction"]): boolean | undefined;
+    // (undocumented)
+    isUnderlined(): boolean | undefined;
+    // (undocumented)
+    isUniformNodes(predicate: (node: FlowNode) => boolean): boolean;
+    // (undocumented)
+    isUnorderedList(): boolean | undefined;
+    // (undocumented)
+    matchNodes(predicate: (node: FlowNode) => boolean): {
+        found: boolean;
+        other: boolean;
+    };
+    // (undocumented)
+    mergeTableCells(): void;
+    // (undocumented)
+    moveCaretBack(): boolean;
+    // @internal (undocumented)
+    _observe(callback: (fresh: FlowEditorController) => void): () => void;
+    // (undocumented)
+    redo(): void;
+    // (undocumented)
+    remove(whenCollapsed?: RemoveFlowSelectionOptions["whenCollapsed"]): void;
+    // (undocumented)
+    removeBackward(): void;
+    // (undocumented)
+    removeForward(): void;
+    // (undocumented)
+    removeTableColumn(): void;
+    // (undocumented)
+    removeTableRow(): void;
+    // (undocumented)
+    selectAll(): void;
+    // (undocumented)
+    setBaselineOffset(value: Exclude<TextStyleProps["baseline"], undefined>): void;
+    // (undocumented)
+    setBoxColor(value: FlowColor): void;
+    // (undocumented)
+    setBoxInteraction(value: Interaction | null): void;
+    // (undocumented)
+    setColor(value: FlowColor): void;
+    // (undocumented)
+    setDynamicExpression(value: string | null): void;
+    // (undocumented)
+    setDynamicTextExpression(value: string): void;
+    // (undocumented)
+    setFontFamily(value: Exclude<TextStyleProps["fontFamily"], undefined>): void;
+    // (undocumented)
+    setFontSize(value: Exclude<TextStyleProps["fontSize"], undefined>): void;
+    // (undocumented)
+    setIcon(data: string): void;
+    // (undocumented)
+    setImageSource(source: ImageSource): void;
+    // (undocumented)
+    setInteraction(value: Interaction | null): void;
+    // (undocumented)
+    setLineSpacing(value: Exclude<ParagraphStyleProps["lineSpacing"], undefined>): void;
+    // (undocumented)
+    setLink(value: Exclude<TextStyleProps["link"], undefined>): void;
+    // (undocumented)
+    setParagraphVariant(value: ParagraphVariant): void;
+    // (undocumented)
+    setReadingDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void;
+    // (undocumented)
+    setSelection(selection: FlowSelection | null): void;
+    // (undocumented)
+    setTextAlignment(value: Exclude<ParagraphStyleProps["alignment"], undefined>): void;
+    // (undocumented)
+    setTextColor(value: FlowColor): void;
+    // (undocumented)
+    setTextDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void;
+    // (undocumented)
+    splitTableCell(): void;
+    // @internal (undocumented)
+    _sync(state: FlowEditorState, apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"]): void;
+    // (undocumented)
+    toggleBold(): void;
+    // (undocumented)
+    toggleFormattingMarks(): void;
+    // (undocumented)
+    toggleItalic(): void;
+    // (undocumented)
+    toggleOrderedList(): void;
+    // (undocumented)
+    toggleSpellcheck(): void;
+    // (undocumented)
+    toggleStrike(): void;
+    // (undocumented)
+    toggleSubscript(): void;
+    // (undocumented)
+    toggleSuperscript(): void;
+    // (undocumented)
+    toggleTextStyle(key: BooleanTextStyleKeys): void;
+    // (undocumented)
+    toggleUnderline(): void;
+    // (undocumented)
+    toggleUnorderedList(): void;
+    // (undocumented)
+    undo(): void;
+    // (undocumented)
+    uploadAsset(blob: Blob): string;
 }
 
 // @public

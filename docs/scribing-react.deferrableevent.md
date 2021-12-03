@@ -8,7 +8,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare abstract class DeferrableEvent 
+export declare class DeferrableEvent 
 ```
 
 ## Methods

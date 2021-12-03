@@ -11,6 +11,7 @@ React components for collaborative rich text editing
 |  Class | Description |
 |  --- | --- |
 |  [DeferrableEvent](./scribing-react.deferrableevent.md) |  |
+|  [FlowEditorController](./scribing-react.floweditorcontroller.md) |  |
 |  [FlowEditorState](./scribing-react.floweditorstate.md) | Immutable state record for a flow content editor |
 |  [LoadAssetEvent](./scribing-react.loadassetevent.md) |  |
 |  [ResolveLinkEvent](./scribing-react.resolvelinkevent.md) |  |
@@ -48,5 +49,6 @@ React components for collaborative rich text editing
 
 |  Type Alias | Description |
 |  --- | --- |
+|  [BooleanTextStyleKeys](./scribing-react.booleantextstylekeys.md) |  |
 |  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
 

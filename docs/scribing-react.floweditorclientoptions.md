@@ -17,4 +17,5 @@ export interface FlowEditorClientOptions
 |  --- | --- | --- |
 |  [autoSync?](./scribing-react.floweditorclientoptions.autosync.md) | boolean | <i>(Optional)</i> |
 |  [clientKey?](./scribing-react.floweditorclientoptions.clientkey.md) | string | <i>(Optional)</i> |
+|  [onSyncing?](./scribing-react.floweditorclientoptions.onsyncing.md) | (event: [DeferrableEvent](./scribing-react.deferrableevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 
