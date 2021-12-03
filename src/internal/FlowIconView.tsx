@@ -8,7 +8,7 @@ import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
-import { ResolvedIcon } from "./ResolvedIcon";
+import { DataIcon } from "../DataIcon";
 
 export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     const { node, selection } = props;
@@ -80,7 +80,7 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
             contentEditable={false}
             onDoubleClick={onDoubleClick}
             onClick={onClick}
-            children={<ResolvedIcon data={data} className={classes.icon}/>}
+            children={<DataIcon data={data} className={classes.icon}/>}
         />
     );
 });

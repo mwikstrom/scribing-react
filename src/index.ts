@@ -14,6 +14,7 @@ export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
 
 // Components
+export * from "./DataIcon";
 export * from "./FlowView";
 export * from "./FlowEditor";
 

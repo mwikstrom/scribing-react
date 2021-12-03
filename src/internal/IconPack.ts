@@ -49,6 +49,36 @@ export function useMaterialDesignIconPath(iconName: string): string {
     return path;
 }
 
+export function useMaterialDesignIconTags(): readonly string[] | null {
+    const [result, setResult] = useState(MDI_TAGS_CACHE);
+    const meta = useMaterialDesignIconsMetadata();
+    
+    useEffect(() => {
+        if (!result && meta) {
+            setResult(MDI_TAGS_CACHE = Object.freeze(Array.from(new Set(meta.flatMap(entry => entry.tags))).sort()));
+        }
+    }, [result, meta]);
+
+    return result;
+}
+
+export function useMaterialDesignIcons(tag = ""): readonly string[] | null {
+    const [result, setResult] = useState(() => MDI_ICONS_CACHE.get(tag) ?? null);
+    const meta = useMaterialDesignIconsMetadata();
+    
+    useEffect(() => setResult(MDI_ICONS_CACHE.get(tag) ?? null), [tag]);
+    useEffect(() => {
+        if (!result && meta) {
+            const filtered = tag ? meta.filter(entry => entry.tags.includes(tag)) : meta;
+            const mapped = Object.freeze(filtered.map(entry => `@mdi/${entry.name}`));
+            MDI_ICONS_CACHE.set(tag, mapped);
+            setResult(mapped);
+        }
+    }, [tag, result, meta]);
+
+    return result;
+}
+
 export type MdiMetadata = readonly MdiMetaEntry[];
 
 export interface MdiMetaEntry {
@@ -94,5 +124,7 @@ const MDI_META_URL = `https://cdn.jsdelivr.net/npm/@mdi/svg@${MDI_VERSION}/meta.
 const MDI_SVG_URL = (iconName: string) => `https://cdn.jsdelivr.net/npm/@mdi/svg@${MDI_VERSION}/svg/${iconName}.svg`;
 let MDI_META_CACHE: MdiMetadata | null = null;
 let MDI_META_PROMISE: Promise<MdiMetadata | null> | null = null;
+let MDI_TAGS_CACHE: readonly string[] | null = null;
+const MDI_ICONS_CACHE = new Map<string, readonly string[]>();
 const MDI_ICON_PATH_CACHE = new Map<string, string>();
 const MDI_ICON_PATH_PROMISES = new Map<string, Promise<string>>();

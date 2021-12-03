@@ -43,6 +43,17 @@ export type BooleanTextStyleKeys = {
 export type ConnectionStatus = ("disconnected" | "connecting" | "clean" | "dirty" | "syncing" | "broken");
 
 // @public (undocumented)
+export const DataIcon: FC<DataIconProps>;
+
+// @public (undocumented)
+export interface DataIconProps {
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    data?: string;
+}
+
+// @public (undocumented)
 export class DeferrableEvent {
     // @internal (undocumented)
     _complete(): Promise<void>;
@@ -461,6 +472,15 @@ export class StoreAssetEvent extends DeferrableEvent {
     get url(): string | null;
     set url(value: string | null);
 }
+
+// @public (undocumented)
+export function useDataIconPacks(): readonly string[];
+
+// @public (undocumented)
+export function useDataIcons(pack?: string, tag?: string): readonly string[];
+
+// @public (undocumented)
+export function useDataIconTags(pack: string): readonly string[] | null;
 
 // @public (undocumented)
 export function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;

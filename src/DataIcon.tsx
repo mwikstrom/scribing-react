@@ -1,15 +1,22 @@
 import React, { CSSProperties, FC, useMemo } from "react";
 import Icon from "@mdi/react";
 import { mdiAlertOctagonOutline, mdiAlertOutline, mdiCheckCircleOutline, mdiInformationOutline } from "@mdi/js";
-import { PredefinedIcon } from "scribing";
-import { useMaterialDesignIconPath } from "./IconPack";
+import { PredefinedIcon, PREDEFINED_ICONS } from "scribing";
+import { 
+    ICON_PACKS, 
+    useMaterialDesignIconPath, 
+    useMaterialDesignIcons, 
+    useMaterialDesignIconTags 
+} from "./internal/IconPack";
 
-export interface ResolvedIconProps {
+/** @public */
+export interface DataIconProps {
     className?: string;
     data?: string;
 }
 
-export const ResolvedIcon: FC<ResolvedIconProps> = props => {
+/** @public */
+export const DataIcon: FC<DataIconProps> = props => {
     const { data = "" } = props;
     if (MDI_PATTERN.test(data)) {
         return <MdiIcon {...props}/>;
@@ -18,7 +25,37 @@ export const ResolvedIcon: FC<ResolvedIconProps> = props => {
     }
 };
 
-const MdiIcon: FC<ResolvedIconProps> = ({className, data = ""}) => {
+/** @public */
+export function useDataIconPacks(): readonly string[] {
+    return ICON_PACKS;
+}
+
+/** @public */
+export function useDataIconTags(pack: string): readonly string[] | null {
+    const mdiTags = useMaterialDesignIconTags();
+    if (pack === "mdi") {
+        return mdiTags;
+    } else {
+        return null;
+    }
+}
+
+/** @public */
+export function useDataIcons(pack?: string, tag?: string): readonly string[] {
+    const mdiIcons = useMaterialDesignIcons(tag);
+    return useMemo(() => {
+        const result: string[] = [];
+        if (!pack || pack === "predefined") {
+            result.push(...PREDEFINED_ICONS);
+        }
+        if ((!pack || pack === "mdi") && mdiIcons) {
+            result.push(...mdiIcons);
+        }
+        return result;
+    }, [pack, mdiIcons]);
+}
+
+const MdiIcon: FC<DataIconProps> = ({className, data = ""}) => {
     const iconName = data.replace(MDI_PATTERN, "");
     const path = useMaterialDesignIconPath(iconName);
     const iconStyle = useMemo<CSSProperties>(() => ({
@@ -28,7 +65,7 @@ const MdiIcon: FC<ResolvedIconProps> = ({className, data = ""}) => {
     return (<Icon path={path} className={className} style={iconStyle}/>);
 };
 
-const PredefinedOrPathIcon: FC<ResolvedIconProps> = ({className, data = ""}) => {
+const PredefinedOrPathIcon: FC<DataIconProps> = ({className, data = ""}) => {
     const path = useMemo(() => {
         if (data in PREDEFINED_ICON_PATHS) {
             return PREDEFINED_ICON_PATHS[data as PredefinedIcon];
