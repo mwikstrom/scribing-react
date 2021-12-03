@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorCommands } from "../../FlowEditorCommands";
 import { getFlowContentFromDataTransfer, isImageFileTransfer } from "../utils/data-transfer";
 import { fixCaretPosition } from "../utils/fix-caret-position";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";

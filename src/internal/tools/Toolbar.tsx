@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorCommands } from "../../FlowEditorCommands";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";

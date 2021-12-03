@@ -39,13 +39,13 @@ import {
     TextStyleProps,
     UnorderedListMarkerKindType
 } from "scribing";
-import { FlowEditorProps } from "../FlowEditor";
-import { FlowEditorState } from "../FlowEditorState";
-import { StoreAssetEvent } from "../StoreAssetEvent";
-import { getEndOfFlow } from "./utils/get-end-of-flow";
-import { PubSub } from "./utils/PubSub";
+import { FlowEditorProps } from "./FlowEditor";
+import { FlowEditorState } from "./FlowEditorState";
+import { StoreAssetEvent } from "./StoreAssetEvent";
+import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
+import { PubSub } from "./internal/utils/PubSub";
 
-/** @internal */
+/** @public */
 export class FlowEditorCommands {
     #state!: FlowEditorState;
     #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;

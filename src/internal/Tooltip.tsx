@@ -2,7 +2,7 @@ import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
-import { FlowEditorCommands } from "./FlowEditorCommands";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
 import { Toolbar } from "./tools/Toolbar";

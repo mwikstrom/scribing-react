@@ -1,6 +1,6 @@
 import { VirtualElement } from "@popperjs/core";
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FlowEditorCommands } from "./FlowEditorCommands";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { Tooltip } from "./Tooltip";
 import { TooltipData, TooltipManager } from "./TooltipManager";

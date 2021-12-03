@@ -1,5 +1,5 @@
 import { FlowContent, FlowImage, FlowNode, TextRun, TextStyle } from "scribing";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorCommands } from "../../FlowEditorCommands";
 import { createImageSource } from "./create-image-source";
 
 export const isImageFileTransfer = (data: DataTransfer): boolean => getImageFileTransferItems(data).length > 0;

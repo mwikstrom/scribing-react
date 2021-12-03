@@ -1,5 +1,5 @@
 import React, { createContext, FC, ReactNode, useContext } from "react";
-import { FlowEditorCommands } from "./FlowEditorCommands";
+import { FlowEditorCommands } from "../FlowEditorCommands";
 
 /**
  * @internal

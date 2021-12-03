@@ -1,4 +1,4 @@
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorCommands } from "../../FlowEditorCommands";
 
 /** @internal */
 export type KeyHandler = (

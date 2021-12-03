@@ -1,5 +1,5 @@
 import { FlowContent, LineBreak, ParagraphBreak } from "scribing";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorCommands } from "../../FlowEditorCommands";
 import { createFlowContent, getFlowContentFromDataTransfer, getFlowContentFromPlainText } from "../utils/data-transfer";
 
 /** @internal */

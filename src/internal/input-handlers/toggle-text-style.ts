@@ -1,4 +1,4 @@
-import { BooleanTextStyleKeys } from "../FlowEditorCommands";
+import { BooleanTextStyleKeys } from "../../FlowEditorCommands";
 import { InputHandler } from "./InputHandler";
 
 /** @internal */

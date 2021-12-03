@@ -21,7 +21,7 @@ import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
 import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { TooltipManager } from "./internal/TooltipManager";
-import { FlowEditorCommands } from "./internal/FlowEditorCommands";
+import { FlowEditorCommands } from "./FlowEditorCommands";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
