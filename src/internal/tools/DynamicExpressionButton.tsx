@@ -6,7 +6,7 @@ import { ToolbarProps } from "./Toolbar";
 import { ToolMenu } from "./ToolMenu";
 import { ScriptEditor } from "./ScriptEditor";
 
-export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
+export const DynamicExpressionButton: FC<ToolbarProps> = ({controller, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isEditorOpen, setEditorOpen] = useState<boolean>(false);
     
@@ -14,12 +14,12 @@ export const DynamicExpressionButton: FC<ToolbarProps> = ({commands, boundary, e
     const closeEditor = useCallback(() => setEditorOpen(false), [setEditorOpen]);
         
     const setExpression = useCallback((script: string) => {
-        commands.setDynamicExpression(script);
+        controller.setDynamicExpression(script);
         closeEditor();
-    }, [commands, closeEditor]);
+    }, [controller, closeEditor]);
     
-    const expression = commands.getDynamicExpression();
-    const disabled = !commands.isBox() && !commands.isDynamicText();
+    const expression = controller.getDynamicExpression();
+    const disabled = !controller.isBox() && !controller.isDynamicText();
     const active = expression === void(0) ? void(0) : expression !== null;
     
     return (

@@ -23,9 +23,9 @@ const ALL_HANDLERS = [
     UndoHandler,
 ];
 
-export const handleKeyEvent: KeyHandler = (event, commands) => {
+export const handleKeyEvent: KeyHandler = (event, controller) => {
     for (const handler of ALL_HANDLERS) {
-        handler(event, commands);
+        handler(event, controller);
         if (event.defaultPrevented) {
             break;
         }

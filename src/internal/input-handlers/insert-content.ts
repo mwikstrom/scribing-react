@@ -2,9 +2,9 @@ import { getContentFromInput } from "./get-content-from-input";
 import { InputHandler } from "./InputHandler";
 
 /** @internal */
-export const insertContent: InputHandler = (commands, event) => {
-    const content = getContentFromInput(event, commands);
+export const insertContent: InputHandler = (controller, event) => {
+    const content = getContentFromInput(event, controller);
     if (content) {
-        commands.insertContentOrPromise(content);
+        controller.insertContentOrPromise(content);
     }
 };

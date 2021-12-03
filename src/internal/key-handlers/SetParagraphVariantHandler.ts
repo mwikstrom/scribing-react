@@ -1,6 +1,6 @@
 import { KeyHandler } from "./KeyHandler";
 
-export const SetParagraphVariantHandler: KeyHandler = (e, commands) => {
+export const SetParagraphVariantHandler: KeyHandler = (e, controller) => {
     // CTRL + 0 to CTRL + 9 changes paragraph style variant
     if (e.key >= "0" && e.key <= "9" && e.ctrlKey && !e.shiftKey && !e.altKey) {
         e.preventDefault();
@@ -16,6 +16,6 @@ export const SetParagraphVariantHandler: KeyHandler = (e, commands) => {
             "code",     // CTRL + 8
             "preamble", // CTRL + 9
         ] as const)[e.key.charCodeAt(0) - "0".charCodeAt(0)];
-        commands.setParagraphVariant(variant);
+        controller.setParagraphVariant(variant);
     }
 };

@@ -6,16 +6,16 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { getParagraphVariantLocaleKey } from "../FlowLocale";
 import { Selector } from "./Selector";
 
-export const ParagraphVariantButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
+export const ParagraphVariantButton: FC<ToolbarProps> = ({controller, boundary, editingHost}) => {
     const locale = useFlowLocale();
     return (
         <Selector
             editingHost={editingHost}
             boundary={boundary}
             options={PARAGRAPH_VARIANTS}
-            current={commands.getParagraphVariant()}
+            current={controller.getParagraphVariant()}
             icon={mdiFormatText}
-            onChange={option => commands.setParagraphVariant(option)}
+            onChange={option => controller.setParagraphVariant(option)}
             getLabel={option => locale[getParagraphVariantLocaleKey(option)]}
         />
     );

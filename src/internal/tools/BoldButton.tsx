@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatBold } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const BoldButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const BoldButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isBold()}
-        onClick={commands.toggleBold.bind(commands)}
+        active={controller.isBold()}
+        onClick={controller.toggleBold.bind(controller)}
         children={<Icon path={mdiFormatBold}/>}
     />
 );

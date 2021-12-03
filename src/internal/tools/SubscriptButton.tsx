@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatSubscript } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const SubscriptButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const SubscriptButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isSubscript()}
-        onClick={commands.toggleSubscript.bind(commands)}
+        active={controller.isSubscript()}
+        onClick={controller.toggleSubscript.bind(controller)}
         children={<Icon path={mdiFormatSubscript}/>}
     />
 );

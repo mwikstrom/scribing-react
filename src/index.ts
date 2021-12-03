@@ -18,7 +18,7 @@ export * from "./FlowView";
 export * from "./FlowEditor";
 
 // Controller
-export * from "./FlowEditorCommands";
+export * from "./FlowEditorController";
 
 // Client hook
 export * from "./FlowEditorClient";

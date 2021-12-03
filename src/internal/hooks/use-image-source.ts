@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { ImageSource } from "scribing";
-import { useFlowEditorCommands } from "../FlowEditorCommandsScope";
+import { useFlowEditorController } from "../FlowEditorControllerScope";
 import { useAssetUrl } from "./use-asset-url";
 import { useBlobUrl } from "./use-blob-url";
 import { useVerifiedImageUrl, VerifiedImage } from "./use-verified-image";
@@ -21,14 +21,14 @@ function useImageSourcePlaceholder(placeholder: string | null | undefined): Veri
 }
 
 function useImageSourceUrl(sourceUrl: string, uploadId?: string): VerifiedImage {
-    const commands = useFlowEditorCommands();
+    const controller = useFlowEditorController();
     const uploadBlob = useMemo(() => {
-        if (uploadId && commands) {
-            return commands.getUpload(uploadId);
+        if (uploadId && controller) {
+            return controller.getUpload(uploadId);
         } else {
             return null;
         }
-    }, [commands, uploadId]);
+    }, [controller, uploadId]);
     const uploadUrl = useBlobUrl(uploadBlob);
     const assetUrl = useAssetUrl(sourceUrl);
     const verifiedUrl = useVerifiedImageUrl(uploadUrl ?? (typeof assetUrl === "string" ? assetUrl : ""));

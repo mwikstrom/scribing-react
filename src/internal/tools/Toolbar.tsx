@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { FlowEditorCommands } from "../../FlowEditorCommands";
+import { FlowEditorController } from "../../FlowEditorController";
 import { ToolGroup } from "./ToolGroup";
 import { ToolDivider } from "./ToolDivider";
 import { BoldButton } from "./BoldButton";
@@ -28,20 +28,20 @@ import { BoxVariantButton } from "./BoxVariantButton";
 /** @internal */
 export interface ToolbarProps {
     editingHost: HTMLElement | null;
-    commands: FlowEditorCommands;
+    controller: FlowEditorController;
     boundary?: HTMLElement | null;
 }
 
 /** @internal */
 export const Toolbar: FC<ToolbarProps> = props => {
-    const { commands: givenCommands, ...rest } = props;
-    const commands = useFreshCommands(givenCommands);
-    const toolProps = { commands, ...rest };
+    const { controller: givenController, ...rest } = props;
+    const controller = useFreshController(givenController);
+    const toolProps = { controller, ...rest };
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.line}>
-                {commands.isBox() ? (
+                {controller.isBox() ? (
                     <BoxVariantButton {...toolProps}/>
                 ) : (
                     <ParagraphVariantButton {...toolProps}/>
@@ -106,7 +106,7 @@ const useStyles = createUseStyles({
     generateId: makeJssId("Toolbar"),
 });
 
-const useFreshCommands = (given: FlowEditorCommands) => {
+const useFreshController = (given: FlowEditorController) => {
     const [fresh, setFresh] = useState(given);
     useEffect(() => {
         let active = true;

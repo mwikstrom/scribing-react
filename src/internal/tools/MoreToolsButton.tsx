@@ -43,7 +43,7 @@ import { createImageSource } from "../utils/create-image-source";
 import { InputEditor } from "./InputEditor";
 import { TableSizeSelector } from "./TableSizeSelector";
 
-export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
+export const MoreToolsButton: FC<ToolbarProps> = ({controller, boundary, editingHost}) => {
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<
         boolean | 
@@ -57,123 +57,123 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
     const closeMenu = useCallback(() => setMenuOpen(false), []);
     
     const toggleFormattingMarks = useCallback(() => {
-        commands.toggleFormattingMarks();
+        controller.toggleFormattingMarks();
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const toggleSpellcheck = useCallback(() => {
-        commands.toggleSpellcheck();
+        controller.toggleSpellcheck();
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const toggleInlineBox = useCallback(() => {
-        const { inline = true } = commands.getBoxStyle();
-        commands.formatBox("inline", !inline);
+        const { inline = true } = controller.getBoxStyle();
+        controller.formatBox("inline", !inline);
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const setReadingDirection = useCallback((value: Exclude<ParagraphStyleProps["direction"], undefined>) => {
-        commands.setReadingDirection(value);
+        controller.setReadingDirection(value);
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const insertBox = useCallback(() => {
-        commands.insertBox();
+        controller.insertBox();
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const beginInsertDynamicText = useCallback(() => {
         setMenuOpen("insert_dynamic_text");
     }, [setMenuOpen, editingHost]);
 
     const insertDynamicText = useCallback((expression: string) => {
-        commands.insertNode(new DynamicText({ expression, style: commands.getCaretStyle() }));
+        controller.insertNode(new DynamicText({ expression, style: controller.getCaretStyle() }));
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const beginInsertMarkup = useCallback(() => {
         setMenuOpen("insert_markup");
     }, [setMenuOpen, editingHost]);
     
     const insertMarkup = useCallback((tag: string) => {
-        commands.insertMarkup(tag);
+        controller.insertMarkup(tag);
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const beginInsertTable = useCallback(() => {
         setMenuOpen("insert_table");
     }, [setMenuOpen, editingHost]);
     
     const insertTable = useCallback((cols: number, rows: number) => {
-        commands.insertTable(cols, rows);
+        controller.insertTable(cols, rows);
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const beginIcon = useCallback(() => {
         setMenuOpen("icon");
     }, [setMenuOpen, editingHost]);
 
     const applyIcon = useCallback((data: string) => {
-        if (commands.isIcon()) {
-            commands.setIcon(data);
+        if (controller.isIcon()) {
+            controller.setIcon(data);
         } else {
-            commands.insertNode(new FlowIcon({ data, style: TextStyle.empty }));
+            controller.insertNode(new FlowIcon({ data, style: TextStyle.empty }));
         }
         closeMenu();
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const setOrInsertImage = useCallback(async () => {
         closeMenu();
         const blob = await fileOpen({mimeTypes: ["image/*"]});
-        const uploadId = commands.uploadAsset(blob);
+        const uploadId = controller.uploadAsset(blob);
         const source = await createImageSource(blob, uploadId);
 
-        if (commands.isImage()) {
-            commands.setImageSource(source);
+        if (controller.isImage()) {
+            controller.setImageSource(source);
         } else {
-            commands.insertNode(new FlowImage({ source, style: TextStyle.empty }));
+            controller.insertNode(new FlowImage({ source, style: TextStyle.empty }));
         }
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
 
     const insertRowAbove = useCallback(() => {
-        commands.insertTableRowBefore();
+        controller.insertTableRowBefore();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const insertRowBelow = useCallback(() => {
-        commands.insertTableRowAfter();
+        controller.insertTableRowAfter();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const insertColumnBefore = useCallback(() => {
-        commands.insertTableColumnBefore();
+        controller.insertTableColumnBefore();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const insertColumnAfter = useCallback(() => {
-        commands.insertTableColumnAfter();
+        controller.insertTableColumnAfter();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const mergeCells = useCallback(() => {
-        commands.mergeTableCells();
+        controller.mergeTableCells();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const splitCell = useCallback(() => {
-        commands.splitTableCell();
+        controller.splitTableCell();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const removeRow = useCallback(() => {
-        commands.removeTableRow();
+        controller.removeTableRow();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     const removeColumn = useCallback(() => {
-        commands.removeTableColumn();
+        controller.removeTableColumn();
         closeMenu();
-    }, [commands, closeMenu]);
+    }, [controller, closeMenu]);
 
     return (
         <>
@@ -182,7 +182,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
             </ToolButton>
             {buttonRef && isMenuOpen === true && (
                 <ToolMenu anchor={buttonRef} onClose={closeMenu} placement="bottom-end" boundary={boundary}>
-                    {commands.isTableSelection() ? (
+                    {controller.isTableSelection() ? (
                         <>
                             <ToolMenuItem onClick={insertRowAbove}>
                                 <Icon path={mdiTableRowPlusBefore} size={0.75}/>
@@ -209,13 +209,13 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                                 </span>
                             </ToolMenuItem>
                             <ToolMenuDivider/>
-                            <ToolMenuItem disabled={!commands.canMergeTableCells()} onClick={mergeCells}>
+                            <ToolMenuItem disabled={!controller.canMergeTableCells()} onClick={mergeCells}>
                                 <Icon path={mdiTableMergeCells} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.merge_cells}
                                 </span>
                             </ToolMenuItem>
-                            <ToolMenuItem disabled={!commands.canSplitTableCell()} onClick={splitCell}>
+                            <ToolMenuItem disabled={!controller.canSplitTableCell()} onClick={splitCell}>
                                 <Icon path={mdiTableSplitCell} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.split_cell}
@@ -237,34 +237,34 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         </>
                     ) : (
                         <>
-                            <ToolMenuItem disabled={commands.isMultiRange()} onClick={insertBox}>
+                            <ToolMenuItem disabled={controller.isMultiRange()} onClick={insertBox}>
                                 <Icon path={mdiTextBoxOutline} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.insert_box}
                                 </span>
                             </ToolMenuItem>
-                            <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertDynamicText}>
+                            <ToolMenuItem disabled={!controller.isCaret()} onClick={beginInsertDynamicText}>
                                 <Icon path={mdiFunctionVariant} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.insert_dynamic_text}&hellip;
                                 </span>
                             </ToolMenuItem>
-                            <ToolMenuItem disabled={!commands.isCaret() && !commands.isIcon()} onClick={beginIcon}>
+                            <ToolMenuItem disabled={!controller.isCaret() && !controller.isIcon()} onClick={beginIcon}>
                                 <Icon path={mdiCreation} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
-                                    {commands.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
+                                    {controller.isIcon() ? locale.change_icon : locale.insert_icon}&hellip;
                                 </span>
                             </ToolMenuItem>
                             <ToolMenuItem
-                                disabled={!commands.isCaret() && !commands.isImage()}
+                                disabled={!controller.isCaret() && !controller.isImage()}
                                 onClick={setOrInsertImage}
                             >
                                 <Icon path={mdiImage} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
-                                    {commands.isImage() ? locale.change_image : locale.insert_image}&hellip;
+                                    {controller.isImage() ? locale.change_image : locale.insert_image}&hellip;
                                 </span>
                             </ToolMenuItem>
-                            <ToolMenuItem disabled={!commands.isCaret()} onClick={beginInsertTable}>
+                            <ToolMenuItem disabled={!controller.isCaret()} onClick={beginInsertTable}>
                                 <Icon path={mdiTable} size={0.75}/>
                                 <span style={{margin: "0 0.5rem"}}>
                                     {locale.insert_table}&hellip;
@@ -278,12 +278,12 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                             </ToolMenuItem>
                         </>
                     )}
-                    {commands.isBox() && (
+                    {controller.isBox() && (
                         <>
                             <ToolMenuDivider/>
-                            <ToolMenuItem disabled={!commands.isBox()} onClick={toggleInlineBox}>
+                            <ToolMenuItem disabled={!controller.isBox()} onClick={toggleInlineBox}>
                                 <Icon
-                                    path={(commands.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
+                                    path={(controller.getBoxStyle().inline ?? true) ? mdiArrowExpandHorizontal : mdiCheck}
                                     size={0.75}
                                 />
                                 <span style={{margin: "0 0.5rem"}}>
@@ -295,7 +295,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                     <ToolMenuDivider/>
                     <ToolMenuItem onClick={setReadingDirection.bind(void(0), "ltr")}>
                         <Icon
-                            path={commands.getReadingDirection() === "ltr" ? mdiCheck : mdiFormatTextdirectionLToR}
+                            path={controller.getReadingDirection() === "ltr" ? mdiCheck : mdiFormatTextdirectionLToR}
                             size={0.75}
                         />
                         <span style={{margin: "0 0.5rem"}}>
@@ -304,7 +304,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                     </ToolMenuItem>
                     <ToolMenuItem onClick={setReadingDirection.bind(void(0), "rtl")}>
                         <Icon
-                            path={commands.getReadingDirection() === "rtl" ? mdiCheck : mdiFormatTextdirectionRToL}
+                            path={controller.getReadingDirection() === "rtl" ? mdiCheck : mdiFormatTextdirectionRToL}
                             size={0.75}
                         />
                         <span style={{margin: "0 0.5rem"}}>
@@ -313,14 +313,14 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                     </ToolMenuItem>
                     <ToolMenuDivider/>
                     <ToolMenuItem onClick={toggleSpellcheck}>
-                        <Icon path={commands.isSpellcheckEnabled() ? mdiCheck : mdiSpellcheck} size={0.75}/>
+                        <Icon path={controller.isSpellcheckEnabled() ? mdiCheck : mdiSpellcheck} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.enable_spell_check}
                         </span>
                     </ToolMenuItem>
                     <ToolMenuDivider/>
                     <ToolMenuItem onClick={toggleFormattingMarks}>
-                        <Icon path={commands.getFormattingMarks() ? mdiCheck : mdiFormatPilcrow} size={0.75}/>
+                        <Icon path={controller.getFormattingMarks() ? mdiCheck : mdiFormatPilcrow} size={0.75}/>
                         <span style={{margin: "0 0.5rem"}}>
                             {locale.show_formatting_marks}
                         </span>
@@ -381,7 +381,7 @@ export const MoreToolsButton: FC<ToolbarProps> = ({commands, boundary, editingHo
                         <IconChooser
                             editingHost={editingHost}
                             boundary={boundary}
-                            current={commands.getIcon()}
+                            current={controller.getIcon()}
                             onIconSelected={applyIcon}
                         />
                     )}

@@ -2,7 +2,7 @@ import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorController } from "../FlowEditorController";
 import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
 import { Toolbar } from "./tools/Toolbar";
@@ -15,7 +15,7 @@ export interface TooltipProps {
     key: number;
     reference: VirtualElement,
     active: boolean;
-    content: string | FlowEditorCommands;
+    content: string | FlowEditorController;
     editingHost: HTMLElement | null;
     boundary?: HTMLElement | null;
 }
@@ -79,8 +79,8 @@ export const Tooltip: FC<TooltipProps> = props => {
     };
 
     const children = useMemo(() => {
-        if (content instanceof FlowEditorCommands) {
-            return <Toolbar commands={content} boundary={givenBoundary} editingHost={editingHost}/>;
+        if (content instanceof FlowEditorController) {
+            return <Toolbar controller={content} boundary={givenBoundary} editingHost={editingHost}/>;
         } else if (typeof content === "string") {
             return <TooltipMessage text={content}/>;
         } else {

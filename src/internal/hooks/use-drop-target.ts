@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlowEditorCommands } from "../../FlowEditorCommands";
+import { FlowEditorController } from "../../FlowEditorController";
 import { getFlowContentFromDataTransfer, isImageFileTransfer } from "../utils/data-transfer";
 import { fixCaretPosition } from "../utils/fix-caret-position";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
@@ -12,7 +12,7 @@ export interface DropTarget {
 }
 
 /** @internal */
-export function useDropTarget(editingHost: HTMLElement | null, commands: FlowEditorCommands): DropTarget {
+export function useDropTarget(editingHost: HTMLElement | null, controller: FlowEditorController): DropTarget {
     const [active, setActive] = useState(false);
     const [leaving, setLeaving] = useState(false);
 
@@ -26,7 +26,7 @@ export function useDropTarget(editingHost: HTMLElement | null, commands: FlowEdi
         if (dataTransfer) {
             dataTransfer.dropEffect = isImageFileTransfer(dataTransfer) ? "copy" : "none";
         }
-    }, [commands]);
+    }, [controller]);
 
     const handleDrop = useCallback((e: DragEvent) => {
         const { dataTransfer } = e;
@@ -37,12 +37,12 @@ export function useDropTarget(editingHost: HTMLElement | null, commands: FlowEdi
             editingHost.focus();
         }
         if (dataTransfer) {
-            const content = getFlowContentFromDataTransfer(dataTransfer, commands);
+            const content = getFlowContentFromDataTransfer(dataTransfer, controller);
             if (content) {
-                commands.insertContentOrPromise(content);
+                controller.insertContentOrPromise(content);
             }
         }
-    }, [commands, editingHost]);
+    }, [controller, editingHost]);
 
     useEffect(() => {
         if (active && leaving) {

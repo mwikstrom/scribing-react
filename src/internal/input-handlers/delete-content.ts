@@ -1,16 +1,16 @@
 import { InputHandler } from "./InputHandler";
 
 /** @internal */
-export const deleteContent: InputHandler = commands => {
-    commands.remove();
+export const deleteContent: InputHandler = controller => {
+    controller.remove();
 };
 
 /** @internal */
-export const deleteContentBackward: InputHandler = commands => {
-    commands.removeBackward();
+export const deleteContentBackward: InputHandler = controller => {
+    controller.removeBackward();
 };
 
 /** @internal */
-export const deleteContentForward: InputHandler = commands => {
-    commands.removeForward();
+export const deleteContentForward: InputHandler = controller => {
+    controller.removeForward();
 };

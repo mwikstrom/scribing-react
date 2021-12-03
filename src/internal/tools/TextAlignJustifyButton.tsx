@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatAlignJustify } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const TextAlignJustifyButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const TextAlignJustifyButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isTextAlignment("justify")}
-        onClick={commands.setTextAlignment.bind(commands, "justify")}
+        active={controller.isTextAlignment("justify")}
+        onClick={controller.setTextAlignment.bind(controller, "justify")}
         children={<Icon path={mdiFormatAlignJustify}/>}
     />
 );

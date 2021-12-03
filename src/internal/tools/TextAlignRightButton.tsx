@@ -4,13 +4,13 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatAlignRight } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const TextAlignRightButton: FC<ToolbarProps> = ({commands, editingHost}) => {
-    const alignment = commands.isTextDirection("rtl") ? "start" : "end";
+export const TextAlignRightButton: FC<ToolbarProps> = ({controller, editingHost}) => {
+    const alignment = controller.isTextDirection("rtl") ? "start" : "end";
     return (
         <ToolButton
             editingHost={editingHost}
-            active={commands.isTextAlignment(alignment)}
-            onClick={commands.setTextAlignment.bind(commands, alignment)}
+            active={controller.isTextAlignment(alignment)}
+            onClick={controller.setTextAlignment.bind(controller, alignment)}
             children={<Icon path={mdiFormatAlignRight}/>}
         />
     );

@@ -14,7 +14,7 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { OpenUrlEditor } from "./OpenUrlEditor";
 import { ScriptEditor } from "./ScriptEditor";
 
-export const InteractionButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
+export const InteractionButton: FC<ToolbarProps> = ({controller, boundary, editingHost}) => {
     const locale = useFlowLocale();
     const [buttonRef, setButtonRef] = useState<HTMLElement | null>(null);
     const [isMenuOpen, setMenuOpen] = useState<boolean | "url" | "script">(false);
@@ -25,30 +25,30 @@ export const InteractionButton: FC<ToolbarProps> = ({commands, boundary, editing
     const closeMenu = useCallback(() => setMenuOpen(false), [setMenuOpen]);
     
     const clearInteraction = useCallback(() => {
-        commands.setInteraction(null);
+        controller.setInteraction(null);
         closeMenu();
         if (editingHost) {
             editingHost.focus();
         }
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
     
     const setOpenUrl = useCallback((url: string) => {
-        commands.setInteraction(new OpenUrl({ url }));
+        controller.setInteraction(new OpenUrl({ url }));
         closeMenu();
         if (editingHost) {
             editingHost.focus();
         }
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
     
     const setRunScript = useCallback((script: string) => {
-        commands.setInteraction(new RunScript({ script }));
+        controller.setInteraction(new RunScript({ script }));
         closeMenu();
         if (editingHost) {
             editingHost.focus();
         }
-    }, [commands, closeMenu, editingHost]);
+    }, [controller, closeMenu, editingHost]);
     
-    const interaction = commands.getInteraction();
+    const interaction = controller.getInteraction();
     const active = interaction === void(0) ? void(0) : interaction !== null;
     
     return (

@@ -1,6 +1,6 @@
 import { KeyHandler } from "./KeyHandler";
 
-export const SetListMarkerHandler: KeyHandler = (e, commands) => {
+export const SetListMarkerHandler: KeyHandler = (e, controller) => {
     // ALT + 0 to ALT + 9 changes list marker kind
     if (e.key >= "0" && e.key <= "9" && !e.ctrlKey && !e.shiftKey && e.altKey) {
         e.preventDefault();
@@ -17,9 +17,9 @@ export const SetListMarkerHandler: KeyHandler = (e, commands) => {
             "square",       // ALT + SHIFT + 9
         ] as const)[e.key.charCodeAt(0) - "0".charCodeAt(0)];
         if (kind === "ordered" || kind === "unordered") {
-            commands.formatList(kind);
+            controller.formatList(kind);
         } else {
-            commands.formatParagraph("listMarker", kind);
+            controller.formatParagraph("listMarker", kind);
         }
     }
 };

@@ -1,5 +1,5 @@
 import { FlowContent, FlowImage, FlowNode, TextRun, TextStyle } from "scribing";
-import { FlowEditorCommands } from "../../FlowEditorCommands";
+import { FlowEditorController } from "../../FlowEditorController";
 import { createImageSource } from "./create-image-source";
 
 export const isImageFileTransfer = (data: DataTransfer): boolean => getImageFileTransferItems(data).length > 0;
@@ -17,7 +17,7 @@ export const getImageFileTransferItems = (data: DataTransfer): DataTransferItem[
 
 export const getFlowContentFromDataTransfer = (
     data: DataTransfer,
-    commands: FlowEditorCommands,
+    controller: FlowEditorController,
 ): FlowContent | null | Promise<FlowContent>=> {
     const jsonFlowContent = data.getData(FlowContent.jsonMimeType);
     if (jsonFlowContent) {
@@ -25,12 +25,12 @@ export const getFlowContentFromDataTransfer = (
     }
 
     if (isImageFileTransfer(data)) {
-        return getFlowContentFromImageFileTransfer(data, commands);
+        return getFlowContentFromImageFileTransfer(data, controller);
     }
 
     const plainText = data.getData("text/plain");
     if (plainText) {
-        return getFlowContentFromPlainText(plainText, commands.getCaretStyle());
+        return getFlowContentFromPlainText(plainText, controller.getCaretStyle());
     }
 
     return null;
@@ -44,15 +44,15 @@ export const getFlowContentFromPlainText = (data: string, caret: TextStyle): Flo
 
 export const getFlowContentFromImageFileTransfer = async (
     data: DataTransfer,
-    commands: FlowEditorCommands,
+    controller: FlowEditorController,
 ): Promise<FlowContent> => {
     const nodes: FlowNode[] = [];
     for (const item of getImageFileTransferItems(data)) {
         const file = item.getAsFile();
         if (file !== null) {
-            const uploadId = commands.uploadAsset(file);
+            const uploadId = controller.uploadAsset(file);
             const source = await createImageSource(file, uploadId);
-            nodes.push(new FlowImage({ source, style: commands.getCaretStyle() }));
+            nodes.push(new FlowImage({ source, style: controller.getCaretStyle() }));
         }
     }
     return createFlowContent(...nodes);

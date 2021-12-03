@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatUnderline } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const UnderlineButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const UnderlineButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isUnderlined()}
-        onClick={commands.toggleUnderline.bind(commands)}
+        active={controller.isUnderlined()}
+        onClick={controller.toggleUnderline.bind(controller)}
         children={<Icon path={mdiFormatUnderline}/>}
     />
 );

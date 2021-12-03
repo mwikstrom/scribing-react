@@ -6,16 +6,16 @@ import { useFlowLocale } from "../FlowLocaleScope";
 import { getBoxVariantLocaleKey } from "../FlowLocale";
 import { Selector } from "./Selector";
 
-export const BoxVariantButton: FC<ToolbarProps> = ({commands, boundary, editingHost}) => {
+export const BoxVariantButton: FC<ToolbarProps> = ({controller, boundary, editingHost}) => {
     const locale = useFlowLocale();
     return (
         <Selector
             editingHost={editingHost}
             boundary={boundary}
             options={BOX_VARIANTS}
-            current={commands.getBoxStyle().variant}
+            current={controller.getBoxStyle().variant}
             icon={mdiTextBoxOutline}
-            onChange={option => commands.formatBox("variant", option)}
+            onChange={option => controller.formatBox("variant", option)}
             getLabel={option => locale[getBoxVariantLocaleKey(option)]}
         />
     );

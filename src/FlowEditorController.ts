@@ -46,12 +46,12 @@ import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
 import { PubSub } from "./internal/utils/PubSub";
 
 /** @public */
-export class FlowEditorCommands {
+export class FlowEditorController {
     #state!: FlowEditorState;
     #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
     #onStoreAsset: FlowEditorProps["onStoreAsset"];
     readonly #uploads = new Map<string, Blob>();
-    #fresh: PubSub<FlowEditorCommands> | undefined;
+    #fresh: PubSub<FlowEditorController> | undefined;
 
     constructor(
         state: FlowEditorState,
@@ -73,16 +73,16 @@ export class FlowEditorCommands {
         this.#apply = change => apply(change, this.#state);
         this.#onStoreAsset = onStoreAsset;
         if (this.#fresh) {
-            this.#fresh.pub(new FlowEditorCommands(state, apply, onStoreAsset, this.#uploads));
+            this.#fresh.pub(new FlowEditorController(state, apply, onStoreAsset, this.#uploads));
         }
     }
 
     /** @internal */
     _observe(
-        callback: (fresh: FlowEditorCommands) => void,
+        callback: (fresh: FlowEditorController) => void,
     ): () => void {
         if (!this.#fresh) {
-            this.#fresh = new PubSub<FlowEditorCommands>(this);
+            this.#fresh = new PubSub<FlowEditorController>(this);
         }
         return this.#fresh.sub(callback);
     }

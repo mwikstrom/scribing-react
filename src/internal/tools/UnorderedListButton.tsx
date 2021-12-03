@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatListBulleted } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const UnorderedListButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const UnorderedListButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isUnorderedList()}
-        onClick={commands.toggleUnorderedList.bind(commands)}
+        active={controller.isUnorderedList()}
+        onClick={controller.toggleUnorderedList.bind(controller)}
         children={<Icon path={mdiFormatListBulleted}/>}
     />
 );

@@ -4,13 +4,13 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatIndentIncrease } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const IncrementListLevelButton: FC<ToolbarProps> = ({commands, editingHost}) => {
-    const current = commands.getListLevel();
+export const IncrementListLevelButton: FC<ToolbarProps> = ({controller, editingHost}) => {
+    const current = controller.getListLevel();
     return (
         <ToolButton
             editingHost={editingHost}
             disabled={typeof current === "number" && current >= 9}
-            onClick={commands.incrementListLevel.bind(commands)}
+            onClick={controller.incrementListLevel.bind(controller)}
             children={<Icon path={mdiFormatIndentIncrease}/>}
         />
     );

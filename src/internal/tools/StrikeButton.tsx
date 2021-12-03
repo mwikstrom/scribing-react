@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatStrikethrough } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const StrikeButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const StrikeButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isStricken()}
-        onClick={commands.toggleStrike.bind(commands)}
+        active={controller.isStricken()}
+        onClick={controller.toggleStrike.bind(controller)}
         children={<Icon path={mdiFormatStrikethrough}/>}
     />
 );

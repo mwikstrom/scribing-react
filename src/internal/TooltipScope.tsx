@@ -1,6 +1,6 @@
 import { VirtualElement } from "@popperjs/core";
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FlowEditorCommands } from "../FlowEditorCommands";
+import { FlowEditorController } from "../FlowEditorController";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { Tooltip } from "./Tooltip";
 import { TooltipData, TooltipManager } from "./TooltipManager";
@@ -46,7 +46,7 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         if (event.key === "." && event.ctrlKey) {
             if (pending !== null) {
                 setDisplay(pending);
-            } else if (active === null && current?.content instanceof FlowEditorCommands) {
+            } else if (active === null && current?.content instanceof FlowEditorController) {
                 setDisplay(current);
             }
         } else {
@@ -69,18 +69,18 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         }
 
         if (
-            current.content instanceof FlowEditorCommands && 
+            current.content instanceof FlowEditorController && 
             current.content.isCaret() &&
             !(
-                active?.content instanceof FlowEditorCommands &&
+                active?.content instanceof FlowEditorController &&
                 active.content.isCaret()
             )
         ) {
             setActive(null);
             setPending(current);
         } else if (
-            current.content instanceof FlowEditorCommands ||
-            !(active?.content instanceof FlowEditorCommands)
+            current.content instanceof FlowEditorController ||
+            !(active?.content instanceof FlowEditorController)
         ) {
             setDisplay(current);
         }
@@ -163,14 +163,14 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     return showContent.call(this, reference, message);
 }
 
-function showTools(this: TooltipSource, reference: VirtualElement, commands: FlowEditorCommands): () => void {
-    return showContent.call(this, reference, commands);
+function showTools(this: TooltipSource, reference: VirtualElement, controller: FlowEditorController): () => void {
+    return showContent.call(this, reference, controller);
 }
 
 function showContent(
     this: TooltipSource,
     reference: VirtualElement,
-    content: string | FlowEditorCommands
+    content: string | FlowEditorController
 ): () => void {
     const { manager, key } = this;
     let active = true;

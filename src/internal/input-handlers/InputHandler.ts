@@ -1,7 +1,7 @@
-import { FlowEditorCommands } from "../../FlowEditorCommands";
+import { FlowEditorController } from "../../FlowEditorController";
 
 /** @internal */
 export type InputHandler = (
-    commands: FlowEditorCommands,
+    controller: FlowEditorController,
     event: InputEvent,
 ) => void;

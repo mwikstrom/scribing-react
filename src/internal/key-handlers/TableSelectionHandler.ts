@@ -2,10 +2,10 @@ import { CellPosition, CellRange, FlowRange, FlowTable, FlowTableCellSelection, 
 import { getEndOfFlow } from "../utils/get-end-of-flow";
 import { KeyHandler } from "./KeyHandler";
 
-export const TableSelectionHandler: KeyHandler = (e, commands) => {
-    if (isArrowOrEscapeKey(e.key) && commands.isTableSelection()) {
+export const TableSelectionHandler: KeyHandler = (e, controller) => {
+    if (isArrowOrEscapeKey(e.key) && controller.isTableSelection()) {
         e.preventDefault();
-        commands.getSelection()?.visitRanges((range, {wrap, position, target}) => {
+        controller.getSelection()?.visitRanges((range, {wrap, position, target}) => {
             if (range instanceof CellRange && typeof position === "number") {
                 const node = target?.peek(position).node;
                 if (node instanceof FlowTable) {
@@ -15,30 +15,30 @@ export const TableSelectionHandler: KeyHandler = (e, commands) => {
                         const cell = node.content.getCell(focus);
                         if (cell) {
                             const endOfCellContent = getEndOfFlow(cell.content);
-                            commands.setSelection(wrap(FlowRange.at(endOfCellContent)));
+                            controller.setSelection(wrap(FlowRange.at(endOfCellContent)));
                         }
                     } else if (e.shiftKey) {                    
-                        commands.setSelection(wrap(range.set("focus", focus)));
+                        controller.setSelection(wrap(range.set("focus", focus)));
                     } else {
                         const anchor = focus;
-                        commands.setSelection(wrap(range.merge({ focus, anchor })));
+                        controller.setSelection(wrap(range.merge({ focus, anchor })));
                     }
                 }
             }
-        }, commands.getTargetOptions());
+        }, controller.getTargetOptions());
     } else if (
         e.shiftKey &&
         (
-            (e.key === "ArrowLeft" && commands.isAtStartOfTableCell()) ||
-            (e.key === "ArrowRight" && commands.isAtEndOfTableCell())
+            (e.key === "ArrowLeft" && controller.isAtStartOfTableCell()) ||
+            (e.key === "ArrowRight" && controller.isAtEndOfTableCell())
         )
     ) {
         e.preventDefault();
-        commands.getSelection()?.visitRanges((_, {outer, replace}) => {
+        controller.getSelection()?.visitRanges((_, {outer, replace}) => {
             if (outer instanceof FlowTableCellSelection) {
                 const anchor = outer.cell;
                 const range = CellRange.at(anchor);
-                commands.setSelection(replace(new FlowTableSelection({
+                controller.setSelection(replace(new FlowTableSelection({
                     position: outer.position,
                     range,
                 })));

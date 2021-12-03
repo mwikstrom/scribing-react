@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatListNumbered } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const OrderedListButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const OrderedListButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isOrderedList()}
-        onClick={commands.toggleOrderedList.bind(commands)}
+        active={controller.isOrderedList()}
+        onClick={controller.toggleOrderedList.bind(controller)}
         children={<Icon path={mdiFormatListNumbered}/>}
     />
 );

@@ -21,7 +21,7 @@ import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
 import { TooltipScope, useShowTools } from "./internal/TooltipScope";
 import { TooltipManager } from "./internal/TooltipManager";
-import { FlowEditorCommands } from "./FlowEditorCommands";
+import { FlowEditorController } from "./FlowEditorController";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
 import { isSelectionInside } from "./internal/utils/is-selection-inside";
@@ -33,7 +33,7 @@ import { makeJssId } from "./internal/utils/make-jss-id";
 import { FlowCaretScope } from "./internal/FlowCaretScope";
 import clsx from "clsx";
 import { useDropTarget } from "./internal/hooks/use-drop-target";
-import { FlowEditorCommandsScope } from "./internal/FlowEditorCommandsScope";
+import { FlowEditorControllerScope } from "./internal/FlowEditorControllerScope";
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { FlowEditorState } from "./FlowEditorState";
@@ -203,28 +203,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         return after;
     }, [onStateChange]);
 
-    // Keep editor commands fresh. We expose a singleton that we update with
+    // Keep editor controller fresh. We expose a singleton that we update with
     // current state as needed.
-    const commands = useMemo(() => new FlowEditorCommands(state, applyChange, onStoreAsset), []);
+    const controller = useMemo(() => new FlowEditorController(state, applyChange, onStoreAsset), []);
     useLayoutEffect(
-        () => commands._sync(state, applyChange, onStoreAsset),
-        [commands, state, applyChange, onStoreAsset]
+        () => controller._sync(state, applyChange, onStoreAsset),
+        [controller, state, applyChange, onStoreAsset]
     );
 
     // Handle keyboard input
     useNativeEventHandler(
         editingHost,
         "keydown",
-        (event: KeyboardEvent) => handleKeyEvent(event, commands),
-        [commands]
+        (event: KeyboardEvent) => handleKeyEvent(event, controller),
+        [controller]
     );
 
     // Handle composition events  
     useNativeEventHandler(
         editingHost,
         "compositionend",
-        (event: CompositionEvent) => commands.insertText(event.data),
-        [commands]
+        (event: CompositionEvent) => controller.insertText(event.data),
+        [controller]
     );
     
     // Handle native "beforeinput"
@@ -243,8 +243,8 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             return;
         }
 
-        inputHandler(commands, event);
-    }, [commands]);
+        inputHandler(controller, event);
+    }, [controller]);
 
     // Keep track of DOM selection
     const [domSelectionChange, setDomSelectionChange] = useState(0);
@@ -354,10 +354,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         ) {
             const virtualElem = getVirtualSelectionElement(domSelection);
             if (virtualElem) {
-                return showTools(virtualElem, commands);
+                return showTools(virtualElem, controller);
             }
         }            
-    }, [editingHost, state, commands, documentHasFocus]);
+    }, [editingHost, state, controller, documentHasFocus]);
 
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
     // when caret is moved by mouse
@@ -384,29 +384,29 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [state, applyChange, editingHost], { capture: true });
 
     // Handle drop
-    const { active: isActiveDropTarget } = useDropTarget(editingHost, commands);
+    const { active: isActiveDropTarget } = useDropTarget(editingHost, controller);
 
     // Handle copy
     useNativeEventHandler(editingHost, "copy", (e: ClipboardEvent) => {
-        const data = commands.copyJsonString();
+        const data = controller.copyJsonString();
         e.preventDefault();
         if (data) {
             e.clipboardData?.setData(FlowContent.jsonMimeType, data);
         }
-    }, [commands]);
+    }, [controller]);
 
     // Handle cut
     useNativeEventHandler(editingHost, "cut", (e: ClipboardEvent) => {
-        const data = commands.copyJsonString();
+        const data = controller.copyJsonString();
         e.preventDefault();
         if (data) {
             e.clipboardData?.setData(FlowContent.jsonMimeType, data);
-            commands.remove();
+            controller.remove();
         }
-    }, [commands]);
+    }, [controller]);
 
     return (
-        <FlowEditorCommandsScope commands={commands}>
+        <FlowEditorControllerScope controller={controller}>
             <TooltipScope manager={tooltipManager} boundary={editingHost}>
                 <EditModeScope mode={editMode}>
                     <FormattingMarksScope show={state.formattingMarks}>
@@ -433,7 +433,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                     </FormattingMarksScope>
                 </EditModeScope>
             </TooltipScope>
-        </FlowEditorCommandsScope>
+        </FlowEditorControllerScope>
     );
 };
 

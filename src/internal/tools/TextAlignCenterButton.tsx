@@ -4,11 +4,11 @@ import { ToolButton } from "./ToolButton";
 import { mdiFormatAlignCenter } from "@mdi/js";
 import { ToolbarProps } from "./Toolbar";
 
-export const TextAlignCenterButton: FC<ToolbarProps> = ({commands, editingHost}) => (
+export const TextAlignCenterButton: FC<ToolbarProps> = ({controller, editingHost}) => (
     <ToolButton
         editingHost={editingHost}
-        active={commands.isTextAlignment("center")}
-        onClick={commands.setTextAlignment.bind(commands, "center")}
+        active={controller.isTextAlignment("center")}
+        onClick={controller.setTextAlignment.bind(controller, "center")}
         children={<Icon path={mdiFormatAlignCenter}/>}
     />
 );
