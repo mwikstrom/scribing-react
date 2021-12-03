@@ -1,6 +1,5 @@
 import { VirtualElement } from "@popperjs/core";
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FlowEditorController } from "../FlowEditorController";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { Tooltip } from "./Tooltip";
 import { TooltipData, TooltipManager } from "./TooltipManager";
@@ -22,7 +21,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
     const [displayOne, setDisplayOne] = useState<TooltipData | null>(current);
     const [displayTwo, setDisplayTwo] = useState<TooltipData | null>(null);
     const [deferToken, setDeferToken] = useState(0);
-    const [editingHost, setEditingHost] = useState<HTMLElement | null>(manager.editingHost?.current ?? null);
     const counter = useRef(0);    
     const setDisplay = (data: TooltipData) => {
         if (data.key === displayOne?.key) {
@@ -35,8 +33,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         setTimeout(() => setActive(data), 0);
         setPending(null);
     };
-
-    useEffect(() => manager.editingHost.sub(setEditingHost), [manager, setEditingHost]);
     
     useNativeEventHandler(window, "keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape" && current !== null) {
@@ -46,8 +42,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
         if (event.key === "." && event.ctrlKey) {
             if (pending !== null) {
                 setDisplay(pending);
-            } else if (active === null && current?.content instanceof FlowEditorController) {
-                setDisplay(current);
             }
         } else {
             setDeferToken(before => before + 1);
@@ -68,22 +62,7 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
             return;
         }
 
-        if (
-            current.content instanceof FlowEditorController && 
-            current.content.isCaret() &&
-            !(
-                active?.content instanceof FlowEditorController &&
-                active.content.isCaret()
-            )
-        ) {
-            setActive(null);
-            setPending(current);
-        } else if (
-            current.content instanceof FlowEditorController ||
-            !(active?.content instanceof FlowEditorController)
-        ) {
-            setDisplay(current);
-        }
+        setDisplay(current);
     }, [current]);
 
     useEffect(() => {
@@ -115,7 +94,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
                     {...displayOne}
                     active={displayOne === active}
                     boundary={boundary}
-                    editingHost={editingHost}
                 />
             )}
             {displayTwo && (
@@ -123,7 +101,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
                     {...displayTwo}
                     active={displayTwo === active}
                     boundary={boundary}
-                    editingHost={editingHost}
                 />
             )}
         </TooltipContext.Provider>
@@ -133,11 +110,6 @@ export const TooltipScope: FC<TooltipScopeProps> = ({children, manager: given, b
 /** @internal */
 export function useShowTip(manager?: TooltipManager): OmitThisParameter<typeof showTip> {
     return useBinding(showTip, manager);
-}
-
-/** @internal */
-export function useShowTools(manager?: TooltipManager): OmitThisParameter<typeof showTools> {
-    return useBinding(showTools, manager);
 }
 
 interface TooltipSource {
@@ -163,14 +135,10 @@ function showTip(this: TooltipSource, reference: VirtualElement, message: string
     return showContent.call(this, reference, message);
 }
 
-function showTools(this: TooltipSource, reference: VirtualElement, controller: FlowEditorController): () => void {
-    return showContent.call(this, reference, controller);
-}
-
 function showContent(
     this: TooltipSource,
     reference: VirtualElement,
-    content: string | FlowEditorController
+    content: string,
 ): () => void {
     const { manager, key } = this;
     let active = true;

@@ -11,6 +11,19 @@ export interface FlowPalette {
     subtle: string;
     tooltip: string;
     tooltipText: string;
+    activeTool: string;
+    activeToolText: string;
+    inactiveTool: string;
+    inactiveToolText: string;
+    hoverTool: string;
+    toolDivider: string;
+    menu: string;
+    menuText: string;
+    menuBorder: string;
+    menuScrollbar: string;
+    hoverMenu: string;
+    toolInput: string;
+    toolInputText: string;
     selection: string;
     selectionText: string;
     inactiveSelection: string;
@@ -30,6 +43,19 @@ export const DefaultFlowPalette: Readonly<FlowPalette> = Object.freeze({
     subtle: "#9e9e9e",
     tooltip: "#151515",
     tooltipText: "#eaeaea",
+    activeTool: "#444444",
+    activeToolText: "#ffffff",
+    inactiveTool: "transparent",
+    inactiveToolText: "#cccccc",
+    hoverTool: "#444444",
+    toolDivider: "#444444",
+    menu: "#333333",
+    menuText: "#ffffff",
+    menuBorder: "#444444",
+    menuScrollbar: "#777777",
+    hoverMenu: "#444444",
+    toolInput: "#eeeeee",
+    toolInputText: "#111111",
     selection: "#3390FF",
     selectionText: "#ffffff",
     inactiveSelection: "#C8C8C8",

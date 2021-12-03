@@ -1,0 +1,17 @@
+    // Show contextual toolbar
+    const showTools = useShowTools(tooltipManager);
+    useEffect(() => {
+        const domSelection = document.getSelection();
+        if (
+            domSelection && 
+            state.selection && 
+            editingHost && 
+            isSelectionInside(editingHost, domSelection, true) && 
+            documentHasFocus
+        ) {
+            const virtualElem = getVirtualSelectionElement(domSelection);
+            if (virtualElem) {
+                return showTools(virtualElem, controller);
+            }
+        }            
+    }, [editingHost, state, controller, documentHasFocus]);

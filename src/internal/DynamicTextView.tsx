@@ -7,7 +7,6 @@ import { flowNode } from "./FlowNodeComponent";
 import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
 import { useObservedScript } from "scripthost-react";
 import { useParagraphTheme } from "./ParagraphThemeScope";
-import { useShowTip } from "./TooltipScope";
 import Icon from "@mdi/react";
 import { mdiLoading } from "@mdi/js";
 import { useFormattingMarks } from "./FormattingMarksScope";
@@ -16,6 +15,7 @@ import { useEditMode } from "./EditModeScope";
 import { useHover } from "./hooks/use-hover";
 import { useScriptVariables } from "./ScriptVariablesScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
+import { useShowTip } from "./TooltipScope";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node, selection } = props;

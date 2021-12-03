@@ -2,10 +2,8 @@ import { VirtualElement } from "@popperjs/core";
 import clsx from "clsx";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
-import { FlowEditorController } from "../FlowEditorController";
 import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
-import { Toolbar } from "./tools/Toolbar";
 import { SYSTEM_FONT } from "./utils/system-font";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useTransparentMouseWheel } from "./hooks/use-transparent-mouse-wheel";
@@ -15,14 +13,13 @@ export interface TooltipProps {
     key: number;
     reference: VirtualElement,
     active: boolean;
-    content: string | FlowEditorController;
-    editingHost: HTMLElement | null;
+    content: string;
     boundary?: HTMLElement | null;
 }
 
 /** @internal */
 export const Tooltip: FC<TooltipProps> = props => {
-    const { reference, active, content, editingHost, boundary: givenBoundary } = props;
+    const { reference, active, content, boundary: givenBoundary } = props;
     const boundary = givenBoundary ?? "clippingParents";
     const [popper, setPopperState] = useState<HTMLElement | null>(null);
     const [arrow, setArrow] = useState<HTMLElement | null>(null);
@@ -79,9 +76,7 @@ export const Tooltip: FC<TooltipProps> = props => {
     };
 
     const children = useMemo(() => {
-        if (content instanceof FlowEditorController) {
-            return <Toolbar controller={content} boundary={givenBoundary} editingHost={editingHost}/>;
-        } else if (typeof content === "string") {
+        if (typeof content === "string") {
             return <TooltipMessage text={content}/>;
         } else {
             return null;

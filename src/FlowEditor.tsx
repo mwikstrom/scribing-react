@@ -19,8 +19,6 @@ import { FormattingMarksScope } from "./internal/FormattingMarksScope";
 import { useActiveElement } from "./internal/hooks/use-active-element";
 import { useDocumentHasFocus } from "./internal/hooks/use-document-has-focus";
 import { handleKeyEvent } from "./internal/key-handlers";
-import { TooltipScope, useShowTools } from "./internal/TooltipScope";
-import { TooltipManager } from "./internal/TooltipManager";
 import { FlowEditorController } from "./FlowEditorController";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
@@ -37,6 +35,8 @@ import { FlowEditorControllerScope } from "./internal/FlowEditorControllerScope"
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { FlowEditorState } from "./FlowEditorState";
+import { TooltipManager } from "./internal/TooltipManager";
+import { TooltipScope } from "./internal/TooltipScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -340,24 +340,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             tooltipManager.editingHost.pub(null);
         }
     }, [tooltipManager, editingHost, activeElement]);
-
-    // Show contextual toolbar
-    const showTools = useShowTools(tooltipManager);
-    useEffect(() => {
-        const domSelection = document.getSelection();
-        if (
-            domSelection && 
-            state.selection && 
-            editingHost && 
-            isSelectionInside(editingHost, domSelection, true) && 
-            documentHasFocus
-        ) {
-            const virtualElem = getVirtualSelectionElement(domSelection);
-            if (virtualElem) {
-                return showTools(virtualElem, controller);
-            }
-        }            
-    }, [editingHost, state, controller, documentHasFocus]);
 
     // Ensure that caret doesn't end up on the "wrong" side of a pilcrow (paragraph break)
     // when caret is moved by mouse
