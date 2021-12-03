@@ -473,8 +473,8 @@ export class FlowEditorCommands {
         }
     }
 
-    // TODO: spaceAbove
-    // TODO: spaceBelow
+    // TODO: spaceBefore
+    // TODO: spaceAfter
     // TODO: listCounter
     // TODO: listCounterPrefix
     // TODO: listCounterSuffix

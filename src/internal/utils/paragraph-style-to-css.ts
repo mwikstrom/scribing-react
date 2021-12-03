@@ -7,8 +7,8 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
     const {
         alignment,
         direction,
-        spaceAbove,
-        spaceBelow,
+        spaceBefore,
+        spaceAfter,
     } = style;
 
     const css: CSSProperties = {};
@@ -21,12 +21,12 @@ export const getParagraphCssProperties = (style: ParagraphStyle): CSSProperties 
         css.direction = direction;
     }
 
-    if (typeof spaceAbove === "number") {
-        css.marginTop = toRem(spaceAbove/100);
+    if (typeof spaceBefore === "number") {
+        css.marginTop = toRem(spaceBefore/100);
     }
 
-    if (typeof spaceBelow === "number") {
-        css.marginBottom = toRem(spaceBelow/100);
+    if (typeof spaceAfter === "number") {
+        css.marginBottom = toRem(spaceAfter/100);
     }
 
     return css;
