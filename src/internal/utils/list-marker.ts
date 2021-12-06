@@ -1,7 +1,7 @@
 import { JssStyle, create as createJss } from "jss";
 import defaultJssPreset from "jss-preset-default";
 import { ListMarkerKind, OrderedListMarkerKindType, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
-import { FlowPalette } from "../FlowPalette";
+import { FlowPalette } from "../../FlowPalette";
 import { makeDynamicJssId } from "./make-jss-id";
 import { listIndent } from "./paragraph-style-to-classes";
 import { getTextStyleClassProperites } from "./text-style-to-classes";

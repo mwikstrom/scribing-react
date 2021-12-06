@@ -1,6 +1,6 @@
 import { Classes, Styles } from "jss";
 import { BoxStyle, BoxStyleProps, FlowColor } from "scribing";
-import { FlowPalette } from "../FlowPalette";
+import { FlowPalette } from "../../FlowPalette";
 import Color from "color";
 
 /** @internal */

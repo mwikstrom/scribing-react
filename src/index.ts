@@ -13,6 +13,10 @@ export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
 
+// Palette
+export * from "./FlowPalette";
+export * from "./FlowPaletteScope";
+
 // Controller
 export * from "./FlowEditorController";
 

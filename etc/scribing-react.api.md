@@ -21,6 +21,7 @@ import { Interaction } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
 import { ParagraphVariant } from 'scribing';
+import { ReactNode } from 'react';
 import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
 import { TargetOptions } from 'scribing';
@@ -52,6 +53,9 @@ export interface DataIconProps {
     // (undocumented)
     data?: string;
 }
+
+// @public (undocumented)
+export const DefaultFlowPalette: Readonly<FlowPalette>;
 
 // @public (undocumented)
 export class DeferrableEvent {
@@ -419,6 +423,51 @@ export interface FlowEditorStateProps {
     undoStack: readonly FlowOperation[];
 }
 
+// @public (undocumented)
+export interface FlowPalette {
+    // (undocumented)
+    error: string;
+    // (undocumented)
+    inactiveSelection: string;
+    // (undocumented)
+    inactiveSelectionText: string;
+    // (undocumented)
+    information: string;
+    // (undocumented)
+    paper: string;
+    // (undocumented)
+    primary: string;
+    // (undocumented)
+    secondary: string;
+    // (undocumented)
+    selection: string;
+    // (undocumented)
+    selectionText: string;
+    // (undocumented)
+    subtle: string;
+    // (undocumented)
+    success: string;
+    // (undocumented)
+    text: string;
+    // (undocumented)
+    tooltip: string;
+    // (undocumented)
+    tooltipText: string;
+    // (undocumented)
+    warning: string;
+}
+
+// @public (undocumented)
+export const FlowPaletteScope: FC<FlowPaletteScopeProps>;
+
+// @public (undocumented)
+export interface FlowPaletteScopeProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    palette?: Partial<FlowPalette>;
+}
+
 // @public
 export const FlowView: FC<FlowViewProps>;
 
@@ -493,5 +542,8 @@ export function useFlowEditorClient(url: string, options?: FlowEditorClientOptio
 
 // @public (undocumented)
 export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
+
+// @public (undocumented)
+export function useFlowPalette(): Readonly<FlowPalette>;
 
 ```

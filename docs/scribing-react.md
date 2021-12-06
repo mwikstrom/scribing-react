@@ -27,6 +27,7 @@ React components for collaborative rich text editing
 |  [useDataIconTags(pack)](./scribing-react.usedataicontags.md) |  |
 |  [useFlowEditorClient(url, options)](./scribing-react.usefloweditorclient.md) |  |
 |  [useFlowEditorClient(protocol, options)](./scribing-react.usefloweditorclient_1.md) |  |
+|  [useFlowPalette()](./scribing-react.useflowpalette.md) |  |
 
 ## Interfaces
 
@@ -39,6 +40,8 @@ React components for collaborative rich text editing
 |  [FlowEditorProps](./scribing-react.floweditorprops.md) | Component props for [FlowEditor](./scribing-react.floweditor.md) |
 |  [FlowEditorStateData](./scribing-react.floweditorstatedata.md) | Data for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowEditorStateProps](./scribing-react.floweditorstateprops.md) | Properties for [FlowEditorState](./scribing-react.floweditorstate.md) |
+|  [FlowPalette](./scribing-react.flowpalette.md) |  |
+|  [FlowPaletteScopeProps](./scribing-react.flowpalettescopeprops.md) |  |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
 
 ## Variables
@@ -46,8 +49,10 @@ React components for collaborative rich text editing
 |  Variable | Description |
 |  --- | --- |
 |  [DataIcon](./scribing-react.dataicon.md) |  |
+|  [DefaultFlowPalette](./scribing-react.defaultflowpalette.md) |  |
 |  [FlowEditor](./scribing-react.floweditor.md) | Flow editor component |
 |  [FlowEditorStateBase](./scribing-react.floweditorstatebase.md) | The base record class for [FlowEditorState](./scribing-react.floweditorstate.md) |
+|  [FlowPaletteScope](./scribing-react.flowpalettescope.md) |  |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
 
 ## Type Aliases

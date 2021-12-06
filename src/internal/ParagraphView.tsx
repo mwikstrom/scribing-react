@@ -21,7 +21,7 @@ import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
-import { useFlowPalette } from "./FlowPaletteScope";
+import { useFlowPalette } from "../FlowPaletteScope";
 import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-selection";
 
 /** @internal */
