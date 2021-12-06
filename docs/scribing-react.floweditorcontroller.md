@@ -22,7 +22,9 @@ export declare class FlowEditorController
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [canMergeTableCells()](./scribing-react.floweditorcontroller.canmergetablecells.md) |  |  |
+|  [canRedo()](./scribing-react.floweditorcontroller.canredo.md) |  |  |
 |  [canSplitTableCell()](./scribing-react.floweditorcontroller.cansplittablecell.md) |  |  |
+|  [canUndo()](./scribing-react.floweditorcontroller.canundo.md) |  |  |
 |  [copy()](./scribing-react.floweditorcontroller.copy.md) |  |  |
 |  [copyJsonString()](./scribing-react.floweditorcontroller.copyjsonstring.md) |  |  |
 |  [decreaseBaselineOffset()](./scribing-react.floweditorcontroller.decreasebaselineoffset.md) |  |  |

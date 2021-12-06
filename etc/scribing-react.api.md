@@ -98,7 +98,11 @@ export class FlowEditorController {
     // (undocumented)
     canMergeTableCells(): boolean;
     // (undocumented)
+    canRedo(): boolean;
+    // (undocumented)
     canSplitTableCell(): boolean;
+    // (undocumented)
+    canUndo(): boolean;
     // (undocumented)
     copy(): FlowContent[];
     // (undocumented)
