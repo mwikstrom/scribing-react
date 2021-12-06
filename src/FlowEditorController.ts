@@ -127,8 +127,16 @@ export class FlowEditorController {
         this.#state = this.#apply(this.#state.undo());
     }
 
+    canUndo(): boolean {
+        return this.#state.undoStack.length > 0;
+    }
+
     redo(): void {
         this.#state = this.#apply(this.#state.redo());
+    }
+
+    canRedo(): boolean {
+        return this.#state.redoStack.length > 0;
     }
 
     copy(): FlowContent[] {
