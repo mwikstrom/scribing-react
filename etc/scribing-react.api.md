@@ -44,6 +44,9 @@ export type BooleanTextStyleKeys = {
 export type ConnectionStatus = ("disconnected" | "connecting" | "clean" | "dirty" | "syncing" | "broken");
 
 // @public (undocumented)
+export const createImageSource: (blob: Blob, upload: string) => Promise<ImageSource>;
+
+// @public (undocumented)
 export const DataIcon: FC<DataIconProps>;
 
 // @public (undocumented)

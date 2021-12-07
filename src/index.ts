@@ -3,6 +3,9 @@
  * @packageDocumentation
  */
 
+// Utils
+export * from "./create-image-source";
+
 // State
 export * from "./FlowEditorState";
 

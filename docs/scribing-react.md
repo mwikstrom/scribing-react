@@ -48,6 +48,7 @@ React components for collaborative rich text editing
 
 |  Variable | Description |
 |  --- | --- |
+|  [createImageSource](./scribing-react.createimagesource.md) |  |
 |  [DataIcon](./scribing-react.dataicon.md) |  |
 |  [DefaultFlowPalette](./scribing-react.defaultflowpalette.md) |  |
 |  [FlowEditor](./scribing-react.floweditor.md) | Flow editor component |
