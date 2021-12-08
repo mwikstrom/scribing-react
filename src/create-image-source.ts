@@ -1,5 +1,6 @@
 import { ImageSource, ImageSourceProps } from "scribing";
 
+/** @public */
 export const createImageSource = async (blob: Blob, upload: string): Promise<ImageSource> => {
     const url = URL.createObjectURL(blob);
     try {

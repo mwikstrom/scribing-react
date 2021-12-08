@@ -20,6 +20,10 @@ export * from "./StoreAssetEvent";
 export * from "./FlowPalette";
 export * from "./FlowPaletteScope";
 
+// Locale
+export * from "./FlowLocale";
+export * from "./FlowLocaleScope";
+
 // Controller
 export * from "./FlowEditorController";
 

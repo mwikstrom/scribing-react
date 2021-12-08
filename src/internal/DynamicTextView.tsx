@@ -10,7 +10,7 @@ import { useParagraphTheme } from "./ParagraphThemeScope";
 import Icon from "@mdi/react";
 import { mdiLoading } from "@mdi/js";
 import { useFormattingMarks } from "./FormattingMarksScope";
-import { useFlowLocale } from "./FlowLocaleScope";
+import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
 import { useHover } from "./hooks/use-hover";
 import { useScriptVariables } from "./ScriptVariablesScope";

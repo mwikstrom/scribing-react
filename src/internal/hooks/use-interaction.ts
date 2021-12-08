@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Interaction, OpenUrl } from "scribing";
 import { useEditMode } from "../EditModeScope";
-import { useFlowLocale } from "../FlowLocaleScope";
+import { useFlowLocale } from "../../FlowLocaleScope";
 import { useInteractionInvoker } from "./use-interaction-invoker";
 import { useHover } from "./use-hover";
 import { useCtrlKey, useShiftKey } from "./use-modifier-key";

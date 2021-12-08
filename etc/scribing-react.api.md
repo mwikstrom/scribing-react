@@ -58,6 +58,9 @@ export interface DataIconProps {
 }
 
 // @public (undocumented)
+export const DefaultFlowLocale: Readonly<FlowLocale>;
+
+// @public (undocumented)
 export const DefaultFlowPalette: Readonly<FlowPalette>;
 
 // @public (undocumented)
@@ -427,6 +430,29 @@ export interface FlowEditorStateProps {
 }
 
 // @public (undocumented)
+export interface FlowLocale {
+    // (undocumented)
+    hold_ctrl_key_to_enable_interaction: string;
+    // (undocumented)
+    script_error: string;
+    // (undocumented)
+    void_result: string;
+    // (undocumented)
+    void_script: string;
+}
+
+// @public (undocumented)
+export const FlowLocaleScope: FC<FlowLocaleScopeProps>;
+
+// @public (undocumented)
+export interface FlowLocaleScopeProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    locale?: Partial<FlowLocale>;
+}
+
+// @public (undocumented)
 export interface FlowPalette {
     // (undocumented)
     error: string;
@@ -545,6 +571,9 @@ export function useFlowEditorClient(url: string, options?: FlowEditorClientOptio
 
 // @public (undocumented)
 export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
+
+// @public (undocumented)
+export function useFlowLocale(): Readonly<FlowLocale>;
 
 // @public (undocumented)
 export function useFlowPalette(): Readonly<FlowPalette>;

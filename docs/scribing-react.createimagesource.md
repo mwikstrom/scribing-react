@@ -4,6 +4,7 @@
 
 ## createImageSource variable
 
+
 <b>Signature:</b>
 
 ```typescript
