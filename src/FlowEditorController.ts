@@ -986,7 +986,15 @@ export class FlowEditorController {
     }
 
     toggleFormattingMarks(): void {
-        this.#state = this.#apply(this.#state.set("formattingMarks", !this.#state.formattingMarks));
+        this.#state = this.#apply(this.#state.toggleFormattingMarks());
+    }
+
+    getPreview(): boolean {
+        return this.#state.preview;
+    }
+
+    togglePreview(): void {
+        this.#state = this.#apply(this.#state.togglePreview());
     }
 
     isSpellcheckEnabled(): boolean | undefined {

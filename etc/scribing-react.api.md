@@ -174,6 +174,8 @@ export class FlowEditorController {
     // (undocumented)
     getParagraphVariant(): ParagraphVariant | undefined;
     // (undocumented)
+    getPreview(): boolean;
+    // (undocumented)
     getReadingDirection(): ParagraphStyleProps["direction"];
     // (undocumented)
     getSelection(): FlowSelection | null;
@@ -340,6 +342,8 @@ export class FlowEditorController {
     toggleItalic(): void;
     // (undocumented)
     toggleOrderedList(): void;
+    // (undocumented)
+    togglePreview(): void;
     // (undocumented)
     toggleSpellcheck(): void;
     // (undocumented)

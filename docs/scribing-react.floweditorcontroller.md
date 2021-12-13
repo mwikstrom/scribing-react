@@ -54,6 +54,7 @@ export declare class FlowEditorController
 |  [getListLevel()](./scribing-react.floweditorcontroller.getlistlevel.md) |  |  |
 |  [getParagraphStyle()](./scribing-react.floweditorcontroller.getparagraphstyle.md) |  |  |
 |  [getParagraphVariant()](./scribing-react.floweditorcontroller.getparagraphvariant.md) |  |  |
+|  [getPreview()](./scribing-react.floweditorcontroller.getpreview.md) |  |  |
 |  [getReadingDirection()](./scribing-react.floweditorcontroller.getreadingdirection.md) |  |  |
 |  [getSelection()](./scribing-react.floweditorcontroller.getselection.md) |  |  |
 |  [getTargetOptions()](./scribing-react.floweditorcontroller.gettargetoptions.md) |  |  |
@@ -134,6 +135,7 @@ export declare class FlowEditorController
 |  [toggleFormattingMarks()](./scribing-react.floweditorcontroller.toggleformattingmarks.md) |  |  |
 |  [toggleItalic()](./scribing-react.floweditorcontroller.toggleitalic.md) |  |  |
 |  [toggleOrderedList()](./scribing-react.floweditorcontroller.toggleorderedlist.md) |  |  |
+|  [togglePreview()](./scribing-react.floweditorcontroller.togglepreview.md) |  |  |
 |  [toggleSpellcheck()](./scribing-react.floweditorcontroller.togglespellcheck.md) |  |  |
 |  [toggleStrike()](./scribing-react.floweditorcontroller.togglestrike.md) |  |  |
 |  [toggleSubscript()](./scribing-react.floweditorcontroller.togglesubscript.md) |  |  |
