@@ -393,6 +393,8 @@ export class FlowEditorState extends FlowEditorStateBase {
     getUniformTextStyle(diff?: Set<keyof TextStyleProps>): TextStyle;
     redo(): FlowEditorState;
     toggleFormattingMarks(): FlowEditorState;
+    // (undocumented)
+    togglePreview(): FlowEditorState;
     undo(): FlowEditorState;
 }
 
@@ -401,8 +403,6 @@ export const FlowEditorStateBase: RecordConstructor<FlowEditorStateProps, Object
 
 // @public
 export interface FlowEditorStateData extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStack">> {
-    // (undocumented)
-    presence?: readonly FlowPresence[];
     // (undocumented)
     redo?: readonly FlowOperation[];
     // (undocumented)
@@ -421,6 +421,8 @@ export interface FlowEditorStateProps {
     formattingMarks: boolean;
     // (undocumented)
     presence: readonly FlowPresence[];
+    // (undocumented)
+    preview: boolean;
     // (undocumented)
     redoStack: readonly FlowOperation[];
     // (undocumented)

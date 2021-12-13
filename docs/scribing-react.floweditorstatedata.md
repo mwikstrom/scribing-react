@@ -17,7 +17,6 @@ export interface FlowEditorStateData extends Partial<Omit<FlowEditorStateProps, 
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [presence?](./scribing-react.floweditorstatedata.presence.md) | readonly FlowPresence\[\] | <i>(Optional)</i> |
 |  [redo?](./scribing-react.floweditorstatedata.redo.md) | readonly FlowOperation\[\] | <i>(Optional)</i> |
 |  [selection?](./scribing-react.floweditorstatedata.selection.md) | FlowSelection | <i>(Optional)</i> |
 |  [undo?](./scribing-react.floweditorstatedata.undo.md) | readonly FlowOperation\[\] | <i>(Optional)</i> |

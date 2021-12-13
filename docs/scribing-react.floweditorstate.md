@@ -32,5 +32,6 @@ export declare class FlowEditorState extends FlowEditorStateBase
 |  [getUniformTextStyle(diff)](./scribing-react.floweditorstate.getuniformtextstyle.md) |  | Gets a uniform text style from the current selection |
 |  [redo()](./scribing-react.floweditorstate.redo.md) |  | Redoes the most recent undone operation |
 |  [toggleFormattingMarks()](./scribing-react.floweditorstate.toggleformattingmarks.md) |  | Toggles whether formatting symbols are shown |
+|  [togglePreview()](./scribing-react.floweditorstate.togglepreview.md) |  |  |
 |  [undo()](./scribing-react.floweditorstate.undo.md) |  | Undoes the most recent operation |
 
