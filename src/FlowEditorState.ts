@@ -41,6 +41,7 @@ export interface FlowEditorStateProps {
     redoStack: readonly FlowOperation[];    
     formattingMarks: boolean;
     presence: readonly FlowPresence[];
+    preview: boolean;
 }
 
 /**
@@ -52,7 +53,6 @@ extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStac
     selection?: FlowSelection;
     undo?: readonly FlowOperation[],
     redo?: readonly FlowOperation[],
-    presence?: readonly FlowPresence[],
 }
 
 const Props = {
@@ -64,6 +64,7 @@ const Props = {
     redoStack: operationStackType,
     formattingMarks: booleanType,
     presence: arrayType(FlowPresenceType).frozen(),
+    preview: booleanType,
 };
 
 const Data = {
@@ -75,6 +76,7 @@ const Data = {
     redo: Props.redoStack,
     formattingMarks: Props.formattingMarks,
     presence: Props.presence,
+    preview: Props.preview,
 };
 
 const PropsType: RecordType<FlowEditorStateProps> = recordType(Props);
@@ -90,6 +92,7 @@ const propsToData = (props: FlowEditorStateProps): FlowEditorStateData => {
         redoStack,
         formattingMarks,
         presence,
+        preview,
     } = props;
     const data: FlowEditorStateData = {};
     
@@ -123,6 +126,10 @@ const propsToData = (props: FlowEditorStateProps): FlowEditorStateData => {
 
     if (presence.length > 0) {
         data.presence = presence;
+    }
+
+    if (preview) {
+        data.preview = preview;
     }
 
     return data;
@@ -167,6 +174,7 @@ export class FlowEditorState extends FlowEditorStateBase {
             redo: redoStack,
             formattingMarks,
             presence,
+            preview,
         } = data;
 
         return FlowEditorState.empty.merge({
@@ -178,6 +186,7 @@ export class FlowEditorState extends FlowEditorStateBase {
             redoStack,
             formattingMarks,
             presence,
+            preview,
         });
     }
 
@@ -193,6 +202,7 @@ export class FlowEditorState extends FlowEditorStateBase {
                 redoStack: Object.freeze([]),
                 formattingMarks: false,
                 presence: Object.freeze([]),
+                preview: false,
             });
         }
         return EMPTY_CACHE;
@@ -245,6 +255,10 @@ export class FlowEditorState extends FlowEditorStateBase {
     /** Toggles whether formatting symbols are shown */
     public toggleFormattingMarks(): FlowEditorState {
         return this.set("formattingMarks", !this.formattingMarks);
+    }
+
+    public togglePreview(): FlowEditorState {
+        return this.set("preview", !this.preview);
     }
 
     /** Undoes the most recent operation */

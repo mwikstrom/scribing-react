@@ -245,6 +245,11 @@ Rich.args = {
     ])),
 };
 
+export const RichPreview = Template.bind({});
+RichPreview.args = { 
+    defaultState: Rich.args.defaultState?.set("preview", true),
+};
+
 export const Counter = Template.bind({});
 Counter.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([

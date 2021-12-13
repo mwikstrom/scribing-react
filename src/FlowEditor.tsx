@@ -137,7 +137,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Determine whether editing is supported
     const editMode = useMemo<EditMode>(() => {
-        if (!isEditingSupported()) {
+        if (!isEditingSupported() || state.preview) {
             return false;
         } else if (
             editingHost && 
@@ -152,17 +152,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         } else {
             return "inactive";
         }
-    }, [activeElement, editingHost, documentHasFocus]);
+    }, [activeElement, editingHost, documentHasFocus, state.preview]);
 
     // Should we use custom selection styling?
     const customSelection = !nativeSelection && !!editMode;
 
     // Apply auto focus
     useEffect(() => {
-        if (editingHost && autoFocus) {
+        if (editingHost && autoFocus && !state.preview) {
             editingHost.focus();
         }
-    }, [autoFocus, editingHost]);
+    }, [autoFocus, editingHost, state.preview]);
 
     // Keep track of undo stack shall be merged
     const shouldMergeUndo = useRef(false);
@@ -178,7 +178,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         let operation: FlowOperation | null;
         let didApplyMine = false;
 
-        if (result instanceof FlowOperation) {
+        if (result instanceof FlowOperation && !state.preview) {
             operation = result;
             after = base.applyMine(operation, { mergeUndo });
             didApplyMine = true;
@@ -204,7 +204,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         return after;
-    }, [onStateChange]);
+    }, [onStateChange, state.preview]);
 
     // Keep editor controller fresh. We expose a singleton that we update with
     // current state as needed.
@@ -407,7 +407,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <FlowEditorControllerScope controller={controller}>
             <TooltipScope manager={tooltipManager} boundary={editingHost}>
                 <EditModeScope mode={editMode}>
-                    <FormattingMarksScope show={state.formattingMarks}>
+                    <FormattingMarksScope show={!state.preview && state.formattingMarks}>
                         <FlowCaretScope
                             style={isActiveDropTarget ? TextStyle.empty : state.caret}
                             selection={state.selection}
