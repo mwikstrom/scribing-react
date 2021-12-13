@@ -23,6 +23,7 @@ import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { useFlowPalette } from "../FlowPaletteScope";
 import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-selection";
+import { useFlowTypography } from "../FlowTypographyScope";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
@@ -48,9 +49,10 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const css = useMemo(() => getParagraphCssProperties(style), [style]);
     const classes = useStyles();
     const palette = useFlowPalette();
+    const typography = useFlowTypography();
     const listMarkerClass = useMemo(
-        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak, palette),
-        [style, theme, prevBreak, palette]
+        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak, palette, typography),
+        [style, theme, prevBreak, palette, typography]
     );
     const className = useMemo(() => clsx(
         classes.root,

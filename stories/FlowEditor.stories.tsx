@@ -243,7 +243,18 @@ Rich.args = {
         { text: "information", style: { color: "information" } }, 
         " ",
         { text: "success", style: { color: "success" } }, 
+        { break: "para" },
+        "Let's try fonts: ",
+        { text: "body", style: { fontFamily: "body" } }, 
         " ",
+        { text: "heading", style: { fontFamily: "heading" } }, 
+        " ",
+        { text: "monospace", style: { fontFamily: "monospace" } }, 
+        " ",
+        { text: "cursive", style: { fontFamily: "cursive" } }, 
+        " ",
+        { text: "decorative", style: { fontFamily: "decorative" } }, 
+        { break: "para" },
     ])),
 };
 

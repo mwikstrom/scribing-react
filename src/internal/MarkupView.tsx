@@ -98,11 +98,11 @@ const MarkupView: FC<MarkupViewProps> = props => {
     );
 };
 
-const useStyles = createUseFlowStyles("Markup", ({palette}) => ({
+const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
     root: {
         display: "inline-block",
         whiteSpace: "pre",
-        fontFamily: "monospace",
+        fontFamily: typography.monospace,
         fontWeight: "normal",
         color: palette.text,
         border: `1px solid ${palette.subtle}`,

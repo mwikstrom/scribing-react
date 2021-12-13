@@ -146,8 +146,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     );
 });
 
-const useStyles = createUseFlowStyles("DynamicText", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("DynamicText", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
         cursor: "default",

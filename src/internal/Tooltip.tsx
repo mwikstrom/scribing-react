@@ -4,7 +4,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { usePopper } from "react-popper";
 import { createUseFlowStyles } from "./JssTheming";
 import { TooltipMessage } from "./TooltipMessage";
-import { SYSTEM_FONT } from "./utils/system-font";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useTransparentMouseWheel } from "./hooks/use-transparent-mouse-wheel";
 
@@ -109,12 +108,12 @@ export function getTooltipElement(node: Node | null | undefined): HTMLElement | 
     }
 }
 
-const useStyles = createUseFlowStyles("Tooltip", ({palette}) => ({
+const useStyles = createUseFlowStyles("Tooltip", ({palette, typography}) => ({
     root: {
         display: "inline-block",
         backgroundColor: palette.tooltip,
         color: palette.tooltipText,
-        fontFamily: SYSTEM_FONT,
+        fontFamily: typography.ui,
         fontSize: "0.75rem",
         borderRadius: 4,
         userSelect: "none",

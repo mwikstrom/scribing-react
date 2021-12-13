@@ -64,6 +64,9 @@ export const DefaultFlowLocale: Readonly<FlowLocale>;
 export const DefaultFlowPalette: Readonly<FlowPalette>;
 
 // @public (undocumented)
+export const DefaultFlowTypography: Readonly<FlowTypography>;
+
+// @public (undocumented)
 export class DeferrableEvent {
     // @internal (undocumented)
     _complete(): Promise<void>;
@@ -505,6 +508,33 @@ export interface FlowPaletteScopeProps {
     palette?: Partial<FlowPalette>;
 }
 
+// @public (undocumented)
+export interface FlowTypography {
+    // (undocumented)
+    body: string;
+    // (undocumented)
+    cursive: string;
+    // (undocumented)
+    decorative: string;
+    // (undocumented)
+    heading: string;
+    // (undocumented)
+    monospace: string;
+    // (undocumented)
+    ui: string;
+}
+
+// @public (undocumented)
+export const FlowTypographyScope: FC<FlowTypographyScopeProps>;
+
+// @public (undocumented)
+export interface FlowTypographyScopeProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    typography?: Partial<FlowTypography>;
+}
+
 // @public
 export const FlowView: FC<FlowViewProps>;
 
@@ -585,5 +615,8 @@ export function useFlowLocale(): Readonly<FlowLocale>;
 
 // @public (undocumented)
 export function useFlowPalette(): Readonly<FlowPalette>;
+
+// @public (undocumented)
+export function useFlowTypography(): Readonly<FlowTypography>;
 
 ```

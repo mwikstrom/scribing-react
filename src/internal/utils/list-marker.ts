@@ -2,6 +2,7 @@ import { JssStyle, create as createJss } from "jss";
 import defaultJssPreset from "jss-preset-default";
 import { ListMarkerKind, OrderedListMarkerKindType, ParagraphBreak, ParagraphStyle, TextStyle } from "scribing";
 import { FlowPalette } from "../../FlowPalette";
+import { FlowTypography } from "../../FlowTypography";
 import { makeDynamicJssId } from "./make-jss-id";
 import { listIndent } from "./paragraph-style-to-classes";
 import { getTextStyleClassProperites } from "./text-style-to-classes";
@@ -12,7 +13,8 @@ export const getListMarkerClass = (
     para: ParagraphStyle,
     text: TextStyle,
     prev: ParagraphBreak | null,
-    palette: FlowPalette
+    palette: FlowPalette,
+    typography: FlowTypography,
 ): string | undefined => {
     const {
         listCounterPrefix: prefix = "",
@@ -31,7 +33,7 @@ export const getListMarkerClass = (
     const counterStyle = getListCounterStyle(kind, level);
     const marker: JssStyle = {
         ...getTextCssProperties(text, para),
-        ...getTextStyleClassProperites(text, palette),
+        ...getTextStyleClassProperites(text, palette, typography),
         display: "inline-block",
         minWidth: listIndent(1),
         textAlign: "end",

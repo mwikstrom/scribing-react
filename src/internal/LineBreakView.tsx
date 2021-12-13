@@ -42,8 +42,8 @@ export const LineBreakView = flowNode<LineBreak>((props, ref) => {
     );
 });
 
-const useStyles = createUseFlowStyles("LineBreak", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("LineBreak", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         opacity: 0.5,
         whiteSpace: "pre",

@@ -85,8 +85,8 @@ export const FlowIconView = flowNode<FlowIcon>((props, outerRef) => {
     );
 });
 
-const useStyles = createUseFlowStyles("FlowIcon", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("FlowIcon", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         display: "inline",
     },

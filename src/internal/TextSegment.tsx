@@ -54,8 +54,8 @@ export const TextSegment: FC<TextSegmentProps> = props => {
     );
 };
 
-const useStyles = createUseFlowStyles("TextSegment", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("TextSegment", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         whiteSpace: "pre-wrap", // Preserve white space, wrap as needed
     },

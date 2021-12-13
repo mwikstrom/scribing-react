@@ -115,8 +115,8 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     );
 });
 
-const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         display: "inline",
         position: "relative",

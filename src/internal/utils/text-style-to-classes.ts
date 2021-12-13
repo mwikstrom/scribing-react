@@ -2,7 +2,7 @@ import { Classes } from "jss";
 import { CSSProperties } from "react";
 import { TextStyle, TextStyleProps } from "scribing";
 import { FlowPalette } from "../../FlowPalette";
-import { SYSTEM_FONT } from "./system-font";
+import { FlowTypography } from "../../FlowTypography";
 
 /** @internal */
 export type FontFamilyRule = `${Exclude<TextStyleProps["fontFamily"], undefined>}Font`;
@@ -20,21 +20,21 @@ export type TextStyles = Record<TextStyleRule, CSSProperties>;
 export type TextStyleClasses = Classes<TextStyleRule>;
 
 /** @internal */
-export const textStyles = (palette: FlowPalette): TextStyles => ({
+export const textStyles = (palette: FlowPalette, typography: FlowTypography): TextStyles => ({
     bodyFont: {
-        fontFamily: SYSTEM_FONT,
+        fontFamily: typography.body,
     },
     headingFont: {
-        fontFamily: SYSTEM_FONT,
+        fontFamily: typography.heading,
     },
     monospaceFont: {
-        fontFamily: "monospace",
+        fontFamily: typography.monospace,
     },
     cursiveFont: {
-        fontFamily: "cursive",
+        fontFamily: typography.cursive,
     },
     decorativeFont: {
-        fontFamily: "fantasy",
+        fontFamily: typography.decorative,
     },
     defaultColor: {
         color: palette.text,
@@ -78,11 +78,15 @@ export const getTextStyleRules = (
 
 
 /** @internal */
-export const getTextStyleClassProperites = (style: TextStyle, palette: FlowPalette): CSSProperties => {
+export const getTextStyleClassProperites = (
+    style: TextStyle,
+    palette: FlowPalette,
+    typography: FlowTypography,
+): CSSProperties => {
     let result: CSSProperties = {};
     for (const rule of getTextStyleRules(style)) {
         if (rule) {
-            result = { ...result, ...textStyles(palette)[rule] };
+            result = { ...result, ...textStyles(palette, typography)[rule] };
         }
     }
     return result;

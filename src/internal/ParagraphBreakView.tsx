@@ -70,8 +70,8 @@ export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara, s
     );
 });
 
-const useStyles = createUseFlowStyles("ParagraphBreak", ({palette}) => ({
-    ...textStyles(palette),
+const useStyles = createUseFlowStyles("ParagraphBreak", ({palette, typography}) => ({
+    ...textStyles(palette, typography),
     root: {
         opacity: 0.5,
     },

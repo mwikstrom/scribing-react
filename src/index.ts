@@ -20,6 +20,10 @@ export * from "./StoreAssetEvent";
 export * from "./FlowPalette";
 export * from "./FlowPaletteScope";
 
+// Typography
+export * from "./FlowTypography";
+export * from "./FlowTypographyScope";
+
 // Locale
 export * from "./FlowLocale";
 export * from "./FlowLocaleScope";
