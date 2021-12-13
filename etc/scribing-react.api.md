@@ -202,7 +202,7 @@ export class FlowEditorController {
     // (undocumented)
     insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void>;
     // (undocumented)
-    insertMarkup(tag: string): void;
+    insertMarkup(tag: string, attr?: Map<string, string>, preferEmpty?: boolean): void;
     // (undocumented)
     insertNode(node: FlowNode): void;
     // (undocumented)

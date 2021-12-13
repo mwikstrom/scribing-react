@@ -73,7 +73,8 @@ const initialContent = FlowContent.fromJsonValue([
 ]);
   
 const Template: ComponentStory<typeof ClientFlowEditor> = args => {
-    const server = useMemo(() => new FlowSyncServer({ initialContent }), []);
+    const server = useMemo(() => new FlowSyncServer(), []);
+    const [ready, setReady] = useState(false);  
 
     const wrapperStyle = useMemo<CSSProperties>(() => ({
         display: "flex",
@@ -93,20 +94,36 @@ const Template: ComponentStory<typeof ClientFlowEditor> = args => {
         borderLeft: "1px solid #888",
     }), []);
 
+    useEffect(() => {
+        setReady(false);
+        let active = true;
+        (async () => {
+            await server.init(initialContent);
+            if (active) {                
+                setReady(true);
+            }
+        })();
+        return () => { active = false; };
+    }, [server]);
+
     return (
         <div style={wrapperStyle}>
-            <ClientFlowEditor 
-                {...args}
-                style={editorAStyle}
-                server={server}
-                id={"A"}
-            />
-            <ClientFlowEditor 
-                {...args}
-                style={editorBStyle}
-                server={server}
-                id={"B"}
-            />
+            {ready && (
+                <>
+                    <ClientFlowEditor 
+                        {...args}
+                        style={editorAStyle}
+                        server={server}
+                        id={"A"}
+                    />
+                    <ClientFlowEditor 
+                        {...args}
+                        style={editorBStyle}
+                        server={server}
+                        id={"B"}
+                    />
+                </>
+            )}
         </div>
     );
 };

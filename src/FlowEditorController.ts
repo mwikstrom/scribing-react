@@ -6,6 +6,7 @@ import {
     CellRange,
     CompleteUpload,
     DynamicText,
+    EmptyMarkup,
     EndMarkup,
     FlowBatch,
     FlowBox,
@@ -692,7 +693,7 @@ export class FlowEditorController {
         }
     }
 
-    insertMarkup(tag: string): void {
+    insertMarkup(tag: string, attr = new Map<string, string>(), preferEmpty = false): void {
         const { selection } = this.#state;
         
         if (!selection) {
@@ -703,22 +704,56 @@ export class FlowEditorController {
         let newSelection: FlowSelection | undefined | null;
         selection.visitRanges((range, {wrap}) => {
             if (range instanceof FlowRange) {
-                const start = wrap(FlowRange.at(range.first))?.insert(                    
-                    new FlowContent({ nodes: Object.freeze([new StartMarkup({ tag, style: TextStyle.empty })])}),
-                    this.getTargetOptions(),
-                );
-                
-                const end = wrap(FlowRange.at(range.last))?.insert(                    
-                    new FlowContent({ nodes: Object.freeze([new EndMarkup({ tag, style: TextStyle.empty })])}),
-                    this.getTargetOptions(),
-                );
-
-                if (start && end) {
-                    ops.push(end, start);
-                    if (range.isCollapsed) {
+                if (range.isCollapsed && preferEmpty) {
+                    const markup = wrap(FlowRange.at(range.first))?.insert(
+                        new FlowContent({
+                            nodes: Object.freeze([
+                                new EmptyMarkup({
+                                    tag,
+                                    style: TextStyle.empty, 
+                                    attr: Object.freeze(attr),
+                                })
+                            ])
+                        }),
+                        this.getTargetOptions(),
+                    );
+                    if (markup) {
+                        ops.push(markup);
                         newSelection = wrap(FlowRange.at(range.first + 1));
-                    } else {
-                        newSelection = null;
+                    }
+                } else {
+                    const start = wrap(FlowRange.at(range.first))?.insert(
+                        new FlowContent({ 
+                            nodes: Object.freeze([
+                                new StartMarkup({
+                                    tag,
+                                    style: TextStyle.empty, 
+                                    attr: Object.freeze(attr),
+                                })
+                            ])
+                        }),
+                        this.getTargetOptions(),
+                    );
+                    
+                    const end = wrap(FlowRange.at(range.last))?.insert(                    
+                        new FlowContent({
+                            nodes: Object.freeze([
+                                new EndMarkup({
+                                    tag,
+                                    style: TextStyle.empty,
+                                })
+                            ])
+                        }),
+                        this.getTargetOptions(),
+                    );
+
+                    if (start && end) {
+                        ops.push(end, start);
+                        if (range.isCollapsed) {
+                            newSelection = wrap(FlowRange.at(range.first + 1));
+                        } else {
+                            newSelection = null;
+                        }
                     }
                 }
             }

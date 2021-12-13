@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-insertMarkup(tag: string): void;
+insertMarkup(tag: string, attr?: Map<string, string>, preferEmpty?: boolean): void;
 ```
 
 ## Parameters
@@ -15,6 +15,8 @@ insertMarkup(tag: string): void;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  tag | string |  |
+|  attr | Map&lt;string, string&gt; |  |
+|  preferEmpty | boolean |  |
 
 <b>Returns:</b>
 

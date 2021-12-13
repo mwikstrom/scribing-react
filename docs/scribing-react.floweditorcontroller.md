@@ -68,7 +68,7 @@ export declare class FlowEditorController
 |  [insertBox(style, content)](./scribing-react.floweditorcontroller.insertbox.md) |  |  |
 |  [insertContent(content)](./scribing-react.floweditorcontroller.insertcontent.md) |  |  |
 |  [insertContentOrPromise(content)](./scribing-react.floweditorcontroller.insertcontentorpromise.md) |  |  |
-|  [insertMarkup(tag)](./scribing-react.floweditorcontroller.insertmarkup.md) |  |  |
+|  [insertMarkup(tag, attr, preferEmpty)](./scribing-react.floweditorcontroller.insertmarkup.md) |  |  |
 |  [insertNode(node)](./scribing-react.floweditorcontroller.insertnode.md) |  |  |
 |  [insertPromise(content)](./scribing-react.floweditorcontroller.insertpromise.md) |  |  |
 |  [insertTable(cols, rows)](./scribing-react.floweditorcontroller.inserttable.md) |  |  |

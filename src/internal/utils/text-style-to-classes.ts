@@ -30,6 +30,12 @@ export const textStyles = (palette: FlowPalette): TextStyles => ({
     monospaceFont: {
         fontFamily: "monospace",
     },
+    cursiveFont: {
+        fontFamily: "cursive",
+    },
+    decorativeFont: {
+        fontFamily: "fantasy",
+    },
     defaultColor: {
         color: palette.text,
     },
