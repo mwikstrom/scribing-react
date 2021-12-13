@@ -17,6 +17,7 @@ export interface FlowEditorClient
 |  --- | --- | --- |
 |  [autoSync](./scribing-react.floweditorclient.autosync.md) | boolean |  |
 |  [connection](./scribing-react.floweditorclient.connection.md) | [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
+|  [frozen](./scribing-react.floweditorclient.frozen.md) | boolean \| null |  |
 |  [state](./scribing-react.floweditorclient.state.md) | [FlowEditorState](./scribing-react.floweditorstate.md) \| null |  |
 
 ## Methods

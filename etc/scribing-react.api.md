@@ -85,6 +85,8 @@ export interface FlowEditorClient {
     // (undocumented)
     disconnect(): void;
     // (undocumented)
+    readonly frozen: boolean | null;
+    // (undocumented)
     reconnect(): void;
     // (undocumented)
     readonly state: FlowEditorState | null;

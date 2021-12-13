@@ -20,6 +20,7 @@ export interface FlowEditorClient {
     readonly state: FlowEditorState | null;
     readonly connection: ConnectionStatus;
     readonly autoSync: boolean;
+    readonly frozen: boolean | null;
     apply(event: StateChangeEvent): boolean;
     disconnect(): void;
     reconnect(): void;
@@ -53,6 +54,7 @@ export function useFlowEditorClient(
 ): FlowEditorClient {
     const { autoSync = true, clientKey: givenClientKey, onSyncing } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
+    const [frozen, setFrozen] = useState<boolean | null>(null);
     const [connection, setConnection] = useState<ConnectionStatus>("connecting");
     const useConnectionEffect = (when: ConnectionStatus, effect: EffectCallback) => useEffect(() => {
         if (connection === when) {
@@ -82,6 +84,11 @@ export function useFlowEditorClient(
         // We must have a local state, otherwise we're not connected, and it
         // must match the specified before state, otherwise we're out of sync.
         if (!local.current?.equals(event.before)) {
+            return false;
+        }
+
+        // Do not allow changes to be made when editor is frozen
+        if (frozen && event.change !== null) {
             return false;
         }
 
@@ -116,7 +123,7 @@ export function useFlowEditorClient(
         // Store new local state
         setState(local.current = event.after);
         return true;
-    }, []);
+    }, [frozen]);
 
     // Derive protocol from url
     const protocol = useMemo(() => {
@@ -133,6 +140,8 @@ export function useFlowEditorClient(
     // Fetch snapshot when connecting
     useConnectionEffect("connecting", () => {
         let active = true;
+        setState(local.current = null);
+        setFrozen(null);
         (async function connecting() {
             try {
                 const snapshot = await protocol.read();
@@ -147,6 +156,7 @@ export function useFlowEditorClient(
                         pendingChange.current = null;
                         pendingSelection.current = null;
                         lastSync.current = lastRemoteChange.current = Date.now();
+                        setFrozen(snapshot.frozen);
                         setState(local.current = FlowEditorState.empty.merge({
                             content: snapshot.content,
                             theme: snapshot.theme,
@@ -271,6 +281,7 @@ export function useFlowEditorClient(
                         }
                         setConnection(pendingChange.current === null ? "clean" : "dirty");
                         setSyncedSelection(mergedSelection);
+                        setFrozen(output.frozen);
                         setState(local.current = local.current.merge({
                             content: mergedContent,
                             selection: mergedSelection,
@@ -329,7 +340,7 @@ export function useFlowEditorClient(
         return () => clearTimeout(timerId);
     }, [autoSync, connection]);
 
-    return { state, connection, autoSync, apply, disconnect, reconnect, sync };
+    return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync };
 }
 
 interface PendingChange {
