@@ -1,18 +1,18 @@
 import clsx from "clsx";
 import React, { useCallback, useMemo, useState, MouseEvent, FC, RefCallback } from "react";
-import { EndMarkup, StartMarkup } from "scribing";
+import { EmptyMarkup, EndMarkup, StartMarkup } from "scribing";
 import { flowNode, FlowNodeComponentProps } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import { useEditMode } from "./EditModeScope";
-import { SYSTEM_FONT } from "./utils/system-font";
 
 export const StartMarkupView = flowNode<StartMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
+export const EmptyMarkupView = flowNode<EmptyMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
 export const EndMarkupView = flowNode<EndMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
 
-interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EndMarkup>, "ref"> {
+interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EmptyMarkup | EndMarkup>, "ref"> {
     outerRef: RefCallback<HTMLElement>;
 }
 
@@ -45,6 +45,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
         node instanceof StartMarkup && classes.startTag,
         node instanceof EndMarkup && classes.endTag,
+        node instanceof EmptyMarkup && classes.emptyTag,
     );
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
@@ -101,11 +102,11 @@ const useStyles = createUseFlowStyles("Markup", ({palette}) => ({
     root: {
         display: "inline-block",
         whiteSpace: "pre",
-        fontFamily: SYSTEM_FONT,
+        fontFamily: "monospace",
         fontWeight: "normal",
-        color: palette.subtle,
-        border: "1px solid currentColor",
-        padding: "0.1rem 0.2rem",
+        color: palette.text,
+        border: `1px solid ${palette.subtle}`,
+        padding: "0.2rem 0.4rem",
         marginLeft: "0.1rem",
         marginRight: "0.2rem",
         cursor: "default",
@@ -115,12 +116,15 @@ const useStyles = createUseFlowStyles("Markup", ({palette}) => ({
     startTag: {
         borderTopRightRadius: "1em",
         borderBottomRightRadius: "1em",
-        paddingRight: "0.4rem",
+        paddingRight: "0.6rem",
     },
     endTag: {
         borderTopLeftRadius: "1em",
         borderBottomLeftRadius: "1em",
-        paddingLeft: "0.4rem",
+        paddingLeft: "0.6rem",
+    },
+    emptyTag: {
+        borderRadius: "0.4em",
     },
     selected: {
         backgroundColor: palette.selection,

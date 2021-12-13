@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import {
     DynamicText, 
+    EmptyMarkup, 
     EndMarkup, 
     FlowBox, 
     FlowIcon, 
@@ -37,6 +38,7 @@ type FlowNodeComponentKey = (
     "imageView" |
     "tableView" |
     "startMarkupView" |
+    "emptyMarkupView" |
     "endMarkupView"
 );
 
@@ -59,6 +61,8 @@ const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
         return "tableView";
     } else if (node instanceof StartMarkup) {
         return "startMarkupView";
+    } else if (node instanceof EmptyMarkup) {
+        return "emptyMarkupView";
     } else if (node instanceof EndMarkup) {
         return "endMarkupView";
     } else {

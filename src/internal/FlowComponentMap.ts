@@ -16,6 +16,7 @@ import {
     FlowTable,
     StartMarkup,
     EndMarkup,
+    EmptyMarkup,
 } from "scribing";
 import { DynamicTextView } from "./DynamicTextView";
 import { FlowBoxView } from "./FlowBoxView";
@@ -25,7 +26,7 @@ import { FlowNodeComponent } from "./FlowNodeComponent";
 import { FlowTableView } from "./FlowTableView";
 import { LineBreakView } from "./LineBreakView";
 import { ParagraphBreakView } from "./ParagraphBreakView";
-import { StartMarkupView, EndMarkupView } from "./MarkupView";
+import { StartMarkupView, EndMarkupView, EmptyMarkupView } from "./MarkupView";
 import { TextRunView } from "./TextRunView";
 import { UnknownNodeView } from "./UnknownNodeView";
 
@@ -54,6 +55,7 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
     imageView: FlowImageView,
     tableView: FlowTableView,
     startMarkupView: StartMarkupView,
+    emptyMarkupView: EmptyMarkupView,
     endMarkupView: EndMarkupView,
 });
 
@@ -71,6 +73,7 @@ export interface FlowComponentMap extends Record<ParagraphVariant, ParagraphComp
     imageView: FlowNodeComponent<FlowImage>;
     tableView: FlowNodeComponent<FlowTable>;
     startMarkupView: FlowNodeComponent<StartMarkup>;
+    emptyMarkupView: FlowNodeComponent<EmptyMarkup>;
     endMarkupView: FlowNodeComponent<EndMarkup>;
 }
 
