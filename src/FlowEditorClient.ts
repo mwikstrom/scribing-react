@@ -25,6 +25,7 @@ export interface FlowEditorClient {
     disconnect(): void;
     reconnect(): void;
     sync(): void;
+    freeze(value?: boolean): void;
 }
 
 /** @public */
@@ -68,10 +69,15 @@ export function useFlowEditorClient(
     const lastRemoteChange = useRef(0);
     const pendingChange = useRef<PendingChange | null>(null);
     const pendingSelection = useRef<FlowSelection | null>(null);
+    const pendingFrozen = useRef<boolean | undefined>();
 
     const disconnect = useCallback(() => setConnection("disconnected"), []);
     const reconnect = useCallback(() => setConnection("connecting"), []);
     const sync = useCallback(() => setConnection("syncing"), []);
+    const freeze = useCallback((value = true) => {
+        pendingFrozen.current = value;
+        sync();
+    }, [sync]);
 
     // Setup effective client key
     const effectiveClientKey = useMemo(
@@ -155,6 +161,7 @@ export function useFlowEditorClient(
                         syncVersion.current = snapshot.version;
                         pendingChange.current = null;
                         pendingSelection.current = null;
+                        pendingFrozen.current = undefined;
                         lastSync.current = lastRemoteChange.current = Date.now();
                         setFrozen(snapshot.frozen);
                         setState(local.current = FlowEditorState.empty.merge({
@@ -188,6 +195,7 @@ export function useFlowEditorClient(
                     version: syncVersion.current,
                     operation: outgoingChange?.operation ?? null,
                     selection: pendingSelection.current,
+                    frozen: pendingFrozen.current,
                 };
 
                 if (onSyncing) {
@@ -311,10 +319,10 @@ export function useFlowEditorClient(
         let interval: number | undefined;
 
         if (autoSync) {
-            if (connection === "dirty") {
+            if (connection === "dirty" || pendingFrozen.current !== void(0)) {
                 interval = DIRTY_SYNC_INTERVAL;
             } else if (connection === "clean") {
-                if (!areEqualSelections(state?.selection, syncedSelection)) {
+                if (!areEqualSelections(pendingSelection.current, syncedSelection)) {
                     interval = SELECTION_SYNC_INTERVAL;
                 } else {
                     interval = Math.max(
@@ -338,9 +346,9 @@ export function useFlowEditorClient(
         );
         const timerId = setTimeout(() => setConnection("syncing"), delay);
         return () => clearTimeout(timerId);
-    }, [autoSync, connection]);
+    }, [autoSync, connection, pendingSelection.current, syncedSelection, pendingFrozen.current]);
 
-    return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync };
+    return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync, freeze };
 }
 
 interface PendingChange {

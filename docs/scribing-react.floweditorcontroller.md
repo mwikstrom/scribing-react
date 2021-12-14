@@ -114,6 +114,7 @@ export declare class FlowEditorController
 |  [setBaselineOffset(value)](./scribing-react.floweditorcontroller.setbaselineoffset.md) |  |  |
 |  [setBoxColor(value)](./scribing-react.floweditorcontroller.setboxcolor.md) |  |  |
 |  [setBoxInteraction(value)](./scribing-react.floweditorcontroller.setboxinteraction.md) |  |  |
+|  [setCaretStyle(style)](./scribing-react.floweditorcontroller.setcaretstyle.md) |  |  |
 |  [setColor(value)](./scribing-react.floweditorcontroller.setcolor.md) |  |  |
 |  [setDynamicExpression(value)](./scribing-react.floweditorcontroller.setdynamicexpression.md) |  |  |
 |  [setDynamicTextExpression(value)](./scribing-react.floweditorcontroller.setdynamictextexpression.md) |  |  |

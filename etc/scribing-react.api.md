@@ -88,6 +88,8 @@ export interface FlowEditorClient {
     // (undocumented)
     disconnect(): void;
     // (undocumented)
+    freeze(value?: boolean): void;
+    // (undocumented)
     readonly frozen: boolean | null;
     // (undocumented)
     reconnect(): void;
@@ -301,6 +303,8 @@ export class FlowEditorController {
     setBoxColor(value: FlowColor): void;
     // (undocumented)
     setBoxInteraction(value: Interaction | null): void;
+    // (undocumented)
+    setCaretStyle(style: TextStyle): void;
     // (undocumented)
     setColor(value: FlowColor): void;
     // (undocumented)
