@@ -26,6 +26,7 @@ export interface FlowEditorClient {
     reconnect(): void;
     sync(): void;
     freeze(value?: boolean): void;
+    clean(): Promise<void>;
 }
 
 /** @public */
@@ -70,6 +71,7 @@ export function useFlowEditorClient(
     const pendingChange = useRef<PendingChange | null>(null);
     const pendingSelection = useRef<FlowSelection | null>(null);
     const pendingFrozen = useRef<boolean | undefined>();
+    const [waiting, setWaiting] = useState<Array<{resolve: () => void, reject: () => void}>>([]);
 
     const disconnect = useCallback(() => setConnection("disconnected"), []);
     const reconnect = useCallback(() => setConnection("connecting"), []);
@@ -78,6 +80,10 @@ export function useFlowEditorClient(
         pendingFrozen.current = value;
         sync();
     }, [sync]);
+    const clean = useCallback(() => new Promise<void>((resolve, reject) => {
+        setWaiting(before => [...before, { resolve, reject }]);
+        sync();
+    }), [sync]);
 
     // Setup effective client key
     const effectiveClientKey = useMemo(
@@ -348,7 +354,21 @@ export function useFlowEditorClient(
         return () => clearTimeout(timerId);
     }, [autoSync, connection, pendingSelection.current, syncedSelection, pendingFrozen.current]);
 
-    return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync, freeze };
+    // Notify waiting promises
+    useEffect(() => {
+        if (waiting.length > 0 && (connection === "broken" || connection === "clean")) {
+            waiting.forEach(({resolve, reject}) => {
+                if (connection === "clean") {
+                    resolve();
+                } else {
+                    reject();
+                }
+            });
+            setWaiting([]);
+        }
+    }, [connection, waiting]);
+
+    return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync, freeze, clean };
 }
 
 interface PendingChange {

@@ -25,6 +25,7 @@ export interface FlowEditorClient
 |  Method | Description |
 |  --- | --- |
 |  [apply(event)](./scribing-react.floweditorclient.apply.md) |  |
+|  [clean()](./scribing-react.floweditorclient.clean.md) |  |
 |  [disconnect()](./scribing-react.floweditorclient.disconnect.md) |  |
 |  [freeze(value)](./scribing-react.floweditorclient.freeze.md) |  |
 |  [reconnect()](./scribing-react.floweditorclient.reconnect.md) |  |
