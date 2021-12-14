@@ -534,7 +534,7 @@ export class FlowEditorController {
         const { selection, caret } = this.#state;
         if (selection) {
             if (selection.isCollapsed) {
-                this.#state = this.#apply(this.#state.set("caret", caret.set(key, value)));
+                this.setCaretStyle(caret.set(key, value));
             } else {
                 const style = TextStyle.empty.set(key, value);
                 const options = this.getTargetOptions();
@@ -542,6 +542,10 @@ export class FlowEditorController {
                 this.#state = this.#apply(operation);
             }
         }
+    }
+
+    setCaretStyle(style: TextStyle): void {
+        this.#state = this.#apply(this.#state.set("caret", style));
     }
 
     formatParagraph<K extends keyof ParagraphStyleProps>(key: K, value: ParagraphStyleProps[K]): void {

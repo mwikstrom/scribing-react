@@ -3,6 +3,8 @@ import { InputHandler } from "./InputHandler";
 
 /** @internal */
 export const insertParagraph: InputHandler = controller => {
+    const caret = controller.getTextStyle();
+
     // Special handling when inserting a paragraph break at the end of a trailing paragraph.
     // In this case we'll insert two paragraph breaks and place the caret between those.
     if (controller.isAtEndOfTrailingParagraph()) {        
@@ -10,6 +12,7 @@ export const insertParagraph: InputHandler = controller => {
             nodes: Object.freeze([new ParagraphBreak(), new ParagraphBreak()]),
         }));
         controller.moveCaretBack();
+        controller.setCaretStyle(caret);
         return;
     }
 
@@ -21,4 +24,5 @@ export const insertParagraph: InputHandler = controller => {
     }
 
     controller.insertNode(new ParagraphBreak());
+    controller.setCaretStyle(caret);
 };
