@@ -787,7 +787,7 @@ export class FlowEditorController {
     insertContent(content: FlowContent): void {
         const { selection } = this.#state;
         if (selection) {
-            this.#state = this.#apply(selection.insert(content));
+            this.#state = this.#apply(selection.insert(content, this.getTargetOptions()));
         }
     }
 
