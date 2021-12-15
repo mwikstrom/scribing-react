@@ -15,6 +15,7 @@ export * from "./DeferrableEvent";
 export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
+export * from "./InitEditorEvent";
 
 // Palette
 export * from "./FlowPalette";

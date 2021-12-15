@@ -135,6 +135,7 @@ export const ManualSync = Template.bind({});
 ManualSync.args = { manual: true };
 
 const createTestProtocol = (server: FlowSyncServer, user: string, debug: boolean | undefined): FlowSyncProtocol => ({
+    init: async () => { throw new Error("NOT IMPLEMENTED"); },
     read: () => server.read(),
     sync: async input => {
         if (debug) {

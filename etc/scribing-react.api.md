@@ -108,6 +108,8 @@ export interface FlowEditorClientOptions {
     // (undocumented)
     clientKey?: string;
     // (undocumented)
+    onInit?: (event: InitEditorEvent) => void;
+    // (undocumented)
     onSyncing?: (event: DeferrableEvent) => void;
 }
 
@@ -554,6 +556,16 @@ export interface FlowViewProps {
     onResolveLink?: (event: ResolveLinkEvent) => void;
     // (undocumented)
     selection?: FlowSelection | null;
+}
+
+// @public (undocumented)
+export class InitEditorEvent extends DeferrableEvent {
+    // (undocumented)
+    content?: FlowContent;
+    // (undocumented)
+    language?: string;
+    // (undocumented)
+    skip: boolean;
 }
 
 // @public (undocumented)

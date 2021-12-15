@@ -14,6 +14,7 @@ import {
 import { DeferrableEvent } from ".";
 import { FlowEditorState } from "./FlowEditorState";
 import { StateChangeEvent } from "./StateChangeEvent";
+import { InitEditorEvent } from "./InitEditorEvent";
 
 /** @public */
 export interface FlowEditorClient {
@@ -44,6 +45,7 @@ export interface FlowEditorClientOptions {
     autoSync?: boolean;
     clientKey?: string;
     onSyncing?: (event: DeferrableEvent) => void;
+    onInit?: (event: InitEditorEvent) => void;
 }
 
 /** @public */
@@ -60,7 +62,7 @@ export function useFlowEditorClient(
     urlOrProtocol: FlowSyncProtocol | string | null, 
     options: FlowEditorClientOptions = {}
 ): FlowEditorClient {
-    const { autoSync = true, clientKey: givenClientKey, onSyncing } = options;
+    const { autoSync = true, clientKey: givenClientKey, onSyncing, onInit } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
     const [frozen, setFrozen] = useState<boolean | null>(null);
     const [connection, setConnection] = useState<ConnectionStatus>(urlOrProtocol ? "connecting" : "disconnected");
@@ -166,7 +168,22 @@ export function useFlowEditorClient(
         setFrozen(null);
         (async function connecting() {
             try {
-                const snapshot = await protocol.read();
+                let snapshot = await protocol.read();
+
+                if (snapshot === null && onInit) {
+                    const initEvent = new InitEditorEvent();
+                    onInit(initEvent);
+                    await initEvent._complete();
+                    const { content, language, skip } = initEvent;
+                    if (!skip) {
+                        snapshot = await protocol.init(content, language);
+                        if (snapshot === null) {
+                            // In the unlikely case that someone else initialized it before we did
+                            snapshot = await protocol.read();
+                        }
+                    }
+                }
+
                 if (active) {
                     if (snapshot === null) {
                         console.error("Flow editor connection is broken. Server resource not found.");
