@@ -84,7 +84,7 @@ export interface FlowEditorClient {
     // (undocumented)
     readonly autoSync: boolean;
     // (undocumented)
-    clean(): Promise<void>;
+    clean(): Promise<FlowEditorState>;
     // (undocumented)
     readonly connection: ConnectionStatus;
     // (undocumented)

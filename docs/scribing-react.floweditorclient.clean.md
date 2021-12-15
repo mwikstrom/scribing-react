@@ -7,9 +7,9 @@
 <b>Signature:</b>
 
 ```typescript
-clean(): Promise<void>;
+clean(): Promise<FlowEditorState>;
 ```
 <b>Returns:</b>
 
-Promise&lt;void&gt;
+Promise&lt;[FlowEditorState](./scribing-react.floweditorstate.md)<!-- -->&gt;
 

@@ -26,7 +26,7 @@ export interface FlowEditorClient {
     reconnect(): void;
     sync(): void;
     freeze(value?: boolean): void;
-    clean(): Promise<void>;
+    clean(): Promise<FlowEditorState>;
 }
 
 /** @public */
@@ -77,7 +77,7 @@ export function useFlowEditorClient(
     const pendingChange = useRef<PendingChange | null>(null);
     const pendingSelection = useRef<FlowSelection | null>(null);
     const pendingFrozen = useRef<boolean | undefined>();
-    const [waiting, setWaiting] = useState<Array<{resolve: () => void, reject: () => void}>>([]);
+    const [waiting, setWaiting] = useState<WaitingArray>([]);
 
     const disconnect = useCallback(() => setConnection("disconnected"), []);
     const reconnect = useCallback(() => setConnection("connecting"), []);
@@ -86,7 +86,7 @@ export function useFlowEditorClient(
         pendingFrozen.current = value;
         sync();
     }, [sync]);
-    const clean = useCallback(() => new Promise<void>((resolve, reject) => {
+    const clean = useCallback(() => new Promise<FlowEditorState>((resolve, reject) => {
         setWaiting(before => [...before, { resolve, reject }]);
         sync();
     }), [sync]);
@@ -372,18 +372,20 @@ export function useFlowEditorClient(
     useEffect(() => {
         if (waiting.length > 0 && (connection === "broken" || connection === "clean")) {
             waiting.forEach(({resolve, reject}) => {
-                if (connection === "clean") {
-                    resolve();
+                if (connection === "clean" && state) {
+                    resolve(state);
                 } else {
-                    reject();
+                    reject(new Error("Failed to await clean editor state"));
                 }
             });
             setWaiting([]);
         }
-    }, [connection, waiting]);
+    }, [connection, waiting, state]);
 
     return { state, connection, frozen, autoSync, apply, disconnect, reconnect, sync, freeze, clean };
 }
+
+type WaitingArray = Array<{resolve: (state: FlowEditorState) => void, reject: (error: Error) => void}>;
 
 interface PendingChange {
     operation: FlowOperation;
