@@ -8,14 +8,14 @@
 <b>Signature:</b>
 
 ```typescript
-export declare function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;
+export declare function useFlowEditorClient(url: string | null, options?: FlowEditorClientOptions): FlowEditorClient;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  url | string |  |
+|  url | string \| null |  |
 |  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
 
 <b>Returns:</b>

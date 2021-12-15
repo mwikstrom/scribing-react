@@ -47,22 +47,28 @@ export interface FlowEditorClientOptions {
 }
 
 /** @public */
-export function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;
-/** @public */
-export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
 export function useFlowEditorClient(
-    urlOrProtocol: FlowSyncProtocol | string, 
+    url: string | null,
+    options?: FlowEditorClientOptions
+): FlowEditorClient;
+/** @public */
+export function useFlowEditorClient(
+    protocol: FlowSyncProtocol | null,
+    options?: FlowEditorClientOptions
+): FlowEditorClient;
+export function useFlowEditorClient(
+    urlOrProtocol: FlowSyncProtocol | string | null, 
     options: FlowEditorClientOptions = {}
 ): FlowEditorClient {
     const { autoSync = true, clientKey: givenClientKey, onSyncing } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
     const [frozen, setFrozen] = useState<boolean | null>(null);
-    const [connection, setConnection] = useState<ConnectionStatus>("connecting");
+    const [connection, setConnection] = useState<ConnectionStatus>(urlOrProtocol ? "connecting" : "disconnected");
     const useConnectionEffect = (when: ConnectionStatus, effect: EffectCallback) => useEffect(() => {
         if (connection === when) {
             return effect();
         }
-    }, [connection]);
+    }, [connection, protocol]);
     const [syncedSelection, setSyncedSelection] = useState<FlowSelection | null>(null);
     const local = useRef<FlowEditorState | null>(null);
     const syncVersion = useRef(0);
@@ -147,10 +153,14 @@ export function useFlowEditorClient(
     }, [urlOrProtocol]);
 
     // Reconnect when protocol changes
-    useEffect(() => setConnection("connecting"), [protocol]);
+    useEffect(() => setConnection(protocol ? "connecting" : "disconnected"), [protocol]);
 
     // Fetch snapshot when connecting
     useConnectionEffect("connecting", () => {
+        if (!protocol) {
+            setConnection("disconnected");
+            return;
+        }
         let active = true;
         setState(local.current = null);
         setFrozen(null);
@@ -189,6 +199,10 @@ export function useFlowEditorClient(
 
     // Handle syncing connection
     useConnectionEffect("syncing", () => {
+        if (!protocol) {
+            setConnection("disconnected");
+            return;
+        }
         let active = true;
         (async function syncing() {
             try {

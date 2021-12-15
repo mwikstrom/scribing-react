@@ -611,10 +611,10 @@ export function useDataIcons(pack?: string, tag?: string): readonly string[];
 export function useDataIconTags(pack: string): readonly string[] | null;
 
 // @public (undocumented)
-export function useFlowEditorClient(url: string, options?: FlowEditorClientOptions): FlowEditorClient;
+export function useFlowEditorClient(url: string | null, options?: FlowEditorClientOptions): FlowEditorClient;
 
 // @public (undocumented)
-export function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
+export function useFlowEditorClient(protocol: FlowSyncProtocol | null, options?: FlowEditorClientOptions): FlowEditorClient;
 
 // @public (undocumented)
 export function useFlowLocale(): Readonly<FlowLocale>;

@@ -8,14 +8,14 @@
 <b>Signature:</b>
 
 ```typescript
-export declare function useFlowEditorClient(protocol: FlowSyncProtocol, options?: FlowEditorClientOptions): FlowEditorClient;
+export declare function useFlowEditorClient(protocol: FlowSyncProtocol | null, options?: FlowEditorClientOptions): FlowEditorClient;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  protocol | FlowSyncProtocol |  |
+|  protocol | FlowSyncProtocol \| null |  |
 |  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
 
 <b>Returns:</b>
