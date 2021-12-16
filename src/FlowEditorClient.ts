@@ -170,10 +170,12 @@ export function useFlowEditorClient(
             try {
                 let snapshot = await protocol.read();
 
-                if (snapshot === null && onInit) {
+                if (snapshot === null) {
                     const initEvent = new InitEditorEvent();
-                    onInit(initEvent);
-                    await initEvent._complete();
+                    if (onInit) {
+                        onInit(initEvent);
+                        await initEvent._complete();
+                    }
                     const { content, language, skip } = initEvent;
                     if (!skip) {
                         snapshot = await protocol.init(content, language);
