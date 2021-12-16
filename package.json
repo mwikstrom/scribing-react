@@ -97,6 +97,5 @@
     "scripthost-core": "0.x",
     "scripthost-react": "0.x"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
