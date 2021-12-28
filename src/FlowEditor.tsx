@@ -424,7 +424,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                                     style={style}
                                     contentEditable={editMode !== false}
                                     suppressContentEditableWarning={true}
-                                    children={<FlowView content={state.content} selection={state.selection}/>}
+                                    children={(
+                                        <FlowView
+                                            content={state.content}
+                                            theme={state.theme}
+                                            selection={state.selection}
+                                        />
+                                    )}
                                 />
                             )}
                         />

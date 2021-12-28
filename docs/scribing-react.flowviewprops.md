@@ -20,4 +20,5 @@ export interface FlowViewProps
 |  [onLoadAsset?](./scribing-react.flowviewprops.onloadasset.md) | (event: [LoadAssetEvent](./scribing-react.loadassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onResolveLink?](./scribing-react.flowviewprops.onresolvelink.md) | (event: [ResolveLinkEvent](./scribing-react.resolvelinkevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [selection?](./scribing-react.flowviewprops.selection.md) | FlowSelection \| null | <i>(Optional)</i> |
+|  [theme?](./scribing-react.flowviewprops.theme.md) | FlowTheme | <i>(Optional)</i> |
 

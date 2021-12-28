@@ -25,6 +25,7 @@ export const TextSegment: FC<TextSegmentProps> = props => {
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
     const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
+    const { lang } = style;
     const classes = useStyles();
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
@@ -36,17 +37,18 @@ export const TextSegment: FC<TextSegmentProps> = props => {
 
     // Enable spell checker only after text has been idle for a while and editing is active
     const [spellCheck, setSpellCheck] = useState(false);
+    useEffect(() => setSpellCheck(false), [text]);
     useEffect(() => {
-        setSpellCheck(false);
-        if (style.spellcheck && editMode === true) {
+        if (!spellCheck && style.spellcheck && editMode === true && !!lang) {
             const timeout = setTimeout(() => setSpellCheck(true), 500);
             return () => clearTimeout(timeout);
         }
-    }, [text, style.spellcheck, editMode]);
+    }, [spellCheck, !!style.spellcheck, editMode === true, !!lang]);
 
     return (
         <span
             className={className}
+            lang={lang}
             style={css}
             children={text || "\u200b"}
             spellCheck={spellCheck}

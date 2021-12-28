@@ -6,6 +6,7 @@ import {
     BOX_VARIANTS,
     CellPosition,
     CellRange,
+    DefaultFlowTheme,
     FlowColor,
     FlowContent,
     FlowSelection,
@@ -798,6 +799,34 @@ TableSelection.args = {
             focus: CellPosition.parse("B3", true),
         })
     }))
+};
+
+export const SwedishTheme = Template.bind({});
+SwedishTheme.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This text is written without explicit language",
+        { break: "para" },
+        "Den här texten är skriven utan explicit språk",
+        { break: "para" },
+        { text: "This text is written with English as explicit language", style: { lang: "en-US" } },
+        { break: "para" },
+        { text: "Den här texten är skriven med Svenska som explicit språk", style: { lang: "sv-SE" } },
+        { break: "para" },
+    ])).set("theme", DefaultFlowTheme.get("sv-SE"))
+};
+
+export const EnglishTheme = Template.bind({});
+EnglishTheme.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This text is written without explicit language",
+        { break: "para" },
+        "Den här texten är skriven utan explicit språk",
+        { break: "para" },
+        { text: "This text is written with English as explicit language", style: { lang: "en-US" } },
+        { break: "para" },
+        { text: "Den här texten är skriven med Svenska som explicit språk", style: { lang: "sv-SE" } },
+        { break: "para" },
+    ])).set("theme", DefaultFlowTheme.get("en-US"))
 };
 
 function button(

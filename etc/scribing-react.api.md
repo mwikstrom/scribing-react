@@ -556,6 +556,8 @@ export interface FlowViewProps {
     onResolveLink?: (event: ResolveLinkEvent) => void;
     // (undocumented)
     selection?: FlowSelection | null;
+    // (undocumented)
+    theme?: FlowTheme;
 }
 
 // @public (undocumented)
