@@ -5,7 +5,7 @@ import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
 import { ParagraphThemeScope } from "./ParagraphThemeScope";
 import { getFlowFragmentSelection } from "./utils/get-sub-selection";
-import { EmptyFlowFragment } from "./EmptyFlowFragment";
+import { EmptyFlowContent } from "./EmptyFlowContent";
 
 /**
  * Component props for {@link FlowContentView}
@@ -18,7 +18,7 @@ export interface FlowContentViewProps {
 }
 
 /**
- * Flow fragment view component
+ * Flow content view component
  * @internal
  */
 export const FlowContentView: FC<FlowContentViewProps> = props => {
@@ -31,7 +31,7 @@ export const FlowContentView: FC<FlowContentViewProps> = props => {
     );
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.length === 0 ? (
-        <EmptyFlowFragment selection={selection}/>
+        <EmptyFlowContent selection={selection}/>
     ) : paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
         <ParagraphThemeScope 
             key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
