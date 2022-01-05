@@ -5,11 +5,11 @@ import {
     ReactElement, 
     RefCallback 
 } from "react";
-import { EndMarkup, FlowNode, FlowSelection, StartMarkup } from "scribing";
+import { FlowCursor, FlowNode, FlowSelection } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
-export type OpposingTag = EndMarkup | StartMarkup | null;
+export type OpposingTag = FlowCursor | null;
 
 export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;

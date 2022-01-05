@@ -1,5 +1,15 @@
 import React, { FC, useMemo } from "react";
-import { FlowContent, FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme } from "scribing";
+import { 
+    EndMarkup,
+    FlowContent,
+    FlowCursor,
+    FlowNode,
+    FlowSelection,
+    FlowTheme,
+    ParagraphBreak,
+    ParagraphTheme,
+    StartMarkup,
+} from "scribing";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
@@ -23,12 +33,12 @@ export interface FlowContentViewProps {
  * @internal
  */
 export const FlowContentView: FC<FlowContentViewProps> = props => {
-    const { content: { nodes }, prevBreak = null, selection } = props;
+    const { content, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(
-        () => splitToParagraphs(nodes, theme, prevBreak, selection),
-        [nodes, keyManager, theme, prevBreak, selection]
+        () => splitToParagraphs(content, theme, prevBreak, selection),
+        [content, keyManager, theme, prevBreak, selection]
     );
     const keyRenderer = keyManager.createRenderer();
     const children = paragraphArray.length === 0 ? (
@@ -49,7 +59,7 @@ interface SplitParaProps extends Pick<ParagraphViewProps, SplitParaPickProps> {
 }
 
 const splitToParagraphs = (
-    source: readonly FlowNode[],
+    source: FlowContent,
     theme: FlowTheme,
     prevBreak: ParagraphBreak | null,
     outerSelection: FlowSelection | boolean,
@@ -62,9 +72,13 @@ const splitToParagraphs = (
     let startIndex = 0;
     let startPosition = 0;
 
-    for (const node of source) {
+    for (let cursor: FlowCursor | null = source.peek(); cursor; cursor = cursor.moveToStartOfNextNode()) {
+        const { node } = cursor;
+        if (!node) {
+            continue;
+        }
         children.push(node);
-        opposingTags.push(null);
+        opposingTags.push(getOpposingTag(cursor));
         ++index;
         position += node.size;
 
@@ -77,7 +91,7 @@ const splitToParagraphs = (
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
                 selection: getFlowFragmentSelection(
                     outerSelection,
-                    source,
+                    source.nodes,
                     startIndex,
                     index - startIndex,
                     startPosition,
@@ -101,7 +115,7 @@ const splitToParagraphs = (
             theme: theme.getParagraphTheme("normal"),
             selection: getFlowFragmentSelection(
                 outerSelection,
-                source,
+                source.nodes,
                 startIndex,
                 index - startIndex,
                 startPosition,
@@ -111,4 +125,15 @@ const splitToParagraphs = (
     }
 
     return result;
+};
+
+const getOpposingTag = (cursor: FlowCursor): OpposingTag => {
+    const { node } = cursor;
+    if (node instanceof StartMarkup) {
+        return cursor.findMarkupEnd();
+    } else if (node instanceof EndMarkup) {
+        return cursor.findMarkupStart();
+    } else {
+        return null;
+    }
 };
