@@ -16,7 +16,7 @@ export interface FlowTableCellViewProps {
 
 export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
     const { cell, position, outerSelection } = props;
-    const { content: { nodes }, colSpan, rowSpan } = cell;
+    const { content, colSpan, rowSpan } = cell;
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
         setRootElem(dom);
@@ -45,7 +45,7 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
             suppressContentEditableWarning={true}
             children={(
                 <FlowFragmentView
-                    nodes={nodes}
+                    content={content}
                     selection={innerSelection}
                 />
             )}

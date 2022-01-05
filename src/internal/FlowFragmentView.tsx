@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme } from "scribing";
+import { FlowContent, FlowNode, FlowSelection, FlowTheme, ParagraphBreak, ParagraphTheme } from "scribing";
 import { useFlowTheme } from "./FlowThemeScope";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
@@ -12,7 +12,7 @@ import { EmptyFlowFragment } from "./EmptyFlowFragment";
  * @internal
  */
 export interface FlowFragmentViewProps {
-    nodes: readonly FlowNode[];
+    content: FlowContent;
     selection: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
 }
@@ -22,7 +22,7 @@ export interface FlowFragmentViewProps {
  * @internal
  */
 export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
-    const { nodes, prevBreak = null, selection } = props;
+    const { content: { nodes }, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(

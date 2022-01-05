@@ -259,7 +259,7 @@ const ContentElement: FC<ContentElementProps> = props => {
             children={
                 <FlowThemeScope theme={theme}>
                     <FlowFragmentView
-                        nodes={content.nodes}
+                        content={content}
                         selection={selection}
                         prevBreak={prevBreak}
                     />

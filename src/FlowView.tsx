@@ -26,14 +26,14 @@ export interface FlowViewProps {
  * @public
  */
 export const FlowView: FC<FlowViewProps> = props => {
-    const { content: { nodes }, theme, selection, onLoadAsset, onResolveLink } = props;
+    const { content, theme, selection, onLoadAsset, onResolveLink } = props;
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <LinkResolverScope handler={onResolveLink}>
                 <AssetLoaderScope handler={onLoadAsset}>
                     <FlowThemeScope theme={theme}>
-                        <FlowFragmentView nodes={nodes} selection={selection ?? false}/>
+                        <FlowFragmentView content={content} selection={selection ?? false}/>
                     </FlowThemeScope>
                 </AssetLoaderScope>
             </LinkResolverScope>
