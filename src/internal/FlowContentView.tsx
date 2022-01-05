@@ -72,7 +72,7 @@ const splitToParagraphs = (
     let startIndex = 0;
     let startPosition = 0;
 
-    for (let cursor: FlowCursor | null = source.peek(); cursor; cursor = cursor.moveToStartOfNextNode()) {
+    for (let cursor: FlowCursor | null = source.peek(0); cursor; cursor = cursor.moveToStartOfNextNode()) {
         const { node } = cursor;
         if (!node) {
             continue;

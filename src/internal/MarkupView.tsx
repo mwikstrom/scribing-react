@@ -17,7 +17,7 @@ interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | Empt
 }
 
 const MarkupView: FC<MarkupViewProps> = props => {
-    const { node, selection, outerRef } = props;
+    const { node, opposingTag, selection, outerRef } = props;
     const { style: givenStyle, tag } = node;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
@@ -46,6 +46,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
         node instanceof StartMarkup && classes.startTag,
         node instanceof EndMarkup && classes.endTag,
         node instanceof EmptyMarkup && classes.emptyTag,
+        (node instanceof StartMarkup || node instanceof EndMarkup) && !opposingTag && classes.broken,
     );
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
@@ -112,6 +113,10 @@ const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
         cursor: "default",
         borderBottomWidth: 2,
         textIndent: 0,
+    },
+    broken: {
+        color: palette.error,
+        borderColor: palette.error,
     },
     startTag: {
         borderTopRightRadius: "1em",
