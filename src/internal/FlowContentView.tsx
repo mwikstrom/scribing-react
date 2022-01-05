@@ -6,6 +6,7 @@ import { ParagraphView, ParagraphViewProps } from "./ParagraphView";
 import { ParagraphThemeScope } from "./ParagraphThemeScope";
 import { getFlowFragmentSelection } from "./utils/get-sub-selection";
 import { EmptyFlowContent } from "./EmptyFlowContent";
+import { OpposingTag } from "./FlowNodeComponent";
 
 /**
  * Component props for {@link FlowContentView}
@@ -42,7 +43,8 @@ export const FlowContentView: FC<FlowContentViewProps> = props => {
     return <>{children}</>;
 };
 
-interface SplitParaProps extends Pick<ParagraphViewProps, "breakNode" | "children" | "prevBreak" | "selection"> {
+type SplitParaPickProps = "breakNode" | "children" | "opposingTags" | "prevBreak" | "selection";
+interface SplitParaProps extends Pick<ParagraphViewProps, SplitParaPickProps> {
     theme: ParagraphTheme;
 }
 
@@ -54,6 +56,7 @@ const splitToParagraphs = (
 ): SplitParaProps[] => {
     const result: SplitParaProps[] = [];
     let children: FlowNode[] = [];
+    let opposingTags: OpposingTag[] = [];
     let index = 0;
     let position = 0;
     let startIndex = 0;
@@ -61,12 +64,14 @@ const splitToParagraphs = (
 
     for (const node of source) {
         children.push(node);
+        opposingTags.push(null);
         ++index;
         position += node.size;
 
         if (node instanceof ParagraphBreak) {
             result.push({
                 children,
+                opposingTags,
                 breakNode: node,
                 prevBreak,
                 theme: theme.getParagraphTheme(node.style.variant ?? "normal"),
@@ -76,11 +81,12 @@ const splitToParagraphs = (
                     startIndex,
                     index - startIndex,
                     startPosition,
-                    position - startPosition,                    
+                    position - startPosition,
                 ),
             });
             prevBreak = node;
             children = [];
+            opposingTags = [];
             startIndex = index;
             startPosition = position;
         }        
@@ -89,6 +95,7 @@ const splitToParagraphs = (
     if (children.length > 0) {
         result.push({
             children,
+            opposingTags,
             breakNode: null,
             prevBreak,
             theme: theme.getParagraphTheme("normal"),

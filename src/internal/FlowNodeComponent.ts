@@ -5,12 +5,15 @@ import {
     ReactElement, 
     RefCallback 
 } from "react";
-import { FlowNode, FlowSelection } from "scribing";
+import { EndMarkup, FlowNode, FlowSelection, StartMarkup } from "scribing";
 
 export type FlowNodeComponent<T extends FlowNode = FlowNode> = FC<FlowNodeComponentProps<T>>;
 
+export type OpposingTag = EndMarkup | StartMarkup | null;
+
 export interface FlowNodeComponentProps<T extends FlowNode = FlowNode> {
     node: T;
+    opposingTag: OpposingTag;
     ref: RefCallback<HTMLElement>;
     singleNodeInPara?: boolean;
     selection: boolean | FlowSelection;

@@ -15,7 +15,7 @@ import { getParagraphCssProperties } from "./utils/paragraph-style-to-css";
 import { makeJssId } from "./utils/make-jss-id";
 import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
-import { FlowNodeComponentProps } from "./FlowNodeComponent";
+import { FlowNodeComponentProps, OpposingTag } from "./FlowNodeComponent";
 import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
@@ -26,15 +26,16 @@ import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-
 import { useFlowTypography } from "../FlowTypographyScope";
 
 /** @internal */
-export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
+export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
     children: readonly FlowNode[];
+    opposingTags: readonly OpposingTag[];
     breakNode?: ParagraphBreak | null;
     prevBreak?: ParagraphBreak | null;
 }
 
 /** @internal */
 export const ParagraphView: FC<ParagraphViewProps> = props => {
-    const { children: childNodes, breakNode = null, prevBreak = null, selection } = props;
+    const { children: childNodes, opposingTags, breakNode = null, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const variant = useMemo(() => breakNode?.style.variant ?? "normal", [breakNode]);
     const givenStyle = useMemo(
@@ -61,11 +62,15 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     ), [style, classes]);
     const components = useFlowComponentMap();
     const Component = components[variant];
-    const adjustedNodes = useMemo(() => (
-        childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak ?
-            [...childNodes, TextRun.fromData(" ")] : childNodes
-    ), [childNodes]);
-    const nodesAndLinks = useMemo(() => splitToLinks(adjustedNodes, selection), [adjustedNodes, selection]);
+    const nodesAndLinks = useMemo(() => {
+        let adjustedNodes = childNodes;
+        let adjustedOpposingTags = opposingTags;
+        if (childNodes.length === 0 || childNodes[childNodes.length - 1] instanceof LineBreak) {
+            adjustedNodes = [...adjustedNodes, TextRun.fromData(" ")];
+            adjustedOpposingTags = [...adjustedOpposingTags, null];
+        }
+        return splitToLinks(adjustedNodes, adjustedOpposingTags, selection);
+    }, [childNodes, opposingTags, selection]);
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
@@ -74,6 +79,7 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
                     <FlowNodeView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps.node)}
                         node={nodeOrLinkProps.node}
+                        opposingTag={nodeOrLinkProps.opposingTag}
                         selection={nodeOrLinkProps.selection}
                         singleNodeInPara={nodesAndLinks.length === 1}
                     />
@@ -81,6 +87,7 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
                     <LinkView
                         key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
                         children={nodeOrLinkProps.children}
+                        opposingTags={nodeOrLinkProps.opposingTags}
                         link={nodeOrLinkProps.link}
                         selection={nodeOrLinkProps.selection}
                     />
@@ -99,15 +106,19 @@ const useStyles = createUseStyles({
     generateId: makeJssId("Paragraph"),
 });
 
-type SplitLinkProps = Pick<LinkViewProps, "children" | "link" | "selection"> & { firstNode: FlowNode };
-interface NodeProps { node: FlowNode, selection: FlowSelection | boolean }
+type SplitLinkProps = Pick<LinkViewProps, "children" | "opposingTags" | "link" | "selection"> & { firstNode: FlowNode };
+interface NodeProps { node: FlowNode, opposingTag: OpposingTag, selection: FlowSelection | boolean }
 type SplitItem = NodeProps | SplitLinkProps;
 
 function isNodeProps(item: SplitItem): item is NodeProps {
     return "node" in item;
 }
 
-const splitToLinks = (nodes: readonly FlowNode[], outerSelection: FlowSelection | boolean): SplitItem[] => {
+const splitToLinks = (
+    nodes: readonly FlowNode[],
+    opposingTags: readonly OpposingTag[],
+    outerSelection: FlowSelection | boolean,
+): SplitItem[] => {
     const result: SplitItem[] = [];
     let linkProps: (Omit<SplitLinkProps, "selection"> & {startIndex: number, startPosition: number}) | null = null;
     let index = 0;
@@ -129,7 +140,9 @@ const splitToLinks = (nodes: readonly FlowNode[], outerSelection: FlowSelection 
         }
     };
     
-    for (const node of nodes) {
+    for (let i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
+        const opposingTag = opposingTags[i];
         const link = getLink(node);
 
         if (link) {
@@ -140,6 +153,7 @@ const splitToLinks = (nodes: readonly FlowNode[], outerSelection: FlowSelection 
             if (!linkProps) {
                 linkProps = {
                     children: [],
+                    opposingTags: [],
                     link,
                     firstNode: node,
                     startIndex: index,
@@ -148,10 +162,12 @@ const splitToLinks = (nodes: readonly FlowNode[], outerSelection: FlowSelection 
             }
 
             linkProps.children.push(node);
+            linkProps.opposingTags.push(opposingTag);
         } else {
             pushLink();
             result.push({ 
                 node, 
+                opposingTag,
                 selection: getFlowNodeSelection(outerSelection, nodes, index, node, position),
             });
         }

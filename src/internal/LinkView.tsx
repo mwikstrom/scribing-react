@@ -2,7 +2,7 @@ import React, { FC, useMemo, useState } from "react";
 import { FlowNode, Interaction } from "scribing";
 import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
-import { FlowNodeComponentProps } from "./FlowNodeComponent";
+import { FlowNodeComponentProps, OpposingTag } from "./FlowNodeComponent";
 import clsx from "clsx";
 import { useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
@@ -11,14 +11,15 @@ import { useInteraction } from "./hooks/use-interaction";
 import { getFlowNodeSelection } from "./utils/get-sub-selection";
 
 /** @internal */
-export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref"> & {
+export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
     children: FlowNode[];
+    opposingTags: OpposingTag[];
     link: Interaction;
 }
 
 /** @internal */
 export const LinkView: FC<LinkViewProps> = props => {
-    const { children: childNodes, link, selection: outerSelection } = props;
+    const { children: childNodes, opposingTags, link, selection: outerSelection } = props;
     const { link: Component } = useFlowComponentMap();
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
@@ -35,11 +36,12 @@ export const LinkView: FC<LinkViewProps> = props => {
                 <FlowNodeView
                     key={keyRenderer.getNodeKey(child)}
                     node={child}
+                    opposingTag={opposingTags[index]}
                     selection={selection}
                 />
             );
         });
-    }, [childNodes, outerSelection, keyManager]);
+    }, [childNodes, opposingTags, outerSelection, keyManager]);
     return (
         <Component
             ref={setRootElem}
