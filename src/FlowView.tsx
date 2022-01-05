@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { createUseStyles } from "react-jss";
 import { FlowContent, FlowSelection, FlowTheme } from "scribing";
 import { AssetLoaderScope } from "./internal/AssetLoaderScope";
-import { FlowFragmentView } from "./internal/FlowFragmentView";
+import { FlowContentView } from "./internal/FlowContentView";
 import { FlowThemeScope } from "./internal/FlowThemeScope";
 import { LinkResolverScope } from "./internal/LinkResolverScope";
 import { makeJssId } from "./internal/utils/make-jss-id";
@@ -33,7 +33,7 @@ export const FlowView: FC<FlowViewProps> = props => {
             <LinkResolverScope handler={onResolveLink}>
                 <AssetLoaderScope handler={onLoadAsset}>
                     <FlowThemeScope theme={theme}>
-                        <FlowFragmentView content={content} selection={selection ?? false}/>
+                        <FlowContentView content={content} selection={selection ?? false}/>
                     </FlowThemeScope>
                 </AssetLoaderScope>
             </LinkResolverScope>

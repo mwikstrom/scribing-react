@@ -8,10 +8,10 @@ import { getFlowFragmentSelection } from "./utils/get-sub-selection";
 import { EmptyFlowFragment } from "./EmptyFlowFragment";
 
 /**
- * Component props for {@link FlowFragmentView}
+ * Component props for {@link FlowContentView}
  * @internal
  */
-export interface FlowFragmentViewProps {
+export interface FlowContentViewProps {
     content: FlowContent;
     selection: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
@@ -21,7 +21,7 @@ export interface FlowFragmentViewProps {
  * Flow fragment view component
  * @internal
  */
-export const FlowFragmentView: FC<FlowFragmentViewProps> = props => {
+export const FlowContentView: FC<FlowContentViewProps> = props => {
     const { content: { nodes }, prevBreak = null, selection } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();

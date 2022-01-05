@@ -14,7 +14,7 @@ import {
 import { useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { flowNode } from "./FlowNodeComponent";
-import { FlowFragmentView } from "./FlowFragmentView";
+import { FlowContentView } from "./FlowContentView";
 import { useIsParentSelectionActive } from "./hooks/use-is-parent-selection-active";
 import { createUseFlowStyles } from "./JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./mapping/flow-axis";
@@ -258,7 +258,7 @@ const ContentElement: FC<ContentElementProps> = props => {
             suppressContentEditableWarning={true}
             children={
                 <FlowThemeScope theme={theme}>
-                    <FlowFragmentView
+                    <FlowContentView
                         content={content}
                         selection={selection}
                         prevBreak={prevBreak}

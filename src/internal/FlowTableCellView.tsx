@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { CellPosition, FlowSelection, FlowTableCell, FlowTableCellSelection, NestedFlowSelection } from "scribing";
 import { useEditMode } from "./EditModeScope";
-import { FlowFragmentView } from "./FlowFragmentView";
+import { FlowContentView } from "./FlowContentView";
 import { useIsParentSelectionActive } from "./hooks/use-is-parent-selection-active";
 import { createUseFlowStyles } from "./JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./mapping/flow-axis";
@@ -44,7 +44,7 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
             contentEditable={!!editMode && !isParentSelectionActive}
             suppressContentEditableWarning={true}
             children={(
-                <FlowFragmentView
+                <FlowContentView
                     content={content}
                     selection={innerSelection}
                 />
