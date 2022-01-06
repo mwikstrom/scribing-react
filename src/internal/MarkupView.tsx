@@ -25,6 +25,7 @@ export const setMarkupReplacement = (
 const MarkupView: FC<MarkupViewProps> = props => {
     const { node, opposingTag, selection, outerRef } = props;
     const { style: givenStyle, tag } = node;
+    const attr = node instanceof EndMarkup ? [] : Array.from(node.attr);
     const replacement = REPLACEMENTS.get(node) ?? null;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
@@ -101,7 +102,16 @@ const MarkupView: FC<MarkupViewProps> = props => {
             spellCheck={false}
             onClick={onClick}
             onDoubleClick={onDoubleClick}
-            children={tag}
+            children={
+                <>
+                    {tag}
+                    {attr.map(([key, value]) => (
+                        <span key={key}>
+                            {` ${key}=${value}`}
+                        </span>
+                    ))}
+                </>
+            }
         />
     ) : replacement ? <>{replacement}</> : null;
 };
