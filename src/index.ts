@@ -16,6 +16,8 @@ export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
 export * from "./InitEditorEvent";
+export * from "./RenderableMarkup";
+export * from "./RenderMarkupEvent";
 
 // Palette
 export * from "./FlowPalette";

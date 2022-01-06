@@ -24,7 +24,7 @@ import { OpposingTag } from "./FlowNodeComponent";
  */
 export interface FlowContentViewProps {
     content: FlowContent;
-    selection: FlowSelection | boolean;
+    selection?: FlowSelection | boolean;
     prevBreak?: ParagraphBreak | null;
 }
 
@@ -33,7 +33,7 @@ export interface FlowContentViewProps {
  * @internal
  */
 export const FlowContentView: FC<FlowContentViewProps> = props => {
-    const { content, prevBreak = null, selection } = props;
+    const { content, prevBreak = null, selection = false } = props;
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const theme = useFlowTheme();
     const paragraphArray = useMemo(

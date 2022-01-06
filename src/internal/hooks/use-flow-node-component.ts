@@ -15,6 +15,7 @@ import {
 } from "scribing";
 import { useFlowComponentMap } from "../FlowComponentMapScope";
 import { FlowNodeComponent } from "../FlowNodeComponent";
+import { MarkupReplacement } from "../MarkupReplacement";
 
 /** @internal */
 export const useFlowNodeComponent = (
@@ -39,7 +40,8 @@ type FlowNodeComponentKey = (
     "tableView" |
     "startMarkupView" |
     "emptyMarkupView" |
-    "endMarkupView"
+    "endMarkupView" |
+    "markupReplacement"
 );
 
 const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
@@ -65,6 +67,8 @@ const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
         return "emptyMarkupView";
     } else if (node instanceof EndMarkup) {
         return "endMarkupView";
+    } else if (node instanceof MarkupReplacement) {
+        return "markupReplacement";
     } else {
         return "fallbackView";
     }
