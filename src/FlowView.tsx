@@ -43,7 +43,7 @@ export interface FlowViewProps {
  */
 export const FlowView: FC<FlowViewProps> = props => {
     const {
-        content: givenContent,
+        content,
         theme,
         selection,
         skeleton = null,
@@ -53,38 +53,38 @@ export const FlowView: FC<FlowViewProps> = props => {
     } = props;
     const editMode = useEditMode();
     const classes = useStyles();    
-    const contentOrPromise = useMemo(() => {
+    const deferred = useMemo(() => {
         if (editMode || !onRenderMarkup) {
-            return givenContent;
+            return null;
         } else {
-            return processMarkup(givenContent, onRenderMarkup);
+            return processMarkup(content, onRenderMarkup);
         }
-    }, [givenContent, editMode, onRenderMarkup]);
-    const [content, setContent] = useState<FlowContent | Promise<FlowContent> | Error>(contentOrPromise);
+    }, [content, editMode, onRenderMarkup]);
+    const [resolved, setResolved] = useState<FlowContent | Error | null>(null);
     useEffect(() => {
-        if (isPromise(contentOrPromise)) {
+        if (deferred) {
             let active = true;
-            contentOrPromise.then(
+            deferred.then(
                 result => {
                     if (active) {
-                        setContent(result);
+                        setResolved(result);
                     }
                 },
                 error => {
                     if (active) {
-                        setContent(makeError(error));
+                        setResolved(makeError(error));
                     }
                 },
             );
             return () => { active = false; };
         }
-    }, [contentOrPromise]);
+    }, [deferred]);
 
-    if (content instanceof Error) {
-        throw content;
+    if (resolved instanceof Error) {
+        throw resolved;
     }
 
-    if (isPromise(content)) {
+    if (deferred && !resolved) {
         return <>{skeleton}</>;
     }
 
@@ -94,8 +94,8 @@ export const FlowView: FC<FlowViewProps> = props => {
                 <AssetLoaderScope handler={onLoadAsset}>
                     <FlowThemeScope theme={theme}>
                         <FlowContentView
-                            content={content}
-                            selection={selection && content === givenContent ? selection : false}
+                            content={resolved ?? content}
+                            selection={selection && !deferred ? selection : false}
                         />
                     </FlowThemeScope>
                 </AssetLoaderScope>
@@ -186,13 +186,5 @@ const renderMarkupNode = async (
     }
     return mode === "empty" ? "omit" : mode;
 };
-
-function isPromise<T = unknown>(thing: unknown): thing is Promise<T> {
-    return isObjectWithProp(thing, "then") && typeof thing.then === "function";
-}
-
-function isObjectWithProp<K extends string>(thing: unknown, prop: K): thing is Record<K, unknown> {
-    return typeof thing === "object" && thing !== null && prop in thing;
-}
 
 const makeError = (input: unknown): Error => input instanceof Error ? input : new Error(String(input));
