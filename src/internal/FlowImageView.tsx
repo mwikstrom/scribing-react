@@ -135,6 +135,7 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
+        backgroundRepeat: "no-repeat",
     },
     bound: {
         transition: "opacity ease-out 0.1s",
