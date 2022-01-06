@@ -22,6 +22,7 @@ export declare class RenderableMarkup
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [attr](./scribing-react.renderablemarkup.attr.md) |  | ReadonlyMap&lt;string, string&gt; |  |
+|  [isEmpty](./scribing-react.renderablemarkup.isempty.md) |  | boolean |  |
 |  [tag](./scribing-react.renderablemarkup.tag.md) |  | string |  |
 
 ## Methods

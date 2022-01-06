@@ -28,6 +28,20 @@ export class RenderableMarkup {
     public get attr(): ReadonlyMap<string, string> {
         return this.#node.attr;
     }
+
+    public get isEmpty(): boolean {
+        if (!this.#content) {
+            return true;
+        }
+        const { nodes } = this.#content;
+        if (nodes.length < 1) {
+            return true;
+        } else if (nodes.length > 1) {
+            return false;
+        } else {
+            return nodes[0] instanceof ParagraphBreak;
+        }
+    }
     
     public extract(
         predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)
@@ -87,7 +101,7 @@ export class RenderableMarkup {
 
         this.#content = FlowContent.fromData(remainder);
         return extracted;        
-    }
+    }    
 
     public async render(): Promise<ReactNode> {
         if (this.#content) {

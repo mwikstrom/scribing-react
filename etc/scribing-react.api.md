@@ -595,6 +595,8 @@ export class RenderableMarkup {
     // (undocumented)
     extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)): RenderableMarkup[];
     // (undocumented)
+    get isEmpty(): boolean;
+    // (undocumented)
     render(): Promise<ReactNode>;
     // (undocumented)
     get tag(): string;
