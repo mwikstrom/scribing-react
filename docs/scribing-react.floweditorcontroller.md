@@ -52,6 +52,8 @@ export declare class FlowEditorController
 |  [getLineSpacing()](./scribing-react.floweditorcontroller.getlinespacing.md) |  |  |
 |  [getLink()](./scribing-react.floweditorcontroller.getlink.md) |  |  |
 |  [getListLevel()](./scribing-react.floweditorcontroller.getlistlevel.md) |  |  |
+|  [getMarkupAttrs()](./scribing-react.floweditorcontroller.getmarkupattrs.md) |  |  |
+|  [getMarkupTag()](./scribing-react.floweditorcontroller.getmarkuptag.md) |  |  |
 |  [getParagraphStyle()](./scribing-react.floweditorcontroller.getparagraphstyle.md) |  |  |
 |  [getParagraphVariant()](./scribing-react.floweditorcontroller.getparagraphvariant.md) |  |  |
 |  [getPreview()](./scribing-react.floweditorcontroller.getpreview.md) |  |  |
@@ -89,6 +91,7 @@ export declare class FlowEditorController
 |  [isInEmptyListItem()](./scribing-react.floweditorcontroller.isinemptylistitem.md) |  |  |
 |  [isItalic()](./scribing-react.floweditorcontroller.isitalic.md) |  |  |
 |  [isLink()](./scribing-react.floweditorcontroller.islink.md) |  |  |
+|  [isMarkup()](./scribing-react.floweditorcontroller.ismarkup.md) |  |  |
 |  [isMultiRange()](./scribing-react.floweditorcontroller.ismultirange.md) |  |  |
 |  [isOrderedList()](./scribing-react.floweditorcontroller.isorderedlist.md) |  |  |
 |  [isSpellcheckEnabled()](./scribing-react.floweditorcontroller.isspellcheckenabled.md) |  |  |
@@ -125,6 +128,8 @@ export declare class FlowEditorController
 |  [setInteraction(value)](./scribing-react.floweditorcontroller.setinteraction.md) |  |  |
 |  [setLineSpacing(value)](./scribing-react.floweditorcontroller.setlinespacing.md) |  |  |
 |  [setLink(value)](./scribing-react.floweditorcontroller.setlink.md) |  |  |
+|  [setMarkupAttr(key, value)](./scribing-react.floweditorcontroller.setmarkupattr.md) |  |  |
+|  [setMarkupTag(tag)](./scribing-react.floweditorcontroller.setmarkuptag.md) |  |  |
 |  [setParagraphVariant(value)](./scribing-react.floweditorcontroller.setparagraphvariant.md) |  |  |
 |  [setReadingDirection(value)](./scribing-react.floweditorcontroller.setreadingdirection.md) |  |  |
 |  [setSelection(selection)](./scribing-react.floweditorcontroller.setselection.md) |  |  |
@@ -145,5 +150,6 @@ export declare class FlowEditorController
 |  [toggleUnderline()](./scribing-react.floweditorcontroller.toggleunderline.md) |  |  |
 |  [toggleUnorderedList()](./scribing-react.floweditorcontroller.toggleunorderedlist.md) |  |  |
 |  [undo()](./scribing-react.floweditorcontroller.undo.md) |  |  |
+|  [unsetMarkupAttr(key)](./scribing-react.floweditorcontroller.unsetmarkupattr.md) |  |  |
 |  [uploadAsset(blob)](./scribing-react.floweditorcontroller.uploadasset.md) |  |  |
 

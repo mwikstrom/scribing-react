@@ -905,6 +905,74 @@ export class FlowEditorController {
         }
     }
 
+    isMarkup(): boolean {
+        return this.isUniformNodes(isMarkupNode);
+    }
+
+    getMarkupTag(): string | null {
+        let tag: string | null | undefined;
+        this.forEachNode(node => {
+            if (isMarkupNode(node)) {
+                if (tag === undefined) {
+                    tag = node.tag;
+                } else if (tag !== node.tag) {
+                    tag = null;
+                }
+            } else {
+                tag = null;
+            }
+        });
+        return tag ?? null;
+    }
+
+    setMarkupTag(tag: string): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setMarkupTag(content, tag));
+        }
+    }
+
+    getMarkupAttrs(): Map<string, string | null> | null {
+        let attr: Map<string, string | null> | null | undefined;
+        this.forEachNode(node => {
+            if (node instanceof StartMarkup || node instanceof EmptyMarkup) {
+                if (attr === undefined) {
+                    attr = new Map();
+                }
+                if (attr) {
+                    for (const [key, value] of node.attr) {
+                        if (!attr.has(key)) {
+                            attr.set(key, value);
+                        } else if (attr.get(key) !== value) {
+                            attr.set(key, null);
+                        }
+                    }
+                }
+            } else if (node instanceof EndMarkup) {
+                if (attr === undefined) {
+                    attr = new Map();
+                }
+            } else {
+                attr = null;
+            }
+        });
+        return attr ?? null;
+    }
+
+    setMarkupAttr(key: string, value: string): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setMarkupAttr(content, key, value));
+        }
+    }
+
+    unsetMarkupAttr(key: string): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.unsetMarkupAttr(content, key));
+        }
+    }
+
     isUniformNodes(predicate: (node: FlowNode) => boolean): boolean {
         const { found, other } = this.matchNodes(predicate);
         return found && !other;
@@ -1167,3 +1235,7 @@ export class FlowEditorController {
 export type BooleanTextStyleKeys = {
     [K in keyof TextStyleProps]-?: boolean extends TextStyleProps[K] ? K : never
 }[keyof TextStyleProps];
+
+function isMarkupNode(thing: unknown): thing is StartMarkup | EndMarkup | EmptyMarkup {
+    return thing instanceof StartMarkup || thing instanceof EndMarkup || thing instanceof EmptyMarkup;
+}

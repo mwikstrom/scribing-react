@@ -181,6 +181,10 @@ export class FlowEditorController {
     // (undocumented)
     getListLevel(): number | undefined;
     // (undocumented)
+    getMarkupAttrs(): Map<string, string | null> | null;
+    // (undocumented)
+    getMarkupTag(): string | null;
+    // (undocumented)
     getParagraphStyle(): ParagraphStyle;
     // (undocumented)
     getParagraphVariant(): ParagraphVariant | undefined;
@@ -254,6 +258,8 @@ export class FlowEditorController {
     isItalic(): boolean | undefined;
     // (undocumented)
     isLink(): boolean;
+    // (undocumented)
+    isMarkup(): boolean;
     // (undocumented)
     isMultiRange(): boolean;
     // (undocumented)
@@ -332,6 +338,10 @@ export class FlowEditorController {
     // (undocumented)
     setLink(value: Exclude<TextStyleProps["link"], undefined>): void;
     // (undocumented)
+    setMarkupAttr(key: string, value: string): void;
+    // (undocumented)
+    setMarkupTag(tag: string): void;
+    // (undocumented)
     setParagraphVariant(value: ParagraphVariant): void;
     // (undocumented)
     setReadingDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void;
@@ -373,6 +383,8 @@ export class FlowEditorController {
     toggleUnorderedList(): void;
     // (undocumented)
     undo(): void;
+    // (undocumented)
+    unsetMarkupAttr(key: string): void;
     // (undocumented)
     uploadAsset(blob: Blob): string;
 }
