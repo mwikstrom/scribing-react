@@ -18,7 +18,9 @@ export interface FlowViewProps
 |  --- | --- | --- |
 |  [content](./scribing-react.flowviewprops.content.md) | FlowContent |  |
 |  [onLoadAsset?](./scribing-react.flowviewprops.onloadasset.md) | (event: [LoadAssetEvent](./scribing-react.loadassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
+|  [onRenderMarkup?](./scribing-react.flowviewprops.onrendermarkup.md) | (event: [RenderMarkupEvent](./scribing-react.rendermarkupevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onResolveLink?](./scribing-react.flowviewprops.onresolvelink.md) | (event: [ResolveLinkEvent](./scribing-react.resolvelinkevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [selection?](./scribing-react.flowviewprops.selection.md) | FlowSelection \| null | <i>(Optional)</i> |
+|  [skeleton?](./scribing-react.flowviewprops.skeleton.md) | ReactNode | <i>(Optional)</i> |
 |  [theme?](./scribing-react.flowviewprops.theme.md) | FlowTheme | <i>(Optional)</i> |
 

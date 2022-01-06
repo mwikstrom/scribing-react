@@ -7,6 +7,7 @@
 import { BoxStyle } from 'scribing';
 import { BoxStyleProps } from 'scribing';
 import { CSSProperties } from 'react';
+import { EmptyMarkup } from 'scribing';
 import { FC } from 'react';
 import { FlowColor } from 'scribing';
 import { FlowContent } from 'scribing';
@@ -24,6 +25,7 @@ import { ParagraphVariant } from 'scribing';
 import { ReactNode } from 'react';
 import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
+import { StartMarkup } from 'scribing';
 import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
 import { TextStyleProps } from 'scribing';
@@ -553,9 +555,13 @@ export interface FlowViewProps {
     // (undocumented)
     onLoadAsset?: (event: LoadAssetEvent) => void;
     // (undocumented)
+    onRenderMarkup?: (event: RenderMarkupEvent) => void;
+    // (undocumented)
     onResolveLink?: (event: ResolveLinkEvent) => void;
     // (undocumented)
     selection?: FlowSelection | null;
+    // (undocumented)
+    skeleton?: ReactNode;
     // (undocumented)
     theme?: FlowTheme;
 }
@@ -579,6 +585,29 @@ export class LoadAssetEvent extends DeferrableEvent {
     // (undocumented)
     get url(): string;
     set url(value: string);
+}
+
+// @public (undocumented)
+export class RenderableMarkup {
+    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>);
+    // (undocumented)
+    get attr(): ReadonlyMap<string, string>;
+    // (undocumented)
+    extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)): RenderableMarkup[];
+    // (undocumented)
+    render(): Promise<ReactNode>;
+    // (undocumented)
+    get tag(): string;
+}
+
+// @public (undocumented)
+export class RenderMarkupEvent extends DeferrableEvent {
+    constructor(markup: RenderableMarkup);
+    // (undocumented)
+    get markup(): RenderableMarkup;
+    // (undocumented)
+    get result(): FlowContent | ReactNode;
+    set result(value: FlowContent | ReactNode);
 }
 
 // @public (undocumented)

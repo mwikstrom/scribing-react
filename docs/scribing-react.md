@@ -15,6 +15,8 @@ React components for collaborative rich text editing
 |  [FlowEditorState](./scribing-react.floweditorstate.md) | Immutable state record for a flow content editor |
 |  [InitEditorEvent](./scribing-react.initeditorevent.md) |  |
 |  [LoadAssetEvent](./scribing-react.loadassetevent.md) |  |
+|  [RenderableMarkup](./scribing-react.renderablemarkup.md) |  |
+|  [RenderMarkupEvent](./scribing-react.rendermarkupevent.md) |  |
 |  [ResolveLinkEvent](./scribing-react.resolvelinkevent.md) |  |
 |  [StateChangeEvent](./scribing-react.statechangeevent.md) |  |
 |  [StoreAssetEvent](./scribing-react.storeassetevent.md) |  |
