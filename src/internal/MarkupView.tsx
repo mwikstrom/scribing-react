@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState, MouseEvent, FC, RefCallback } from "react";
+import React, { useCallback, useMemo, useState, MouseEvent, FC, RefCallback, ReactNode } from "react";
 import { EmptyMarkup, EndMarkup, StartMarkup } from "scribing";
 import { flowNode, FlowNodeComponentProps } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
@@ -16,9 +16,16 @@ interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | Empt
     outerRef: RefCallback<HTMLElement>;
 }
 
+const REPLACEMENTS = new WeakMap<StartMarkup | EmptyMarkup | EndMarkup, ReactNode>();
+export const setMarkupReplacement = (
+    placeholder: EmptyMarkup,
+    replacement: ReactNode
+): void => void(REPLACEMENTS.set(placeholder, replacement));
+
 const MarkupView: FC<MarkupViewProps> = props => {
     const { node, opposingTag, selection, outerRef } = props;
     const { style: givenStyle, tag } = node;
+    const replacement = REPLACEMENTS.get(node) ?? null;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -85,7 +92,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
             e.stopPropagation();
         }
     }, [rootElem]);
-    return editMode === false ? null : (
+    return editMode ? (
         <span
             ref={ref}
             className={className}
@@ -96,7 +103,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
             onDoubleClick={onDoubleClick}
             children={tag}
         />
-    );
+    ) : replacement ? <>{replacement}</> : null;
 };
 
 const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({

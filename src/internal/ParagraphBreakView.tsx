@@ -58,7 +58,7 @@ export const ParagraphBreakView = flowNode<ParagraphBreak>(({singleNodeInPara, s
         [setIsCaretBefore, checkIsCaretBefore]
     );
 
-    return (
+    return editMode === false ? null : (
         <span
             ref={setRef}
             className={className}

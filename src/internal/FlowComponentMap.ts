@@ -29,8 +29,6 @@ import { ParagraphBreakView } from "./ParagraphBreakView";
 import { StartMarkupView, EndMarkupView, EmptyMarkupView } from "./MarkupView";
 import { TextRunView } from "./TextRunView";
 import { UnknownNodeView } from "./UnknownNodeView";
-import { MarkupReplacement } from "./MarkupReplacement";
-import { MarkupReplacementView } from "./MarkupReplacementView";
 
 /** @public */
 export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze({
@@ -59,7 +57,6 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
     startMarkupView: StartMarkupView,
     emptyMarkupView: EmptyMarkupView,
     endMarkupView: EndMarkupView,
-    markupReplacement: MarkupReplacementView,
 });
 
 /** @public */
@@ -78,7 +75,6 @@ export interface FlowComponentMap extends Record<ParagraphVariant, ParagraphComp
     startMarkupView: FlowNodeComponent<StartMarkup>;
     emptyMarkupView: FlowNodeComponent<EmptyMarkup>;
     endMarkupView: FlowNodeComponent<EndMarkup>;
-    markupReplacement: FlowNodeComponent<MarkupReplacement>;
 }
 
 /** @public */

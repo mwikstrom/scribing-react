@@ -17,7 +17,7 @@ import { useEditMode } from "./internal/EditModeScope";
 import { FlowContentView } from "./internal/FlowContentView";
 import { FlowThemeScope } from "./internal/FlowThemeScope";
 import { LinkResolverScope } from "./internal/LinkResolverScope";
-import { MarkupReplacement } from "./internal/MarkupReplacement";
+import { setMarkupReplacement } from "./internal/MarkupView";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { LoadAssetEvent } from "./LoadAssetEvent";
 import { RenderMarkupEvent } from "./RenderMarkupEvent";
@@ -176,12 +176,13 @@ const renderMarkupNode = async (
     let { result } = event;
     if (result === undefined) {
         result = content;
-    }
-    if (result instanceof FlowContent) {
-        return await renderMarkup(result, handler, output, mode);
-    }
-    if (result !== null) {
-        output.push(new MarkupReplacement(content?.size ?? 0, result));
+    } else if (result instanceof FlowContent) {
+        mode = await renderMarkup(result, handler, output, mode);
+    } else if (result !== null) {
+        const placeholder = new EmptyMarkup(node);
+        setMarkupReplacement(placeholder, result);
+        output.push(placeholder);
+        return "not-empty";
     }
     return mode === "empty" ? "omit" : mode;
 };
