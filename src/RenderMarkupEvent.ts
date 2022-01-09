@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FlowContent } from "scribing";
+import { EmptyMarkup, FlowContent, StartMarkup } from "scribing";
 import { RenderableMarkup } from ".";
 import { DeferrableEvent } from "./DeferrableEvent";
 
@@ -8,15 +8,21 @@ import { DeferrableEvent } from "./DeferrableEvent";
  */
 export class RenderMarkupEvent extends DeferrableEvent {
     readonly #markup: RenderableMarkup;
+    readonly #scope: readonly (StartMarkup | EmptyMarkup)[];
     #result: FlowContent | ReactNode;
 
-    constructor(markup: RenderableMarkup) {
+    constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup)[]) {
         super();
         this.#markup = markup;
+        this.#scope = scope;
     }
     
     public get markup(): RenderableMarkup {
         return this.#markup;
+    }
+
+    public get scope(): readonly (StartMarkup | EmptyMarkup)[] {
+        return this.#scope;
     }
 
     public get result(): FlowContent | ReactNode {

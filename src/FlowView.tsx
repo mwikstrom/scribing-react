@@ -115,18 +115,21 @@ const useStyles = createUseStyles({
 
 type ParagraphMode = "empty" | "not-empty" | "omit";
 
+const EMPTY_SCOPE: readonly (StartMarkup | EmptyMarkup)[] = Object.freeze([]);
 const processMarkup = async (
     input: FlowContent,
     handler: (event: RenderMarkupEvent) => void,
+    scope: readonly (StartMarkup | EmptyMarkup)[] = EMPTY_SCOPE,
 ): Promise<FlowContent> => {
     const output: FlowNode[] = [];
-    await renderMarkup(input, handler, output, "empty");
+    await renderMarkup(input, handler, scope, output, "empty");
     return FlowContent.fromData(output);
 };
 
 const renderMarkup = async (
     input: FlowContent,
     handler: (event: RenderMarkupEvent) => void,
+    scope: readonly (StartMarkup | EmptyMarkup)[],
     output: FlowNode[],
     mode: ParagraphMode,
 ): Promise<ParagraphMode> => {
@@ -144,11 +147,11 @@ const renderMarkup = async (
                 const start = cursor.position + node.size;
                 const distance = end.position - start;
                 const content = input.copy(FlowRange.at(start, distance));
-                mode = await renderMarkupNode(output, mode, handler, node, content);
+                mode = await renderMarkupNode(output, mode, handler, node, scope, content);
                 cursor = end;
             }
         } else if (node instanceof EmptyMarkup) {
-            mode = await renderMarkupNode(output, mode, handler, node);
+            mode = await renderMarkupNode(output, mode, handler, node, scope);
         } else if (node instanceof ParagraphBreak) {
             if (mode !== "omit") {
                 output.push(node);
@@ -167,18 +170,19 @@ const renderMarkupNode = async (
     mode: ParagraphMode,
     handler: (event: RenderMarkupEvent) => void,
     node: StartMarkup | EmptyMarkup,
+    scope: readonly (StartMarkup | EmptyMarkup)[],
     content: FlowContent | null = null,
 ): Promise<ParagraphMode> => {
-    const transform = (input: FlowContent) => processMarkup(input, handler);
+    const transform = (input: FlowContent) => processMarkup(input, handler, [node, ...scope]);
     const markup = new RenderableMarkup(node, content, transform);
-    const event = new RenderMarkupEvent(markup);
+    const event = new RenderMarkupEvent(markup, scope);
     handler(event);
     await event._complete();
     let { result } = event;
     if (result === undefined) {
         result = content;
     } else if (result instanceof FlowContent) {
-        mode = await renderMarkup(result, handler, output, mode);
+        mode = await renderMarkup(result, handler, [node, ...scope], output, mode);
     } else if (result !== null) {
         const placeholder = new EmptyMarkup(node);
         setMarkupReplacement(placeholder, result);

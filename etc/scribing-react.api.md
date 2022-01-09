@@ -616,12 +616,14 @@ export class RenderableMarkup {
 
 // @public (undocumented)
 export class RenderMarkupEvent extends DeferrableEvent {
-    constructor(markup: RenderableMarkup);
+    constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup)[]);
     // (undocumented)
     get markup(): RenderableMarkup;
     // (undocumented)
     get result(): FlowContent | ReactNode;
     set result(value: FlowContent | ReactNode);
+    // (undocumented)
+    get scope(): readonly (StartMarkup | EmptyMarkup)[];
 }
 
 // @public (undocumented)
