@@ -628,7 +628,9 @@ export class RenderMarkupEvent extends DeferrableEvent {
 
 // @public (undocumented)
 export class ResolveLinkEvent extends DeferrableEvent {
-    constructor(href: string, target: string);
+    constructor(href: string);
+    // (undocumented)
+    static getDefaultTarget(href: string): string;
     // (undocumented)
     get href(): string;
     set href(value: string);

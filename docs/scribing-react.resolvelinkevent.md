@@ -16,7 +16,7 @@ export declare class ResolveLinkEvent extends DeferrableEvent
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(href, target)](./scribing-react.resolvelinkevent._constructor_.md) |  | Constructs a new instance of the <code>ResolveLinkEvent</code> class |
+|  [(constructor)(href)](./scribing-react.resolvelinkevent._constructor_.md) |  | Constructs a new instance of the <code>ResolveLinkEvent</code> class |
 
 ## Properties
 
@@ -24,4 +24,10 @@ export declare class ResolveLinkEvent extends DeferrableEvent
 |  --- | --- | --- | --- |
 |  [href](./scribing-react.resolvelinkevent.href.md) |  | string |  |
 |  [target](./scribing-react.resolvelinkevent.target.md) |  | string |  |
+
+## Methods
+
+|  Method | Modifiers | Description |
+|  --- | --- | --- |
+|  [getDefaultTarget(href)](./scribing-react.resolvelinkevent.getdefaulttarget.md) | <code>static</code> |  |
 

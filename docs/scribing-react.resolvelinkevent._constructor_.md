@@ -9,7 +9,7 @@ Constructs a new instance of the `ResolveLinkEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(href: string, target: string);
+constructor(href: string);
 ```
 
 ## Parameters
@@ -17,5 +17,4 @@ constructor(href: string, target: string);
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  href | string |  |
-|  target | string |  |
 
