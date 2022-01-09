@@ -390,7 +390,7 @@ export class FlowEditorController {
 }
 
 // @public
-export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> {
+export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme" | "selection" | "children"> {
     // (undocumented)
     autoFocus?: boolean;
     // (undocumented)

@@ -42,7 +42,7 @@ import { TooltipScope } from "./internal/TooltipScope";
  * Component props for {@link FlowEditor}
  * @public
  */
-export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> {
+export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme" | "selection" | "children"> {
     state?: FlowEditorState;
     defaultState?: FlowEditorState;
     autoFocus?: boolean;
@@ -72,12 +72,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         state: controlledState,
         defaultState = FlowEditorState.empty,
         autoFocus,
-        style,
         className,
+        style,
         nativeSelection,
         onStateChange: onStateChangeProp,
         onStoreAsset,
         onControllerChange,
+        ...viewProps
     } = props;
 
     // JSS classes
@@ -426,6 +427,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                                     suppressContentEditableWarning={true}
                                     children={(
                                         <FlowView
+                                            {...viewProps}
                                             content={state.content}
                                             theme={state.theme}
                                             selection={state.selection}

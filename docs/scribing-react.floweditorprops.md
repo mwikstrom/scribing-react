@@ -9,9 +9,9 @@ Component props for [FlowEditor](./scribing-react.floweditor.md)
 <b>Signature:</b>
 
 ```typescript
-export interface FlowEditorProps extends Pick<FlowViewProps, "onLoadAsset" | "onResolveLink"> 
+export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme" | "selection" | "children"> 
 ```
-<b>Extends:</b> Pick&lt;[FlowViewProps](./scribing-react.flowviewprops.md)<!-- -->, "onLoadAsset" \| "onResolveLink"&gt;
+<b>Extends:</b> Omit&lt;[FlowViewProps](./scribing-react.flowviewprops.md)<!-- -->, "content" \| "theme" \| "selection" \| "children"&gt;
 
 ## Properties
 
