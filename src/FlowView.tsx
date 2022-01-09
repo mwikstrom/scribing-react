@@ -62,6 +62,7 @@ export const FlowView: FC<FlowViewProps> = props => {
     }, [content, editMode, onRenderMarkup]);
     const [resolved, setResolved] = useState<FlowContent | Error | null>(null);
     useEffect(() => {
+        setResolved(null);
         if (deferred) {
             let active = true;
             deferred.then(
