@@ -179,9 +179,12 @@ const renderMarkupNode = async (
     handler(event);
     await event._complete();
     let { result } = event;
+    
     if (result === undefined) {
         result = content;
-    } else if (result instanceof FlowContent) {
+    }
+    
+    if (result instanceof FlowContent) {
         mode = await renderMarkup(result, handler, [node, ...scope], output, mode);
     } else if (result !== null) {
         const placeholder = new EmptyMarkup(node);
