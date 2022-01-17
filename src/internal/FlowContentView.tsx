@@ -17,6 +17,7 @@ import { ParagraphThemeScope } from "./ParagraphThemeScope";
 import { getFlowFragmentSelection } from "./utils/get-sub-selection";
 import { EmptyFlowContent } from "./EmptyFlowContent";
 import { OpposingTag } from "./FlowNodeComponent";
+import { FlowNodeKeyRenderer } from "./FlowNodeKeyRenderer";
 
 /**
  * Component props for {@link FlowContentView}
@@ -45,7 +46,7 @@ export const FlowContentView: FC<FlowContentViewProps> = props => {
         <EmptyFlowContent selection={selection}/>
     ) : paragraphArray.map(({ theme: paraTheme, ...paraProps}) => (
         <ParagraphThemeScope 
-            key={paraProps.breakNode ? keyRenderer.getNodeKey(paraProps.breakNode) : "$trailing-para"}
+            key={getParaKey(keyRenderer, paraProps)}
             theme={paraTheme}
             children={<ParagraphView {...paraProps}/>}
         />
@@ -137,3 +138,15 @@ const getOpposingTag = (cursor: FlowCursor): OpposingTag => {
         return null;
     }
 };
+function getParaKey(
+    keyRenderer: FlowNodeKeyRenderer, 
+    paraProps: Pick<SplitParaProps, "breakNode" | "prevBreak">,
+): string | number {
+    const { breakNode, prevBreak } = paraProps;
+    let key = breakNode ? keyRenderer.getNodeKey(breakNode) : "$trailing-para";
+    if (prevBreak) {
+        key = `${keyRenderer.getNodeKey(prevBreak)}~${key}`;
+    }
+    return key;
+}
+
