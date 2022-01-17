@@ -299,7 +299,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             !FlowSelection.baseType.equals(mapped, state.selection) :
             state.selection !== null;
         
-        if (!changed) {
+        if (!changed && state.caret.isEmpty) {
             return;
         }
 
