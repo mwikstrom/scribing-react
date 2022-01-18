@@ -15,6 +15,6 @@ export interface ScribingTooltipProps
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [children](./scribing-react.scribingtooltipprops.children.md) | ReactNode |  |
+|  [children](./scribing-react.scribingtooltipprops.children.md) | ReactElement |  |
 |  [title](./scribing-react.scribingtooltipprops.title.md) | string \| null |  |
 

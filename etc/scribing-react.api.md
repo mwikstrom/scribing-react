@@ -22,6 +22,7 @@ import { Interaction } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
 import { ParagraphVariant } from 'scribing';
+import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
@@ -643,7 +644,7 @@ export class ResolveLinkEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
-export type ScribingComponent<P> = (props: P) => JSX.Element;
+export type ScribingComponent<P> = (props: P) => JSX.Element | null;
 
 // @public (undocumented)
 export const ScribingComponentOverride: FC<Partial<ScribingComponents>>;
@@ -657,7 +658,7 @@ export interface ScribingComponents {
 // @public (undocumented)
 export interface ScribingTooltipProps {
     // (undocumented)
-    children: ReactNode;
+    children: ReactElement;
     // (undocumented)
     title: string | null;
 }

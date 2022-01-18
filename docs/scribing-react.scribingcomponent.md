@@ -8,5 +8,5 @@
 <b>Signature:</b>
 
 ```typescript
-export declare type ScribingComponent<P> = (props: P) => JSX.Element;
+export declare type ScribingComponent<P> = (props: P) => JSX.Element | null;
 ```
