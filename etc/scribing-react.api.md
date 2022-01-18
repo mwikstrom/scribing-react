@@ -69,6 +69,9 @@ export const DefaultFlowPalette: Readonly<FlowPalette>;
 export const DefaultFlowTypography: Readonly<FlowTypography>;
 
 // @public (undocumented)
+export const DefaultScribingComponents: ScribingComponents;
+
+// @public (undocumented)
 export class DeferrableEvent {
     // @internal (undocumented)
     _complete(): Promise<void>;
@@ -640,6 +643,26 @@ export class ResolveLinkEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
+export type ScribingComponent<P> = (props: P) => JSX.Element;
+
+// @public (undocumented)
+export const ScribingComponentOverride: FC<Partial<ScribingComponents>>;
+
+// @public (undocumented)
+export interface ScribingComponents {
+    // (undocumented)
+    Tooltip: ScribingComponent<ScribingTooltipProps>;
+}
+
+// @public (undocumented)
+export interface ScribingTooltipProps {
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    title: string | null;
+}
+
+// @public (undocumented)
 export class StateChangeEvent {
     constructor(before: FlowEditorState, change: FlowOperation | null, after: FlowEditorState);
     // (undocumented)
@@ -685,5 +708,8 @@ export function useFlowPalette(): Readonly<FlowPalette>;
 
 // @public (undocumented)
 export function useFlowTypography(): Readonly<FlowTypography>;
+
+// @public (undocumented)
+export const useScribingComponents: () => ScribingComponents;
 
 ```

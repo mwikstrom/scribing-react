@@ -52,6 +52,8 @@ React components for collaborative rich text editing
 |  [FlowTypography](./scribing-react.flowtypography.md) |  |
 |  [FlowTypographyScopeProps](./scribing-react.flowtypographyscopeprops.md) |  |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
+|  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
+|  [ScribingTooltipProps](./scribing-react.scribingtooltipprops.md) |  |
 
 ## Variables
 
@@ -62,12 +64,15 @@ React components for collaborative rich text editing
 |  [DefaultFlowLocale](./scribing-react.defaultflowlocale.md) |  |
 |  [DefaultFlowPalette](./scribing-react.defaultflowpalette.md) |  |
 |  [DefaultFlowTypography](./scribing-react.defaultflowtypography.md) |  |
+|  [DefaultScribingComponents](./scribing-react.defaultscribingcomponents.md) |  |
 |  [FlowEditor](./scribing-react.floweditor.md) | Flow editor component |
 |  [FlowEditorStateBase](./scribing-react.floweditorstatebase.md) | The base record class for [FlowEditorState](./scribing-react.floweditorstate.md) |
 |  [FlowLocaleScope](./scribing-react.flowlocalescope.md) |  |
 |  [FlowPaletteScope](./scribing-react.flowpalettescope.md) |  |
 |  [FlowTypographyScope](./scribing-react.flowtypographyscope.md) |  |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
+|  [ScribingComponentOverride](./scribing-react.scribingcomponentoverride.md) |  |
+|  [useScribingComponents](./scribing-react.usescribingcomponents.md) |  |
 
 ## Type Aliases
 
@@ -75,4 +80,5 @@ React components for collaborative rich text editing
 |  --- | --- |
 |  [BooleanTextStyleKeys](./scribing-react.booleantextstylekeys.md) |  |
 |  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
+|  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
 

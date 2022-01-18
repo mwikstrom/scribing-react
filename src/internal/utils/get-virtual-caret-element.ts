@@ -1,4 +1,8 @@
-import { VirtualElement } from "@popperjs/core";
+/** @internal */
+export interface VirtualElement {
+    getBoundingClientRect: () => DOMRect;
+    contextElement?: Element;
+}
 
 /**
  * This function is helper for getting the client rect of the current

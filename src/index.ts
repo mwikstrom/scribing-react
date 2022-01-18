@@ -31,6 +31,9 @@ export * from "./FlowTypographyScope";
 export * from "./FlowLocale";
 export * from "./FlowLocaleScope";
 
+// Component override
+export * from "./ScribingComponents";
+
 // Controller
 export * from "./FlowEditorController";
 

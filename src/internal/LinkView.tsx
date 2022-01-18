@@ -9,6 +9,7 @@ import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { createUseFlowStyles } from "./JssTheming";
 import { useInteraction } from "./hooks/use-interaction";
 import { getFlowNodeSelection } from "./utils/get-sub-selection";
+import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
@@ -21,9 +22,11 @@ export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "oppos
 export const LinkView: FC<LinkViewProps> = props => {
     const { children: childNodes, opposingTags, link, selection: outerSelection } = props;
     const { link: Component } = useFlowComponentMap();
+    const { Tooltip } = useScribingComponents();
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const { clickable, pending, error, href, target } = useInteraction(link, rootElem);
+    const { clickable, pending, error, href, target, message } = useInteraction(link, rootElem);
+    const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => ({ title: message}), [message]);
     const editMode = useEditMode();
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);
     const children = useMemo(() => {
@@ -43,20 +46,22 @@ export const LinkView: FC<LinkViewProps> = props => {
         });
     }, [childNodes, opposingTags, outerSelection, keyManager]);
     return (
-        <Component
-            ref={setRootElem}
-            href={href}
-            target={target}
-            className={clsx(
-                classes.root,
-                clickable ? classes.clickable : !!editMode && classes.editable,
-                pending && classes.pending,
-                error && classes.error,
-            )}
-            children={children}
-            contentEditable={!!editMode && !clickable}
-            suppressContentEditableWarning={true}
-        />
+        <Tooltip {...tooltipProps}>
+            <Component
+                ref={setRootElem}
+                href={href}
+                target={target}
+                className={clsx(
+                    classes.root,
+                    clickable ? classes.clickable : !!editMode && classes.editable,
+                    pending && classes.pending,
+                    error && classes.error,
+                )}
+                children={children}
+                contentEditable={!!editMode && !clickable}
+                suppressContentEditableWarning={true}
+            />
+        </Tooltip>
     );
 };
 

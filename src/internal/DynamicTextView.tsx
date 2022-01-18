@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, MouseEvent, useCallback, useMemo, useState } from "react";
 import { DynamicText, ParagraphStyle, TextStyle, TextStyleProps } from "scribing";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextCssProperties } from "./utils/text-style-to-css";
@@ -12,14 +12,14 @@ import { mdiLoading } from "@mdi/js";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
-import { useHover } from "./hooks/use-hover";
 import { useScriptVariables } from "./ScriptVariablesScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
-import { useShowTip } from "./TooltipScope";
+import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node, selection } = props;
     const { expression, style: givenStyle } = node;
+    const { Tooltip } = useScribingComponents();
     const theme = useParagraphTheme();
     
     const style = useMemo(() => {
@@ -34,7 +34,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const classes = useStyles();
     
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const hover = useHover(rootElem);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
         setRootElem(dom);
@@ -43,7 +42,6 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const vars = useScriptVariables();
     const evaluated = useObservedScript(expression, { vars });
     const locale = useFlowLocale();
-    const showTip = useShowTip();
     const editMode = useEditMode();
     
     const empty = useMemo(() => {
@@ -104,12 +102,14 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         );
     }, [evaluated, locale, empty, editMode, classes, style]);   
 
-    useEffect(() => {
+    const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => {
         const { error } = evaluated;
-        if (error && rootElem && hover && !empty) {
-            return showTip(rootElem, error.message);
+        let title: string | null = null;
+        if (error && !empty) {
+            title = error.message;
         }
-    }, [evaluated, rootElem, hover, empty]);
+        return { title };
+    }, [evaluated, empty]);
 
     const formattingMarks = useFormattingMarks();
     const isPending = !evaluated.ready;
@@ -136,13 +136,15 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     }, [rootElem]);
 
     return (
-        <span
-            ref={ref}
-            contentEditable={false}
-            className={className}
-            children={children}
-            onDoubleClick={onDoubleClick}
-        />
+        <Tooltip {...tooltipProps}>
+            <span
+                ref={ref}
+                contentEditable={false}
+                className={className}
+                children={children}
+                onDoubleClick={onDoubleClick}
+            />
+        </Tooltip>
     );
 });
 

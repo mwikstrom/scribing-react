@@ -7,7 +7,6 @@ import { useHover } from "./use-hover";
 import { useCtrlKey, useShiftKey } from "./use-modifier-key";
 import { useNativeEventHandler } from "./use-native-event-handler";
 import { useResolvedLink } from "../LinkResolverScope";
-import { useShowTip } from "../TooltipScope";
 
 /** @internal */
 interface InteractionState {
@@ -17,6 +16,7 @@ interface InteractionState {
     error: boolean;
     href: string;
     target: string;
+    message: string | null;
 }
 
 /** @internal */
@@ -31,7 +31,6 @@ export function useInteraction(
     const shiftKey = useShiftKey();
     const invokeAction = useInteractionInvoker(interaction);
     const resolvedLink = useResolvedLink(interaction instanceof OpenUrl ? interaction.url : "");
-    const showTip = useShowTip();
     const locale = useFlowLocale();
     const [pending, setPending] = useState<Promise<void> | null>(null);
     const [error, setError] = useState<Error | null>(sourceError);
@@ -93,19 +92,6 @@ export function useInteraction(
         return () => { active = false; };
     }, [pending]);
 
-    useEffect(() => {
-        if (rootElem && hover && message) {
-            let hideTip: (() => void) | undefined;
-            const timer = setTimeout(() => hideTip = showTip(rootElem, message), 500);
-            return () => {
-                clearTimeout(timer);
-                if (hideTip) {
-                    hideTip();
-                }
-            };
-        }
-    }, [rootElem, hover, message, showTip]);
-
     return {
         clickable,
         hover,
@@ -113,5 +99,6 @@ export function useInteraction(
         error: !!error,
         href,
         target,
+        message,
     };
 }

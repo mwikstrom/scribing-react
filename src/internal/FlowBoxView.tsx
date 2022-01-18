@@ -31,11 +31,13 @@ import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
 import { getFlowBoxContentSelection } from "./utils/get-sub-selection";
+import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node, selection: outerSelection } = props;
     const { content, style: givenStyle } = node;
     const { box: Component } = useFlowComponentMap();
+    const { Tooltip } = useScribingComponents();
     const classes = useStyles();
     
     const style = useMemo(() => BoxStyle.ambient.merge(givenStyle), [givenStyle]);
@@ -66,7 +68,9 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         hover,
         pending: interactionPending,
         error,
+        message,
     } = useInteraction(style.interaction ?? null, rootElem, sourceError);
+    const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => ({ title: message}), [message]);
     const data = useMemo(() => {
         if (!hasSource || !sourceReady || sourceResult === void(0) || sourceResult === null || sourceResult === false) {
             return [];
@@ -133,13 +137,15 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     ));
 
     return (
-        <Component 
-            ref={ref}
-            className={className}
-            style={css}
-            contentEditable={false}
-            children={children}
-        />
+        <Tooltip {...tooltipProps}>
+            <Component 
+                ref={ref}
+                className={className}
+                style={css}
+                contentEditable={false}
+                children={children}
+            />
+        </Tooltip>
     );
 });
 
