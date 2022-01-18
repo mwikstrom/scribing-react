@@ -1,7 +1,7 @@
-import React, { createContext, FC, ReactNode, useContext } from "react";
+import React, { createContext, FC, ReactElement, useContext } from "react";
 
 /** @public */
-export type ScribingComponent<P> = (props: P) => JSX.Element;
+export type ScribingComponent<P> = (props: P) => JSX.Element | null;
 
 /** @public */
 export interface ScribingComponents {
@@ -11,7 +11,7 @@ export interface ScribingComponents {
 /** @public */
 export interface ScribingTooltipProps {
     title: string | null;
-    children: ReactNode;
+    children: ReactElement;
 }
 
 /** @public */
