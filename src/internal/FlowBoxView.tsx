@@ -123,7 +123,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         selection: innerSelection,
     };
 
-    const children = !hasSource || sourceResult === true ? (
+    const children = !hasSource ? (
         <ContentElement {...contentElementProps}/>
     ) : !sourceReady ? (
         <div className={classes.sourcePending}>
