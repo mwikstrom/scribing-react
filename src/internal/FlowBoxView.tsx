@@ -68,6 +68,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const {
         clickable,
         hover,
+        href,
         pending: interactionPending,
         error,
         message,
@@ -131,6 +132,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             <Tooltip {...tooltipProps}>
                 <Button
                     ref={ref}
+                    href={href}
                     pending={interactionPending}
                     error={error}
                     disabled={disabled}
@@ -145,6 +147,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             <Tooltip {...tooltipProps}>
                 <EditableBox
                     ref={ref}
+                    href={href}
                     pending={interactionPending}
                     error={error}
                     disabled={disabled}

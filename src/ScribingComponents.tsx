@@ -25,6 +25,7 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown> {
     style: BoxStyle;
     hover: boolean;
     children: ReactNode;
+    href: string | null;
     ref: (elem: HTMLElement | null) => void;
 }
 

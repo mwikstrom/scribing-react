@@ -655,6 +655,8 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown> {
     // (undocumented)
     hover: boolean;
     // (undocumented)
+    href: string | null;
+    // (undocumented)
     pending: boolean;
     // (undocumented)
     ref: (elem: HTMLElement | null) => void;

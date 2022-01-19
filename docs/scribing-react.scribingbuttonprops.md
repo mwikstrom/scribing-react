@@ -20,6 +20,7 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown>
 |  [disabled](./scribing-react.scribingbuttonprops.disabled.md) | boolean |  |
 |  [error](./scribing-react.scribingbuttonprops.error.md) | boolean |  |
 |  [hover](./scribing-react.scribingbuttonprops.hover.md) | boolean |  |
+|  [href](./scribing-react.scribingbuttonprops.href.md) | string \| null |  |
 |  [pending](./scribing-react.scribingbuttonprops.pending.md) | boolean |  |
 |  [ref](./scribing-react.scribingbuttonprops.ref.md) | (elem: HTMLElement \| null) =&gt; void |  |
 |  [style](./scribing-react.scribingbuttonprops.style.md) | BoxStyle |  |
