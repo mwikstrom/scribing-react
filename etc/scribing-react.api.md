@@ -79,6 +79,8 @@ export class DeferrableEvent {
     _complete(): Promise<void>;
     // (undocumented)
     defer(callback: () => Promise<void>): void;
+    // (undocumented)
+    get pending(): boolean;
 }
 
 // @public
@@ -570,6 +572,8 @@ export interface FlowViewProps {
     // (undocumented)
     content: FlowContent;
     // (undocumented)
+    onFormatMarkupAttribute?: (event: FormatMarkupAttributeEvent) => void;
+    // (undocumented)
     onLoadAsset?: (event: LoadAssetEvent) => void;
     // (undocumented)
     onRenderMarkup?: (event: RenderMarkupEvent) => void;
@@ -581,6 +585,24 @@ export interface FlowViewProps {
     skeleton?: ReactNode;
     // (undocumented)
     theme?: FlowTheme;
+}
+
+// @public (undocumented)
+export class FormatMarkupAttributeEvent extends DeferrableEvent {
+    constructor(tag: string, key: string, value: string);
+    // (undocumented)
+    get color(): FlowColor;
+    set color(value: FlowColor);
+    // (undocumented)
+    get key(): string;
+    // (undocumented)
+    get tag(): string;
+    // (undocumented)
+    get url(): string;
+    set url(value: string);
+    // (undocumented)
+    get value(): string;
+    set value(value: string);
 }
 
 // @public (undocumented)

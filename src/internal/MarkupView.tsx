@@ -1,12 +1,25 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState, MouseEvent, FC, RefCallback, ReactNode } from "react";
-import { EmptyMarkup, EndMarkup, StartMarkup } from "scribing";
+import React, { 
+    useCallback, 
+    useMemo, 
+    useState, 
+    MouseEvent, 
+    FC, 
+    RefCallback, 
+    ReactNode, 
+    useEffect, 
+    CSSProperties
+} from "react";
+import { EmptyMarkup, EndMarkup, FlowColor, OpenUrl, StartMarkup } from "scribing";
 import { flowNode, FlowNodeComponentProps } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import { useEditMode } from "./EditModeScope";
+import { useAttributeFormatter } from "./AttributeFormatterScope";
+import { FormatMarkupAttributeEvent, useFlowPalette, useScribingComponents } from "..";
+import { useInteraction } from "./hooks/use-interaction";
 
 export const StartMarkupView = flowNode<StartMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
 export const EmptyMarkupView = flowNode<EmptyMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
@@ -109,7 +122,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
                         <span key={key}>
                             {` ${key}`}
                             <span className={classes.syntax}>=</span>
-                            <AttributeValue value={value}/>
+                            <AttributeValue tag={tag} name={key} value={value}/>
                         </span>
                     ))}
                 </>
@@ -118,22 +131,84 @@ const MarkupView: FC<MarkupViewProps> = props => {
     ) : replacement ? <>{replacement}</> : null;
 };
 
-interface AttributeValueProps { value: string }
+interface AttributeValueProps { 
+    tag: string; 
+    name: string; 
+    value: string;
+}
+
+interface AttributeValueState {
+    pending: boolean;
+    value: string;
+    url: string;
+    color: FlowColor;
+}
+
 const AttributeValue = (props: AttributeValueProps) => {
-    const { value } = props;
+    const { tag, name: key, value: raw } = props;
+    const handler = useAttributeFormatter();
+    const eventArgs = [tag, key, raw] as const;
+    const event = useMemo(() => new FormatMarkupAttributeEvent(...eventArgs), eventArgs);
+    const [
+        { pending, value, url, color},
+        setState,
+    ] = useState(() => getAttributeValueState(event));
     const classes = useStyles();
-    const formatted = useMemo(() => {
-        return value.replace(/\s+/, " ");
-    }, [value]);
-    const wrapInQuotes = /[ "]/.test(formatted);
+    const formatted = useMemo(() => value.replace(/\s+/, " "), [value]);
+    const wrapInQuotes = useMemo(() => (
+        !url &&
+        color === "default" &&
+        /[ "]/.test(formatted)
+    ), [url, color, formatted]);
     const quote = wrapInQuotes ? <span className={classes.syntax}>"</span> : null;
+    const { Tooltip } = useScribingComponents();
+    const palette = useFlowPalette();
+    const interaction = useMemo(() => url ? new OpenUrl({ url }) : null, [url]);
+    const [elem, setElem] = useState<HTMLElement | null>(null);
+    const { clickable, target, href, message } = useInteraction(interaction, elem);
+    const style = useMemo<CSSProperties>(() => ({
+        color: palette[color === "default" ? "text" : color],
+        textDecoration: url ? "underline" : "none",
+        cursor: clickable ? "pointer" : "default",
+    }), [color, url, palette, clickable]);
+
+    useEffect(() => {
+        handler(event);
+        setState(getAttributeValueState(event));
+    }, [event, handler]);
+
+    useEffect(() => {
+        if (pending) {
+            let active = true;
+            event._complete().then(
+                () => active && setState(getAttributeValueState(event)),
+                () => active && setState({ pending: false, value: raw, url: "", color: "error" }),
+            );
+            return () => { active = false; };
+        }
+    }, [pending, event]);
+
     return (
         <>
             {quote}
-            {formatted}
+            <Tooltip title={message}>
+                <a
+                    ref={setElem}
+                    target={target}
+                    href={href || undefined}
+                    style={style}
+                    children={formatted}
+                    onClick={e => e.preventDefault()}
+                />
+            </Tooltip>
             {quote}
         </>
     );
+};
+
+const getAttributeValueState = (event: FormatMarkupAttributeEvent): AttributeValueState => {
+    const { pending, value, url, color } = event;
+    return { pending, value, url, color };
 };
 
 const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
@@ -182,5 +257,11 @@ const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
         color: palette.inactiveSelectionText,
         borderColor: palette.inactiveSelectionText,
         outline: `1px solid ${palette.inactiveSelection}`,
+    },
+    clickable: {
+        cursor: "pointer",
+    },
+    pending: {
+        cursor: "wait",
     },
 }));

@@ -18,6 +18,7 @@ export * from "./StoreAssetEvent";
 export * from "./InitEditorEvent";
 export * from "./RenderableMarkup";
 export * from "./RenderMarkupEvent";
+export * from "./FormatMarkupAttributeEvent";
 
 // Palette
 export * from "./FlowPalette";

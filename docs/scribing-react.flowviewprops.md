@@ -17,6 +17,7 @@ export interface FlowViewProps
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [content](./scribing-react.flowviewprops.content.md) | FlowContent |  |
+|  [onFormatMarkupAttribute?](./scribing-react.flowviewprops.onformatmarkupattribute.md) | (event: [FormatMarkupAttributeEvent](./scribing-react.formatmarkupattributeevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onLoadAsset?](./scribing-react.flowviewprops.onloadasset.md) | (event: [LoadAssetEvent](./scribing-react.loadassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onRenderMarkup?](./scribing-react.flowviewprops.onrendermarkup.md) | (event: [RenderMarkupEvent](./scribing-react.rendermarkupevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onResolveLink?](./scribing-react.flowviewprops.onresolvelink.md) | (event: [ResolveLinkEvent](./scribing-react.resolvelinkevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |

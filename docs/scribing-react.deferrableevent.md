@@ -11,6 +11,12 @@
 export declare class DeferrableEvent 
 ```
 
+## Properties
+
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [pending](./scribing-react.deferrableevent.pending.md) |  | boolean |  |
+
 ## Methods
 
 |  Method | Modifiers | Description |

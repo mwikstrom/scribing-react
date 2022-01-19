@@ -15,6 +15,7 @@ import {
 } from "scribing";
 import { JsonObject, JsonValue } from "paratype";
 import { FlowEditorState } from "../src/FlowEditorState";
+import { FormatMarkupAttributeEvent } from "../src";
 
 export default {
     title: "FlowEditor",
@@ -52,9 +53,24 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
         padding: 10,
         margin: 0,
     }), []);
+    const onFormatMarkupAttribute = useCallback((event: FormatMarkupAttributeEvent) => {
+        if (event.key === "foo" && event.value === "bar") {
+            event.value = "Var ligger baren?";
+            event.defer(() => new Promise(resolve => setTimeout(() => {
+                event.url = "https://google.com/";
+                event.value = "Där ligger baren!";
+                resolve();
+            }, 1000)));
+        }
+    }, []);
     return (
         <div style={wrapperStyle}>
-            <FlowEditor {...args} style={editorStyle} onStateChange={onStateChange}/>
+            <FlowEditor
+                {...args}
+                style={editorStyle}
+                onStateChange={onStateChange}
+                onFormatMarkupAttribute={onFormatMarkupAttribute}
+            />
             <pre style={jsonStyle}>{jsonState}</pre>
         </div>
     );

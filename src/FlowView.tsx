@@ -11,8 +11,9 @@ import {
     ParagraphBreak,
     StartMarkup,
 } from "scribing";
-import { RenderableMarkup } from ".";
+import { FormatMarkupAttributeEvent } from "./FormatMarkupAttributeEvent";
 import { AssetLoaderScope } from "./internal/AssetLoaderScope";
+import { AttributeFormatterScope } from "./internal/AttributeFormatterScope";
 import { useEditMode } from "./internal/EditModeScope";
 import { FlowContentView } from "./internal/FlowContentView";
 import { FlowThemeScope } from "./internal/FlowThemeScope";
@@ -20,6 +21,7 @@ import { LinkResolverScope } from "./internal/LinkResolverScope";
 import { setMarkupReplacement } from "./internal/MarkupView";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { LoadAssetEvent } from "./LoadAssetEvent";
+import { RenderableMarkup } from "./RenderableMarkup";
 import { RenderMarkupEvent } from "./RenderMarkupEvent";
 import { ResolveLinkEvent } from "./ResolveLinkEvent";
 
@@ -35,6 +37,7 @@ export interface FlowViewProps {
     onLoadAsset?: (event: LoadAssetEvent) => void;
     onResolveLink?: (event: ResolveLinkEvent) => void;
     onRenderMarkup?: (event: RenderMarkupEvent) => void;
+    onFormatMarkupAttribute?: (event: FormatMarkupAttributeEvent) => void;
 }
 
 /**
@@ -50,6 +53,7 @@ export const FlowView: FC<FlowViewProps> = props => {
         onLoadAsset,
         onResolveLink,
         onRenderMarkup,
+        onFormatMarkupAttribute,
     } = props;
     const editMode = useEditMode();
     const classes = useStyles();    
@@ -93,12 +97,14 @@ export const FlowView: FC<FlowViewProps> = props => {
         <div className={classes.root}>
             <LinkResolverScope handler={onResolveLink}>
                 <AssetLoaderScope handler={onLoadAsset}>
-                    <FlowThemeScope theme={theme}>
-                        <FlowContentView
-                            content={resolved ?? content}
-                            selection={selection && !deferred ? selection : false}
-                        />
-                    </FlowThemeScope>
+                    <AttributeFormatterScope handler={onFormatMarkupAttribute}>
+                        <FlowThemeScope theme={theme}>
+                            <FlowContentView
+                                content={resolved ?? content}
+                                selection={selection && !deferred ? selection : false}
+                            />
+                        </FlowThemeScope>
+                    </AttributeFormatterScope>
                 </AssetLoaderScope>
             </LinkResolverScope>
         </div>
