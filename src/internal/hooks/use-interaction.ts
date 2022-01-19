@@ -45,7 +45,7 @@ export function useInteraction(
         [!!editMode, clickable, locale, !!interaction, !pending, error]
     );
     const href = useMemo(() => {
-        if (rootElem != null && rootElem.tagName.toUpperCase() === "A" && resolvedLink) {
+        if (isAnchorElem(rootElem) && resolvedLink) {
             return resolvedLink.url;
         } else {
             return "";
@@ -71,7 +71,7 @@ export function useInteraction(
             e.preventDefault();
         } else if (clickable && !pending) {
             setError(sourceError);
-            if (!href || editMode) {
+            if (!href || !isAnchorElem(rootElem) || rootElem.href !== href || editMode) {
                 e.preventDefault();
                 setPending(invokeAction());
             }
@@ -104,4 +104,8 @@ export function useInteraction(
         target,
         message,
     };
+}
+
+function isAnchorElem(elem: HTMLElement | null): elem is HTMLAnchorElement {
+    return !!elem && elem.tagName.toUpperCase() === "A";
 }
