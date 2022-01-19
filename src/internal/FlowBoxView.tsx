@@ -84,6 +84,18 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
             return [sourceResult];
         }
     }, [hasSource, sourceReady, sourceResult]);
+    const lastBreak = useMemo(() => {
+        let result: ParagraphBreak | null = null;
+        for (const node of content.nodes) {
+            if (node instanceof ParagraphBreak) {
+                result = node;
+            }
+        }
+        return result;
+    }, [content]);
+    const maybeHidden = hasSource && !sourceReady;
+    const hidden = hasSource && sourceReady && data.length === 0;
+    const omitted = !editMode && (hidden || maybeHidden);
     const css = useMemo(() => getBoxCssProperties(style), [style]);
     const formattingMarks = useFormattingMarks();
     const showSelectionOutline = !error && (
@@ -96,7 +108,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         clickable ? classes.clickable : !!editMode && classes.editable,
         interactionPending && classes.interactionPending,
         error && classes.error,
-        hasSource && sourceReady && data.length === 0 && classes.hidden,
+        hidden && classes.hidden,
         clickable && hover && classes.hover,
         showSelectionOutline && classes.selected,
         innerSelection === true && classes.selectedAll,
@@ -106,15 +118,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         ...getBoxStyleClassNames(style, classes),
     );
 
-    const lastBreak = useMemo(() => {
-        let result: ParagraphBreak | null = null;
-        for (const node of content.nodes) {
-            if (node instanceof ParagraphBreak) {
-                result = node;
-            }
-        }
-        return result;
-    }, [content]);
     const contentElementProps: ContentElementProps = {
         className: classes.content,
         contentEditable: !!editMode && !clickable && !isParentSelectionActive,
@@ -141,7 +144,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         />
     ));
 
-    return (
+    return omitted ? null : (
         <Tooltip {...tooltipProps}>
             <Component 
                 ref={ref}

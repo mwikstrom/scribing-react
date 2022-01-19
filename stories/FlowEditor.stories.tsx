@@ -483,7 +483,7 @@ DataSourceHidden.args = {
         { 
             box: ["This should be hidden"],
             style: {
-                source: "false",
+                source: "null",
                 inline: false,
             }
         },
@@ -491,6 +491,24 @@ DataSourceHidden.args = {
         "The end.",
         { break: "para" },
     ])),
+};
+
+export const DataSourceHiddenPreview = Template.bind({});
+DataSourceHiddenPreview.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Hidden (null binding):",
+        { break: "para" },
+        { 
+            box: ["This should be hidden"],
+            style: {
+                source: "null",
+                inline: false,
+            }
+        },
+        { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])).set("preview", true),
 };
 
 export const DataSourceDisabled = Template.bind({});
