@@ -107,13 +107,33 @@ const MarkupView: FC<MarkupViewProps> = props => {
                     {tag}
                     {attr.map(([key, value]) => (
                         <span key={key}>
-                            {` ${key}=${value}`}
+                            {` ${key}`}
+                            <span className={classes.syntax}>=</span>
+                            <AttributeValue value={value}/>
                         </span>
                     ))}
                 </>
             }
         />
     ) : replacement ? <>{replacement}</> : null;
+};
+
+interface AttributeValueProps { value: string }
+const AttributeValue = (props: AttributeValueProps) => {
+    const { value } = props;
+    const classes = useStyles();
+    const formatted = useMemo(() => {
+        return value.replace(/\s+/, " ");
+    }, [value]);
+    const wrapInQuotes = /[ "]/.test(formatted);
+    const quote = wrapInQuotes ? <span className={classes.syntax}>"</span> : null;
+    return (
+        <>
+            {quote}
+            {formatted}
+            {quote}
+        </>
+    );
 };
 
 const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
@@ -134,6 +154,9 @@ const useStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
     broken: {
         color: palette.error,
         borderColor: palette.error,
+    },
+    syntax: {
+        color: palette.subtle,  
     },
     startTag: {
         borderTopRightRadius: "1em",
