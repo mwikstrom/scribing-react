@@ -24,6 +24,7 @@ export function useInteraction(
     interaction: Interaction | null,
     rootElem: HTMLElement | null,
     sourceError: Error | null = null,
+    disabled = false,
 ): InteractionState {
     const editMode = useEditMode();
     const hover = useHover(rootElem);
@@ -58,21 +59,23 @@ export function useInteraction(
         }
     }, [href, resolvedLink]);
 
-    useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {        
-        if (clickable && !pending) {
-            setError(sourceError);
-            if (!href || editMode) {
-                e.preventDefault();
-                setPending(invokeAction());
-            }
-        } else if (!clickable && editMode && e.detail === 4 && rootElem) {
+    useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {
+        if (!clickable && editMode && e.detail === 4 && rootElem) {
             e.preventDefault();
             const domSelection = document.getSelection();
             if (domSelection && domSelection.rangeCount === 1) {
                 domSelection.getRangeAt(0).selectNode(rootElem);
                 e.stopPropagation();
             }    
-        }
+        } else if (disabled) {
+            e.preventDefault();
+        } else if (clickable && !pending) {
+            setError(sourceError);
+            if (!href || editMode) {
+                e.preventDefault();
+                setPending(invokeAction());
+            }
+        } 
     }, [clickable, pending, invokeAction, editMode, rootElem, href, sourceError]);
 
     useEffect(() => {

@@ -63,16 +63,20 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         ready: sourceReady,
         error: sourceError,
     } = useObservedScript(style.source ?? null, { vars });
+    const disabled = hasSource && sourceResult === false;
     const {
         clickable,
         hover,
         pending: interactionPending,
         error,
         message,
-    } = useInteraction(style.interaction ?? null, rootElem, sourceError);
-    const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => ({ title: message}), [message]);
+    } = useInteraction(style.interaction ?? null, rootElem, sourceError, disabled);
+    const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => {
+        const title = disabled ? null : message;
+        return { title };
+    }, [disabled, message]);
     const data = useMemo(() => {
-        if (!hasSource || !sourceReady || sourceResult === void(0) || sourceResult === null || sourceResult === false) {
+        if (!hasSource || !sourceReady || sourceResult === void(0) || sourceResult === null) {
             return [];
         } else if (Array.isArray(sourceResult)) {
             return sourceResult;
@@ -98,6 +102,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         innerSelection === true && classes.selectedAll,
         showSelectionOutline && editMode === "inactive" ? classes.selectedInactive : classes.selectedActive,
         showFormattingOutline && classes.formattingMarks,
+        disabled && classes.disabled,
         ...getBoxStyleClassNames(style, classes),
     );
 
@@ -226,8 +231,11 @@ const useStyles = createUseFlowStyles("FlowBox", ({palette}) => ({
         cursor: "text",
     },
     clickable: {
-        cursor: "pointer",
         userSelect: "none",
+        cursor: "pointer",
+        "&$disabled": {
+            cursor: "default",
+        },
     },
     interactionPending: {
         cursor: "wait",

@@ -478,13 +478,32 @@ DataSourceError.args = {
 export const DataSourceHidden = Template.bind({});
 DataSourceHidden.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
-        "Hidden (false binding):",
+        "Hidden (null binding):",
         { break: "para" },
         { 
             box: ["This should be hidden"],
             style: {
                 source: "false",
                 inline: false,
+            }
+        },
+        { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])),
+};
+
+export const DataSourceDisabled = Template.bind({});
+DataSourceDisabled.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Disabled (false binding):",
+        { break: "para" },
+        { 
+            box: ["This should be disabled"],
+            style: {
+                variant: "outlined",
+                source: "false",
+                interaction: "https://google.com/",
             }
         },
         { break: "para" },

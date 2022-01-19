@@ -13,7 +13,7 @@ export type ColorRule = `${FlowColor}Color`;
 export type BoxStyleRule = BoxVariantRule | ColorRule;
 
 /** @internal */
-export type BoxStyles = Styles<BoxStyleRule | "hover">;
+export type BoxStyles = Styles<BoxStyleRule | "hover" | "disabled">;
 
 /** @internal */
 export type BoxStyleClasses = Classes<BoxStyleRule>;
@@ -21,6 +21,7 @@ export type BoxStyleClasses = Classes<BoxStyleRule>;
 /** @internal */
 export const boxStyles = (palette: FlowPalette): BoxStyles => ({
     hover: {},
+    disabled: {},
     basic: {},
     outlined: {
         padding: "2px 5px",
@@ -36,56 +37,56 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
         "&$defaultColor": {
             borderColor: Color(palette.text).fade(0.85).string(),
             backgroundColor: Color(palette.text).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.text).fade(0.75).string(),
             }
         },
         "&$primaryColor": {
             borderColor: Color(palette.primary).fade(0.85).string(),
             backgroundColor: Color(palette.primary).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.primary).fade(0.75).string(),
             }
         },
         "&$secondaryColor": {
             borderColor: Color(palette.secondary).fade(0.85).string(),
             backgroundColor: Color(palette.secondary).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.secondary).fade(0.75).string(),
             }
         },
         "&$warningColor": {
             borderColor: Color(palette.warning).fade(0.85).string(),
             backgroundColor: Color(palette.warning).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.warning).fade(0.75).string(),
             }
         },
         "&$errorColor": {
             borderColor: Color(palette.error).fade(0.85).string(),
             backgroundColor: Color(palette.error).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.error).fade(0.75).string(),
             }
         },
         "&$informationColor": {
             borderColor: Color(palette.information).fade(0.85).string(),
             backgroundColor: Color(palette.information).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.information).fade(0.75).string(),
             }
         },
         "&$successColor": {
             borderColor: Color(palette.success).fade(0.85).string(),
             backgroundColor: Color(palette.success).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.success).fade(0.75).string(),
             }
         },
         "&$subtleColor": {
             borderColor: Color(palette.subtle).fade(0.85).string(),
             backgroundColor: Color(palette.subtle).fade(0.85).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.subtle).fade(0.75).string(),
             }
         }
@@ -98,56 +99,56 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
         "&$defaultColor": {
             borderColor: Color(palette.text).fade(0.65).string(),
             backgroundColor: Color(palette.text).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.text).fade(0.75).string(),
             }
         },
         "&$primaryColor": {
             borderColor: Color(palette.primary).fade(0.65).string(),
             backgroundColor: Color(palette.primary).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.primary).fade(0.75).string(),
             }
         },
         "&$secondaryColor": {
             borderColor: Color(palette.secondary).fade(0.65).string(),
             backgroundColor: Color(palette.secondary).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.secondary).fade(0.75).string(),
             }
         },
         "&$warningColor": {
             borderColor: Color(palette.warning).fade(0.65).string(),
             backgroundColor: Color(palette.warning).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.warning).fade(0.75).string(),
             }
         },
         "&$errorColor": {
             borderColor: Color(palette.error).fade(0.65).string(),
             backgroundColor: Color(palette.error).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.error).fade(0.75).string(),
             }
         },
         "&$informationColor": {
             borderColor: Color(palette.information).fade(0.65).string(),
             backgroundColor: Color(palette.information).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.information).fade(0.75).string(),
             }
         },
         "&$successColor": {
             borderColor: Color(palette.success).fade(0.65).string(),
             backgroundColor: Color(palette.success).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.success).fade(0.75).string(),
             }
         },
         "&$subtleColor": {
             borderColor: Color(palette.subtle).fade(0.65).string(),
             backgroundColor: Color(palette.subtle).fade(0.80).string(),
-            "&$hover": {
+            "&$hover:not($disabled)": {
                 backgroundColor: Color(palette.subtle).fade(0.75).string(),
             }
         }
@@ -159,49 +160,49 @@ export const boxStyles = (palette: FlowPalette): BoxStyles => ({
     },
     defaultColor: {
         borderColor: palette.text,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.text).fade(0.87).string(),
         }
     },
     primaryColor: {
         borderColor: palette.primary,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.primary).fade(0.87).string(),
         }
     },
     secondaryColor: {
         borderColor: palette.secondary,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.secondary).fade(0.87).string(),
         }
     },
     warningColor: {
         borderColor: palette.warning,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.warning).fade(0.87).string(),
         }
     },
     errorColor: {
         borderColor: palette.error,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.error).fade(0.87).string(),
         }
     },
     informationColor: {
         borderColor: palette.information,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.information).fade(0.87).string(),
         }
     },
     successColor: {
         borderColor: palette.success,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.success).fade(0.87).string(),
         }
     },
     subtleColor: {
         borderColor: palette.subtle,
-        "&$hover": {
+        "&$hover:not($disabled)": {
             backgroundColor: Color(palette.subtle).fade(0.87).string(),
         }
     }
