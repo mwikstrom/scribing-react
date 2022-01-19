@@ -1,4 +1,4 @@
-import React, { createContext, FC, ReactElement, ReactNode, useContext } from "react";
+import React, { createContext, FC, HTMLAttributes, ReactElement, ReactNode, useContext } from "react";
 import { BoxStyle } from "scribing";
 import { PreviewButton } from "./internal/PreviewButton";
 
@@ -18,7 +18,7 @@ export interface ScribingTooltipProps {
 }
 
 /** @public */
-export interface ScribingButtonProps {
+export interface ScribingButtonProps extends HTMLAttributes<unknown> {
     pending: boolean;
     error: boolean;
     disabled: boolean;

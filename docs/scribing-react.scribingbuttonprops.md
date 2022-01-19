@@ -8,8 +8,9 @@
 <b>Signature:</b>
 
 ```typescript
-export interface ScribingButtonProps 
+export interface ScribingButtonProps extends HTMLAttributes<unknown> 
 ```
+<b>Extends:</b> HTMLAttributes&lt;unknown&gt;
 
 ## Properties
 

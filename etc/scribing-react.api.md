@@ -17,6 +17,7 @@ import { FlowPresence } from 'scribing';
 import { FlowSelection } from 'scribing';
 import { FlowSyncProtocol } from 'scribing';
 import { FlowTheme } from 'scribing';
+import { HTMLAttributes } from 'react';
 import { ImageSource } from 'scribing';
 import { Interaction } from 'scribing';
 import { ParagraphStyle } from 'scribing';
@@ -644,7 +645,7 @@ export class ResolveLinkEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
-export interface ScribingButtonProps {
+export interface ScribingButtonProps extends HTMLAttributes<unknown> {
     // (undocumented)
     children: ReactNode;
     // (undocumented)

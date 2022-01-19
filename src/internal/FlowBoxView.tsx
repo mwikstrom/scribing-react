@@ -186,6 +186,7 @@ const EditableBox = forwardRef<HTMLElement, EditableBoxProps>((props, outerRef) 
         clickable,
         editMode,
         hidden,
+        ...otherProps
     } = props;
     const { box: Component } = useFlowComponentMap();
     const innerRef = useForwardedRef(outerRef);
@@ -213,6 +214,7 @@ const EditableBox = forwardRef<HTMLElement, EditableBoxProps>((props, outerRef) 
     );
     return (
         <Component 
+            {...otherProps}
             ref={innerRef}
             className={className}
             style={css}
