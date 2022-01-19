@@ -75,7 +75,7 @@ export function useFlowEditorClient(
     const [syncedSelection, setSyncedSelection] = useState<FlowSelection | null>(null);
     const local = useRef<FlowEditorState | null>(null);
     const syncVersion = useRef(0);
-    const lastSync = useRef(0);
+    const [lastSync, setLastSync] = useState(0);
     const lastRemoteChange = useRef(0);
     const pendingChange = useRef<PendingChange | null>(null);
     const pendingSelection = useRef<FlowSelection | null>(null);
@@ -199,11 +199,13 @@ export function useFlowEditorClient(
                     } else {
                         setConnection("clean");
                         setSyncedSelection(null);
+                        const now = Date.now();
                         syncVersion.current = snapshot.version;
                         pendingChange.current = null;
                         pendingSelection.current = null;
                         pendingFrozen.current = undefined;
-                        lastSync.current = lastRemoteChange.current = Date.now();
+                        lastRemoteChange.current = now;
+                        setLastSync(now);
                         setFrozen(snapshot.frozen);
                         setState(local.current = FlowEditorState.empty.merge({
                             content: snapshot.content,
@@ -325,14 +327,15 @@ export function useFlowEditorClient(
                         }
 
                         // Apply new synced state
+                        const now = Date.now();
                         syncVersion.current = output.version;
-                        lastSync.current = Date.now();
                         if (
                             output.merge !== null || 
                             !areEqualPresences(local.current?.presence ?? [], output.presence)
                         ) {
-                            lastRemoteChange.current = lastSync.current;
+                            lastRemoteChange.current = now;
                         }
+                        setLastSync(now);
                         setConnection(pendingChange.current === null ? "clean" : "dirty");
                         setSyncedSelection(mergedSelection);
                         setFrozen(output.frozen);
@@ -360,8 +363,8 @@ export function useFlowEditorClient(
         return () => { active = false; };
     });
 
-    // Trigger sync when needed
-    useEffect(() => {
+    // Determine when next sync should occur
+    const nextSync = useMemo(() => {
         let interval: number | undefined;
 
         if (autoSync) {
@@ -382,17 +385,31 @@ export function useFlowEditorClient(
             }
         }
 
-        if (typeof interval !== "number") {
-            return;
+        if (typeof interval === "number") {
+            return lastSync + interval;
         }
+    }, [
+        autoSync, 
+        connection, 
+        pendingSelection.current, 
+        syncedSelection, 
+        pendingFrozen.current, 
+        lastRemoteChange.current, 
+        lastSync
+    ]);
 
-        const delay = Math.max(
-            MIN_SYNC_INTERVAL,
-            Math.min(MAX_SYNC_INTERVAL, Date.now() - lastSync.current + interval)
-        );
-        const timerId = setTimeout(() => setConnection("syncing"), delay);
-        return () => clearTimeout(timerId);
-    }, [autoSync, connection, pendingSelection.current, syncedSelection, pendingFrozen.current]);
+    // Trigger sync when needed
+    useEffect(() => {
+        if (typeof nextSync === "number" && (connection === "clean" || connection === "dirty")) {
+            const delay = nextSync - lastSync;
+            if (delay <= 0) {
+                setConnection("syncing");
+            } else {
+                const timerId = setTimeout(() => setConnection("syncing"), delay);
+                return () => clearTimeout(timerId);
+            }
+        }
+    }, [connection, lastSync, nextSync]);
 
     // Notify waiting promises
     useEffect(() => {
@@ -464,12 +481,10 @@ const areEqualMaps = <T>(
     return true;
 };
 
-const MIN_SYNC_INTERVAL = 500;
-const DIRTY_SYNC_INTERVAL = MIN_SYNC_INTERVAL;
+const DIRTY_SYNC_INTERVAL = 500;
 const SELECTION_SYNC_INTERVAL = DIRTY_SYNC_INTERVAL;
 const MIN_CLEAN_SYNC_INTERVAL = 1000;
 const MAX_CLEAN_SYNC_INTERVAL = 4000;
-const MAX_SYNC_INTERVAL = 5000;
 const MAX_SYNC_ATTEMPTS = 10;
 const MIN_BACKOFF_DELAY = 1000;
 const RANDOM_BACKOFF_DELAY = 2000;
