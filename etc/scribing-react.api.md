@@ -644,6 +644,24 @@ export class ResolveLinkEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
+export interface ScribingButtonProps {
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    disabled: boolean;
+    // (undocumented)
+    error: boolean;
+    // (undocumented)
+    hover: boolean;
+    // (undocumented)
+    pending: boolean;
+    // (undocumented)
+    ref: (elem: HTMLElement | null) => void;
+    // (undocumented)
+    style: BoxStyle;
+}
+
+// @public (undocumented)
 export type ScribingComponent<P> = (props: P) => JSX.Element | null;
 
 // @public (undocumented)
@@ -651,6 +669,8 @@ export const ScribingComponentOverride: FC<Partial<ScribingComponents>>;
 
 // @public (undocumented)
 export interface ScribingComponents {
+    // (undocumented)
+    Button: ScribingComponent<ScribingButtonProps>;
     // (undocumented)
     Tooltip: ScribingComponent<ScribingTooltipProps>;
 }

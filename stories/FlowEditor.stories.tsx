@@ -336,6 +336,21 @@ ButtonStates.args = {
     ])),
 };
 
+export const ButtonPreviewStates = Template.bind({});
+ButtonPreviewStates.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "This button should fail immediately: ",
+        button(["Click me"], "{ throw new Error('Failed'); }"),
+        { break: "para" },
+        "This button should fail after 1 second: ",
+        button(["Click me"], "{ await delay(1000); throw new Error('Failed'); }"),
+        { break: "para" },
+        "This button should succeed after 1 second: ",
+        button(["Click me"], "delay(1000)"),
+        { break: "para" },
+    ])).set("preview", true),
+};
+
 
 export const LinkStates = Template.bind({});
 LinkStates.args = {
@@ -528,6 +543,25 @@ DataSourceDisabled.args = {
         "The end.",
         { break: "para" },
     ])),
+};
+
+export const DataSourceDisabledPreview = Template.bind({});
+DataSourceDisabledPreview.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Disabled (false binding):",
+        { break: "para" },
+        { 
+            box: ["This should be disabled"],
+            style: {
+                variant: "outlined",
+                source: "false",
+                interaction: "https://google.com/",
+            }
+        },
+        { break: "para" },
+        "The end.",
+        { break: "para" },
+    ])).set("preview", true),
 };
 
 export const DataSourceMultiOutput = Template.bind({});

@@ -1,7 +1,8 @@
 import clsx from "clsx";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, forwardRef, useCallback, useMemo, useState } from "react";
 import {
     BoxStyle,
+    BoxVariant,
     FlowBox, 
     FlowBoxSelection, 
     FlowContent, 
@@ -11,7 +12,7 @@ import {
     NestedFlowSelection, 
     ParagraphBreak
 } from "scribing";
-import { useEditMode } from "./EditModeScope";
+import { EditMode, useEditMode } from "./EditModeScope";
 import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { flowNode } from "./FlowNodeComponent";
 import { FlowContentView } from "./FlowContentView";
@@ -31,13 +32,13 @@ import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
 import { getFlowBoxContentSelection } from "./utils/get-sub-selection";
-import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
+import { ScribingButtonProps, ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
+import { useForwardedRef } from "./hooks/use-forwarded-ref";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node, selection: outerSelection } = props;
     const { content, style: givenStyle } = node;
-    const { box: Component } = useFlowComponentMap();
-    const { Tooltip } = useScribingComponents();
+    const { Tooltip, Button } = useScribingComponents();
     const classes = useStyles();
     
     const style = useMemo(() => BoxStyle.ambient.merge(givenStyle), [givenStyle]);
@@ -96,27 +97,6 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const maybeHidden = hasSource && !sourceReady;
     const hidden = hasSource && sourceReady && data.length === 0;
     const omitted = !editMode && (hidden || maybeHidden);
-    const css = useMemo(() => getBoxCssProperties(style), [style]);
-    const formattingMarks = useFormattingMarks();
-    const showSelectionOutline = !error && (
-        innerSelection === true ||
-        (innerSelection instanceof FlowRangeSelection && !innerSelection.isCollapsed)
-    );
-    const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
-    const className = clsx(
-        classes.root,
-        clickable ? classes.clickable : !!editMode && classes.editable,
-        interactionPending && classes.interactionPending,
-        error && classes.error,
-        hidden && classes.hidden,
-        clickable && hover && classes.hover,
-        showSelectionOutline && classes.selected,
-        innerSelection === true && classes.selectedAll,
-        showSelectionOutline && editMode === "inactive" ? classes.selectedInactive : classes.selectedActive,
-        showFormattingOutline && classes.formattingMarks,
-        disabled && classes.disabled,
-        ...getBoxStyleClassNames(style, classes),
-    );
 
     const contentElementProps: ContentElementProps = {
         className: classes.content,
@@ -144,16 +124,101 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         />
     ));
 
-    return omitted ? null : (
-        <Tooltip {...tooltipProps}>
-            <Component 
-                ref={ref}
-                className={className}
-                style={css}
-                contentEditable={false}
-                children={children}
-            />
-        </Tooltip>
+    if (omitted) {
+        return null;
+    } else if (!editMode && clickable && RenderAsButton.includes(style.variant)) {        
+        return (
+            <Tooltip {...tooltipProps}>
+                <Button
+                    ref={ref}
+                    pending={interactionPending}
+                    error={error}
+                    disabled={disabled}
+                    hover={hover}
+                    style={style}
+                    children={children}
+                />
+            </Tooltip>
+        );
+    } else {
+        return (
+            <Tooltip {...tooltipProps}>
+                <EditableBox
+                    ref={ref}
+                    pending={interactionPending}
+                    error={error}
+                    disabled={disabled}
+                    hover={hover}
+                    style={style}
+                    children={children}
+                    innerSelection={innerSelection}
+                    clickable={clickable}
+                    editMode={editMode}
+                    hidden={hidden}
+                />
+            </Tooltip>
+        );
+    }
+});
+
+const RenderAsButton: readonly (BoxVariant | undefined)[] = [
+    "basic",
+    "outlined",
+    "contained",
+];
+
+interface EditableBoxProps extends ScribingButtonProps {
+    innerSelection: FlowSelection | boolean;
+    clickable: boolean;
+    editMode: EditMode;
+    hidden: boolean;
+}
+
+const EditableBox = forwardRef<HTMLElement, EditableBoxProps>((props, outerRef) => {
+    const {
+        pending,
+        error,
+        disabled,
+        children,
+        hover,
+        style,
+        innerSelection,
+        clickable,
+        editMode,
+        hidden,
+    } = props;
+    const { box: Component } = useFlowComponentMap();
+    const innerRef = useForwardedRef(outerRef);
+    const classes = useStyles();
+    const css = useMemo(() => getBoxCssProperties(style), [style]);
+    const formattingMarks = useFormattingMarks();
+    const showSelectionOutline = !error && (
+        innerSelection === true ||
+        (innerSelection instanceof FlowRangeSelection && !innerSelection.isCollapsed)
+    );
+    const showFormattingOutline = formattingMarks && !showSelectionOutline && !hasBorder(style);
+    const className = clsx(
+        classes.root,
+        clickable ? classes.clickable : !!editMode && classes.editable,
+        pending && classes.interactionPending,
+        error && classes.error,
+        hidden && classes.hidden,
+        clickable && hover && classes.hover,
+        showSelectionOutline && classes.selected,
+        innerSelection === true && classes.selectedAll,
+        showSelectionOutline && editMode === "inactive" ? classes.selectedInactive : classes.selectedActive,
+        showFormattingOutline && classes.formattingMarks,
+        disabled && classes.disabled,
+        ...getBoxStyleClassNames(style, classes),
+    );
+    return (
+        <Component 
+            ref={innerRef}
+            className={className}
+            style={css}
+            contentEditable={false}
+            children={children}
+        />
     );
 });
 

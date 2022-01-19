@@ -15,5 +15,6 @@ export interface ScribingComponents
 
 |  Property | Type | Description |
 |  --- | --- | --- |
+|  [Button](./scribing-react.scribingcomponents.button.md) | [ScribingComponent](./scribing-react.scribingcomponent.md)<!-- -->&lt;[ScribingButtonProps](./scribing-react.scribingbuttonprops.md)<!-- -->&gt; |  |
 |  [Tooltip](./scribing-react.scribingcomponents.tooltip.md) | [ScribingComponent](./scribing-react.scribingcomponent.md)<!-- -->&lt;[ScribingTooltipProps](./scribing-react.scribingtooltipprops.md)<!-- -->&gt; |  |
 
