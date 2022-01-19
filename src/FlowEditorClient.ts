@@ -15,6 +15,7 @@ import { DeferrableEvent } from ".";
 import { FlowEditorState } from "./FlowEditorState";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { InitEditorEvent } from "./InitEditorEvent";
+import { getLocalStorage, setLocalStorage } from "./internal/utils/localstorage";
 
 /** @public */
 export interface FlowEditorClient {
@@ -140,6 +141,11 @@ export function useFlowEditorClient(
             }
         }
 
+        // Save formatting marks setting whenever it changes
+        if (event.after.formattingMarks !== event.before.formattingMarks) {
+            setFormattingMarksSetting(event.after.formattingMarks);
+        }
+
         // Store new local state
         setState(local.current = event.after);
         return true;
@@ -203,6 +209,7 @@ export function useFlowEditorClient(
                             content: snapshot.content,
                             theme: snapshot.theme,
                             presence: Object.freeze(snapshot.presence),
+                            formattingMarks: getFormattingMarksSetting(),
                         }));
                     }
                 }
@@ -466,23 +473,27 @@ const MAX_SYNC_INTERVAL = 5000;
 const MAX_SYNC_ATTEMPTS = 10;
 const MIN_BACKOFF_DELAY = 1000;
 const RANDOM_BACKOFF_DELAY = 2000;
+const CLIENT_KEY_STORAGE_KEY = "Scribing.FlowEditor.ClientKey";
+const FORMATTING_MARKS_STORAGE_KEY = "Scribing.FlowEditor.FormattingMarks";
 
-let STATIC_CLIENT_KEY: string | undefined;
-const getStaticClientKey = () => {
-    if (STATIC_CLIENT_KEY === void(0)) {
-        STATIC_CLIENT_KEY = nanoid();
-        try {
-            const fromStorage = localStorage.getItem(CLIENT_KEY_STORAGE_KEY);
-            if (fromStorage === null) {
-                localStorage.setItem(CLIENT_KEY_STORAGE_KEY, STATIC_CLIENT_KEY);
-            } else {
-                STATIC_CLIENT_KEY = fromStorage;
-            }
-        } catch (error) {
-            console.warn(`Could not read/write local storage key: ${CLIENT_KEY_STORAGE_KEY}`, error);
-        }
+const getStaticClientKey = (): string => {
+    let stored = getLocalStorage(CLIENT_KEY_STORAGE_KEY);
+    if (typeof stored !== "string") {
+        stored = nanoid();
+        setLocalStorage(CLIENT_KEY_STORAGE_KEY, stored);
     }
-    return STATIC_CLIENT_KEY;
+    return stored;
 };
 
-const CLIENT_KEY_STORAGE_KEY = "Scribing.FlowEditor.ClientKey";
+const getFormattingMarksSetting = (): boolean => {
+    const stored = getLocalStorage(FORMATTING_MARKS_STORAGE_KEY);
+    if (stored === "false") {
+        return false;
+    } else {
+        return true;
+    }
+};
+
+const setFormattingMarksSetting = (value: boolean) => {
+    setLocalStorage(FORMATTING_MARKS_STORAGE_KEY, value ? "true" : "false");
+};
