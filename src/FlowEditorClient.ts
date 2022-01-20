@@ -101,15 +101,35 @@ export function useFlowEditorClient(
     );
 
     // Apply local change
+    const broken = connection === "broken";
     const apply = useCallback((event: StateChangeEvent): boolean => {
         // We must have a local state, otherwise we're not connected, and it
         // must match the specified before state, otherwise we're out of sync.
         if (!local.current?.equals(event.before)) {
+            console.warn("Client rejecting change: Local snapshot is out of sync");
             return false;
         }
 
-        // Do not allow changes to be made when editor is frozen
-        if (frozen && event.change !== null) {
+        // When working without syncing (not client/server) then it is fine to
+        // update content by just replacing it an applying a new state without
+        // an operation. This kind of update is not, however, supported in a
+        // client/server scenario because here we must know how to sync the change.
+        // 
+        // To avoid running into sync problems (and possibly loosing content) we
+        // verify that the before/after content snapshots and the specified change
+        // (if any) describe the same update. If not, we'll just reject the update.
+        const expected = event.change === null 
+            ? event.before.content 
+            : event.change.applyToContent(event.before.content, event.before.theme);
+        
+        if (!event.after.content.equals(expected)) {
+            console.warn("Client rejecting change: Not properly described");
+            return false;
+        }
+
+        // Do not allow changes to be made when editor is frozen or broken
+        if (frozen || broken) {
+            console.warn("Client rejecting change: Editor is frozen or broken");
             return false;
         }
 
@@ -149,7 +169,7 @@ export function useFlowEditorClient(
         // Store new local state
         setState(local.current = event.after);
         return true;
-    }, [frozen]);
+    }, [frozen, broken]);
 
     // Derive protocol from url
     const protocol = useMemo(() => {
