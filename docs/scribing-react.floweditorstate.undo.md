@@ -9,9 +9,9 @@ Undoes the most recent operation
 <b>Signature:</b>
 
 ```typescript
-undo(): FlowEditorState;
+undo(): StateChangeEvent;
 ```
 <b>Returns:</b>
 
-[FlowEditorState](./scribing-react.floweditorstate.md)
+[StateChangeEvent](./scribing-react.statechangeevent.md)
 

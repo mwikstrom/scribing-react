@@ -33,6 +33,9 @@ import { TextStyle } from 'scribing';
 import { TextStyleProps } from 'scribing';
 import { Type } from 'paratype';
 
+// @public (undocumented)
+export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
+
 // @public
 export interface ApplyMineOptions {
     // (undocumented)
@@ -124,7 +127,7 @@ export interface FlowEditorClientOptions {
 
 // @public (undocumented)
 export class FlowEditorController {
-    constructor(state: FlowEditorState, apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
+    constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
     // (undocumented)
     canMergeTableCells(): boolean;
     // (undocumented)
@@ -363,7 +366,7 @@ export class FlowEditorController {
     // (undocumented)
     splitTableCell(): void;
     // @internal (undocumented)
-    _sync(state: FlowEditorState, apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"]): void;
+    _sync(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"]): void;
     // (undocumented)
     toggleBold(): void;
     // (undocumented)
@@ -427,11 +430,11 @@ export class FlowEditorState extends FlowEditorStateBase {
     static fromData(data: FlowEditorStateData): FlowEditorState;
     getUniformParagraphStyle(diff?: Set<keyof ParagraphStyleProps>): ParagraphStyle;
     getUniformTextStyle(diff?: Set<keyof TextStyleProps>): TextStyle;
-    redo(): FlowEditorState;
+    redo(): StateChangeEvent;
     toggleFormattingMarks(): FlowEditorState;
     // (undocumented)
     togglePreview(): FlowEditorState;
-    undo(): FlowEditorState;
+    undo(): StateChangeEvent;
 }
 
 // @public
@@ -717,6 +720,10 @@ export class StateChangeEvent {
     get before(): FlowEditorState;
     // (undocumented)
     get change(): FlowOperation | null;
+    // (undocumented)
+    reject(): void;
+    // (undocumented)
+    get rejected(): boolean;
 }
 
 // @public (undocumented)

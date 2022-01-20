@@ -25,6 +25,7 @@ import {
     TextStyle, 
     TextStyleProps, 
 } from "scribing";
+import { StateChangeEvent } from ".";
 
 const operationStackType = arrayType(FlowOperation.baseType).frozen();
 
@@ -262,15 +263,23 @@ export class FlowEditorState extends FlowEditorStateBase {
     }
 
     /** Undoes the most recent operation */
-    public undo(): FlowEditorState {
+    public undo(): StateChangeEvent {
         const { undoStack: [operation] } = this;
-        return operation ? this.#apply(operation, "undo") : this;
+        if (operation) {
+            return new StateChangeEvent(this, operation, this.#apply(operation, "undo"));
+        } else {
+            return new StateChangeEvent(this, null, this);
+        }
     }
 
     /** Redoes the most recent undone operation */
-    public redo(): FlowEditorState {
+    public redo(): StateChangeEvent {
         const { redoStack: [operation] } = this;
-        return operation ? this.#apply(operation, "redo") : this;
+        if (operation) {
+            return new StateChangeEvent(this, operation, this.#apply(operation, "redo"));
+        } else {
+            return new StateChangeEvent(this, null, this);
+        }
     }
 
     #apply(

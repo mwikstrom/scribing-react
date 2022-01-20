@@ -24,4 +24,11 @@ export declare class StateChangeEvent
 |  [after](./scribing-react.statechangeevent.after.md) |  | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  [before](./scribing-react.statechangeevent.before.md) |  | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  [change](./scribing-react.statechangeevent.change.md) |  | FlowOperation \| null |  |
+|  [rejected](./scribing-react.statechangeevent.rejected.md) |  | boolean |  |
+
+## Methods
+
+|  Method | Modifiers | Description |
+|  --- | --- | --- |
+|  [reject()](./scribing-react.statechangeevent.reject.md) |  |  |
 

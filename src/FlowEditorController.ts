@@ -45,18 +45,22 @@ import { FlowEditorState } from "./FlowEditorState";
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
 import { PubSub } from "./internal/utils/PubSub";
+import { StateChangeEvent } from "./StateChangeEvent";
+
+/** @public */
+export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
 
 /** @public */
 export class FlowEditorController {
     #state!: FlowEditorState;
-    #apply!: (change: FlowOperation | FlowEditorState | null) => FlowEditorState;
+    #apply!: (change: ApplicableChange) => FlowEditorState;
     #onStoreAsset: FlowEditorProps["onStoreAsset"];
     readonly #uploads = new Map<string, Blob>();
     #fresh: PubSub<FlowEditorController> | undefined;
 
     constructor(
         state: FlowEditorState,
-        apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+        apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState,
         onStoreAsset: FlowEditorProps["onStoreAsset"],
         uploads = new Map<string, Blob>(),
     ) {
@@ -67,7 +71,7 @@ export class FlowEditorController {
     /** @internal */
     _sync(
         state: FlowEditorState,
-        apply: (change: FlowOperation | FlowEditorState | null, before: FlowEditorState) => FlowEditorState,
+        apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState,
         onStoreAsset: FlowEditorProps["onStoreAsset"],
     ): void {
         this.#state = state;

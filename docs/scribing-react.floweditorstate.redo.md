@@ -9,9 +9,9 @@ Redoes the most recent undone operation
 <b>Signature:</b>
 
 ```typescript
-redo(): FlowEditorState;
+redo(): StateChangeEvent;
 ```
 <b>Returns:</b>
 
-[FlowEditorState](./scribing-react.floweditorstate.md)
+[StateChangeEvent](./scribing-react.statechangeevent.md)
 

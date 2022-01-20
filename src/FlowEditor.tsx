@@ -111,13 +111,17 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         if (!stateRef.current.equals(before)) {
             return false;
         }
-        stateRef.current = after;
         if (mountedRef.current) {
             setState(after);
             if (onStateChangeProp) {
-                onStateChangeProp(new StateChangeEvent(before, change, after));
+                const event = new StateChangeEvent(before, change, after);
+                onStateChangeProp(event);
+                if (event.rejected) {
+                    return false;
+                }
             }
         }
+        stateRef.current = after;
         return true;
     }, [onStateChangeProp, setState]);
 
@@ -169,7 +173,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
 
     // Handle new state or operation
     const applyChange = useCallback((
-        result: FlowOperation | FlowEditorState | null, 
+        update: FlowOperation | FlowEditorState | StateChangeEvent | null, 
         base: FlowEditorState,
     ): FlowEditorState => {
         const { current: mergeUndo } = shouldMergeUndo;
@@ -177,19 +181,28 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         let operation: FlowOperation | null;
         let didApplyMine = false;
 
-        if (result instanceof FlowOperation && !state.preview) {
-            operation = result;
+        if (update instanceof FlowOperation && !state.preview) {
+            operation = update;
             after = base.applyMine(operation, { mergeUndo });
             didApplyMine = true;
-        } else if (FlowEditorState.classType.test(result)) {
+        } else if (FlowEditorState.classType.test(update)) {
             operation = null;
-            after = result;
+            after = update;
+        } else if (update instanceof StateChangeEvent) {
+            operation = update.change;
+            after = update.after;
+            if (!base.equals(update.before)) {
+                console.warn("Rejecting update: Inconsistent base snapshot");
+                return base;
+            }
         } else {
             operation = null;
             after = base;
         }
         
-        onStateChange(after, operation, base);
+        if (!onStateChange(after, operation, base)) {
+            return base;
+        }
 
         if (didApplyMine) {
             shouldMergeUndo.current = true;

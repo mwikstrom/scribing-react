@@ -8,6 +8,7 @@ export class StateChangeEvent {
     readonly #before: FlowEditorState;
     readonly #change: FlowOperation | null;
     readonly #after: FlowEditorState;
+    #rejected = false;
 
     constructor(before: FlowEditorState, change: FlowOperation | null, after: FlowEditorState) {
         this.#before = before;
@@ -20,4 +21,8 @@ export class StateChangeEvent {
     get change(): FlowOperation | null { return this.#change; }
 
     get after(): FlowEditorState { return this.#after; }
+
+    get rejected(): boolean { return this.#rejected; }
+
+    reject(): void { this.#rejected = true; }
 }
