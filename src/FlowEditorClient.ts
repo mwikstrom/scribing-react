@@ -10,6 +10,7 @@ import {
     FlowSyncOutput, 
     FlowSyncProtocol, 
     HttpFlowSyncProtocol,
+    ResetContent,
 } from "scribing";
 import { DeferrableEvent } from ".";
 import { FlowEditorState } from "./FlowEditorState";
@@ -44,6 +45,7 @@ export type ConnectionStatus = (
 /** @public */
 export interface FlowEditorClientOptions {
     autoSync?: boolean;
+    disableMerge?: boolean;
     clientKey?: string;
     onSyncing?: (event: DeferrableEvent) => void;
     onInit?: (event: InitEditorEvent) => void;
@@ -63,15 +65,15 @@ export function useFlowEditorClient(
     urlOrProtocol: FlowSyncProtocol | string | null, 
     options: FlowEditorClientOptions = {}
 ): FlowEditorClient {
-    const { autoSync = true, clientKey: givenClientKey, onSyncing, onInit } = options;
+    const { autoSync = true, disableMerge, clientKey: givenClientKey, onSyncing, onInit } = options;
     const [state, setState] = useState<FlowEditorState | null>(null);
     const [frozen, setFrozen] = useState<boolean | null>(null);
     const [connection, setConnection] = useState<ConnectionStatus>(urlOrProtocol ? "connecting" : "disconnected");
-    const useConnectionEffect = (when: ConnectionStatus, effect: EffectCallback) => useEffect(() => {
+    const useConnectionEffect = (when: ConnectionStatus, effect: EffectCallback, deps?: unknown[]) => useEffect(() => {
         if (connection === when) {
             return effect();
         }
-    }, [connection, protocol]);
+    }, [connection, protocol, ...(deps || [])]);
     const [syncedSelection, setSyncedSelection] = useState<FlowSelection | null>(null);
     const local = useRef<FlowEditorState | null>(null);
     const syncVersion = useRef(0);
@@ -110,56 +112,66 @@ export function useFlowEditorClient(
             return false;
         }
 
-        // When working without syncing (not client/server) then it is fine to
-        // update content by just replacing it an applying a new state without
-        // an operation. This kind of update is not, however, supported in a
-        // client/server scenario because here we must know how to sync the change.
-        // 
-        // To avoid running into sync problems (and possibly loosing content) we
-        // verify that the before/after content snapshots and the specified change
-        // (if any) describe the same update. If not, we'll just reject the update.
-        const expected = event.change === null 
-            ? event.before.content 
-            : event.change.applyToContent(event.before.content, event.before.theme);
-        
-        if (!event.after.content.equals(expected)) {
-            console.warn("Client rejecting change: Not properly described");
-            return false;
-        }
-
-        // Do not allow changes to be made when editor is frozen or broken
-        if (frozen || broken) {
-            console.warn("Client rejecting change: Editor is frozen or broken");
-            return false;
-        }
-
-        // Always set pending selection
-        pendingSelection.current = event.after.selection;
-
-        // Merge pending operation if needed
-        if (event.change !== null) {
-            if (pendingChange.current === null) {
+        if (disableMerge) {           
+            const { after: { content: after }, before: { content: before } } = event;
+            if (after !== before) {
                 pendingChange.current = {
-                    operation: event.change,
-                    baseContent: event.before.content,
+                    operation: new ResetContent({ content: after }),
+                    baseContent: before,
                 };
-            } else {
-                const merged = FlowBatch.fromArray([
-                    pendingChange.current.operation,
-                    event.change,
-                ]);
-                if (merged === null) {
-                    pendingChange.current = null;
+            }
+        } else {
+            // When working without syncing (not client/server) then it is fine to
+            // update content by just replacing it an applying a new state without
+            // an operation. This kind of update is not, however, supported in a
+            // client/server scenario because here we must know how to sync the change.
+            // 
+            // To avoid running into sync problems (and possibly loosing content) we
+            // verify that the before/after content snapshots and the specified change
+            // (if any) describe the same update. If not, we'll just reject the update.
+            const expected = event.change === null 
+                ? event.before.content 
+                : event.change.applyToContent(event.before.content, event.before.theme);
+            
+            if (!event.after.content.equals(expected)) {
+                console.warn("Client rejecting change: Not properly described");
+                return false;
+            }
+
+            // Do not allow changes to be made when editor is frozen or broken
+            if (frozen || broken) {
+                console.warn("Client rejecting change: Editor is frozen or broken");
+                return false;
+            }
+
+            // Merge pending operation if needed
+            if (event.change !== null) {
+                if (pendingChange.current === null) {
+                    pendingChange.current = {
+                        operation: event.change,
+                        baseContent: event.before.content,
+                    };
                 } else {
-                    pendingChange.current.operation = merged;
+                    const merged = FlowBatch.fromArray([
+                        pendingChange.current.operation,
+                        event.change,
+                    ]);
+                    if (merged === null) {
+                        pendingChange.current = null;
+                    } else {
+                        pendingChange.current.operation = merged;
+                    }
+                }
+
+                // Mark connection as dirty if currently clean
+                if (pendingChange.current !== null) {
+                    setConnection(before => before === "clean" ? "dirty" : before);
                 }
             }
-
-            // Mark connection as dirty if currently clean
-            if (pendingChange.current !== null) {
-                setConnection(before => before === "clean" ? "dirty" : before);
-            }
         }
+
+        // Set pending selection
+        pendingSelection.current = event.after.selection;
 
         // Save formatting marks setting whenever it changes
         if (event.after.formattingMarks !== event.before.formattingMarks) {
@@ -169,7 +181,7 @@ export function useFlowEditorClient(
         // Store new local state
         setState(local.current = event.after);
         return true;
-    }, [frozen, broken]);
+    }, [frozen, broken, disableMerge]);
 
     // Derive protocol from url
     const protocol = useMemo(() => {
@@ -288,12 +300,19 @@ export function useFlowEditorClient(
                         }
                     }
 
+                    if (!active || local.current === null) {
+                        return;
+                    }
+
                     if (output === null) {
                         console.warn(`Flow editor sync attempt ${attempt} of ${MAX_SYNC_ATTEMPTS} failed`);
                         continue;
                     }
-
-                    if (active && local.current !== null) {
+                   
+                    if (disableMerge && (outgoingChange || !output.merge)) {
+                        setSyncedSelection(local.current.selection);
+                        setState(local.current);
+                    } else {
                         // Compute merged selection
                         let mergedSelection = local.current.selection;
                         if (output.merge && mergedSelection) {
@@ -329,7 +348,7 @@ export function useFlowEditorClient(
                             }
                         }
 
-                        // Apply next pending change
+                        // Merge next pending change
                         if (pendingChange.current) {
                             const pending: PendingChange = pendingChange.current;
                             if (output.merge) {
@@ -346,19 +365,8 @@ export function useFlowEditorClient(
                             }
                         }
 
-                        // Apply new synced state
-                        const now = Date.now();
-                        syncVersion.current = output.version;
-                        if (
-                            output.merge !== null || 
-                            !areEqualPresences(local.current?.presence ?? [], output.presence)
-                        ) {
-                            lastRemoteChange.current = now;
-                        }
-                        setLastSync(now);
-                        setConnection(pendingChange.current === null ? "clean" : "dirty");
+                        // Apply merged state
                         setSyncedSelection(mergedSelection);
-                        setFrozen(output.frozen);
                         setState(local.current = local.current.merge({
                             content: mergedContent,
                             selection: mergedSelection,
@@ -366,6 +374,18 @@ export function useFlowEditorClient(
                         }));
                     }
 
+                    // Apply synced state
+                    const now = Date.now();
+                    syncVersion.current = output.version;
+                    if (
+                        output.merge !== null || 
+                        !areEqualPresences(local.current?.presence ?? [], output.presence)
+                    ) {
+                        lastRemoteChange.current = now;
+                    }
+                    setLastSync(now);
+                    setConnection(pendingChange.current === null ? "clean" : "dirty");
+                    setFrozen(output.frozen);
                     return;
                 }
 
@@ -381,7 +401,7 @@ export function useFlowEditorClient(
             }
         })();
         return () => { active = false; };
-    });
+    }, [disableMerge]);
 
     // Determine when next sync should occur
     const nextSync = useMemo(() => {

@@ -17,6 +17,7 @@ export interface FlowEditorClientOptions
 |  --- | --- | --- |
 |  [autoSync?](./scribing-react.floweditorclientoptions.autosync.md) | boolean | <i>(Optional)</i> |
 |  [clientKey?](./scribing-react.floweditorclientoptions.clientkey.md) | string | <i>(Optional)</i> |
+|  [disableMerge?](./scribing-react.floweditorclientoptions.disablemerge.md) | boolean | <i>(Optional)</i> |
 |  [onInit?](./scribing-react.floweditorclientoptions.oninit.md) | (event: [InitEditorEvent](./scribing-react.initeditorevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onSyncing?](./scribing-react.floweditorclientoptions.onsyncing.md) | (event: [DeferrableEvent](./scribing-react.deferrableevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 

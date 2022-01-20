@@ -120,6 +120,8 @@ export interface FlowEditorClientOptions {
     // (undocumented)
     clientKey?: string;
     // (undocumented)
+    disableMerge?: boolean;
+    // (undocumented)
     onInit?: (event: InitEditorEvent) => void;
     // (undocumented)
     onSyncing?: (event: DeferrableEvent) => void;
