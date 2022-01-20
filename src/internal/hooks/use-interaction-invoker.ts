@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback } from "react";
 import { Interaction, OpenUrl, RunScript } from "scribing";
 import { useScriptHost } from "scripthost-react";
 import { resolveLink, useLinkResolver } from "../LinkResolverScope";
@@ -11,22 +11,14 @@ export function useInteractionInvoker(interaction: Interaction | null): () => Pr
     const host = useScriptHost();
     const linkResolver = useLinkResolver();
     const vars = useScriptVariables();
-    return useMemo(() => {
-        if (interaction === null) {
-            return async () => { /* no-op */ };
-        } else if (interaction instanceof OpenUrl) {
-            return async () => {
-                const resolvedLink = await resolveLink(interaction.url, linkResolver);                
-                window.open(resolvedLink.url, resolvedLink.target);
-            };
+    return useCallback(async () => {
+        if (interaction instanceof OpenUrl) {
+            const resolvedLink = await resolveLink(interaction.url, linkResolver);
+            window.open(resolvedLink.url, resolvedLink.target);
         } else if (interaction instanceof RunScript) {
-            return async () => {
-                await host.eval(interaction.script, { vars });
-            };
-        } else {
-            return async () => {
-                throw new Error("Unsupported interaction");
-            };
+            await host.eval(interaction.script, { vars });
+        } else if (interaction !== null) {
+            throw new Error("Unsupported interaction");
         }
-    }, [interaction, host, linkResolver]);
+    }, [interaction, host, linkResolver, vars]);
 }
