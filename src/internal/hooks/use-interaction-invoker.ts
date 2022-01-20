@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Interaction, OpenUrl, RunScript } from "scribing";
 import { useScriptHost } from "scripthost-react";
 import { resolveLink, useLinkResolver } from "../LinkResolverScope";
+import { useScriptVariables } from "../ScriptVariablesScope";
 
 /**
  * @public
@@ -9,6 +10,7 @@ import { resolveLink, useLinkResolver } from "../LinkResolverScope";
 export function useInteractionInvoker(interaction: Interaction | null): () => Promise<void> {
     const host = useScriptHost();
     const linkResolver = useLinkResolver();
+    const vars = useScriptVariables();
     return useMemo(() => {
         if (interaction === null) {
             return async () => { /* no-op */ };
@@ -19,7 +21,7 @@ export function useInteractionInvoker(interaction: Interaction | null): () => Pr
             };
         } else if (interaction instanceof RunScript) {
             return async () => {
-                await host.eval(interaction.script);
+                await host.eval(interaction.script, { vars });
             };
         } else {
             return async () => {
