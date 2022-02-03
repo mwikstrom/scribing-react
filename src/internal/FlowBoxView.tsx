@@ -125,35 +125,30 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         />
     ));
 
+    const commonProps: ScribingButtonProps = {
+        ref,
+        href,
+        pending: interactionPending,
+        error,
+        disabled,
+        hover,
+        style,
+        children,
+    };
+
     if (omitted) {
         return null;
     } else if (!editMode && clickable && RenderAsButton.includes(style.variant)) {        
         return (
             <Tooltip {...tooltipProps}>
-                <Button
-                    ref={ref}
-                    href={href}
-                    pending={interactionPending}
-                    error={error}
-                    disabled={disabled}
-                    hover={hover}
-                    style={style}
-                    children={children}
-                />
+                <Button {...commonProps}/>
             </Tooltip>
         );
     } else {
         return (
             <Tooltip {...tooltipProps}>
                 <EditableBox
-                    ref={ref}
-                    href={href}
-                    pending={interactionPending}
-                    error={error}
-                    disabled={disabled}
-                    hover={hover}
-                    style={style}
-                    children={children}
+                    {...commonProps}
                     innerSelection={innerSelection}
                     clickable={clickable}
                     editMode={editMode}
