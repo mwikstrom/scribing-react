@@ -27,7 +27,7 @@ import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useInteraction } from "./hooks/use-interaction";
 import { useObservedScript } from "scripthost-react";
-import { ScriptVaraiblesScope, useScriptVariables } from "./ScriptVariablesScope";
+import { ScriptVariablesScope, useScriptVariables } from "./ScriptVariablesScope";
 import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
@@ -365,12 +365,12 @@ const TemplateElement: FC<TemplateElementProps> = props => {
     const { data, isClone, contentEditable, ...rest } = props;
     const vars = useMemo(() => ({ data }), [data]);
     return (
-        <ScriptVaraiblesScope variables={vars}>
+        <ScriptVariablesScope variables={vars}>
             <ContentElement
                 {...rest}
                 contentEditable={contentEditable && !isClone}
                 templateRef={registerTemplateNode}
             />
-        </ScriptVaraiblesScope>
+        </ScriptVariablesScope>
     );
 };

@@ -12,7 +12,7 @@ export interface ScriptVaraiblesScopeProps {
 /**
  * @public
  */
-export const ScriptVaraiblesScope: FC<ScriptVaraiblesScopeProps> = ({
+export const ScriptVariablesScope: FC<ScriptVaraiblesScopeProps> = ({
     variables,
     children,
 }) => {
