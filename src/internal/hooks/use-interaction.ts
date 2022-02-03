@@ -76,7 +76,7 @@ export function useInteraction(
                 setPending(invokeAction());
             }
         } 
-    }, [clickable, pending, invokeAction, editMode, rootElem, href, sourceError]);
+    }, [clickable, pending, disabled, invokeAction, editMode, rootElem, href, sourceError]);
 
     useEffect(() => {
         let active = true;
