@@ -57,13 +57,17 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const innerSelection = useMemo(() => getFlowBoxContentSelection(outerSelection), [outerSelection]);
     const editMode = useEditMode();
-    const vars = useScriptVariables();
+    const outerVars = useScriptVariables();
+    const vars = useMemo(() => style.source ? ({
+        ...outerVars,
+        ...Object.fromEntries(style.source.messages.entries()),
+    }) : outerVars, [outerVars, style.source]);
     const hasSource = !!style.source;
     const {
         result: sourceResult,
         ready: sourceReady,
         error: sourceError,
-    } = useObservedScript(style.source ?? null, { vars });
+    } = useObservedScript(style.source?.code ?? null, { vars });
     const disabled = hasSource && sourceResult === false;
     const {
         clickable,

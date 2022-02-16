@@ -32,6 +32,7 @@ import {
     ParagraphStyleProps, 
     ParagraphVariant, 
     RemoveFlowSelectionOptions, 
+    Script, 
     StartMarkup, 
     TableStyle, 
     TargetOptions, 
@@ -1010,7 +1011,7 @@ export class FlowEditorController {
         }, this.getTargetOptions());
     }
 
-    getDynamicExpression(): string | null | undefined {
+    getDynamicExpression(): Script | null | undefined {
         if (this.isBox()) {
             return this.getBoxStyle().source;
         } else {
@@ -1018,7 +1019,7 @@ export class FlowEditorController {
         }
     }
 
-    setDynamicExpression(value: string | null): void {
+    setDynamicExpression(value: Script | null): void {
         if (this.isBox()) {
             // TODO: Source should be unset when null, this should be accomplished by having ambient box style
             this.formatBox("source", value);
@@ -1027,21 +1028,21 @@ export class FlowEditorController {
         }
     }
 
-    setDynamicTextExpression(value: string): void {
+    setDynamicTextExpression(value: Script): void {
         const { selection, content } = this.#state;
         if (selection) {
             this.#state = this.#apply(selection.setDynamicTextExpression(content, value));
         }
     }
 
-    getDynamicTextExpression(): string | null | undefined {
+    getDynamicTextExpression(): Script | null | undefined {
         const { selection } = this.#state;
         
         if (selection === null) {
             return null;
         }
 
-        let result: string | null | undefined = null;
+        let result: Script | null | undefined = null;
 
         selection.transformRanges((range, options = {}) => {
             const { target } = options;

@@ -39,8 +39,12 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         setRootElem(dom);
     }, [outerRef]);
 
-    const vars = useScriptVariables();
-    const evaluated = useObservedScript(expression, { vars });
+    const outerVars = useScriptVariables();
+    const vars = useMemo(() => ({
+        ...outerVars,
+        ...Object.fromEntries(expression.messages.entries()),
+    }), [outerVars, expression]);
+    const evaluated = useObservedScript(expression.code, { vars });
     const locale = useFlowLocale();
     const editMode = useEditMode();
     
