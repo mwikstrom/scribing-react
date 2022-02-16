@@ -7,9 +7,9 @@
 <b>Signature:</b>
 
 ```typescript
-getDynamicTextExpression(): string | null | undefined;
+getDynamicTextExpression(): Script | null | undefined;
 ```
 <b>Returns:</b>
 
-string \| null \| undefined
+Script \| null \| undefined
 

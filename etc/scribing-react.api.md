@@ -27,6 +27,7 @@ import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
+import { Script } from 'scribing';
 import { StartMarkup } from 'scribing';
 import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
@@ -171,9 +172,9 @@ export class FlowEditorController {
     // (undocumented)
     getColor(): TextStyleProps["color"];
     // (undocumented)
-    getDynamicExpression(): string | null | undefined;
+    getDynamicExpression(): Script | null | undefined;
     // (undocumented)
-    getDynamicTextExpression(): string | null | undefined;
+    getDynamicTextExpression(): Script | null | undefined;
     // (undocumented)
     getFontFamily(): TextStyleProps["fontFamily"];
     // (undocumented)
@@ -332,9 +333,9 @@ export class FlowEditorController {
     // (undocumented)
     setColor(value: FlowColor): void;
     // (undocumented)
-    setDynamicExpression(value: string | null): void;
+    setDynamicExpression(value: Script | null): void;
     // (undocumented)
-    setDynamicTextExpression(value: string): void;
+    setDynamicTextExpression(value: Script): void;
     // (undocumented)
     setFontFamily(value: Exclude<TextStyleProps["fontFamily"], undefined>): void;
     // (undocumented)

@@ -7,14 +7,14 @@
 <b>Signature:</b>
 
 ```typescript
-setDynamicExpression(value: string | null): void;
+setDynamicExpression(value: Script | null): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  value | string \| null |  |
+|  value | Script \| null |  |
 
 <b>Returns:</b>
 
