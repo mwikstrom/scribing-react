@@ -52,7 +52,7 @@ export const getFlowContentFromImageFileTransfer = async (
         if (file !== null) {
             const uploadId = controller.uploadAsset(file);
             const source = await createImageSource(file, uploadId);
-            nodes.push(new FlowImage({ source, style: controller.getCaretStyle() }));
+            nodes.push(new FlowImage({ source, style: controller.getCaretStyle(), scale: 1 }));
         }
     }
     return createFlowContent(...nodes);
