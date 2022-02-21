@@ -8,6 +8,7 @@ import { BoxStyle } from 'scribing';
 import { BoxStyleProps } from 'scribing';
 import { CSSProperties } from 'react';
 import { EmptyMarkup } from 'scribing';
+import { ExposedFunctions } from 'scripthost';
 import { FC } from 'react';
 import { FlowColor } from 'scribing';
 import { FlowContent } from 'scribing';
@@ -28,6 +29,7 @@ import { ReactNode } from 'react';
 import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
 import { Script } from 'scribing';
+import { ScriptFunction } from 'scripthost';
 import { StartMarkup } from 'scribing';
 import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
@@ -76,6 +78,12 @@ export const DefaultFlowTypography: Readonly<FlowTypography>;
 
 // @public (undocumented)
 export const DefaultScribingComponents: ScribingComponents;
+
+// @public
+export interface DefaultScriptFunctions extends ExposedFunctions {
+    // (undocumented)
+    readonly formatMessage: ScriptFunction;
+}
 
 // @public (undocumented)
 export class DeferrableEvent {
@@ -612,6 +620,15 @@ export class FormatMarkupAttributeEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
+export function formatMessage(message: string, vars: Record<string, unknown>, options?: FormatMessageOptions): string;
+
+// @public (undocumented)
+export interface FormatMessageOptions {
+    // (undocumented)
+    lang?: string;
+}
+
+// @public (undocumented)
 export class InitEditorEvent extends DeferrableEvent {
     // (undocumented)
     content?: FlowContent;
@@ -749,6 +766,9 @@ export function useDataIcons(pack?: string, tag?: string): readonly string[];
 
 // @public (undocumented)
 export function useDataIconTags(pack: string): readonly string[] | null;
+
+// @public
+export function useDefaultScriptFunctions(): DefaultScriptFunctions;
 
 // @public (undocumented)
 export function useFlowEditorClient(url: string | null, options?: FlowEditorClientOptions): FlowEditorClient;

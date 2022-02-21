@@ -45,3 +45,7 @@ export * from "./FlowEditor";
 
 // Client hook
 export * from "./FlowEditorClient";
+
+// Script functions
+export * from "./format-message";
+export * from "./use-default-script-functions";

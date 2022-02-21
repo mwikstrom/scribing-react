@@ -26,9 +26,11 @@ React components for collaborative rich text editing
 
 |  Function | Description |
 |  --- | --- |
+|  [formatMessage(message, vars, options)](./scribing-react.formatmessage.md) |  |
 |  [useDataIconPacks()](./scribing-react.usedataiconpacks.md) |  |
 |  [useDataIcons(pack, tag)](./scribing-react.usedataicons.md) |  |
 |  [useDataIconTags(pack)](./scribing-react.usedataicontags.md) |  |
+|  [useDefaultScriptFunctions()](./scribing-react.usedefaultscriptfunctions.md) | Gets default functions that should be exposed to script hosts |
 |  [useFlowEditorClient(url, options)](./scribing-react.usefloweditorclient.md) |  |
 |  [useFlowEditorClient(protocol, options)](./scribing-react.usefloweditorclient_1.md) |  |
 |  [useFlowLocale()](./scribing-react.useflowlocale.md) |  |
@@ -41,6 +43,7 @@ React components for collaborative rich text editing
 |  --- | --- |
 |  [ApplyMineOptions](./scribing-react.applymineoptions.md) | Options for the [FlowEditorState.applyMine()](./scribing-react.floweditorstate.applymine.md) method |
 |  [DataIconProps](./scribing-react.dataiconprops.md) |  |
+|  [DefaultScriptFunctions](./scribing-react.defaultscriptfunctions.md) | Default script functions |
 |  [FlowEditorClient](./scribing-react.floweditorclient.md) |  |
 |  [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
 |  [FlowEditorProps](./scribing-react.floweditorprops.md) | Component props for [FlowEditor](./scribing-react.floweditor.md) |
@@ -53,6 +56,7 @@ React components for collaborative rich text editing
 |  [FlowTypography](./scribing-react.flowtypography.md) |  |
 |  [FlowTypographyScopeProps](./scribing-react.flowtypographyscopeprops.md) |  |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
+|  [FormatMessageOptions](./scribing-react.formatmessageoptions.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
 |  [ScribingTooltipProps](./scribing-react.scribingtooltipprops.md) |  |
