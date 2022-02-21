@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from "react";
-import { FlowNode, Interaction } from "scribing";
+import { FlowNode, Interaction, TextStyle, TextStyleProps } from "scribing";
 import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps, OpposingTag } from "./FlowNodeComponent";
@@ -10,6 +10,8 @@ import { createUseFlowStyles } from "./JssTheming";
 import { useInteraction } from "./hooks/use-interaction";
 import { getFlowNodeSelection } from "./utils/get-sub-selection";
 import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
+import { ScriptEvalScope } from "./hooks/use-script-eval-props";
+import { useParagraphTheme } from "./ParagraphThemeScope";
 
 /** @internal */
 export type LinkViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
@@ -25,7 +27,20 @@ export const LinkView: FC<LinkViewProps> = props => {
     const { Tooltip } = useScribingComponents();
     const classes = useStyles();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const { clickable, pending, error, href, target, message } = useInteraction(link, rootElem);
+    const paraTheme = useParagraphTheme();
+    const uniformTextStyle = useMemo<TextStyle>(() => {
+        const diff = new Set<keyof TextStyleProps>();
+        let result = TextStyle.empty;
+        childNodes.forEach(node => {
+            const uniform = node.getUniformTextStyle(paraTheme, diff);
+            if (uniform) {
+                result = result.merge(uniform, diff);
+            }
+        });
+        return result;
+    }, [paraTheme, childNodes]);
+    const evalScope: ScriptEvalScope = { textStyle: uniformTextStyle };
+    const { clickable, pending, error, href, target, message } = useInteraction(link, rootElem, evalScope);
     const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => ({ title: message}), [message]);
     const editMode = useEditMode();
     const keyManager = useMemo(() => new FlowNodeKeyManager(), []);

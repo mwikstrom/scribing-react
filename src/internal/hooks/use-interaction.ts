@@ -7,6 +7,7 @@ import { useHover } from "./use-hover";
 import { useCtrlKey, useShiftKey } from "./use-modifier-key";
 import { useNativeEventHandler } from "./use-native-event-handler";
 import { useResolvedLink } from "../LinkResolverScope";
+import { ScriptEvalScope } from "./use-script-eval-props";
 
 /** @internal */
 interface InteractionState {
@@ -23,6 +24,7 @@ interface InteractionState {
 export function useInteraction(
     interaction: Interaction | null,
     rootElem: HTMLElement | null,
+    evalScope: Omit<ScriptEvalScope, "script">,
     sourceError: Error | null = null,
     disabled = false,
 ): InteractionState {
@@ -30,7 +32,7 @@ export function useInteraction(
     const hover = useHover(rootElem);
     const ctrlKey = useCtrlKey();
     const shiftKey = useShiftKey();
-    const invokeAction = useInteractionInvoker(interaction);
+    const invokeAction = useInteractionInvoker(interaction, evalScope);
     const resolvedLink = useResolvedLink(interaction instanceof OpenUrl ? interaction.url : "");
     const locale = useFlowLocale();
     const [pending, setPending] = useState<Promise<void> | null>(null);

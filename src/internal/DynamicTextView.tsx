@@ -12,9 +12,9 @@ import { mdiLoading } from "@mdi/js";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useFlowLocale } from "../FlowLocaleScope";
 import { useEditMode } from "./EditModeScope";
-import { useScriptVariables } from "./ScriptVariablesScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import { ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
+import { useScriptEvalProps } from "./hooks/use-script-eval-props";
 
 export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
     const { node, selection } = props;
@@ -39,12 +39,8 @@ export const DynamicTextView = flowNode<DynamicText>((props, outerRef) => {
         setRootElem(dom);
     }, [outerRef]);
 
-    const outerVars = useScriptVariables();
-    const vars = useMemo(() => ({
-        ...outerVars,
-        ...Object.fromEntries(expression.messages.entries()),
-    }), [outerVars, expression]);
-    const evaluated = useObservedScript(expression.code, { vars });
+    const evalProps = useScriptEvalProps({ script: expression, textStyle: style });
+    const evaluated = useObservedScript(expression.code, evalProps);
     const locale = useFlowLocale();
     const editMode = useEditMode();
     

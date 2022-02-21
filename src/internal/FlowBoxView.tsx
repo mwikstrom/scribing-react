@@ -27,13 +27,14 @@ import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useFormattingMarks } from "./FormattingMarksScope";
 import { useInteraction } from "./hooks/use-interaction";
 import { useObservedScript } from "scripthost-react";
-import { ScriptVariablesScope, useScriptVariables } from "./ScriptVariablesScope";
+import { ScriptVariablesScope } from "./ScriptVariablesScope";
 import { ScriptValue } from "scripthost-core";
 import { registerTemplateNode } from "./mapping/dom-node";
 import Color from "color";
 import { getFlowBoxContentSelection } from "./utils/get-sub-selection";
 import { ScribingButtonProps, ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
 import { useForwardedRef } from "./hooks/use-forwarded-ref";
+import { ScriptEvalScope, useScriptEvalProps } from "./hooks/use-script-eval-props";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node, selection: outerSelection } = props;
@@ -57,17 +58,14 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const isParentSelectionActive = useIsParentSelectionActive(rootElem);
     const innerSelection = useMemo(() => getFlowBoxContentSelection(outerSelection), [outerSelection]);
     const editMode = useEditMode();
-    const outerVars = useScriptVariables();
-    const vars = useMemo(() => style.source ? ({
-        ...outerVars,
-        ...Object.fromEntries(style.source.messages.entries()),
-    }) : outerVars, [outerVars, style.source]);
     const hasSource = !!style.source;
+    const evalScope: ScriptEvalScope = {};
+    const sourceEvalProps = useScriptEvalProps({ ...evalScope, script: style.source });
     const {
         result: sourceResult,
         ready: sourceReady,
         error: sourceError,
-    } = useObservedScript(style.source?.code ?? null, { vars });
+    } = useObservedScript(style.source?.code ?? null, sourceEvalProps);
     const disabled = hasSource && sourceResult === false;
     const {
         clickable,
@@ -76,7 +74,7 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         pending: interactionPending,
         error,
         message,
-    } = useInteraction(style.interaction ?? null, rootElem, sourceError, disabled);
+    } = useInteraction(style.interaction ?? null, rootElem, evalScope, sourceError, disabled);
     const tooltipProps = useMemo<Omit<ScribingTooltipProps, "children">>(() => {
         const title = disabled ? null : message;
         return { title };

@@ -20,6 +20,7 @@ import { useEditMode } from "./EditModeScope";
 import { useAttributeFormatter } from "./AttributeFormatterScope";
 import { FormatMarkupAttributeEvent, useFlowPalette, useScribingComponents } from "..";
 import { useInteraction } from "./hooks/use-interaction";
+import { ScriptEvalScope } from "./hooks/use-script-eval-props";
 
 export const StartMarkupView = flowNode<StartMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
 export const EmptyMarkupView = flowNode<EmptyMarkup>((props, outerRef) => <MarkupView {...props} outerRef={outerRef}/>);
@@ -106,6 +107,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
             e.stopPropagation();
         }
     }, [rootElem]);
+    const evalScope: ScriptEvalScope = { textStyle: style };
     return editMode ? (
         <span
             ref={ref}
@@ -122,7 +124,7 @@ const MarkupView: FC<MarkupViewProps> = props => {
                         <span key={key}>
                             {` ${key}`}
                             <span className={classes.syntax}>=</span>
-                            <AttributeValue tag={tag} name={key} value={value}/>
+                            <AttributeValue tag={tag} name={key} value={value} evalScope={evalScope}/>
                         </span>
                     ))}
                 </>
@@ -135,6 +137,7 @@ interface AttributeValueProps {
     tag: string; 
     name: string; 
     value: string;
+    evalScope: ScriptEvalScope;
 }
 
 interface AttributeValueState {
@@ -145,7 +148,7 @@ interface AttributeValueState {
 }
 
 const AttributeValue = (props: AttributeValueProps) => {
-    const { tag, name: key, value: raw } = props;
+    const { tag, name: key, value: raw, evalScope } = props;
     const handler = useAttributeFormatter();
     const eventArgs = [tag, key, raw] as const;
     const event = useMemo(() => new FormatMarkupAttributeEvent(...eventArgs), eventArgs);
@@ -165,7 +168,7 @@ const AttributeValue = (props: AttributeValueProps) => {
     const palette = useFlowPalette();
     const interaction = useMemo(() => url ? new OpenUrl({ url }) : null, [url]);
     const [elem, setElem] = useState<HTMLElement | null>(null);
-    const { clickable, target, href, message } = useInteraction(interaction, elem);
+    const { clickable, target, href, message } = useInteraction(interaction, elem, evalScope);
     const style = useMemo<CSSProperties>(() => ({
         color: palette[color === "default" ? "text" : color],
         textDecoration: url ? "underline" : "none",
