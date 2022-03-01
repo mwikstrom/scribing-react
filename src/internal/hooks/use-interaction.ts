@@ -81,6 +81,9 @@ export function useInteraction(
     }, [clickable, pending, disabled, invokeAction, editMode, rootElem, href, sourceError]);
 
     useEffect(() => {
+        if (!pending) {
+            return;
+        }
         let active = true;
         (async () => {
             try {
