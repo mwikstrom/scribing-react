@@ -93,6 +93,10 @@ export class FlowEditorController {
         return this.#fresh.sub(callback);
     }
 
+    get state(): FlowEditorState {
+        return this.#state;
+    }
+
     isTableSelection(): boolean {
         const { selection } = this.#state;
         let result: boolean | undefined;

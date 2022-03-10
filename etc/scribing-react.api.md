@@ -376,6 +376,8 @@ export class FlowEditorController {
     setTextDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void;
     // (undocumented)
     splitTableCell(): void;
+    // (undocumented)
+    get state(): FlowEditorState;
     // @internal (undocumented)
     _sync(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"]): void;
     // (undocumented)

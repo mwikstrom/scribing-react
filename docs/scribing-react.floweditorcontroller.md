@@ -17,6 +17,12 @@ export declare class FlowEditorController
 |  --- | --- | --- |
 |  [(constructor)(state, apply, onStoreAsset, uploads)](./scribing-react.floweditorcontroller._constructor_.md) |  | Constructs a new instance of the <code>FlowEditorController</code> class |
 
+## Properties
+
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [state](./scribing-react.floweditorcontroller.state.md) |  | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
+
 ## Methods
 
 |  Method | Modifiers | Description |
