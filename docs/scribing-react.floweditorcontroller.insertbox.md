@@ -14,8 +14,8 @@ insertBox(style?: BoxStyle, content?: FlowContent): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  style | BoxStyle |  |
-|  content | FlowContent |  |
+|  style | BoxStyle | <i>(Optional)</i> |
+|  content | FlowContent | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

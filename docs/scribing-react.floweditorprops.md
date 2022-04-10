@@ -11,7 +11,7 @@ Component props for [FlowEditor](./scribing-react.floweditor.md)
 ```typescript
 export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme" | "selection" | "children"> 
 ```
-<b>Extends:</b> Omit&lt;[FlowViewProps](./scribing-react.flowviewprops.md)<!-- -->, "content" \| "theme" \| "selection" \| "children"&gt;
+<b>Extends:</b> Omit&lt;[FlowViewProps](./scribing-react.flowviewprops.md)
 
 ## Properties
 

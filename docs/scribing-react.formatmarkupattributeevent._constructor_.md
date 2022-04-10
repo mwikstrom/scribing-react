@@ -9,7 +9,7 @@ Constructs a new instance of the `FormatMarkupAttributeEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(tag: string, key: string, value: string);
+constructor(tag: string, key: string, value: string | Script);
 ```
 
 ## Parameters
@@ -18,5 +18,5 @@ constructor(tag: string, key: string, value: string);
 |  --- | --- | --- |
 |  tag | string |  |
 |  key | string |  |
-|  value | string |  |
+|  value | string \| Script |  |
 

@@ -17,7 +17,7 @@ export declare function formatMessage(message: string, vars: Record<string, unkn
 |  --- | --- | --- |
 |  message | string |  |
 |  vars | Record&lt;string, unknown&gt; |  |
-|  options | [FormatMessageOptions](./scribing-react.formatmessageoptions.md) |  |
+|  options | [FormatMessageOptions](./scribing-react.formatmessageoptions.md) | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

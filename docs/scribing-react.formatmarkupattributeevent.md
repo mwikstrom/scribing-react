@@ -26,5 +26,5 @@ export declare class FormatMarkupAttributeEvent extends DeferrableEvent
 |  [key](./scribing-react.formatmarkupattributeevent.key.md) |  | string |  |
 |  [tag](./scribing-react.formatmarkupattributeevent.tag.md) |  | string |  |
 |  [url](./scribing-react.formatmarkupattributeevent.url.md) |  | string |  |
-|  [value](./scribing-react.formatmarkupattributeevent.value.md) |  | string |  |
+|  [value](./scribing-react.formatmarkupattributeevent.value.md) |  | string \| Script |  |
 

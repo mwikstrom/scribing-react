@@ -17,7 +17,7 @@ applyMine(operation: FlowOperation, options?: ApplyMineOptions): FlowEditorState
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  operation | FlowOperation | The operation to apply |
-|  options | [ApplyMineOptions](./scribing-react.applymineoptions.md) | Optional options that control how the operation is applied. |
+|  options | [ApplyMineOptions](./scribing-react.applymineoptions.md) | <i>(Optional)</i> Optional options that control how the operation is applied. |
 
 <b>Returns:</b>
 

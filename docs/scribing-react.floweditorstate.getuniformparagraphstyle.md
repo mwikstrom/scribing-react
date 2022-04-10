@@ -16,7 +16,7 @@ getUniformParagraphStyle(diff?: Set<keyof ParagraphStyleProps>): ParagraphStyle;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  diff | Set&lt;keyof ParagraphStyleProps&gt; | An optional set that is populated with style keys with non-uniform values |
+|  diff | Set&lt;keyof ParagraphStyleProps&gt; | <i>(Optional)</i> An optional set that is populated with style keys with non-uniform values |
 
 <b>Returns:</b>
 

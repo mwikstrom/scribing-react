@@ -14,7 +14,7 @@ remove(whenCollapsed?: RemoveFlowSelectionOptions["whenCollapsed"]): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  whenCollapsed | RemoveFlowSelectionOptions\["whenCollapsed"\] |  |
+|  whenCollapsed | RemoveFlowSelectionOptions\["whenCollapsed"\] | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

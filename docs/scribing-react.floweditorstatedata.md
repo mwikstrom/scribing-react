@@ -11,7 +11,7 @@ Data for [FlowEditorState](./scribing-react.floweditorstate.md)
 ```typescript
 export interface FlowEditorStateData extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStack">> 
 ```
-<b>Extends:</b> Partial&lt;Omit&lt;[FlowEditorStateProps](./scribing-react.floweditorstateprops.md)<!-- -->, "selection" \| "undoStack" \| "redoStack"&gt;&gt;
+<b>Extends:</b> Partial&lt;Omit&lt;[FlowEditorStateProps](./scribing-react.floweditorstateprops.md)
 
 ## Properties
 

@@ -18,7 +18,7 @@ export declare class FlowEditorState extends FlowEditorStateBase
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [classType](./scribing-react.floweditorstate.classtype.md) | <code>static</code> | import("paratype").Type&lt;[FlowEditorState](./scribing-react.floweditorstate.md)<!-- -->&gt; | The run-time type that represents this class |
+|  [classType](./scribing-react.floweditorstate.classtype.md) | <code>static</code> | Type&lt;[FlowEditorState](./scribing-react.floweditorstate.md)<!-- -->&gt; | The run-time type that represents this class |
 |  [empty](./scribing-react.floweditorstate.empty.md) | <code>static</code> | [FlowEditorState](./scribing-react.floweditorstate.md) | Gets an empty flow editor state |
 
 ## Methods

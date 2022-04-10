@@ -16,7 +16,7 @@ export declare function useFlowEditorClient(url: string | null, options?: FlowEd
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  url | string \| null |  |
-|  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
+|  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

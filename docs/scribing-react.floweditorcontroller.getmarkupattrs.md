@@ -7,9 +7,9 @@
 <b>Signature:</b>
 
 ```typescript
-getMarkupAttrs(): Map<string, string | null> | null;
+getMarkupAttrs(): Map<string, string | Script | null> | null;
 ```
 <b>Returns:</b>
 
-Map&lt;string, string \| null&gt; \| null
+Map&lt;string, string \| Script \| null&gt; \| null
 

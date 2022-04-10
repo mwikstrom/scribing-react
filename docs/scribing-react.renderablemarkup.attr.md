@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-get attr(): ReadonlyMap<string, string>;
+get attr(): ReadonlyMap<string, string | Script>;
 ```

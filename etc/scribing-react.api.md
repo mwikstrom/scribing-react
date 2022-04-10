@@ -202,7 +202,7 @@ export class FlowEditorController {
     // (undocumented)
     getListLevel(): number | undefined;
     // (undocumented)
-    getMarkupAttrs(): Map<string, string | null> | null;
+    getMarkupAttrs(): Map<string, string | Script | null> | null;
     // (undocumented)
     getMarkupTag(): string | null;
     // (undocumented)
@@ -605,7 +605,7 @@ export interface FlowViewProps {
 
 // @public (undocumented)
 export class FormatMarkupAttributeEvent extends DeferrableEvent {
-    constructor(tag: string, key: string, value: string);
+    constructor(tag: string, key: string, value: string | Script);
     // (undocumented)
     get color(): FlowColor;
     set color(value: FlowColor);
@@ -617,8 +617,8 @@ export class FormatMarkupAttributeEvent extends DeferrableEvent {
     get url(): string;
     set url(value: string);
     // (undocumented)
-    get value(): string;
-    set value(value: string);
+    get value(): string | Script;
+    set value(value: string | Script);
 }
 
 // @public (undocumented)
@@ -655,9 +655,9 @@ export class LoadAssetEvent extends DeferrableEvent {
 export class RenderableMarkup {
     constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>);
     // (undocumented)
-    get attr(): ReadonlyMap<string, string>;
+    get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
-    extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)): RenderableMarkup[];
+    extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)): RenderableMarkup[];
     // (undocumented)
     get isEmpty(): boolean;
     // (undocumented)

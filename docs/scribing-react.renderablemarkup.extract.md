@@ -7,14 +7,14 @@
 <b>Signature:</b>
 
 ```typescript
-extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)): RenderableMarkup[];
+extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)): RenderableMarkup[];
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  predicate | string \| RegExp \| ((tag: string, attr: ReadonlyMap&lt;string, string&gt;) =&gt; boolean) |  |
+|  predicate | string \| RegExp \| ((tag: string, attr: ReadonlyMap&lt;string, string \| Script&gt;) =&gt; boolean) |  |
 
 <b>Returns:</b>
 

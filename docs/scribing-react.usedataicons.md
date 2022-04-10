@@ -15,8 +15,8 @@ export declare function useDataIcons(pack?: string, tag?: string): readonly stri
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  pack | string |  |
-|  tag | string |  |
+|  pack | string | <i>(Optional)</i> |
+|  tag | string | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

@@ -10,7 +10,7 @@
 ```typescript
 export interface ScribingButtonProps extends HTMLAttributes<unknown> 
 ```
-<b>Extends:</b> HTMLAttributes&lt;unknown&gt;
+<b>Extends:</b> HTMLAttributes
 
 ## Properties
 

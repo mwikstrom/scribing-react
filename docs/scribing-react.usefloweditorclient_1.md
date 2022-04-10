@@ -16,7 +16,7 @@ export declare function useFlowEditorClient(protocol: FlowSyncProtocol | null, o
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  protocol | FlowSyncProtocol \| null |  |
-|  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) |  |
+|  options | [FlowEditorClientOptions](./scribing-react.floweditorclientoptions.md) | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

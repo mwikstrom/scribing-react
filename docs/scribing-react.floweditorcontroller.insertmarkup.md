@@ -15,8 +15,8 @@ insertMarkup(tag: string, attr?: Map<string, string>, preferEmpty?: boolean): vo
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  tag | string |  |
-|  attr | Map&lt;string, string&gt; |  |
-|  preferEmpty | boolean |  |
+|  attr | Map&lt;string, string&gt; | <i>(Optional)</i> |
+|  preferEmpty | boolean | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

@@ -14,7 +14,7 @@ freeze(value?: boolean): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  value | boolean |  |
+|  value | boolean | <i>(Optional)</i> |
 
 <b>Returns:</b>
 
