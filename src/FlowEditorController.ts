@@ -941,8 +941,8 @@ export class FlowEditorController {
         }
     }
 
-    getMarkupAttrs(): Map<string, string | null> | null {
-        let attr: Map<string, string | null> | null | undefined;
+    getMarkupAttrs(): Map<string, string | Script | null> | null {
+        let attr: Map<string, string | Script | null> | null | undefined;
         this.forEachNode(node => {
             if (node instanceof StartMarkup || node instanceof EmptyMarkup) {
                 if (attr === undefined) {

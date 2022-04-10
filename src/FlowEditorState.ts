@@ -1,13 +1,13 @@
 import { 
     arrayType, 
     booleanType, 
-    frozen, 
     lazyType, 
     nullType, 
     RecordClass, 
     recordClassType, 
     RecordType, 
     recordType, 
+    Type, 
     unionType, 
 } from "paratype";
 import { 
@@ -27,7 +27,7 @@ import {
 } from "scribing";
 import { StateChangeEvent } from ".";
 
-const operationStackType = arrayType(FlowOperation.baseType).frozen();
+const operationStackType: Type<readonly FlowOperation[]> = arrayType(FlowOperation.baseType);
 
 /**
  * Properties for {@link FlowEditorState}
@@ -56,6 +56,8 @@ extends Partial<Omit<FlowEditorStateProps, "selection" | "undoStack" | "redoStac
     redo?: readonly FlowOperation[],
 }
 
+const presenceType: Type<readonly FlowPresence[]> = arrayType(FlowPresenceType);
+
 const Props = {
     content: lazyType(() => FlowContent.classType),
     selection: unionType(FlowSelection.baseType, nullType),
@@ -64,7 +66,7 @@ const Props = {
     undoStack: operationStackType,
     redoStack: operationStackType,
     formattingMarks: booleanType,
-    presence: arrayType(FlowPresenceType).frozen(),
+    presence: presenceType,
     preview: booleanType,
 };
 
@@ -155,7 +157,6 @@ export interface ApplyMineOptions {
  * @public
  * @sealed
  */
-@frozen
 export class FlowEditorState extends FlowEditorStateBase {
     /** The run-time type that represents this class */
     public static readonly classType = recordClassType(() => FlowEditorState);

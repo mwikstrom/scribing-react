@@ -10,7 +10,7 @@ import React, {
     useEffect, 
     CSSProperties
 } from "react";
-import { EmptyMarkup, EndMarkup, FlowColor, OpenUrl, StartMarkup } from "scribing";
+import { EmptyMarkup, EndMarkup, FlowColor, OpenUrl, Script, StartMarkup } from "scribing";
 import { flowNode, FlowNodeComponentProps } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
 import { getTextCssProperties } from "./utils/text-style-to-css";
@@ -136,13 +136,13 @@ const MarkupView: FC<MarkupViewProps> = props => {
 interface AttributeValueProps { 
     tag: string; 
     name: string; 
-    value: string;
+    value: string | Script;
     evalScope: ScriptEvalScope;
 }
 
 interface AttributeValueState {
     pending: boolean;
-    value: string;
+    value: string | Script;
     url: string;
     color: FlowColor;
 }
@@ -157,7 +157,7 @@ const AttributeValue = (props: AttributeValueProps) => {
         setState,
     ] = useState(() => getAttributeValueState(event));
     const classes = useStyles();
-    const formatted = useMemo(() => value.replace(/\s+/, " "), [value]);
+    const formatted = useMemo(() => typeof value === "string" ? value.replace(/\s+/, " ") : "…", [value]);
     const wrapInQuotes = useMemo(() => (
         !url &&
         color === "default" &&

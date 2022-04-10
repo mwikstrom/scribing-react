@@ -1,4 +1,4 @@
-import { FlowColor } from "scribing";
+import { FlowColor, Script } from "scribing";
 import { DeferrableEvent } from "./DeferrableEvent";
 
 /**
@@ -7,11 +7,11 @@ import { DeferrableEvent } from "./DeferrableEvent";
 export class FormatMarkupAttributeEvent extends DeferrableEvent {
     readonly #tag: string;
     readonly #key: string;
-    #value: string;
+    #value: string | Script;
     #url = "";
     #color: FlowColor | undefined;
 
-    constructor(tag: string, key: string, value: string) {
+    constructor(tag: string, key: string, value: string | Script) {
         super();
         this.#tag = tag;
         this.#key = key;
@@ -22,8 +22,8 @@ export class FormatMarkupAttributeEvent extends DeferrableEvent {
 
     public get key(): string { return this.#key; }
 
-    public get value(): string { return this.#value; }
-    public set value(value: string) { this.#value = value; }
+    public get value(): string | Script { return this.#value; }
+    public set value(value: string | Script) { this.#value = value; }
 
     public get url(): string { return this.#url; }
     public set url(value: string) { this.#url = value; }
@@ -33,7 +33,7 @@ export class FormatMarkupAttributeEvent extends DeferrableEvent {
             return this.#color;
         } else if (this.#url) {
             return "primary";
-        } else if (this.pending) {
+        } else if (this.pending || typeof this.#value !== "string") {
             return "subtle";
         } else {
             return "default";

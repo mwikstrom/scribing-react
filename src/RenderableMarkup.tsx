@@ -1,6 +1,15 @@
 import React from "react";
 import { ReactNode } from "react";
-import { EmptyMarkup, FlowContent, FlowCursor, FlowNode, FlowRange, ParagraphBreak, StartMarkup } from "scribing";
+import { 
+    EmptyMarkup,
+    FlowContent,
+    FlowCursor,
+    FlowNode,
+    FlowRange,
+    ParagraphBreak,
+    Script,
+    StartMarkup,
+} from "scribing";
 import { FlowContentView } from "./internal/FlowContentView";
 
 /**
@@ -25,7 +34,7 @@ export class RenderableMarkup {
         return this.#node.tag;
     }
 
-    public get attr(): ReadonlyMap<string, string> {
+    public get attr(): ReadonlyMap<string, string | Script> {
         return this.#node.attr;
     }
 
@@ -44,7 +53,7 @@ export class RenderableMarkup {
     }
     
     public extract(
-        predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string>) => boolean)
+        predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)
     ): RenderableMarkup[] {
         if (!this.#content) {
             return [];
