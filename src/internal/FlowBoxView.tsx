@@ -35,6 +35,7 @@ import { getFlowBoxContentSelection } from "./utils/get-sub-selection";
 import { ScribingButtonProps, ScribingTooltipProps, useScribingComponents } from "../ScribingComponents";
 import { useForwardedRef } from "./hooks/use-forwarded-ref";
 import { ScriptEvalScope, useScriptEvalProps } from "./hooks/use-script-eval-props";
+import { ReducedBlockSizeScope } from "./BlockSize";
 
 export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
     const { node, selection: outerSelection } = props;
@@ -127,6 +128,14 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         />
     ));
 
+    const blockSizeDecrement = useMemo<string | undefined>(() => {
+        if (rootElem) {
+            const computed = getComputedStyle(rootElem);
+            const { paddingLeft, paddingRight } = computed;
+            return `(${paddingLeft} + ${paddingRight})`;
+        }
+    }, [rootElem]);
+
     const commonProps: ScribingButtonProps = {
         ref,
         href,
@@ -135,7 +144,12 @@ export const FlowBoxView = flowNode<FlowBox>((props, outerRef) => {
         disabled,
         hover,
         style,
-        children,
+        children: (
+            <ReducedBlockSizeScope
+                decrement={blockSizeDecrement}
+                children={children}
+            />
+        ),
     };
 
     if (omitted) {

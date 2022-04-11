@@ -11,6 +11,7 @@ import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 import { useImageSource } from "./hooks/use-image-source";
+import { useBlockSize } from "./BlockSize";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -77,10 +78,11 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
     const visible = useIsScrolledIntoView(imageElem);
+    const blockSize = useBlockSize();
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         const css: CSSProperties = {
-            width: `calc(min(100%, ${Math.round(width * scale)}px))`,
+            width: `calc(min(${blockSize}, ${Math.round(width * scale)}px))`,
             aspectRatio: `${width}/${height}`,
         };
         if (ready && !broken) {
@@ -88,7 +90,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             css.backgroundSize = "cover";
         }
         return css;
-    }, [source.width, source.height, url, broken, ready]);
+    }, [blockSize, source.width, source.height, url, broken, ready]);
 
     return (
         <span 

@@ -14,6 +14,7 @@ import {
 import { FormatMarkupAttributeEvent } from "./FormatMarkupAttributeEvent";
 import { AssetLoaderScope } from "./internal/AssetLoaderScope";
 import { AttributeFormatterScope } from "./internal/AttributeFormatterScope";
+import { BlockSizeScope } from "./internal/BlockSize";
 import { useEditMode } from "./internal/EditModeScope";
 import { FlowContentView } from "./internal/FlowContentView";
 import { FlowThemeScope } from "./internal/FlowThemeScope";
@@ -65,6 +66,22 @@ export const FlowView: FC<FlowViewProps> = props => {
         }
     }, [content, editMode, onRenderMarkup]);
     const [resolved, setResolved] = useState<FlowContent | Error | null>(null);
+    const [root, setRoot] = useState<HTMLElement | null>(null);
+    const [blockSize, setBlockSize] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (root) {
+            setBlockSize(root.clientWidth);
+            const observer = new ResizeObserver(entries => entries.forEach(entry => {
+                setBlockSize(entry.contentRect.width);
+            }));
+            observer.observe(root);
+            return () => observer.disconnect();
+        } else {
+            setBlockSize(null);
+        }
+    }, [root]);
+
     useEffect(() => {
         setResolved(null);
         if (deferred) {
@@ -94,15 +111,17 @@ export const FlowView: FC<FlowViewProps> = props => {
     }
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} ref={setRoot}>
             <LinkResolverScope handler={onResolveLink}>
                 <AssetLoaderScope handler={onLoadAsset}>
                     <AttributeFormatterScope handler={onFormatMarkupAttribute}>
                         <FlowThemeScope theme={theme}>
-                            <FlowContentView
-                                content={resolved ?? content}
-                                selection={selection && !deferred ? selection : false}
-                            />
+                            <BlockSizeScope value={blockSize}>
+                                <FlowContentView
+                                    content={resolved ?? content}
+                                    selection={selection && !deferred ? selection : false}
+                                />
+                            </BlockSizeScope>
                         </FlowThemeScope>
                     </AttributeFormatterScope>
                 </AssetLoaderScope>

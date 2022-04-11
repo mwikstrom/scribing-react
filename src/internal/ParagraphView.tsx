@@ -16,7 +16,7 @@ import { makeJssId } from "./utils/make-jss-id";
 import { FlowNodeView } from "./FlowNodeView";
 import { FlowNodeKeyManager } from "./FlowNodeKeyManager";
 import { FlowNodeComponentProps, OpposingTag } from "./FlowNodeComponent";
-import { getParagraphStyleClassNames, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
+import { getParagraphStyleClassNames, listIndent, PARAGRAPH_STYLE_CLASSES } from "./utils/paragraph-style-to-classes";
 import { LinkView, LinkViewProps } from "./LinkView";
 import { getListMarkerClass } from "./utils/list-marker";
 import { useParagraphTheme } from "./ParagraphThemeScope";
@@ -24,6 +24,7 @@ import { useFlowComponentMap } from "./FlowComponentMapScope";
 import { useFlowPalette } from "../FlowPaletteScope";
 import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-selection";
 import { useFlowTypography } from "../FlowTypographyScope";
+import { ReducedBlockSizeScope } from "./BlockSize";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
@@ -74,25 +75,27 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const keyRenderer = keyManager.createRenderer();
     return (
         <Component className={className} style={css}>
-            {nodesAndLinks.map(nodeOrLinkProps => (
-                isNodeProps(nodeOrLinkProps) ? (
-                    <FlowNodeView
-                        key={keyRenderer.getNodeKey(nodeOrLinkProps.node)}
-                        node={nodeOrLinkProps.node}
-                        opposingTag={nodeOrLinkProps.opposingTag}
-                        selection={nodeOrLinkProps.selection}
-                        singleNodeInPara={nodesAndLinks.length === 1}
-                    />
-                ) : (
-                    <LinkView
-                        key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
-                        children={nodeOrLinkProps.children}
-                        opposingTags={nodeOrLinkProps.opposingTags}
-                        link={nodeOrLinkProps.link}
-                        selection={nodeOrLinkProps.selection}
-                    />
-                )
-            ))}
+            <ReducedBlockSizeScope decrement={style.listLevel ? listIndent(style.listLevel) : undefined}>
+                {nodesAndLinks.map(nodeOrLinkProps => (
+                    isNodeProps(nodeOrLinkProps) ? (
+                        <FlowNodeView
+                            key={keyRenderer.getNodeKey(nodeOrLinkProps.node)}
+                            node={nodeOrLinkProps.node}
+                            opposingTag={nodeOrLinkProps.opposingTag}
+                            selection={nodeOrLinkProps.selection}
+                            singleNodeInPara={nodesAndLinks.length === 1}
+                        />
+                    ) : (
+                        <LinkView
+                            key={keyRenderer.getNodeKey(nodeOrLinkProps.firstNode)}
+                            children={nodeOrLinkProps.children}
+                            opposingTags={nodeOrLinkProps.opposingTags}
+                            link={nodeOrLinkProps.link}
+                            selection={nodeOrLinkProps.selection}
+                        />
+                    )
+                ))}
+            </ReducedBlockSizeScope>
         </Component>
     );
 };
