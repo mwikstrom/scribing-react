@@ -762,6 +762,16 @@ Images.args = {
     ])),
 };
 
+export const ScaledDownImage = Template.bind({});
+ScaledDownImage.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        // eslint-disable-next-line max-len
+        { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1441 }, scale: 10 },
+        "Some text",
+        { break: "para" },
+    ])),
+};
+
 export const ImageInABox = Template.bind({});
 ImageInABox.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
