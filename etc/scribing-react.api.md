@@ -238,7 +238,7 @@ export class FlowEditorController {
     // (undocumented)
     insertContentOrPromise(content: FlowContent | Promise<FlowContent>): Promise<void>;
     // (undocumented)
-    insertMarkup(tag: string, attr?: Map<string, string>, preferEmpty?: boolean): void;
+    insertMarkup(tag: string, attr?: Map<string, string | Script>, preferEmpty?: boolean): void;
     // (undocumented)
     insertNode(node: FlowNode): void;
     // (undocumented)
@@ -361,7 +361,7 @@ export class FlowEditorController {
     // (undocumented)
     setLink(value: Exclude<TextStyleProps["link"], undefined>): void;
     // (undocumented)
-    setMarkupAttr(key: string, value: string): void;
+    setMarkupAttr(key: string, value: string | Script): void;
     // (undocumented)
     setMarkupTag(tag: string): void;
     // (undocumented)

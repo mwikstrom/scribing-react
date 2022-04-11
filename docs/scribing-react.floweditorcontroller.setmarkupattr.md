@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-setMarkupAttr(key: string, value: string): void;
+setMarkupAttr(key: string, value: string | Script): void;
 ```
 
 ## Parameters
@@ -15,7 +15,7 @@ setMarkupAttr(key: string, value: string): void;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  key | string |  |
-|  value | string |  |
+|  value | string \| Script |  |
 
 <b>Returns:</b>
 
