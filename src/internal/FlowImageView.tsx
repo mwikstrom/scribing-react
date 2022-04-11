@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useMemo, useState, MouseEvent, CSSProperties } from "react";
+import React, { useCallback, useMemo, useState, MouseEvent, CSSProperties, useEffect } from "react";
 import { FlowImage } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
@@ -12,10 +12,14 @@ import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 import { useImageSource } from "./hooks/use-image-source";
 import { useBlockSize } from "./BlockSize";
+import { mdiResizeBottomRight } from "@mdi/js";
+import { useNativeEventHandler } from "./hooks/use-native-event-handler";
+import { useFlowEditorController } from "./FlowEditorControllerScope";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
-    const { style: givenStyle, source, scale } = node;
+    const { style: givenStyle, source, scale: givenScale } = node;
+    const controller = useFlowEditorController();
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -77,6 +81,47 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
 
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
+    const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
+
+    const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
+        if (imageElem && controller) {
+            setResizeStart({x: e.screenX, y: e.screenY, w: imageElem.clientWidth, h: imageElem.clientHeight});
+        }
+    }, [imageElem, controller]);
+    const [scale, setScale] = useState(givenScale);
+
+    useEffect(() => {
+        setScale(givenScale);
+        setResizeStart(null);
+    }, [givenScale]);
+
+    useNativeEventHandler(resizeStart ? window : null, "mousemove", (e: MouseEvent) => {
+        if (resizeStart) {
+            const desiredWidth = resizeStart.w + e.screenX - resizeStart.x;
+            const desiredHeight = resizeStart.h + e.screenY - resizeStart.y;
+            setScale(
+                Math.max(
+                    0.001, 
+                    Math.min(
+                        100, 
+                        Math.min(
+                            desiredWidth / source.width,
+                            desiredHeight / source.height
+                        )
+                    )
+                )
+            );
+        }
+        e.preventDefault();
+    }, [source.width, source.height], { capture: true });    
+
+    useNativeEventHandler(resizeStart ? window : null, "mouseup", () => {
+        setResizeStart(null);
+        if (controller) {
+            controller.setImageScale(scale);
+        }
+    }, [controller, scale], { capture: true });
+
     const visible = useIsScrolledIntoView(imageElem);
     const blockSize = useBlockSize();
     const imageStyle = useMemo<CSSProperties>(() => {
@@ -90,7 +135,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             css.backgroundSize = "cover";
         }
         return css;
-    }, [blockSize, source.width, source.height, url, broken, ready]);
+    }, [blockSize, source.width, source.height, scale, url, broken, ready]);
 
     return (
         <span 
@@ -101,17 +146,32 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             onDoubleClick={onDoubleClick}
             onClick={onClick}
             children={(
-                <span
-                    ref={setImageElem}
-                    style={imageStyle}
-                    className={clsx(
-                        classes.image, 
-                        visible && ready && classes.ready,
-                        imageElem && classes.bound,
-                        broken && url && classes.broken,
-                        !url && classes.empty,
+                <>
+                    <span
+                        ref={setImageElem}
+                        style={imageStyle}
+                        className={clsx(
+                            classes.image, 
+                            visible && ready && classes.ready,
+                            imageElem && classes.bound,
+                            broken && url && classes.broken,
+                            !url && classes.empty,
+                        )}
+                    />
+                    {editMode && selected && controller && controller.isImage() && (
+                        <svg
+                            className={classes.resize}
+                            viewBox="0 0 24 24"
+                            onMouseDown={onResizeStart}
+                            children={(
+                                <>
+                                    <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
+                                    <path fill="#fff" d={mdiResizeBottomRight}/>    
+                                </>
+                            )}
+                        />
                     )}
-                />
+                </>
             )}
         />
     );
@@ -163,5 +223,13 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
             ${Color(palette.error).fade(0.98)} 10px,
             ${Color(palette.error).fade(0.98)} 20px
         )`,
+    },
+    resize: {
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        cursor: "nw-resize",
+        width: 24,
+        height: 24,
     },
 }));

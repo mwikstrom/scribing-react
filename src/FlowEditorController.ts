@@ -914,6 +914,13 @@ export class FlowEditorController {
         }
     }
 
+    setImageScale(scale: number): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setImageScale(content, scale));
+        }
+    }
+
     isMarkup(): boolean {
         return this.isUniformNodes(isMarkupNode);
     }
