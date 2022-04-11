@@ -14,7 +14,7 @@ import { useImageSource } from "./hooks/use-image-source";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
-    const { style: givenStyle, source } = node;
+    const { style: givenStyle, source, scale } = node;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -80,7 +80,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         const css: CSSProperties = {
-            width: `calc(min(100%, ${width}px))`,
+            width: `calc(min(100%, ${Math.round(width * scale)}px))`,
             aspectRatio: `${width}/${height}`,
         };
         if (ready && !broken) {
