@@ -351,6 +351,8 @@ export class FlowEditorController {
     // (undocumented)
     setIcon(data: string): void;
     // (undocumented)
+    setImageScale(scale: number): void;
+    // (undocumented)
     setImageSource(source: ImageSource): void;
     // (undocumented)
     setInteraction(value: Interaction | null): void;

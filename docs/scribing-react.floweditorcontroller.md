@@ -130,6 +130,7 @@ export declare class FlowEditorController
 |  [setFontFamily(value)](./scribing-react.floweditorcontroller.setfontfamily.md) |  |  |
 |  [setFontSize(value)](./scribing-react.floweditorcontroller.setfontsize.md) |  |  |
 |  [setIcon(data)](./scribing-react.floweditorcontroller.seticon.md) |  |  |
+|  [setImageScale(scale)](./scribing-react.floweditorcontroller.setimagescale.md) |  |  |
 |  [setImageSource(source)](./scribing-react.floweditorcontroller.setimagesource.md) |  |  |
 |  [setInteraction(value)](./scribing-react.floweditorcontroller.setinteraction.md) |  |  |
 |  [setLineSpacing(value)](./scribing-react.floweditorcontroller.setlinespacing.md) |  |  |
