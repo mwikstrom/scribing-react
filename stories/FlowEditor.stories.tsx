@@ -777,6 +777,37 @@ ImageInABox.args = {
     }])),
 };
 
+export const ImageInABoxPreview = Template.bind({});
+ImageInABoxPreview.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
+        box: [
+            // eslint-disable-next-line max-len
+            { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1441 } },
+            "Some text",
+            { break: "para" },
+        ],
+        style: {
+            variant: "outlined"
+        }
+    }])).set("preview", true),
+};
+
+export const ImageInAButton = Template.bind({});
+ImageInAButton.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
+        box: [
+            // eslint-disable-next-line max-len
+            { image: { url: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1441 } },
+            "Some text",
+            { break: "para" },
+        ],
+        style: {
+            variant: "outlined",
+            interaction: { script: "throw new Error('FAIL')" },
+        }
+    }])).set("preview", true),
+};
+
 export const Table = Template.bind({});
 Table.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
