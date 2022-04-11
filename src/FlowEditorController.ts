@@ -706,7 +706,7 @@ export class FlowEditorController {
         }
     }
 
-    insertMarkup(tag: string, attr = new Map<string, string>(), preferEmpty = false): void {
+    insertMarkup(tag: string, attr = new Map<string, string | Script>(), preferEmpty = false): void {
         const { selection } = this.#state;
         
         if (!selection) {
@@ -975,7 +975,7 @@ export class FlowEditorController {
         return attr ?? null;
     }
 
-    setMarkupAttr(key: string, value: string): void {
+    setMarkupAttr(key: string, value: string | Script): void {
         const { selection, content } = this.#state;
         if (selection) {
             this.#state = this.#apply(selection.setMarkupAttr(content, key, value));
