@@ -1,13 +1,15 @@
 import React, { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import { ResolveLinkEvent } from "../ResolveLinkEvent";
+import { LinkAction, ResolveLinkEvent } from "../ResolveLinkEvent";
 import { LRU } from "./utils/lru";
 
 /**
  * @internal
  */
 export interface ResolvedLink {
+    action: LinkAction;
     url: string;
     target: string;
+    state: unknown;
 }
 
 /**
@@ -35,11 +37,13 @@ export const LinkResolverScope: FC<LinkResolverScopeProps> = ({
         if (!handler) {
             return DefaultLinkResolver;
         } else {
-            return async (url: string) => {
-                const args = new ResolveLinkEvent(url);
+            return async (input: string) => {
+                const args = new ResolveLinkEvent(input);
                 handler(args);
                 await args._complete();
-                return { url: args.href, target: args.target };
+                const { href: url, target, action, state } = args;
+                const resolved: ResolvedLink = { url, target, action, state };
+                return resolved;
             };
         }
     }, [handler]);
@@ -99,6 +103,17 @@ export async function resolveLink(url: string, resolver: LinkResolver): Promise<
     return result;
 }
 
+/**
+ * @internal
+ */
+export function resolvedLinkRequiresHtml5History(link: ResolvedLink | null | undefined): boolean {
+    if (!link) {
+        return false;
+    } else {
+        return link.action === "push" || link.action === "replace";
+    }
+}
+
 const resolveLinkIgnoreCache = (url: string, resolver: LinkResolver): Promise<ResolvedLink> => {
     let pending = PENDING.get(resolver);
     if (!pending) {
@@ -124,5 +139,11 @@ const resolveLinkIgnoreCache = (url: string, resolver: LinkResolver): Promise<Re
 const PENDING = new WeakMap<LinkResolver, Map<string, Promise<ResolvedLink>>>();
 const CACHE = new WeakMap<LinkResolver, LRU<string, ResolvedLink>>();
 
-const DefaultLinkResolver: LinkResolver = async url => ({ url, target: ResolveLinkEvent.getDefaultTarget(url) });
+const DefaultLinkResolver: LinkResolver = async url => ({
+    action: "open",
+    url,
+    target: ResolveLinkEvent.getDefaultTarget(url),
+    state: undefined,
+});
+
 const LinkResolverContext = createContext<LinkResolver>(DefaultLinkResolver);

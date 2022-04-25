@@ -6,7 +6,7 @@ import { useInteractionInvoker } from "./use-interaction-invoker";
 import { useHover } from "./use-hover";
 import { useCtrlKey, useShiftKey } from "./use-modifier-key";
 import { useNativeEventHandler } from "./use-native-event-handler";
-import { useResolvedLink } from "../LinkResolverScope";
+import { resolvedLinkRequiresHtml5History, useResolvedLink } from "../LinkResolverScope";
 import { ScriptEvalScope } from "./use-script-eval-props";
 
 /** @internal */
@@ -53,6 +53,7 @@ export function useInteraction(
             return "";
         }
     }, [rootElem, resolvedLink]);
+    const useHtml5History = resolvedLinkRequiresHtml5History(resolvedLink);
     const target = useMemo(() => {
         if (href && resolvedLink) {
             return resolvedLink.target;
@@ -73,12 +74,12 @@ export function useInteraction(
             e.preventDefault();
         } else if (clickable && !pending) {
             setError(sourceError);
-            if (!href || !isAnchorElem(rootElem) || rootElem.href !== href || editMode) {
+            if (useHtml5History || !href || !isAnchorElem(rootElem) || rootElem.href !== href || editMode) {
                 e.preventDefault();
                 setPending(invokeAction());
             }
         } 
-    }, [clickable, pending, disabled, invokeAction, editMode, rootElem, href, sourceError]);
+    }, [clickable, pending, disabled, invokeAction, editMode, rootElem, useHtml5History, href, sourceError]);
 
     useEffect(() => {
         if (!pending) {

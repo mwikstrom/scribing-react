@@ -643,6 +643,9 @@ export class InitEditorEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
+export type LinkAction = "open" | "push" | "replace";
+
+// @public (undocumented)
 export class LoadAssetEvent extends DeferrableEvent {
     constructor(url: string);
     // (undocumented)
@@ -684,10 +687,16 @@ export class RenderMarkupEvent extends DeferrableEvent {
 export class ResolveLinkEvent extends DeferrableEvent {
     constructor(href: string);
     // (undocumented)
+    get action(): LinkAction;
+    set action(value: LinkAction);
+    // (undocumented)
     static getDefaultTarget(href: string): string;
     // (undocumented)
     get href(): string;
     set href(value: string);
+    // (undocumented)
+    get state(): unknown;
+    set state(value: unknown);
     // (undocumented)
     get target(): string;
     set target(value: string);

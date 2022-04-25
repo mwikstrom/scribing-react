@@ -22,7 +22,9 @@ export declare class ResolveLinkEvent extends DeferrableEvent
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [action](./scribing-react.resolvelinkevent.action.md) |  | [LinkAction](./scribing-react.linkaction.md) |  |
 |  [href](./scribing-react.resolvelinkevent.href.md) |  | string |  |
+|  [state](./scribing-react.resolvelinkevent.state.md) |  | unknown |  |
 |  [target](./scribing-react.resolvelinkevent.target.md) |  | string |  |
 
 ## Methods

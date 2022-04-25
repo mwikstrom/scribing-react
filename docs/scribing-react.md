@@ -87,5 +87,6 @@ React components for collaborative rich text editing
 |  [ApplicableChange](./scribing-react.applicablechange.md) |  |
 |  [BooleanTextStyleKeys](./scribing-react.booleantextstylekeys.md) |  |
 |  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
+|  [LinkAction](./scribing-react.linkaction.md) |  |
 |  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
 

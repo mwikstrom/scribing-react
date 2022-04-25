@@ -19,8 +19,24 @@ export function useInteractionInvoker(
     });
     return useCallback(async () => {
         if (interaction instanceof OpenUrl) {
-            const resolvedLink = await resolveLink(interaction.url, linkResolver);
-            window.open(resolvedLink.url, resolvedLink.target);
+            const { action, url, target, state } = await resolveLink(interaction.url, linkResolver);
+
+            if (action !== "open" && target !== "_self") {
+                console.warn(`The specified target "${target}" is ignored when link action is not "open"`);
+            }
+
+            if (action === "push") {
+                history.pushState(state, "", url);
+            } else if (action === "replace") {
+                history.replaceState(state, "", url);
+            } else if (action === "open") {
+                if (state !== undefined) {
+                    console.warn("The specified state is ignored when link action is \"open\"");
+                }
+                window.open(url, target);
+            } else {
+                throw new Error(`Unsupported link action: ${action}`);
+            }
         } else if (interaction instanceof RunScript) {
             await host.eval(interaction.script.code, evalProps);
         } else if (interaction !== null) {
