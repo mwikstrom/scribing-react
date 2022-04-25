@@ -643,7 +643,23 @@ export class InitEditorEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
-export type LinkAction = "open" | "push" | "replace";
+export type LinkAction = "open" | "push" | "replace" | LinkOpener;
+
+// @public (undocumented)
+export interface LinkArgs {
+    // (undocumented)
+    href: string;
+    // (undocumented)
+    state: unknown;
+    // (undocumented)
+    target: string;
+}
+
+// @public (undocumented)
+export interface LinkOpener {
+    // (undocumented)
+    (link: LinkArgs): void;
+}
 
 // @public (undocumented)
 export class LoadAssetEvent extends DeferrableEvent {

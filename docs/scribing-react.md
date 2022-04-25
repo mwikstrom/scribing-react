@@ -57,6 +57,8 @@ React components for collaborative rich text editing
 |  [FlowTypographyScopeProps](./scribing-react.flowtypographyscopeprops.md) |  |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
 |  [FormatMessageOptions](./scribing-react.formatmessageoptions.md) |  |
+|  [LinkArgs](./scribing-react.linkargs.md) |  |
+|  [LinkOpener](./scribing-react.linkopener.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
 |  [ScribingTooltipProps](./scribing-react.scribingtooltipprops.md) |  |

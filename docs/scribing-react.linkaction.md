@@ -8,5 +8,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare type LinkAction = "open" | "push" | "replace";
+export declare type LinkAction = "open" | "push" | "replace" | LinkOpener;
 ```
+<b>References:</b> [LinkOpener](./scribing-react.linkopener.md)
+

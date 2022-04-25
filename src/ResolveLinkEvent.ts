@@ -3,7 +3,23 @@ import { DeferrableEvent } from "./DeferrableEvent";
 /**
  * @public
  */
-export type LinkAction = "open" | "push" | "replace";
+export type LinkAction = "open" | "push" | "replace" | LinkOpener;
+
+/**
+ * @public
+ */
+export interface LinkOpener {
+    (link: LinkArgs): void;
+}
+
+/**
+ * @public
+ */
+export interface LinkArgs {
+    href: string;
+    target: string;
+    state: unknown;
+}
 
 /**
  * @public
