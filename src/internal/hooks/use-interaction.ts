@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Interaction, OpenUrl } from "scribing";
 import { useEditMode } from "../EditModeScope";
 import { useFlowLocale } from "../../FlowLocaleScope";
@@ -63,12 +63,16 @@ export function useInteraction(
         }
     }, [href, resolvedLink]);
     const logger = useInteractionLogger();
+    
+    const textRef = useRef("");
     const getElementText = useCallback(() => {
-        if (!rootElem) {
-            return "";
-        } else {
-            return rootElem.innerText.replace(/\s+/g, " ").trim();
+        if (rootElem) {
+            const extracted = rootElem.innerText.replace(/\s+/g, " ").trim();
+            if (extracted) {
+                textRef.current = extracted;
+            }
         }
+        return textRef.current;
     }, [rootElem]);
 
     const [loggedDisabled, setLoggedDisabled] = useState(false);
@@ -84,7 +88,7 @@ export function useInteraction(
         const errorMessage = error?.message || "";
         if (logger && loggedError !== errorMessage) {
             if (errorMessage) {
-                logger.error(`Interaction element "${getElementText()}" has error:`, errorMessage);
+                logger.error(`Interaction element "${getElementText()}" failed:`, errorMessage);
             } else {
                 logger.log(`Error cleared from interaction element "${getElementText()}"`);
             }
