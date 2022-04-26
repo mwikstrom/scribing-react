@@ -82,7 +82,15 @@ export const DefaultScribingComponents: ScribingComponents;
 // @public
 export interface DefaultScriptFunctions extends ExposedFunctions {
     // (undocumented)
+    readonly error: ScriptFunction;
+    // (undocumented)
     readonly formatMessage: ScriptFunction;
+    // (undocumented)
+    readonly info: ScriptFunction;
+    // (undocumented)
+    readonly log: ScriptFunction;
+    // (undocumented)
+    readonly warn: ScriptFunction;
 }
 
 // @public (undocumented)

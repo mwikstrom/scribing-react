@@ -9,6 +9,10 @@ import { formatMessage } from "./format-message";
  */
 export interface DefaultScriptFunctions extends ExposedFunctions {
     readonly formatMessage: ScriptFunction;
+    readonly log: ScriptFunction;
+    readonly info: ScriptFunction;
+    readonly warn: ScriptFunction;
+    readonly error: ScriptFunction;
 }
 
 /**
@@ -16,8 +20,19 @@ export interface DefaultScriptFunctions extends ExposedFunctions {
  * @public
  */
 export function useDefaultScriptFunctions(): DefaultScriptFunctions {
-    return useMemo<DefaultScriptFunctions>(() => ({ formatMessage: formatMessageScriptFunc }), []);
+    return useMemo<DefaultScriptFunctions>(() => ({
+        formatMessage: formatMessageScriptFunc,
+        log: bindConsole("log"),
+        info: bindConsole("info"),
+        warn: bindConsole("warn"),
+        error: bindConsole("error"),
+    }), []);
 }
+
+const bindConsole = (key: "log" | "info" | "warn" | "error"): ScriptFunction => {
+    const bound = console[key].bind(console);
+    return async (...args: ScriptValue[]) => void(bound(...args));
+};
 
 async function formatMessageScriptFunc(this: ScriptFunctionScope, ...args: ScriptValue[]): Promise<ScriptValue> {
     const [messageArg, varsArg] = args;

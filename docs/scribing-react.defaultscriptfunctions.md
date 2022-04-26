@@ -17,5 +17,9 @@ export interface DefaultScriptFunctions extends ExposedFunctions
 
 |  Property | Type | Description |
 |  --- | --- | --- |
+|  [error](./scribing-react.defaultscriptfunctions.error.md) | ScriptFunction |  |
 |  [formatMessage](./scribing-react.defaultscriptfunctions.formatmessage.md) | ScriptFunction |  |
+|  [info](./scribing-react.defaultscriptfunctions.info.md) | ScriptFunction |  |
+|  [log](./scribing-react.defaultscriptfunctions.log.md) | ScriptFunction |  |
+|  [warn](./scribing-react.defaultscriptfunctions.warn.md) | ScriptFunction |  |
 
