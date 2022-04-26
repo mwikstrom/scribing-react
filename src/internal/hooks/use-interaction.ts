@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Interaction, OpenUrl } from "scribing";
 import { useEditMode } from "../EditModeScope";
 import { useFlowLocale } from "../../FlowLocaleScope";
@@ -8,6 +8,7 @@ import { useCtrlKey, useShiftKey } from "./use-modifier-key";
 import { useNativeEventHandler } from "./use-native-event-handler";
 import { resolvedLinkRequiresHtml5History, useResolvedLink } from "../LinkResolverScope";
 import { ScriptEvalScope } from "./use-script-eval-props";
+import { useInteractionLogger } from "../../InteractionLoggerScope";
 
 /** @internal */
 interface InteractionState {
@@ -61,6 +62,35 @@ export function useInteraction(
             return "";
         }
     }, [href, resolvedLink]);
+    const logger = useInteractionLogger();
+    const getElementText = useCallback(() => {
+        if (!rootElem) {
+            return "";
+        } else {
+            return rootElem.innerText.replace(/\s+/g, " ").trim();
+        }
+    }, [rootElem]);
+
+    const [loggedDisabled, setLoggedDisabled] = useState(false);
+    useEffect(() => {
+        if (logger && loggedDisabled !== disabled) {
+            logger.log(`${disabled ? "Disabled" : "Enabled"} interaction element "${getElementText()}"`);            
+        }
+        setLoggedDisabled(disabled);
+    }, [logger, disabled, loggedDisabled, getElementText, setLoggedDisabled]);
+
+    const [loggedError, setLoggedError] = useState("");
+    useEffect(() => {
+        const errorMessage = error?.message || "";
+        if (logger && loggedError !== errorMessage) {
+            if (errorMessage) {
+                logger.error(`Interaction element "${getElementText()}" has error:`, errorMessage);
+            } else {
+                logger.log(`Error cleared from interaction element "${getElementText()}"`);
+            }
+        }
+        setLoggedError(errorMessage);
+    }, [logger, error, loggedError, getElementText, setLoggedError]);
 
     useNativeEventHandler(rootElem, "click", (e: MouseEvent) => {
         if (!clickable && editMode && e.detail === 4 && rootElem) {
@@ -74,12 +104,29 @@ export function useInteraction(
             e.preventDefault();
         } else if (clickable && !pending) {
             setError(sourceError);
+
+            if (logger) {
+                logger.log(`Click on interaction element "${getElementText()}"`);
+            }
+
             if (useHtml5History || !href || !isAnchorElem(rootElem) || rootElem.href !== href || editMode) {
                 e.preventDefault();
                 setPending(invokeAction());
             }
         } 
-    }, [clickable, pending, disabled, invokeAction, editMode, rootElem, useHtml5History, href, sourceError]);
+    }, [
+        clickable,
+        pending,
+        disabled,
+        invokeAction,
+        editMode,
+        rootElem,
+        useHtml5History,
+        href,
+        sourceError,
+        logger,
+        getElementText
+    ]);
 
     useEffect(() => {
         if (!pending) {

@@ -27,6 +27,7 @@ React components for collaborative rich text editing
 |  Function | Description |
 |  --- | --- |
 |  [formatMessage(message, vars, options)](./scribing-react.formatmessage.md) |  |
+|  [InteractionLoggerScope(props)](./scribing-react.interactionloggerscope.md) |  |
 |  [useDataIconPacks()](./scribing-react.usedataiconpacks.md) |  |
 |  [useDataIcons(pack, tag)](./scribing-react.usedataicons.md) |  |
 |  [useDataIconTags(pack)](./scribing-react.usedataicontags.md) |  |
@@ -36,6 +37,7 @@ React components for collaborative rich text editing
 |  [useFlowLocale()](./scribing-react.useflowlocale.md) |  |
 |  [useFlowPalette()](./scribing-react.useflowpalette.md) |  |
 |  [useFlowTypography()](./scribing-react.useflowtypography.md) |  |
+|  [useInteractionLogger()](./scribing-react.useinteractionlogger.md) |  |
 
 ## Interfaces
 
@@ -57,6 +59,7 @@ React components for collaborative rich text editing
 |  [FlowTypographyScopeProps](./scribing-react.flowtypographyscopeprops.md) |  |
 |  [FlowViewProps](./scribing-react.flowviewprops.md) | Component props for [FlowView](./scribing-react.flowview.md) |
 |  [FormatMessageOptions](./scribing-react.formatmessageoptions.md) |  |
+|  [InteractionLoggerScopeProps](./scribing-react.interactionloggerscopeprops.md) |  |
 |  [LinkArgs](./scribing-react.linkargs.md) |  |
 |  [LinkOpener](./scribing-react.linkopener.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
@@ -89,6 +92,7 @@ React components for collaborative rich text editing
 |  [ApplicableChange](./scribing-react.applicablechange.md) |  |
 |  [BooleanTextStyleKeys](./scribing-react.booleantextstylekeys.md) |  |
 |  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
+|  [InteractionLogger](./scribing-react.interactionlogger.md) |  |
 |  [LinkAction](./scribing-react.linkaction.md) |  |
 |  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
 

@@ -49,3 +49,6 @@ export * from "./FlowEditorClient";
 // Script functions
 export * from "./format-message";
 export * from "./use-default-script-functions";
+
+// Interaction logger
+export * from "./InteractionLoggerScope";

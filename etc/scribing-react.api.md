@@ -651,6 +651,20 @@ export class InitEditorEvent extends DeferrableEvent {
 }
 
 // @public (undocumented)
+export type InteractionLogger = Pick<typeof console, "log" | "info" | "warn" | "error">;
+
+// @public (undocumented)
+export function InteractionLoggerScope(props: InteractionLoggerScopeProps): JSX.Element;
+
+// @public (undocumented)
+export interface InteractionLoggerScopeProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    logger: InteractionLogger | null;
+}
+
+// @public (undocumented)
 export type LinkAction = "open" | "push" | "replace" | LinkOpener;
 
 // @public (undocumented)
@@ -821,6 +835,9 @@ export function useFlowPalette(): Readonly<FlowPalette>;
 
 // @public (undocumented)
 export function useFlowTypography(): Readonly<FlowTypography>;
+
+// @public (undocumented)
+export function useInteractionLogger(): InteractionLogger | null;
 
 // @public (undocumented)
 export const useScribingComponents: () => ScribingComponents;
