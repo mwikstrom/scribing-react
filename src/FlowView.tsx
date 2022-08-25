@@ -1,7 +1,9 @@
 import React, { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
+    AsyncFlowNodeVisitor,
     EmptyMarkup,
+    FlowBox,
     FlowContent,
     FlowCursor,
     FlowNode,
@@ -182,13 +184,35 @@ const renderMarkup = async (
                 output.push(node);
             }
             mode = "empty";
-        } else if (node !== null) {            
-            output.push(node);
+        } else if (node instanceof FlowBox) {
+            const content = await processMarkup(node.content, handler, scope);
+            output.push(node.set("content", content));
+            mode = "not-empty";
+        } else if (node !== null) {
+            output.push(await new MarkupProcessor(handler, scope).visitNode(node));
             mode = "not-empty";
         }
     }
     return mode;
 };
+
+class MarkupProcessor extends AsyncFlowNodeVisitor {
+    readonly #handler: (event: RenderMarkupEvent) => void;
+    readonly #scope: readonly (StartMarkup | EmptyMarkup)[];
+
+    constructor(
+        handler: (event: RenderMarkupEvent) => void,
+        scope: readonly (StartMarkup | EmptyMarkup)[],
+    ) {
+        super();
+        this.#handler = handler;
+        this.#scope = scope;
+    }
+
+    override visitFlowContent(content: FlowContent): Promise<FlowContent> {
+        return processMarkup(content, this.#handler, this.#scope);
+    }
+}
 
 const renderMarkupNode = async (
     output: FlowNode[],
