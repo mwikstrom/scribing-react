@@ -132,6 +132,63 @@ export const Transclude = makeStory([
     { break: "para" },
 ]);
 
+export const TranscludeInBox = makeStory([
+    "This box contains: <Transclude/>",
+    { break: "para" },
+    { 
+        box: [
+            { empty_markup: "Transclude" },
+            { break: "para" },
+        ]
+    },
+    { break: "para" },
+    "The end",
+    { break: "para" },
+]);
+
+export const ConditionalTranscludeInBox = makeStory([
+    "Here's a conditional box that contains: <Transclude/>",    
+    { break: "para" },
+    { 
+        box: [ "Hide/Show" ],
+        style: {
+            variant: "outlined",
+            interaction: {
+                script: "ShowFragment = !ShowFragment"
+            }
+        }
+    },
+    { break: "para" },
+    { 
+        box: [
+            { empty_markup: "Transclude" },
+            { break: "para" },
+        ],
+        style: {
+            source: "ShowFragment || null"
+        }
+    },
+    { break: "para" },
+    "The end",
+    { break: "para" },
+]);
+
+export const TranscludeInTable = makeStory([
+    "This table contains: <Transclude/>",
+    { break: "para" },
+    { 
+        table: {
+            A1: [
+                { empty_markup: "Transclude" },
+                { break: "para" },
+            ]
+        } 
+    },
+    { break: "para" },
+    "The end",
+    { break: "para" },
+]);
+
 export const MixedTransclude = makeStory([
     "The next paragraph contains: before<Transclude/>after",
     { break: "para" },
