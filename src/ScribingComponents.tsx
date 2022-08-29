@@ -13,7 +13,7 @@ export interface ScribingComponents {
 
 /** @public */
 export interface ScribingTooltipProps {
-    title: string | null;
+    title: ReactNode;
     children: ReactElement;
 }
 
@@ -31,7 +31,9 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown> {
 
 /** @public */
 export const DefaultScribingComponents: ScribingComponents = Object.freeze({
-    Tooltip: ({title, children}: ScribingTooltipProps) => <span title={title || ""}>{children}</span>,
+    Tooltip: ({title, children}: ScribingTooltipProps) => (
+        <span title={typeof title === "string" ? title : ""}>{children}</span>
+    ),
     Button: PreviewButton,
 });
 

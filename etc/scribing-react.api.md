@@ -39,6 +39,17 @@ import { Type } from 'paratype';
 // @public (undocumented)
 export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
 
+// @public (undocumented)
+export function ApplicationErrorRenderScope(props: ApplicationErrorRenderScopeProps): JSX.Element;
+
+// @public (undocumented)
+export interface ApplicationErrorRenderScopeProps {
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    renderErrorInfo: (error: Error) => ReactNode;
+}
+
 // @public
 export interface ApplyMineOptions {
     // (undocumented)
@@ -779,7 +790,7 @@ export interface ScribingTooltipProps {
     // (undocumented)
     children: ReactElement;
     // (undocumented)
-    title: string | null;
+    title: ReactNode;
 }
 
 // @public (undocumented)
@@ -808,6 +819,9 @@ export class StoreAssetEvent extends DeferrableEvent {
     get url(): string | null;
     set url(value: string | null);
 }
+
+// @public (undocumented)
+export function useApplicationErrorRenderer(): ApplicationErrorRenderScopeProps["renderErrorInfo"] | null;
 
 // @public (undocumented)
 export function useDataIconPacks(): readonly string[];

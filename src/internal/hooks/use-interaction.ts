@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Interaction, OpenUrl } from "scribing";
 import { useEditMode } from "../EditModeScope";
 import { useFlowLocale } from "../../FlowLocaleScope";
@@ -9,6 +9,7 @@ import { useNativeEventHandler } from "./use-native-event-handler";
 import { resolvedLinkRequiresHtml5History, useResolvedLink } from "../LinkResolverScope";
 import { ScriptEvalScope } from "./use-script-eval-props";
 import { useInteractionLogger } from "../../InteractionLoggerScope";
+import { useApplicationErrorRenderer } from "../../ApplicationErrorRenderScope";
 
 /** @internal */
 interface InteractionState {
@@ -18,7 +19,7 @@ interface InteractionState {
     error: boolean;
     href: string;
     target: string;
-    message: string | null;
+    message: ReactNode;
 }
 
 /** @internal */
@@ -39,14 +40,22 @@ export function useInteraction(
     const [pending, setPending] = useState<Promise<void> | null>(null);
     const [error, setError] = useState<Error | null>(sourceError);
     const clickable = !!interaction && (!editMode || (hover && ctrlKey && !shiftKey));
-    const message = useMemo(
-        () => error ? (
-            error.message
-        ) : editMode && !clickable && interaction && !pending ? (
-            locale.hold_ctrl_key_to_enable_interaction
-        ) : null, 
-        [!!editMode, clickable, locale, !!interaction, !pending, error]
-    );
+    
+    const renderErrorInfo = useApplicationErrorRenderer();
+    const message = useMemo(() => {
+        if (error) {
+            if (renderErrorInfo) {
+                return renderErrorInfo(error);
+            } else {
+                return error.message;
+            }            
+        } else if (editMode && !clickable && interaction && !pending) {
+            return locale.hold_ctrl_key_to_enable_interaction;
+        } else {
+            return null;
+        }
+    }, [!!editMode, clickable, locale, !!interaction, !pending, error, renderErrorInfo]);
+    
     const href = useMemo(() => {
         if (isAnchorElem(rootElem) && resolvedLink) {
             return resolvedLink.url;

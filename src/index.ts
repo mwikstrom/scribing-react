@@ -52,3 +52,6 @@ export * from "./use-default-script-functions";
 
 // Interaction logger
 export * from "./InteractionLoggerScope";
+
+// Application error renderer
+export * from "./ApplicationErrorRenderScope";

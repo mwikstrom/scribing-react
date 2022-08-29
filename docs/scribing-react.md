@@ -26,8 +26,10 @@ React components for collaborative rich text editing
 
 |  Function | Description |
 |  --- | --- |
+|  [ApplicationErrorRenderScope(props)](./scribing-react.applicationerrorrenderscope.md) |  |
 |  [formatMessage(message, vars, options)](./scribing-react.formatmessage.md) |  |
 |  [InteractionLoggerScope(props)](./scribing-react.interactionloggerscope.md) |  |
+|  [useApplicationErrorRenderer()](./scribing-react.useapplicationerrorrenderer.md) |  |
 |  [useDataIconPacks()](./scribing-react.usedataiconpacks.md) |  |
 |  [useDataIcons(pack, tag)](./scribing-react.usedataicons.md) |  |
 |  [useDataIconTags(pack)](./scribing-react.usedataicontags.md) |  |
@@ -43,6 +45,7 @@ React components for collaborative rich text editing
 
 |  Interface | Description |
 |  --- | --- |
+|  [ApplicationErrorRenderScopeProps](./scribing-react.applicationerrorrenderscopeprops.md) |  |
 |  [ApplyMineOptions](./scribing-react.applymineoptions.md) | Options for the [FlowEditorState.applyMine()](./scribing-react.floweditorstate.applymine.md) method |
 |  [DataIconProps](./scribing-react.dataiconprops.md) |  |
 |  [DefaultScriptFunctions](./scribing-react.defaultscriptfunctions.md) | Default script functions |

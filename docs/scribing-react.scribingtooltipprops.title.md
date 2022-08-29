@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-title: string | null;
+title: ReactNode;
 ```

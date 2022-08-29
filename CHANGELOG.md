@@ -1,3 +1,7 @@
+## 1.1.0 - 2022-08-29
+
+- New feature: `<ApplicationErrorRenderScope>`
+
 ## 1.0.1 - 2022-08-25
 
 - Fix: Nested markup replacements
