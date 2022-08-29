@@ -31,7 +31,7 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown> {
 
 /** @public */
 export const DefaultScribingComponents: ScribingComponents = Object.freeze({
-    Tooltip: ({title, children}) => <span title={title || ""}>{children}</span>,
+    Tooltip: ({title, children}: ScribingTooltipProps) => <span title={title || ""}>{children}</span>,
     Button: PreviewButton,
 });
 
