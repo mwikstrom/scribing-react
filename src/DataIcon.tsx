@@ -61,8 +61,9 @@ const MdiIcon: FC<DataIconProps> = ({className, data = ""}) => {
     const iconStyle = useMemo<CSSProperties>(() => ({
         transition: "opacity ease-out 0.2s",
         opacity: path ? 1 : 0,
+        userSelect: "none",
     }), [path]);
-    return (<Icon path={path} className={className} style={iconStyle}/>);
+    return (<>&#x200B;<Icon path={path} className={className} style={iconStyle}/></>);
 };
 
 const PredefinedOrPathIcon: FC<DataIconProps> = ({className, data = ""}) => {

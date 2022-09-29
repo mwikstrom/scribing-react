@@ -1016,3 +1016,39 @@ function button(
         }
     };
 }
+
+export const FreezingBug = Template.bind({});
+FreezingBug.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        {
+            "icon": "@mdi/brightness-1"
+        },
+        "1",
+        {
+            "break": "para",
+            "style": {
+                "variant": "title"
+            }
+        },
+        {
+            "icon": "@mdi/checkbox-blank-circle"
+        },
+        " 2",
+        {
+            "break": "para",
+            "style": {
+                "variant": "h1"
+            }
+        },
+        {
+            "icon": "@mdi/brightness-1"
+        },
+        "3",
+        {
+            "break": "para",
+            "style": {
+                "variant": "h2"
+            }
+        },
+    ])).set("theme", DefaultFlowTheme.get("en-US"))
+};
