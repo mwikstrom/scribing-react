@@ -34,6 +34,6 @@ export const TextRunView = flowNode<TextRun>((props, ref) => {
         } else {
             return <TextSegment style={style} text={text} selected={selection === true}/>;
         }
-    }, [text, selection]);
+    }, [text, selection, style, native]);
     return <span ref={ref} children={children}/>;
 });
