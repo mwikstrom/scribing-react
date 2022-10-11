@@ -1,3 +1,7 @@
+## 1.1.2 - 2022-10-11
+
+- Fix: Use the zero-with-space hack for predefined icons too!
+
 ## 1.1.1 - 2022-09-29
 
 - Fix: Avoid freezing editor by adding a zero-width-space before icons

@@ -92,7 +92,7 @@ const PredefinedOrPathIcon: FC<DataIconProps> = ({className, data = ""}) => {
         }
     }, [path]);
 
-    return (<Icon path={path} className={className} style={iconStyle}/>);
+    return (<>&#x200B;<Icon path={path} className={className} style={iconStyle}/></>);
 };
 
 const MDI_PATTERN = /^@mdi\//;
