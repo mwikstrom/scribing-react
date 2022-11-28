@@ -209,6 +209,15 @@ export const CustomEmpty = makeStory([
     { break: "para" },
 ]);
 
+export const CustomEmptyInABox = makeStory([
+    "The next paragraph contains: <Custom/>",
+    { break: "para" },
+    { box: [{ empty_markup: "Custom" }]},
+    { break: "para" },
+    "The end",
+    { break: "para" },
+]);
+
 export const CustomContent = makeStory([
     "The next paragraph contains: <Custom>foo<Label>message</Label>bar</Custom>",
     { break: "para" },
@@ -219,6 +228,23 @@ export const CustomContent = makeStory([
     { end_markup: "Label" },
     "bar",
     { end_markup: "Custom" },
+    { break: "para" },
+    "The end",
+    { break: "para" },
+]);
+
+export const CustomContentInABox = makeStory([
+    "The next box contains: <Custom>foo<Label>message</Label>bar</Custom>",
+    { break: "para" },
+    { box: [
+        { start_markup: "Custom" },
+        "foo",
+        { start_markup: "Label" },
+        "message",
+        { end_markup: "Label" },
+        "bar",
+        { end_markup: "Custom" },
+    ]},
     { break: "para" },
     "The end",
     { break: "para" },

@@ -236,7 +236,12 @@ const renderMarkupNode = async (
     if (result instanceof FlowContent) {
         mode = await renderMarkup(result, handler, [node, ...scope], output, mode);
     } else if (result !== null) {
-        const placeholder = new EmptyMarkup(node);
+        // Register replacement React node. The flow markup node must be given a replacement tag name
+        // so that it is not equal to the flow node being replaced. Prior to 1.1.3 we kept the old tag
+        // name causing the replacement flow node to be considered equal to the replaced node which in
+        // turn kicked in the "keep unchanged"-logic when replacing flow box content in `renderMarkup`
+        // above (line 189: `output.push(node.set("content", content));`)
+        const placeholder = new EmptyMarkup(node).set("tag", `REPLACEMENT_${node.tag}`);
         setMarkupReplacement(placeholder, result);
         output.push(placeholder);
         return "not-empty";

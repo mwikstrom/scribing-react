@@ -1,3 +1,7 @@
+## 1.1.3 - 2022-11-28
+
+- Fix: React replacement registration for empty markup node in a box
+
 ## 1.1.2 - 2022-10-11
 
 - Fix: Use the zero-with-space hack for predefined icons too!
