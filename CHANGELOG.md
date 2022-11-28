@@ -1,3 +1,8 @@
+## 1.1.4 - 2022-11-28
+
+- Hack: Attempt to fix unresponsive tab when flow content starts with a dynamic text
+  and editor has auto focus on.
+
 ## 1.1.3 - 2022-11-28
 
 - Fix: React replacement registration for empty markup node in a box

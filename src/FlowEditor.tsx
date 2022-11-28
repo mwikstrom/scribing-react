@@ -163,7 +163,13 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     // Apply auto focus
     useEffect(() => {
         if (editingHost && autoFocus && !state.preview) {
-            editingHost.focus();
+            // Hack: Chrome/Edge freezes (tab unresponsive) when auto focus is applied on a
+            // flow view document that starts with a dynamic text node. I don't understand why
+            // and I can't debug it further (since the tab is unresponsive). The hack I'm going
+            // to try is to defer applying auto focus for half a second. If it works, I'll just
+            // keep it this way and if it doesn't I guess I'll have to come up with another hack...
+            const hack_timerId = setTimeout(() => editingHost.focus(), 500);
+            return () => clearTimeout(hack_timerId);
         }
     }, [autoFocus, editingHost, state.preview]);
 
