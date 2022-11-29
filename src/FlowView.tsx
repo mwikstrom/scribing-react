@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
@@ -27,6 +28,7 @@ import { LoadAssetEvent } from "./LoadAssetEvent";
 import { RenderableMarkup } from "./RenderableMarkup";
 import { RenderMarkupEvent } from "./RenderMarkupEvent";
 import { ResolveLinkEvent } from "./ResolveLinkEvent";
+import { useIsInsideSharedListCounterScope } from "./SharedListCounterScope";
 
 /**
  * Component props for {@link FlowView}
@@ -70,6 +72,8 @@ export const FlowView: FC<FlowViewProps> = props => {
     const [resolved, setResolved] = useState<FlowContent | Error | null>(null);
     const [root, setRoot] = useState<HTMLElement | null>(null);
     const [blockSize, setBlockSize] = useState<number | null>(null);
+    const sharedListCounter = useIsInsideSharedListCounterScope();
+    const className = clsx(classes.root, sharedListCounter && classes.sharedListCounter);
 
     useEffect(() => {
         if (root) {
@@ -113,7 +117,7 @@ export const FlowView: FC<FlowViewProps> = props => {
     }
 
     return (
-        <div className={classes.root} ref={setRoot}>
+        <div className={className} ref={setRoot}>
             <LinkResolverScope handler={onResolveLink}>
                 <AssetLoaderScope handler={onLoadAsset}>
                     <AttributeFormatterScope handler={onFormatMarkupAttribute}>
@@ -135,7 +139,11 @@ export const FlowView: FC<FlowViewProps> = props => {
 const useStyles = createUseStyles({
     root: {
         counterReset: [...new Array(9)].map((_,i) => `li${i + 1} 0`).join(" "),
+        "&$sharedListCounter": {
+            counterReset: [...new Array(8)].map((_,i) => `li${i + 2} 0`).join(" "),
+        }
     },
+    sharedListCounter: {},
 }, {
     generateId: makeJssId("FlowView"),
 });

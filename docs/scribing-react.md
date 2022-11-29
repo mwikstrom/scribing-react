@@ -86,6 +86,8 @@ React components for collaborative rich text editing
 |  [FlowTypographyScope](./scribing-react.flowtypographyscope.md) |  |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
 |  [ScribingComponentOverride](./scribing-react.scribingcomponentoverride.md) |  |
+|  [SharedListCounterScope](./scribing-react.sharedlistcounterscope.md) | Nested <code>&lt;FlowView&gt;</code> components use a shared counter for list items on level 1 |
+|  [useIsInsideSharedListCounterScope](./scribing-react.useisinsidesharedlistcounterscope.md) |  |
 |  [useScribingComponents](./scribing-react.usescribingcomponents.md) |  |
 
 ## Type Aliases

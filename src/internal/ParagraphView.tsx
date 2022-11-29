@@ -25,6 +25,7 @@ import { useFlowPalette } from "../FlowPaletteScope";
 import { getFlowFragmentSelection, getFlowNodeSelection } from "./utils/get-sub-selection";
 import { useFlowTypography } from "../FlowTypographyScope";
 import { ReducedBlockSizeScope } from "./BlockSize";
+import { useIsInsideSharedListCounterScope } from "../SharedListCounterScope";
 
 /** @internal */
 export type ParagraphViewProps = Omit<FlowNodeComponentProps, "node" | "ref" | "opposingTag"> & {
@@ -52,9 +53,10 @@ export const ParagraphView: FC<ParagraphViewProps> = props => {
     const classes = useStyles();
     const palette = useFlowPalette();
     const typography = useFlowTypography();
+    const sharedListCounter = useIsInsideSharedListCounterScope();
     const listMarkerClass = useMemo(
-        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak, palette, typography),
-        [style, theme, prevBreak, palette, typography]
+        () => getListMarkerClass(style, theme.getAmbientTextStyle(), prevBreak, palette, typography, sharedListCounter),
+        [style, theme, prevBreak, palette, typography, sharedListCounter]
     );
     const className = useMemo(() => clsx(
         classes.root,

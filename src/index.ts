@@ -55,3 +55,6 @@ export * from "./InteractionLoggerScope";
 
 // Application error renderer
 export * from "./ApplicationErrorRenderScope";
+
+// Shared list counter scope
+export * from "./SharedListCounterScope";

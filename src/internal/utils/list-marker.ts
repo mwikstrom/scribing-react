@@ -15,6 +15,7 @@ export const getListMarkerClass = (
     prev: ParagraphBreak | null,
     palette: FlowPalette,
     typography: FlowTypography,
+    sharedListCounter: boolean,
 ): string | undefined => {
     const {
         listCounterPrefix: prefix = "",
@@ -45,7 +46,7 @@ export const getListMarkerClass = (
 
     const continueCounter = (
         counter === "resume" ||
-        (counter === "auto" && prev && (prev.style.listLevel ?? 0) >= level)
+        (counter === "auto" && (sharedListCounter || (prev && (prev.style.listLevel ?? 0) >= level)))
     );
     if (!continueCounter) {
         li.counterSet = `${getListCounterName(level)} ${typeof counter === "number" ? counter : 1}`;

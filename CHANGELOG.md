@@ -1,3 +1,7 @@
+## 1.2.0 - 2022-11-29
+
+- New feature: `<SharedListCounterScope>`
+
 ## 1.1.4 - 2022-11-28
 
 - Hack: Attempt to fix unresponsive tab when flow content starts with a dynamic text

@@ -793,6 +793,9 @@ export interface ScribingTooltipProps {
     title: ReactNode;
 }
 
+// @public
+export const SharedListCounterScope: FC;
+
 // @public (undocumented)
 export class StateChangeEvent {
     constructor(before: FlowEditorState, change: FlowOperation | null, after: FlowEditorState);
@@ -852,6 +855,9 @@ export function useFlowTypography(): Readonly<FlowTypography>;
 
 // @public (undocumented)
 export function useInteractionLogger(): InteractionLogger | null;
+
+// @public (undocumented)
+export const useIsInsideSharedListCounterScope: () => boolean;
 
 // @public (undocumented)
 export const useScribingComponents: () => ScribingComponents;
