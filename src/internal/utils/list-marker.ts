@@ -39,14 +39,21 @@ export const getListMarkerClass = (
         minWidth: listIndent(1),
         textAlign: "end",
     };
+    let counterIncrement = counterName;
+    if (hide || (sharedListCounter && level === 1 && !isCounterKind(kind))) {
+        counterIncrement = "none";
+    }
     const li: JssStyle = {
-        counterIncrement: hide ? "none" : getListCounterName(level),        
+        counterIncrement,
         "&::before": marker,
     };
 
     const continueCounter = (
         counter === "resume" ||
-        (counter === "auto" && (sharedListCounter || (prev && (prev.style.listLevel ?? 0) >= level)))
+        (counter === "auto" && (
+            (sharedListCounter && level === 1) || 
+            (prev && (prev.style.listLevel ?? 0) >= level)
+        ))
     );
     if (!continueCounter) {
         li.counterSet = `${getListCounterName(level)} ${typeof counter === "number" ? counter : 1}`;

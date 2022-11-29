@@ -1,3 +1,7 @@
+## 1.2.1 - 2022-11-29
+
+- Fix counter increment inside shared list counter scope
+
 ## 1.2.0 - 2022-11-29
 
 - New feature: `<SharedListCounterScope>`
