@@ -31,6 +31,5 @@ export declare class RenderableMarkup
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [extract(predicate)](./scribing-react.renderablemarkup.extract.md) |  |  |
-|  [render()](./scribing-react.renderablemarkup.render.md) |  |  |
-|  [transform(content)](./scribing-react.renderablemarkup.transform.md) |  |  |
+|  [render(input)](./scribing-react.renderablemarkup.render.md) |  |  |
 

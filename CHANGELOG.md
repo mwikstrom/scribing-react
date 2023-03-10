@@ -1,7 +1,7 @@
-## 1.3.0 - 2023-03-10
+## 1.3.1 - 2023-03-10
 
-- New feature: `RenderableMarkup.transform(...)`
 - New feature: `RenderableMarkup.content` `get`/`set`
+- New feature: `RenderableMarkup.render()` now accept the content to be rendered as input
 
 ## 1.2.1 - 2022-11-29
 

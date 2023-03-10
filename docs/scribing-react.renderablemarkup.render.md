@@ -7,8 +7,15 @@
 <b>Signature:</b>
 
 ```typescript
-render(): Promise<ReactNode>;
+render(input?: FlowContent | null): Promise<ReactNode>;
 ```
+
+## Parameters
+
+|  Parameter | Type | Description |
+|  --- | --- | --- |
+|  input | FlowContent \| null | <i>(Optional)</i> |
+
 <b>Returns:</b>
 
 Promise&lt;ReactNode&gt;

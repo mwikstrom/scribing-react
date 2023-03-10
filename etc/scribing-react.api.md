@@ -718,11 +718,9 @@ export class RenderableMarkup {
     // (undocumented)
     get isEmpty(): boolean;
     // (undocumented)
-    render(): Promise<ReactNode>;
+    render(input?: FlowContent | null): Promise<ReactNode>;
     // (undocumented)
     get tag(): string;
-    // (undocumented)
-    transform(content: FlowContent): Promise<FlowContent>;
 }
 
 // @public (undocumented)

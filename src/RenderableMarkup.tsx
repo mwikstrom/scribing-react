@@ -120,16 +120,12 @@ export class RenderableMarkup {
         return extracted;        
     }    
 
-    public async render(): Promise<ReactNode> {
-        if (this.#content) {
-            const content = await this.#transform(this.#content);
-            return <FlowContentView content={content}/>;
+    public async render(input = this.#content): Promise<ReactNode> {
+        if (input) {
+            const transformed = await this.#transform(input);
+            return <FlowContentView content={transformed}/>;
         } else {
             return null;
         }
-    }
-
-    public transform(content: FlowContent): Promise<FlowContent> {
-        return this.#transform(content);
     }
 }
