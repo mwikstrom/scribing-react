@@ -22,6 +22,7 @@ export declare class RenderableMarkup
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [attr](./scribing-react.renderablemarkup.attr.md) |  | ReadonlyMap&lt;string, string \| Script&gt; |  |
+|  [content](./scribing-react.renderablemarkup.content.md) |  | FlowContent |  |
 |  [isEmpty](./scribing-react.renderablemarkup.isempty.md) |  | boolean |  |
 |  [tag](./scribing-react.renderablemarkup.tag.md) |  | string |  |
 
@@ -31,4 +32,5 @@ export declare class RenderableMarkup
 |  --- | --- | --- |
 |  [extract(predicate)](./scribing-react.renderablemarkup.extract.md) |  |  |
 |  [render()](./scribing-react.renderablemarkup.render.md) |  |  |
+|  [transform(content)](./scribing-react.renderablemarkup.transform.md) |  |  |
 

@@ -1,3 +1,8 @@
+## 1.3.0 - 2022-03-10
+
+- New feature: `RenderableMarkup.transform(...)`
+- New feature: `RenderableMarkup.content` `get`/`set`
+
 ## 1.2.1 - 2022-11-29
 
 - Fix counter increment inside shared list counter scope

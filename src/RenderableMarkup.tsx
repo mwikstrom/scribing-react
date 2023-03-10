@@ -51,6 +51,14 @@ export class RenderableMarkup {
             return nodes[0] instanceof ParagraphBreak;
         }
     }
+
+    public get content(): FlowContent {
+        return this.#content || FlowContent.empty;
+    }
+
+    public set content(value: FlowContent) {
+        this.#content = value;
+    }
     
     public extract(
         predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)
@@ -119,5 +127,9 @@ export class RenderableMarkup {
         } else {
             return null;
         }
+    }
+
+    public transform(content: FlowContent): Promise<FlowContent> {
+        return this.#transform(content);
     }
 }

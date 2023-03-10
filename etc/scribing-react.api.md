@@ -711,6 +711,9 @@ export class RenderableMarkup {
     // (undocumented)
     get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
+    get content(): FlowContent;
+    set content(value: FlowContent);
+    // (undocumented)
     extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)): RenderableMarkup[];
     // (undocumented)
     get isEmpty(): boolean;
@@ -718,6 +721,8 @@ export class RenderableMarkup {
     render(): Promise<ReactNode>;
     // (undocumented)
     get tag(): string;
+    // (undocumented)
+    transform(content: FlowContent): Promise<FlowContent>;
 }
 
 // @public (undocumented)
