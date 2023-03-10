@@ -1,4 +1,4 @@
-## 1.3.0 - 2022-03-10
+## 1.3.0 - 2023-03-10
 
 - New feature: `RenderableMarkup.transform(...)`
 - New feature: `RenderableMarkup.content` `get`/`set`
