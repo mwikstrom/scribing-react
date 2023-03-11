@@ -67,7 +67,7 @@ export const FlowView: FC<FlowViewProps> = props => {
         if (editMode || !onRenderMarkup) {
             return null;
         } else {
-            return processMarkup(content, onRenderMarkup, null, EMPTY_SIBLINGS_BEFORE);
+            return processMarkup(content, onRenderMarkup, null);
         }
     }, [content, editMode, onRenderMarkup]);
     const [resolved, setResolved] = useState<FlowContent | Error | null>(null);
@@ -155,10 +155,9 @@ const processMarkup = async (
     input: FlowContent,
     handler: (event: RenderMarkupEvent) => void,
     parent: MarkupContext | null,
-    siblingsBefore: readonly (StartMarkup | EmptyMarkup)[],    
 ): Promise<FlowContent> => {
     const output: FlowNode[] = [];
-    await renderMarkup(input, handler, parent, siblingsBefore, output, "empty");
+    await renderMarkup(input, handler, parent, output, "empty");
     return FlowContent.fromData(output);
 };
 
@@ -166,10 +165,10 @@ const renderMarkup = async (
     input: FlowContent,
     handler: (event: RenderMarkupEvent) => void,
     parent: MarkupContext | null,
-    siblingsBefore: readonly (StartMarkup | EmptyMarkup)[],
     output: FlowNode[],
     mode: ParagraphMode,
 ): Promise<ParagraphMode> => {
+    let siblingsBefore: readonly (StartMarkup | EmptyMarkup)[] = Object.freeze([]);
     for (
         let cursor: FlowCursor | null = input.peek(0);
         cursor != null;
@@ -185,21 +184,23 @@ const renderMarkup = async (
                 const distance = end.position - start;
                 const content = input.copy(FlowRange.at(start, distance));
                 mode = await renderMarkupNode(output, mode, handler, node, parent, siblingsBefore, content);
+                siblingsBefore = Object.freeze([...siblingsBefore, node]);
                 cursor = end;
             }
         } else if (node instanceof EmptyMarkup) {
             mode = await renderMarkupNode(output, mode, handler, node, parent, siblingsBefore);
+            siblingsBefore = Object.freeze([...siblingsBefore, node]);
         } else if (node instanceof ParagraphBreak) {
             if (mode !== "omit") {
                 output.push(node);
             }
             mode = "empty";
         } else if (node instanceof FlowBox) {
-            const content = await processMarkup(node.content, handler, parent, siblingsBefore);
+            const content = await processMarkup(node.content, handler, parent);
             output.push(node.set("content", content));
             mode = "not-empty";
         } else if (node !== null) {
-            output.push(await new MarkupProcessor(handler, parent, siblingsBefore).visitNode(node));
+            output.push(await new MarkupProcessor(handler, parent).visitNode(node));
             mode = "not-empty";
         }
     }
@@ -209,21 +210,18 @@ const renderMarkup = async (
 class MarkupProcessor extends AsyncFlowNodeVisitor {
     readonly #handler: (event: RenderMarkupEvent) => void;
     readonly #parent: MarkupContext | null;
-    readonly #siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
 
     constructor(
         handler: (event: RenderMarkupEvent) => void,
         parent: MarkupContext | null,
-        siblingsBefore: readonly (StartMarkup | EmptyMarkup)[],
     ) {
         super();
         this.#handler = handler;
         this.#parent = parent;
-        this.#siblingsBefore = siblingsBefore;
     }
 
     override visitFlowContent(content: FlowContent): Promise<FlowContent> {
-        return processMarkup(content, this.#handler, this.#parent, this.#siblingsBefore);
+        return processMarkup(content, this.#handler, this.#parent);
     }
 }
 
@@ -241,7 +239,7 @@ const renderMarkupNode = async (
         node,
         siblingsBefore,
     });
-    const transform = (input: FlowContent) => processMarkup(input, handler, nestedContext, EMPTY_SIBLINGS_BEFORE);
+    const transform = (input: FlowContent) => processMarkup(input, handler, nestedContext);
     const markup = new RenderableMarkup(node, content, transform, parent, siblingsBefore);
     const event = new RenderMarkupEvent(markup);
     handler(event);
@@ -253,7 +251,7 @@ const renderMarkupNode = async (
     }
     
     if (result instanceof FlowContent) {
-        mode = await renderMarkup(result, handler, nestedContext, EMPTY_SIBLINGS_BEFORE, output, mode);
+        mode = await renderMarkup(result, handler, nestedContext, output, mode);
     } else if (result !== null) {
         // Register replacement React node. The flow markup node must be given a replacement tag name
         // so that it is not equal to the flow node being replaced. Prior to 1.1.3 we kept the old tag
@@ -269,5 +267,3 @@ const renderMarkupNode = async (
 };
 
 const makeError = (input: unknown): Error => input instanceof Error ? input : new Error(String(input));
-
-const EMPTY_SIBLINGS_BEFORE: readonly (EmptyMarkup | StartMarkup)[] = Object.freeze([]);
