@@ -705,9 +705,11 @@ export class LoadAssetEvent extends DeferrableEvent {
     set url(value: string);
 }
 
+// Warning: (ae-forgotten-export) The symbol "MarkupContext" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export class RenderableMarkup {
-    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>);
+export class RenderableMarkup implements Omit<MarkupContext, "node"> {
+    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupContext | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
     // (undocumented)
     get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
@@ -718,14 +720,18 @@ export class RenderableMarkup {
     // (undocumented)
     get isEmpty(): boolean;
     // (undocumented)
+    get parent(): MarkupContext | null;
+    // (undocumented)
     render(input?: FlowContent | null): Promise<ReactNode>;
+    // (undocumented)
+    get siblingsBefore(): readonly (StartMarkup | EmptyMarkup)[];
     // (undocumented)
     get tag(): string;
 }
 
 // @public (undocumented)
 export class RenderMarkupEvent extends DeferrableEvent {
-    constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup)[]);
+    constructor(markup: RenderableMarkup);
     // (undocumented)
     get markup(): RenderableMarkup;
     // (undocumented)

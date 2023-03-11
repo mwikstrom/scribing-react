@@ -11,23 +11,30 @@ import {
     StartMarkup,
 } from "scribing";
 import { FlowContentView } from "./internal/FlowContentView";
+import { MarkupContext } from "./MarkupContext";
 
 /**
  * @public
  */
-export class RenderableMarkup {
+export class RenderableMarkup implements Omit<MarkupContext, "node"> {
     readonly #node: StartMarkup | EmptyMarkup;
     #content: FlowContent | null;
     readonly #transform: (content: FlowContent) => Promise<FlowContent>;
+    readonly #parent: MarkupContext | null;
+    readonly #siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
 
     constructor(
         node: StartMarkup | EmptyMarkup,
         content: FlowContent | null,
         transform: (content: FlowContent) => Promise<FlowContent>,
+        parent: MarkupContext | null,
+        siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]
     ) {
         this.#node = node;
         this.#content = content;
         this.#transform = transform;
+        this.#parent = parent;
+        this.#siblingsBefore = siblingsBefore;
     }
 
     public get tag(): string {
@@ -59,6 +66,14 @@ export class RenderableMarkup {
     public set content(value: FlowContent) {
         this.#content = value;
     }
+
+    public get parent(): MarkupContext | null {
+        return this.#parent;
+    }
+
+    public get siblingsBefore(): readonly (StartMarkup | EmptyMarkup)[] {
+        return this.#siblingsBefore;
+    }
     
     public extract(
         predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)
@@ -77,6 +92,25 @@ export class RenderableMarkup {
 
         const remainder: FlowNode[] = [];
         const extracted: RenderableMarkup[] = [];
+        const siblingsBefore: (EmptyMarkup | StartMarkup)[] = [];
+        const context: MarkupContext = Object.freeze({
+            node: this.#node,
+            parent: this.#parent,
+            siblingsBefore: this.#siblingsBefore,
+        });
+
+        const pushNext = (node: EmptyMarkup | StartMarkup, content: FlowContent | null) => {
+            const next = new RenderableMarkup(
+                node,
+                content,
+                this.#transform,
+                context,
+                Object.freeze([...siblingsBefore])
+            );
+            extracted.push(next);
+            siblingsBefore.push(node);
+        };
+    
         let omitNextParaBreak = false;
 
         for (
@@ -87,7 +121,7 @@ export class RenderableMarkup {
             const { node } = cursor;
 
             if (node instanceof EmptyMarkup && predicate(node.tag, node.attr)) {
-                extracted.push(new RenderableMarkup(node, null, this.#transform));
+                pushNext(node, null);
                 omitNextParaBreak = true;
                 continue;
             }
@@ -98,7 +132,7 @@ export class RenderableMarkup {
                     const start = cursor.position + node.size;
                     const distance = end.position - start;
                     const content = this.#content.copy(FlowRange.at(start, distance));
-                    extracted.push(new RenderableMarkup(node, content, this.#transform));
+                    pushNext(node, content);
                     cursor = end;
                     omitNextParaBreak = true;
                     continue;

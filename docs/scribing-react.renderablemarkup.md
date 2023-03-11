@@ -8,14 +8,15 @@
 <b>Signature:</b>
 
 ```typescript
-export declare class RenderableMarkup 
+export declare class RenderableMarkup implements Omit<MarkupContext, "node"> 
 ```
+<b>Implements:</b> Omit&lt;MarkupContext
 
 ## Constructors
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(node, content, transform)](./scribing-react.renderablemarkup._constructor_.md) |  | Constructs a new instance of the <code>RenderableMarkup</code> class |
+|  [(constructor)(node, content, transform, parent, siblingsBefore)](./scribing-react.renderablemarkup._constructor_.md) |  | Constructs a new instance of the <code>RenderableMarkup</code> class |
 
 ## Properties
 
@@ -24,6 +25,8 @@ export declare class RenderableMarkup
 |  [attr](./scribing-react.renderablemarkup.attr.md) |  | ReadonlyMap&lt;string, string \| Script&gt; |  |
 |  [content](./scribing-react.renderablemarkup.content.md) |  | FlowContent |  |
 |  [isEmpty](./scribing-react.renderablemarkup.isempty.md) |  | boolean |  |
+|  [parent](./scribing-react.renderablemarkup.parent.md) |  | MarkupContext \| null |  |
+|  [siblingsBefore](./scribing-react.renderablemarkup.siblingsbefore.md) |  | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 |  [tag](./scribing-react.renderablemarkup.tag.md) |  | string |  |
 
 ## Methods

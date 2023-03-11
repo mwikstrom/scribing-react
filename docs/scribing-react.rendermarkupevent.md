@@ -16,7 +16,7 @@ export declare class RenderMarkupEvent extends DeferrableEvent
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(markup, scope)](./scribing-react.rendermarkupevent._constructor_.md) |  | Constructs a new instance of the <code>RenderMarkupEvent</code> class |
+|  [(constructor)(markup)](./scribing-react.rendermarkupevent._constructor_.md) |  | Constructs a new instance of the <code>RenderMarkupEvent</code> class |
 
 ## Properties
 

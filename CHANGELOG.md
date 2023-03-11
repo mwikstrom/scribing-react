@@ -1,3 +1,7 @@
+## 1.4.0 - 2023-03-11
+
+- New feature: `MarkupContext`
+
 ## 1.3.1 - 2023-03-10
 
 - New feature: `RenderableMarkup.content` `get`/`set`

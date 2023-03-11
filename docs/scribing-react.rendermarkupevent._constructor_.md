@@ -9,7 +9,7 @@ Constructs a new instance of the `RenderMarkupEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup)[]);
+constructor(markup: RenderableMarkup);
 ```
 
 ## Parameters
@@ -17,5 +17,4 @@ constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  markup | [RenderableMarkup](./scribing-react.renderablemarkup.md) |  |
-|  scope | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 

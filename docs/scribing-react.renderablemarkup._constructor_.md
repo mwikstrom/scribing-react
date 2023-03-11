@@ -9,7 +9,7 @@ Constructs a new instance of the `RenderableMarkup` class
 <b>Signature:</b>
 
 ```typescript
-constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>);
+constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupContext | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
 ```
 
 ## Parameters
@@ -19,4 +19,6 @@ constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transf
 |  node | StartMarkup \| EmptyMarkup |  |
 |  content | FlowContent \| null |  |
 |  transform | (content: FlowContent) =&gt; Promise&lt;FlowContent&gt; |  |
+|  parent | MarkupContext \| null |  |
+|  siblingsBefore | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 

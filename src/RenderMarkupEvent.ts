@@ -8,13 +8,12 @@ import { DeferrableEvent } from "./DeferrableEvent";
  */
 export class RenderMarkupEvent extends DeferrableEvent {
     readonly #markup: RenderableMarkup;
-    readonly #scope: readonly (StartMarkup | EmptyMarkup)[];
     #result: FlowContent | ReactNode;
+    #scope: readonly (StartMarkup | EmptyMarkup)[] | undefined;
 
-    constructor(markup: RenderableMarkup, scope: readonly (StartMarkup | EmptyMarkup)[]) {
+    constructor(markup: RenderableMarkup) {
         super();
         this.#markup = markup;
-        this.#scope = scope;
     }
     
     public get markup(): RenderableMarkup {
@@ -22,6 +21,13 @@ export class RenderMarkupEvent extends DeferrableEvent {
     }
 
     public get scope(): readonly (StartMarkup | EmptyMarkup)[] {
+        if (!this.#scope) {
+            const result: (StartMarkup | EmptyMarkup)[] = [];
+            for (let context = this.#markup.parent; context; context = context.parent) {
+                result.push(context.node);
+            }
+            this.#scope = Object.freeze(result);
+        }
         return this.#scope;
     }
 
