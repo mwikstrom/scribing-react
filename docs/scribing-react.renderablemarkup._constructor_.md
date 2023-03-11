@@ -19,6 +19,6 @@ constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transf
 |  node | StartMarkup \| EmptyMarkup |  |
 |  content | FlowContent \| null |  |
 |  transform | (content: FlowContent) =&gt; Promise&lt;FlowContent&gt; |  |
-|  parent | MarkupContext \| null |  |
+|  parent | [MarkupContext](./scribing-react.markupcontext.md) \| null |  |
 |  siblingsBefore | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 

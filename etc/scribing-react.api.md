@@ -705,8 +705,16 @@ export class LoadAssetEvent extends DeferrableEvent {
     set url(value: string);
 }
 
-// Warning: (ae-forgotten-export) The symbol "MarkupContext" needs to be exported by the entry point index.d.ts
-//
+// @public (undocumented)
+export interface MarkupContext {
+    // (undocumented)
+    readonly node: StartMarkup | EmptyMarkup;
+    // (undocumented)
+    readonly parent: MarkupContext | null;
+    // (undocumented)
+    readonly siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
+}
+
 // @public (undocumented)
 export class RenderableMarkup implements Omit<MarkupContext, "node"> {
     constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupContext | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);

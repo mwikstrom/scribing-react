@@ -10,7 +10,7 @@
 ```typescript
 export declare class RenderableMarkup implements Omit<MarkupContext, "node"> 
 ```
-<b>Implements:</b> Omit&lt;MarkupContext
+<b>Implements:</b> Omit&lt;[MarkupContext](./scribing-react.markupcontext.md)
 
 ## Constructors
 
@@ -25,7 +25,7 @@ export declare class RenderableMarkup implements Omit<MarkupContext, "node">
 |  [attr](./scribing-react.renderablemarkup.attr.md) |  | ReadonlyMap&lt;string, string \| Script&gt; |  |
 |  [content](./scribing-react.renderablemarkup.content.md) |  | FlowContent |  |
 |  [isEmpty](./scribing-react.renderablemarkup.isempty.md) |  | boolean |  |
-|  [parent](./scribing-react.renderablemarkup.parent.md) |  | MarkupContext \| null |  |
+|  [parent](./scribing-react.renderablemarkup.parent.md) |  | [MarkupContext](./scribing-react.markupcontext.md) \| null |  |
 |  [siblingsBefore](./scribing-react.renderablemarkup.siblingsbefore.md) |  | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 |  [tag](./scribing-react.renderablemarkup.tag.md) |  | string |  |
 
