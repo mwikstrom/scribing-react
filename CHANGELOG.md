@@ -1,6 +1,7 @@
 ## 1.5.0 - 2023-03-13
 
 - New feature: Conversion from markup text to markup nodes. Triggered by the `>` key.
+- Limit flow image resize to min 24 px
 
 ## 1.4.0 - 2023-03-12
 

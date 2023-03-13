@@ -101,7 +101,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
             const desiredHeight = resizeStart.h + e.screenY - resizeStart.y;
             setScale(
                 Math.max(
-                    0.001, 
+                    Math.max(0.001, 24 / Math.min(source.width, source.height)), 
                     Math.min(
                         100, 
                         Math.min(
