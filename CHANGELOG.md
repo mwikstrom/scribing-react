@@ -1,3 +1,7 @@
+## 1.5.0 - 2023-03-13
+
+- New feature: Conversion from markup text to markup nodes. Triggered by the `>` key.
+
 ## 1.4.0 - 2023-03-12
 
 - New feature: `MarkupContext`

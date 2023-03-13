@@ -1,9 +1,16 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { 
+    EmptyMarkup,
+    EndMarkup,
     FlowContent,
+    FlowCursor,
     FlowOperation, 
+    FlowRange, 
     FlowSelection, 
     FlowTableSelection, 
+    ParagraphBreak, 
+    StartMarkup, 
+    TextRun, 
     TextStyle
 } from "scribing";
 import { FlowView, FlowViewProps } from "./FlowView";
@@ -205,7 +212,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
             operation = null;
             after = base;
         }
-        
+
         if (!onStateChange(after, operation, base)) {
             return base;
         }
@@ -245,12 +252,81 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [controller, onControllerChange]);
 
+    // Automatic XML tag conversion
+    const [xmlTagConversionPoint, setXmlTagConversionPoint] = useState<FlowSelection | null>(null);
+    useEffect(() => {
+        if (xmlTagConversionPoint?.isCollapsed) {
+            const timerId = setTimeout(() => {
+                let change: FlowOperation | null | undefined;
+                let newSelection: FlowSelection | null | undefined;
+                xmlTagConversionPoint.visitRanges((range, options) => {
+                    const { target, wrap } = options;
+                    if (range instanceof FlowRange && range.isCollapsed && target) {
+                        let cursor = new FlowCursor(target).move(range.focus);
+                        if (cursor.node instanceof ParagraphBreak) {
+                            cursor = cursor.move(-1);
+                        }
+                        const { node, offset } = cursor;
+                        if (node instanceof TextRun) {
+                            const text = node.text.substring(0, offset + 1);
+                            const focus = cursor.position - cursor.offset + text.length;
+                            const match = /<(\/)?([a-z]+) *(\/)?>$/i.exec(text);
+                            if (match) {
+                                const [fullMatch, closeMark, tagName, emptyMark] = match;
+                                let newContent: FlowContent;
+                                console.log(fullMatch);
+                                const anchor = focus - fullMatch.length;
+                                console.log(anchor, focus);
+                                const oldSelection = wrap(new FlowRange({ anchor, focus }));
+
+                                if (closeMark) {
+                                    newContent = FlowContent.fromData([
+                                        EndMarkup.fromData({ end_markup: tagName })
+                                    ]);
+                                } else if (emptyMark) {
+                                    newContent = FlowContent.fromData([
+                                        EmptyMarkup.fromData({ empty_markup: tagName })
+                                    ]);
+                                } else {
+                                    newContent = FlowContent.fromData([
+                                        StartMarkup.fromData({ start_markup: tagName }),
+                                        EndMarkup.fromData({ end_markup: tagName })
+                                    ]);
+                                }
+                                
+                                if (oldSelection) {
+                                    change = oldSelection.insert(newContent, options);
+                                    newSelection = wrap(FlowRange.at(anchor + 1));
+                                }
+                            }
+                        }
+                    }
+                }, { target: state.content, theme: state.theme });
+                setXmlTagConversionPoint(null);
+                if (change) {
+                    const nextState = applyChange(change, state);
+                    if (nextState && newSelection) {
+                        applyChange(nextState.set("selection", newSelection), nextState);
+                    }
+                }
+            }, 300);
+            return () => {
+                clearTimeout(timerId);
+            };
+        }
+    }, [state, xmlTagConversionPoint, setXmlTagConversionPoint, applyChange]);
+
     // Handle keyboard input
     useNativeEventHandler(
         editingHost,
         "keydown",
-        (event: KeyboardEvent) => handleKeyEvent(event, controller),
-        [controller]
+        (event: KeyboardEvent) => {
+            handleKeyEvent(event, controller);
+            if (!event.defaultPrevented && event.key === ">" && controller.state.selection?.isCollapsed) {
+                setXmlTagConversionPoint(controller.state.selection);
+            }
+        },
+        [controller, setXmlTagConversionPoint]
     );
 
     // Handle composition events  
