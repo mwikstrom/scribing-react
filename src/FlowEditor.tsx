@@ -274,9 +274,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
                             if (match) {
                                 const [fullMatch, closeMark, tagName, emptyMark] = match;
                                 let newContent: FlowContent;
-                                console.log(fullMatch);
                                 const anchor = focus - fullMatch.length;
-                                console.log(anchor, focus);
                                 const oldSelection = wrap(new FlowRange({ anchor, focus }));
 
                                 if (closeMark) {
