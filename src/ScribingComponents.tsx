@@ -9,6 +9,7 @@ export type ScribingComponent<P> = (props: P) => JSX.Element | null;
 export interface ScribingComponents {
     Tooltip: ScribingComponent<ScribingTooltipProps>;
     Button: ScribingComponent<ScribingButtonProps>;
+    ImageZoom?: ScribingComponent<ScribingImageZoomProps>;
 }
 
 /** @public */
@@ -27,6 +28,14 @@ export interface ScribingButtonProps extends HTMLAttributes<unknown> {
     children: ReactNode;
     href: string | null;
     ref: (elem: HTMLElement | null) => void;
+}
+
+/** @public */
+export interface ScribingImageZoomProps {
+    sourceUrl: string;
+    sourceWidth: number;
+    sourceHeight: number;
+    onClose: () => void;
 }
 
 /** @public */

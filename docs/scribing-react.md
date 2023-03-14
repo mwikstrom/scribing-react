@@ -68,6 +68,7 @@ React components for collaborative rich text editing
 |  [MarkupContext](./scribing-react.markupcontext.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
+|  [ScribingImageZoomProps](./scribing-react.scribingimagezoomprops.md) |  |
 |  [ScribingTooltipProps](./scribing-react.scribingtooltipprops.md) |  |
 
 ## Variables

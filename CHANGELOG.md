@@ -1,3 +1,7 @@
+## 1.6.0 - 2023-03-14
+
+- New feature: Zoom scaled down image
+
 ## 1.5.0 - 2023-03-14
 
 - New feature: Conversion from markup text to markup nodes. Triggered by the `>` key.

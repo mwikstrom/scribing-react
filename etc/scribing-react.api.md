@@ -801,7 +801,21 @@ export interface ScribingComponents {
     // (undocumented)
     Button: ScribingComponent<ScribingButtonProps>;
     // (undocumented)
+    ImageZoom?: ScribingComponent<ScribingImageZoomProps>;
+    // (undocumented)
     Tooltip: ScribingComponent<ScribingTooltipProps>;
+}
+
+// @public (undocumented)
+export interface ScribingImageZoomProps {
+    // (undocumented)
+    onClose: () => void;
+    // (undocumented)
+    sourceHeight: number;
+    // (undocumented)
+    sourceUrl: string;
+    // (undocumented)
+    sourceWidth: number;
 }
 
 // @public (undocumented)

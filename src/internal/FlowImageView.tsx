@@ -15,11 +15,13 @@ import { useBlockSize } from "./BlockSize";
 import { mdiResizeBottomRight } from "@mdi/js";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
+import { useScribingComponents } from "../ScribingComponents";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
     const { style: givenStyle, source, scale: givenScale } = node;
     const controller = useFlowEditorController();
+    const { ImageZoom } = useScribingComponents();
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -56,6 +58,36 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [rootElem]);
 
+    const { url, ready, broken } = useImageSource(source);
+    const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
+    const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
+
+    const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
+        if (imageElem && controller) {
+            setResizeStart({x: e.screenX, y: e.screenY, w: imageElem.clientWidth, h: imageElem.clientHeight});
+        }
+    }, [imageElem, controller]);
+    const [scale, setScale] = useState(givenScale);
+
+    const [showImageZoom, setShowZoomBox] = useState(false);
+    const [scaledDown, setScaledDown] = useState(scale < 1);
+    const visible = useIsScrolledIntoView(imageElem);
+    
+    useEffect(() => {
+        if (imageElem) {
+            const processElem = () => setScaledDown(
+                imageElem.clientWidth < source.width ||
+                imageElem.clientHeight < source.height
+            );
+            const observer = new ResizeObserver(processElem);
+            observer.observe(imageElem);
+            processElem();
+            return () => observer.disconnect();
+        } else {
+            setScaledDown(scale < 1);
+        }
+    }, [imageElem, scale, source]);
+
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
         if (domSelection && rootElem && !e.ctrlKey && editMode) {
@@ -76,19 +108,13 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                 }
                 e.stopPropagation();
             }
+        } else if (scaledDown && visible && ready && !editMode) {
+            setShowZoomBox(true);
+            e.stopPropagation();
         }
-    }, [rootElem, editMode]);
+    }, [rootElem, editMode, scaledDown, visible, ready]);
 
-    const { url, ready, broken } = useImageSource(source);
-    const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
-    const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
-
-    const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
-        if (imageElem && controller) {
-            setResizeStart({x: e.screenX, y: e.screenY, w: imageElem.clientWidth, h: imageElem.clientHeight});
-        }
-    }, [imageElem, controller]);
-    const [scale, setScale] = useState(givenScale);
+    const onHideImageZoom = useCallback(() => setShowZoomBox(false), []);
 
     useEffect(() => {
         setScale(givenScale);
@@ -122,7 +148,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         }
     }, [controller, scale], { capture: true });
 
-    const visible = useIsScrolledIntoView(imageElem);
     const blockSize = useBlockSize();
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
@@ -138,48 +163,59 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     }, [blockSize, source.width, source.height, scale, url, broken, ready]);
 
     return (
-        <span 
-            ref={ref}
-            className={className}
-            style={css}
-            contentEditable={false}
-            onDoubleClick={onDoubleClick}
-            onClick={onClick}
-            children={(
-                <>
-                    <span
-                        ref={setImageElem}
-                        style={imageStyle}
-                        className={clsx(
-                            classes.image, 
-                            visible && ready && classes.ready,
-                            imageElem && classes.bound,
-                            broken && url && classes.broken,
-                            !url && classes.empty,
-                        )}
-                        children={editMode && selected && controller && controller.isImage() && (
-                            <>
-                                <div className={classes.sizeProps}>
-                                    {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
-                                    {(scale * 100).toFixed(1)}%
-                                </div>
-                                <svg
-                                    className={classes.resize}
-                                    viewBox="0 0 24 24"
-                                    onMouseDown={onResizeStart}
-                                    children={(
-                                        <>
-                                            <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
-                                            <path fill="#fff" d={mdiResizeBottomRight}/>    
-                                        </>
-                                    )}
-                                />
-                            </>
-                        )}
-                    />
-                </>
+        <>
+            <span 
+                ref={ref}
+                className={className}
+                style={css}
+                contentEditable={false}
+                onDoubleClick={onDoubleClick}
+                onClick={onClick}
+                children={(
+                    <>
+                        <span
+                            ref={setImageElem}
+                            style={imageStyle}
+                            className={clsx(
+                                classes.image, 
+                                visible && ready && classes.ready,
+                                imageElem && classes.bound,
+                                broken && url && classes.broken,
+                                !url && classes.empty,
+                                scaledDown && visible && ready && !editMode && ImageZoom && classes.scaledDown,
+                            )}
+                            children={editMode && selected && controller && controller.isImage() && (
+                                <>
+                                    <div className={classes.sizeProps}>
+                                        {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
+                                        {(scale * 100).toFixed(1)}%
+                                    </div>
+                                    <svg
+                                        className={classes.resize}
+                                        viewBox="0 0 24 24"
+                                        onMouseDown={onResizeStart}
+                                        children={(
+                                            <>
+                                                <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
+                                                <path fill="#fff" d={mdiResizeBottomRight}/>    
+                                            </>
+                                        )}
+                                    />
+                                </>
+                            )}
+                        />
+                    </>
+                )}
+            />
+            {showImageZoom && ImageZoom && (
+                <ImageZoom
+                    sourceUrl={url}
+                    sourceWidth={source.width}
+                    sourceHeight={source.height}
+                    onClose={onHideImageZoom}
+                />
             )}
-        />
+        </>
     );
 });
 
@@ -205,6 +241,9 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         border: "none",
         backgroundRepeat: "no-repeat",
         position: "relative",
+    },
+    scaledDown: {
+        cursor: "zoom-in"
     },
     bound: {
         transition: "opacity ease-out 0.1s",
