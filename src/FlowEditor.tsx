@@ -29,7 +29,7 @@ import { FlowEditorControllerScope } from "./internal/FlowEditorControllerScope"
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { FlowEditorState } from "./FlowEditorState";
-import { applyTextConversion, isTextConversionTrigger } from "./internal/text-conversion";
+import { applyTextConversion } from "./internal/text-conversion";
 
 /**
  * Component props for {@link FlowEditor}
@@ -240,31 +240,12 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [controller, onControllerChange]);
 
-    // Automatic text conversion (to flow nodes)
-    const [textConversionPoint, setTextConversionPoint] = useState<FlowSelection | null>(null);
-    useEffect(() => {
-        if (textConversionPoint?.isCollapsed) {
-            const timerId = setTimeout(() => {
-                applyTextConversion({ state, trigger: textConversionPoint, applyChange });
-                setTextConversionPoint(null);
-            }, 300);
-            return () => {
-                clearTimeout(timerId);
-            };
-        }
-    }, [state, textConversionPoint, setTextConversionPoint, applyChange]);
-
     // Handle keyboard input
     useNativeEventHandler(
         editingHost,
         "keydown",
-        (event: KeyboardEvent) => {
-            handleKeyEvent(event, controller);
-            if (!event.defaultPrevented && controller.state.selection?.isCollapsed && isTextConversionTrigger(event)) {
-                setTextConversionPoint(controller.state.selection);
-            }
-        },
-        [controller, setTextConversionPoint]
+        (event: KeyboardEvent) => handleKeyEvent(event, controller),
+        [controller]
     );
 
     // Handle composition events  
@@ -292,6 +273,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         inputHandler(controller, event);
+
+        if (inputType === "insertText" && typeof event.data === "string") {
+            applyTextConversion(controller, event.data);
+        }
     }, [controller]);
 
     // Keep track of DOM selection

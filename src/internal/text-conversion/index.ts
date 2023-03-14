@@ -1,53 +1,50 @@
-import { FlowOperation, FlowRange, FlowSelection } from "scribing";
-import { FlowEditorState } from "../../FlowEditorState";
+import { FlowBatch, FlowOperation, FlowRange, FlowSelection } from "scribing";
+import { FlowEditorController } from "../../FlowEditorController";
 import { MarkupConversion } from "./MarkupConversion";
-import { TextConversion } from "./TextConversion";
+import { TextConversionHandler } from "./TextConversionHandler";
 
-const ALL_HANDLERS: TextConversion[] = [
+const ALL_HANDLERS: TextConversionHandler[] = [
     MarkupConversion,
 ];
 
-export const isTextConversionTrigger = (event: KeyboardEvent): boolean => {
+export const applyTextConversion = (controller: FlowEditorController, insertedText: string): boolean => {
     for (const handler of ALL_HANDLERS) {
-        if (handler.isTrigger(event)) {
-            return true;
+        if (handler.isTrigger(insertedText)) {
+            const { state: before } = controller;
+            const { content, selection, theme } = before;
+            if (selection) {
+                const { state: before } = controller;
+                const changes: FlowOperation[] = [];
+                let newSelection: FlowSelection | undefined;
+                selection.visitRanges((range, { target, wrap: select }) => {
+                    if (target && range instanceof FlowRange && range.isCollapsed) {
+                        const { focus: position } = range;
+                        const result = handler.applyTo({
+                            content: target,
+                            position,
+                            theme,
+                            select,
+                        });
+                        if (result) {
+                            for (const entry of result) {
+                                if (entry instanceof FlowOperation) {
+                                    changes.push(entry);
+                                } else if (entry instanceof FlowSelection) {
+                                    newSelection = entry;
+                                }
+                            }
+                        }
+                    }
+                }, { target: content, theme });
+                if (changes.length > 0) {
+                    controller._apply(FlowBatch.fromArray(changes));
+                }
+                if (newSelection) {
+                    controller.setSelection(newSelection);
+                }
+                return !controller.state.equals(before);
+            }
         }
     }
     return false;
-};
-
-export interface TextConversionOptions {
-    readonly state: FlowEditorState;
-    readonly trigger: FlowSelection;
-    applyChange(change: FlowOperation | FlowEditorState, base: FlowEditorState): FlowEditorState;
-}
-
-export const applyTextConversion = (options: TextConversionOptions): FlowEditorState | undefined => {
-    const { state, trigger, applyChange } = options;
-    let result: [FlowOperation | null, FlowSelection | null] | undefined;
-    
-    trigger.visitRanges((range, options) => {
-        if (!result) {
-            const { target: content, theme, wrap: select } = options;
-            if (range instanceof FlowRange && range.isCollapsed && content) {
-                const { focus: position } = range;
-                for (const handler of ALL_HANDLERS) {
-                    if (!result) {
-                        result = handler.applyTo({ content, position, theme, select });
-                    }
-                }
-            }
-        }
-    }, { target: state.content, theme: state.theme });
-
-    if (result) {
-        const [change, newSelection] = result;
-        if (change) {
-            let nextState = applyChange(change, state);
-            if (nextState && newSelection) {
-                nextState = applyChange(nextState.set("selection", newSelection), nextState);
-            }
-            return nextState;
-        }
-    }
 };

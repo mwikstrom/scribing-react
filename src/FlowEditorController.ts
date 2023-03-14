@@ -93,6 +93,11 @@ export class FlowEditorController {
         return this.#fresh.sub(callback);
     }
 
+    /** @internal */
+    _apply(change: ApplicableChange): FlowEditorState {
+        return this.#apply(change);
+    }
+
     get state(): FlowEditorState {
         return this.#state;
     }
