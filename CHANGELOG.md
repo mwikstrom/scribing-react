@@ -1,3 +1,7 @@
+## 1.7.0 - 2023-03-14
+
+- New feature: `createImageSource(...)` for existing url (already uploaded)
+
 ## 1.6.0 - 2023-03-14
 
 - New feature: Zoom scaled down image

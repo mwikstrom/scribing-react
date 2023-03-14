@@ -1,24 +1,52 @@
 import { ImageSource, ImageSourceProps } from "scribing";
 
 /** @public */
-export const createImageSource = async (blob: Blob, upload: string): Promise<ImageSource> => {
+export function createImageSource(blob: Blob, upload: string): Promise<ImageSource>;
+
+/** @public */
+export function createImageSource(existingUrl: string): Promise<ImageSource>;
+
+/** @public */
+export function createImageSource(
+    blobOrUrl: Blob | string,
+    upload?: string
+): Promise<ImageSource> {
+    if (typeof blobOrUrl === "string") {
+        return createImageSourceFromUrl(blobOrUrl);
+    } else if (typeof upload !== "string") {
+        throw new TypeError("An upload operation identifier must be specified");
+    } else {
+        return createUploadImageSource(blobOrUrl, upload);
+    }
+}
+
+const createImageSourceFromUrl = async (url: string): Promise<ImageSource> => {
+    const image = await loadImage(url);
+    const placeholder = createPlaceholder(image);
+    const props: ImageSourceProps = {
+        width: image.width,
+        height: image.height,
+        url,
+    };
+    if (placeholder) {
+        props.placeholder = placeholder;
+    }
+    return new ImageSource(props);
+};
+
+const createUploadImageSource = async (blob: Blob, upload: string): Promise<ImageSource> => {
     const url = URL.createObjectURL(blob);
     try {
         const image = await loadImage(url);
-        const scale = getPlaceholderScale(image.width, image.height);
-        const canvas = document.createElement("canvas");
-        canvas.width = image.width * scale;
-        canvas.height = image.height * scale;
-        const context = canvas.getContext("2d");
         const props: ImageSourceProps = {
             width: image.width,
             height: image.height,
             url: "",
             upload,
         };
-        if (context) {
-            context.drawImage(image, 0, 0, canvas.width, canvas.height);
-            props.placeholder = getPlaceholderData(canvas);
+        const placeholder = createPlaceholder(image);
+        if (placeholder) {
+            props.placeholder = placeholder;
         }
         return new ImageSource(props);
     } finally {
@@ -32,6 +60,18 @@ const loadImage = async (url: string) => new Promise<HTMLImageElement>((resolve,
     image.onload = () => resolve(image);
     image.src = url;
 });
+
+const createPlaceholder = (image: HTMLImageElement): string | undefined => {
+    const scale = getPlaceholderScale(image.width, image.height);
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width * scale;
+    canvas.height = image.height * scale;
+    const context = canvas.getContext("2d");
+    if (context) {
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        return getPlaceholderData(canvas);
+    }
+};
 
 const MAX_PLACEHOLDER_PIXELS = 256;
 const getPlaceholderScale = (width: number, height: number) => Math.min(
