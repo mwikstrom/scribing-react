@@ -1,18 +1,5 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { 
-    EmptyMarkup,
-    EndMarkup,
-    FlowContent,
-    FlowCursor,
-    FlowOperation, 
-    FlowRange, 
-    FlowSelection, 
-    FlowTableSelection, 
-    ParagraphBreak, 
-    StartMarkup, 
-    TextRun, 
-    TextStyle
-} from "scribing";
+import { FlowContent, FlowOperation, FlowSelection, FlowTableSelection, TextStyle } from "scribing";
 import { FlowView, FlowViewProps } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
@@ -42,6 +29,7 @@ import { FlowEditorControllerScope } from "./internal/FlowEditorControllerScope"
 import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { FlowEditorState } from "./FlowEditorState";
+import { applyTextConversion, isTextConversionTrigger } from "./internal/text-conversion";
 
 /**
  * Component props for {@link FlowEditor}
@@ -252,67 +240,19 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
     }, [controller, onControllerChange]);
 
-    // Automatic XML tag conversion
-    const [xmlTagConversionPoint, setXmlTagConversionPoint] = useState<FlowSelection | null>(null);
+    // Automatic text conversion (to flow nodes)
+    const [textConversionPoint, setTextConversionPoint] = useState<FlowSelection | null>(null);
     useEffect(() => {
-        if (xmlTagConversionPoint?.isCollapsed) {
+        if (textConversionPoint?.isCollapsed) {
             const timerId = setTimeout(() => {
-                let change: FlowOperation | null | undefined;
-                let newSelection: FlowSelection | null | undefined;
-                xmlTagConversionPoint.visitRanges((range, options) => {
-                    const { target, wrap } = options;
-                    if (range instanceof FlowRange && range.isCollapsed && target) {
-                        let cursor = new FlowCursor(target).move(range.focus);
-                        if (cursor.node instanceof ParagraphBreak) {
-                            cursor = cursor.move(-1);
-                        }
-                        const { node, offset } = cursor;
-                        if (node instanceof TextRun) {
-                            const text = node.text.substring(0, offset + 1);
-                            const focus = cursor.position - cursor.offset + text.length;
-                            const match = /<(\/)?([a-z]+) *(\/)?>$/i.exec(text);
-                            if (match) {
-                                const [fullMatch, closeMark, tagName, emptyMark] = match;
-                                let newContent: FlowContent;
-                                const anchor = focus - fullMatch.length;
-                                const oldSelection = wrap(new FlowRange({ anchor, focus }));
-
-                                if (closeMark) {
-                                    newContent = FlowContent.fromData([
-                                        EndMarkup.fromData({ end_markup: tagName })
-                                    ]);
-                                } else if (emptyMark) {
-                                    newContent = FlowContent.fromData([
-                                        EmptyMarkup.fromData({ empty_markup: tagName })
-                                    ]);
-                                } else {
-                                    newContent = FlowContent.fromData([
-                                        StartMarkup.fromData({ start_markup: tagName }),
-                                        EndMarkup.fromData({ end_markup: tagName })
-                                    ]);
-                                }
-                                
-                                if (oldSelection) {
-                                    change = oldSelection.insert(newContent, options);
-                                    newSelection = wrap(FlowRange.at(anchor + 1));
-                                }
-                            }
-                        }
-                    }
-                }, { target: state.content, theme: state.theme });
-                setXmlTagConversionPoint(null);
-                if (change) {
-                    const nextState = applyChange(change, state);
-                    if (nextState && newSelection) {
-                        applyChange(nextState.set("selection", newSelection), nextState);
-                    }
-                }
+                applyTextConversion({ state, trigger: textConversionPoint, applyChange });
+                setTextConversionPoint(null);
             }, 300);
             return () => {
                 clearTimeout(timerId);
             };
         }
-    }, [state, xmlTagConversionPoint, setXmlTagConversionPoint, applyChange]);
+    }, [state, textConversionPoint, setTextConversionPoint, applyChange]);
 
     // Handle keyboard input
     useNativeEventHandler(
@@ -320,11 +260,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         "keydown",
         (event: KeyboardEvent) => {
             handleKeyEvent(event, controller);
-            if (!event.defaultPrevented && event.key === ">" && controller.state.selection?.isCollapsed) {
-                setXmlTagConversionPoint(controller.state.selection);
+            if (!event.defaultPrevented && controller.state.selection?.isCollapsed && isTextConversionTrigger(event)) {
+                setTextConversionPoint(controller.state.selection);
             }
         },
-        [controller, setXmlTagConversionPoint]
+        [controller, setTextConversionPoint]
     );
 
     // Handle composition events  
