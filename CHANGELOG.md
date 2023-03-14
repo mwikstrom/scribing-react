@@ -2,6 +2,7 @@
 
 - New feature: Conversion from markup text to markup nodes. Triggered by the `>` key.
 - Limit flow image resize to min 24 px
+- Display image size props
 
 ## 1.4.0 - 2023-03-12
 

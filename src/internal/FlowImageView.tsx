@@ -157,20 +157,26 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                             broken && url && classes.broken,
                             !url && classes.empty,
                         )}
+                        children={editMode && selected && controller && controller.isImage() && (
+                            <>
+                                <div className={classes.sizeProps}>
+                                    {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
+                                    {(scale * 100).toFixed(1)}%
+                                </div>
+                                <svg
+                                    className={classes.resize}
+                                    viewBox="0 0 24 24"
+                                    onMouseDown={onResizeStart}
+                                    children={(
+                                        <>
+                                            <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
+                                            <path fill="#fff" d={mdiResizeBottomRight}/>    
+                                        </>
+                                    )}
+                                />
+                            </>
+                        )}
                     />
-                    {editMode && selected && controller && controller.isImage() && (
-                        <svg
-                            className={classes.resize}
-                            viewBox="0 0 24 24"
-                            onMouseDown={onResizeStart}
-                            children={(
-                                <>
-                                    <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
-                                    <path fill="#fff" d={mdiResizeBottomRight}/>    
-                                </>
-                            )}
-                        />
-                    )}
                 </>
             )}
         />
@@ -198,6 +204,7 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         verticalAlign: "text-bottom",
         border: "none",
         backgroundRepeat: "no-repeat",
+        position: "relative",
     },
     bound: {
         transition: "opacity ease-out 0.1s",
@@ -223,6 +230,19 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
             ${Color(palette.error).fade(0.98)} 10px,
             ${Color(palette.error).fade(0.98)} 20px
         )`,
+    },
+    sizeProps: {
+        position: "absolute",
+        top: 4,
+        left: 4,
+        backgroundColor: Color(palette.tooltip).fade(0.25).toString(),
+        color: palette.tooltipText,
+        fontFamily: typography.ui,
+        fontSize: 10,
+        paddingLeft: 8,
+        paddingRight: 8,
+        textAlign: "center",
+        whiteSpace: "nowrap",
     },
     resize: {
         position: "absolute",
