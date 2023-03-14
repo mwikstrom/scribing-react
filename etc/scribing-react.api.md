@@ -158,6 +158,8 @@ export interface FlowEditorClientOptions {
 // @public (undocumented)
 export class FlowEditorController {
     constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
+    // @internal (undocumented)
+    _apply(change: ApplicableChange): FlowEditorState;
     // (undocumented)
     canMergeTableCells(): boolean;
     // (undocumented)
