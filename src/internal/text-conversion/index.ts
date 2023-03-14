@@ -1,4 +1,4 @@
-import { FlowBatch, FlowOperation, FlowRange, FlowSelection } from "scribing";
+import { FlowBatch, FlowCursor, FlowOperation, FlowRange, FlowSelection, TextRun } from "scribing";
 import { FlowEditorController } from "../../FlowEditorController";
 import { MarkupConversion } from "./MarkupConversion";
 import { TextConversionHandler } from "./TextConversionHandler";
@@ -11,31 +11,44 @@ export const applyTextConversion = (controller: FlowEditorController, insertedTe
     for (const handler of ALL_HANDLERS) {
         if (handler.isTrigger(insertedText)) {
             const { state: before } = controller;
-            const { content, selection, theme } = before;
+            const { selection } = before;
             if (selection) {
                 const { state: before } = controller;
                 const changes: FlowOperation[] = [];
                 let newSelection: FlowSelection | undefined;
-                selection.visitRanges((range, { target, wrap: select }) => {
+                selection.visitRanges((range, { target, theme, wrap: select }) => {
                     if (target && range instanceof FlowRange && range.isCollapsed) {
-                        const { focus: position } = range;
-                        const result = handler.applyTo({
-                            content: target,
-                            position,
-                            theme,
-                            select,
-                        });
-                        if (result) {
-                            for (const entry of result) {
-                                if (entry instanceof FlowOperation) {
-                                    changes.push(entry);
-                                } else if (entry instanceof FlowSelection) {
-                                    newSelection = entry;
+                        let cursor = new FlowCursor(target).move(range.focus);
+                        let delta = 0;
+                        
+                        if (!(cursor.node instanceof TextRun)) {
+                            cursor = cursor.move(-1);
+                            delta = 1;
+                        }
+                        
+                        const { node, offset } = cursor;
+                
+                        if (node instanceof TextRun) {
+                            const text = node.text.substring(0, offset + delta);
+                            const position = cursor.position - cursor.offset + text.length;
+                            const result = handler.applyTo({
+                                text,
+                                position,
+                                target: { target, theme },
+                                select,
+                            });
+                            if (result) {
+                                for (const entry of result) {
+                                    if (entry instanceof FlowOperation) {
+                                        changes.push(entry);
+                                    } else if (entry instanceof FlowSelection) {
+                                        newSelection = entry;
+                                    }
                                 }
                             }
                         }
                     }
-                }, { target: content, theme });
+                }, { target: before.content, theme: before.theme });
                 if (changes.length > 0) {
                     controller._apply(FlowBatch.fromArray(changes));
                 }

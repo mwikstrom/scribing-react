@@ -1,4 +1,4 @@
-import { FlowOperation, FlowSelection, FlowContent, FlowTheme, FlowRange } from "scribing";
+import { FlowOperation, FlowSelection, FlowRange, TargetOptions } from "scribing";
 
 export interface TextConversionHandler {
     isTrigger(insertedText: string): boolean;
@@ -6,8 +6,8 @@ export interface TextConversionHandler {
 }
 
 export interface TextConversionContext {
-    readonly content: FlowContent;
+    readonly text: string;
     readonly position: number;
-    readonly theme: FlowTheme | undefined;
+    readonly target: TargetOptions;
     select(range: FlowRange): FlowSelection | null;
 }
