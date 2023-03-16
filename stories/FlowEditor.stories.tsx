@@ -843,6 +843,34 @@ Table.args = {
     ])),
 };
 
+export const TableWithHeading = Template.bind({});
+TableWithHeading.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "A1": ["A1", { break: "para" }],
+                "B1": ["B1", { break: "para" }],
+                "C1": ["C1", { break: "para" }],
+                "A2": ["A2", { break: "para" }],
+                "B2": ["B2", { break: "para" }],
+                "C2": ["C2", { break: "para" }],
+                "A3": ["A3", { break: "para" }],
+                "B3": ["B3", { break: "para" }],
+                "C3": ["C3", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+            style: {
+                head: 1,
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])),
+};
+
 export const TableInABox = Template.bind({});
 TableInABox.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{

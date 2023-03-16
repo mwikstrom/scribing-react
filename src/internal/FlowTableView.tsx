@@ -47,6 +47,7 @@ export const FlowTableView = flowNode<FlowTable>((props, ref) => {
                                     position={pos}
                                     cell={node.content.getCell(pos, true)}
                                     outerSelection={outerSelection}
+                                    heading={typeof style.head === "number" && index < style.head}
                                 />
                             ))}
                         </tr>

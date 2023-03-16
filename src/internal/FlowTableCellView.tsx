@@ -3,6 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { CellPosition, FlowSelection, FlowTableCell, FlowTableCellSelection, NestedFlowSelection } from "scribing";
 import { useEditMode } from "./EditModeScope";
 import { FlowContentView } from "./FlowContentView";
+import { FlowThemeScope, useFlowTheme } from "./FlowThemeScope";
 import { useIsParentSelectionActive } from "./hooks/use-is-parent-selection-active";
 import { createUseFlowStyles } from "./JssTheming";
 import { FlowAxis, setupFlowAxisMapping } from "./mapping/flow-axis";
@@ -12,10 +13,11 @@ export interface FlowTableCellViewProps {
     cell: FlowTableCell;
     position: CellPosition;
     outerSelection: FlowSelection | boolean;
+    heading: boolean;
 }
 
 export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
-    const { cell, position, outerSelection } = props;
+    const { cell, position, outerSelection, heading } = props;
     const { content, colSpan, rowSpan } = cell;
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
@@ -31,6 +33,8 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
     );
     const editMode = useEditMode();
     const classes = useStyles();
+    const outerTheme = useFlowTheme();
+    const innerTheme = heading ? outerTheme.getTableHeadingTheme() : outerTheme.getTableBodyTheme();
     const className = clsx(
         classes.root,
         innerSelection === true && (editMode === true ? classes.selectedActive : classes.selectedInactive),
@@ -44,10 +48,12 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
             contentEditable={!!editMode && !isParentSelectionActive}
             suppressContentEditableWarning={true}
             children={(
-                <FlowContentView
-                    content={content}
-                    selection={innerSelection}
-                />
+                <FlowThemeScope theme={innerTheme}>
+                    <FlowContentView
+                        content={content}
+                        selection={innerSelection}
+                    />
+                </FlowThemeScope>
             )}
         />
     );
