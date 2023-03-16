@@ -94,7 +94,7 @@ const useStyles = createUseFlowStyles("FlowTableCell", ({palette}) => ({
             backgroundColor: Color(palette.subtle).alpha(0.075).toString(),
         },
         "&$lastHeadingRow": {
-            borderBottom: `1px solid ${Color(palette.subtle).alpha(0.85)}`,
+            borderBottom: `1px solid ${Color(palette.subtle).alpha(0.5)}`,
         },
     },
     editMode: {},

@@ -1,3 +1,7 @@
+## 1.7.2 - 2023-03-16
+
+- Fix: Last table heading row border opacity
+
 ## 1.7.1 - 2023-03-16
 
 - Fix: Basic table style + heading rows
