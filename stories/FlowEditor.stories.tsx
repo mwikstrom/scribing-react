@@ -871,6 +871,39 @@ TableWithHeading.args = {
     ])),
 };
 
+export const TableWithHeadingPreview = Template.bind({});
+TableWithHeadingPreview.args = { defaultState: TableWithHeading.args.defaultState?.set("preview", true) };
+
+export const TableWithDoubleHeading = Template.bind({});
+TableWithDoubleHeading.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Before",
+        { break: "para" },
+        {
+            table: {
+                "A1": ["A1", { break: "para" }],
+                "B1": { content: ["B1", { break: "para" }], rowSpan: 2 },
+                "C1": ["C1", { break: "para" }],
+                "A2": ["A2", { break: "para" }],
+                "C2": ["C2", { break: "para" }],
+                "A3": ["A3", { break: "para" }],
+                "B3": ["B3", { break: "para" }],
+                "C3": ["C3", { break: "para" }],
+                "default": [{ break: "para" }],
+            },
+            style: {
+                head: 2,
+            },
+        },
+        { break: "para" },
+        "After",
+        { break: "para" },
+    ])),
+};
+
+export const TableWithDoubleHeadingPreview = Template.bind({});
+TableWithDoubleHeadingPreview.args = { defaultState: TableWithDoubleHeading.args.defaultState?.set("preview", true) };
+
 export const TableInABox = Template.bind({});
 TableInABox.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
@@ -950,6 +983,10 @@ TableWithSpans.args = {
         { break: "para" },
     ])),
 };
+
+export const TableWithSpansPreview = Template.bind({});
+TableWithSpansPreview.args = { defaultState: TableWithSpans.args.defaultState?.set("preview", true) };
+
 
 export const SparseTable = Template.bind({});
 SparseTable.args = {

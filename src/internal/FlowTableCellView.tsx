@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Color from "color";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { CellPosition, FlowSelection, FlowTableCell, FlowTableCellSelection, NestedFlowSelection } from "scribing";
 import { useEditMode } from "./EditModeScope";
@@ -13,11 +14,12 @@ export interface FlowTableCellViewProps {
     cell: FlowTableCell;
     position: CellPosition;
     outerSelection: FlowSelection | boolean;
-    heading: boolean;
+    headingRowCount: number;
+    totalRowCount: number;
 }
 
 export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
-    const { cell, position, outerSelection, heading } = props;
+    const { cell, position, outerSelection, headingRowCount, totalRowCount } = props;
     const { content, colSpan, rowSpan } = cell;
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
@@ -34,9 +36,18 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
     const editMode = useEditMode();
     const classes = useStyles();
     const outerTheme = useFlowTheme();
-    const innerTheme = heading ? outerTheme.getTableHeadingTheme() : outerTheme.getTableBodyTheme();
+    const isHeadingCell = position.row < headingRowCount;
+    const isFirstRow = position.row === 0;
+    const isLastHeadingRow = position.row + cell.rowSpan === headingRowCount;
+    const isLastRow = position.row + cell.rowSpan === totalRowCount;
+    const innerTheme = isHeadingCell ? outerTheme.getTableHeadingTheme() : outerTheme.getTableBodyTheme();
     const className = clsx(
         classes.root,
+        editMode && classes.editMode,
+        isHeadingCell && classes.heading,
+        isFirstRow && classes.firstRow,
+        isLastHeadingRow && classes.lastHeadingRow,
+        isLastRow && classes.lastRow,
         innerSelection === true && (editMode === true ? classes.selectedActive : classes.selectedInactive),
     );
     return (
@@ -61,17 +72,36 @@ export const FlowTableCellView: FC<FlowTableCellViewProps> = props => {
 
 const useStyles = createUseFlowStyles("FlowTableCell", ({palette}) => ({
     root: {
-        border: `1px solid ${palette.subtle}`,
         padding: "0.2rem 0.5rem",
         outline: "none",
         verticalAlign: "top",
+        "&$editMode": {
+            border: `1px dashed ${Color(palette.subtle).alpha(0.25)}`,
+        },
         "&>.ScribingParagraph-root:first-child": {
             marginTop: "0 !important",
         },
         "&>.ScribingParagraph-root:last-child": {
             marginBottom: "0 !important",
         },
+        "&$firstRow": {
+            borderTop: `1px solid ${Color(palette.subtle).alpha(0.5)}`,
+        },
+        "&:not($heading)": {
+            borderBottom: `1px solid ${Color(palette.subtle).alpha(0.5)}`,
+        },
+        "&$heading": {
+            backgroundColor: Color(palette.subtle).alpha(0.075).toString(),
+        },
+        "&$lastHeadingRow": {
+            borderBottom: `1px solid ${Color(palette.subtle).alpha(0.85)}`,
+        },
     },
+    editMode: {},
+    heading: {},
+    lastRow: {},
+    firstRow: {},
+    lastHeadingRow: {},
     selectedActive: {
         borderColor: palette.selectionText,
         backgroundColor: palette.selection,
