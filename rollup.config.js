@@ -20,7 +20,7 @@ export default [
             },
         ],
         external: id => (
-            !(id in pkg.dependencies) && 
+            !(id in (pkg.dependencies || {})) && 
             !/(src|node_modules)/.test(id) && 
             !/^\.+/.test(id)
         ),
