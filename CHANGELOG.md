@@ -1,3 +1,7 @@
+## 1.8.0 - 2023-04-11
+
+- Support attributes in text to markup conversion
+
 ## 1.7.2 - 2023-03-16
 
 - Fix: Last table heading row border opacity
