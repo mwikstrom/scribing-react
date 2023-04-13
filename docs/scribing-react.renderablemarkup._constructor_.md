@@ -9,16 +9,12 @@ Constructs a new instance of the `RenderableMarkup` class
 <b>Signature:</b>
 
 ```typescript
-constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupProcessingScope | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
+constructor(input: MarkupHandlerInput<ReactNode>);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  node | StartMarkup \| EmptyMarkup |  |
-|  content | FlowContent \| null |  |
-|  transform | (content: FlowContent) =&gt; Promise&lt;FlowContent&gt; |  |
-|  parent | MarkupProcessingScope \| null |  |
-|  siblingsBefore | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
+|  input | MarkupHandlerInput&lt;ReactNode&gt; |  |
 

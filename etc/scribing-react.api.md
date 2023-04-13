@@ -21,6 +21,7 @@ import { FlowTheme } from 'scribing';
 import { HTMLAttributes } from 'react';
 import { ImageSource } from 'scribing';
 import { Interaction } from 'scribing';
+import { MarkupHandlerInput } from 'scribing';
 import { MarkupProcessingScope } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
@@ -716,7 +717,7 @@ export type MarkupContext = MarkupProcessingScope;
 
 // @public (undocumented)
 export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
-    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupProcessingScope | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
+    constructor(input: MarkupHandlerInput<ReactNode>);
     // (undocumented)
     get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
@@ -729,7 +730,7 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     // (undocumented)
     get parent(): MarkupProcessingScope | null;
     // (undocumented)
-    render(input?: FlowContent | null): Promise<ReactNode>;
+    render(content?: FlowContent | null): Promise<ReactNode>;
     // (undocumented)
     get siblingsBefore(): readonly (StartMarkup | EmptyMarkup)[];
     // (undocumented)

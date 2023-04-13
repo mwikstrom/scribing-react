@@ -3,13 +3,13 @@ import { ReactNode } from "react";
 import { 
     EmptyMarkup,
     FlowContent,
-    FlowCursor,
-    FlowNode,
-    FlowRange,
     ParagraphBreak,
     Script,
     StartMarkup,
     MarkupProcessingScope,
+    extractMarkup,
+    MarkupHandlerInput,
+    processNestedMarkup,
 } from "scribing";
 import { FlowContentView } from "./internal/FlowContentView";
 
@@ -17,32 +17,20 @@ import { FlowContentView } from "./internal/FlowContentView";
  * @public
  */
 export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
-    readonly #node: StartMarkup | EmptyMarkup;
+    readonly #input: MarkupHandlerInput<ReactNode>;
     #content: FlowContent | null;
-    readonly #transform: (content: FlowContent) => Promise<FlowContent>;
-    readonly #parent: MarkupProcessingScope | null;
-    readonly #siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
 
-    constructor(
-        node: StartMarkup | EmptyMarkup,
-        content: FlowContent | null,
-        transform: (content: FlowContent) => Promise<FlowContent>,
-        parent: MarkupProcessingScope | null,
-        siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]
-    ) {
-        this.#node = node;
-        this.#content = content;
-        this.#transform = transform;
-        this.#parent = parent;
-        this.#siblingsBefore = siblingsBefore;
+    constructor(input: MarkupHandlerInput<ReactNode>) {
+        this.#input = input;
+        this.#content = input.content;
     }
 
     public get tag(): string {
-        return this.#node.tag;
+        return this.#input.node.tag;
     }
 
     public get attr(): ReadonlyMap<string, string | Script> {
-        return this.#node.attr;
+        return this.#input.node.attr;
     }
 
     public get isEmpty(): boolean {
@@ -68,11 +56,11 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     }
 
     public get parent(): MarkupProcessingScope | null {
-        return this.#parent;
+        return this.#input.parent;
     }
 
     public get siblingsBefore(): readonly (StartMarkup | EmptyMarkup)[] {
-        return this.#siblingsBefore;
+        return this.#input.siblingsBefore;
     }
     
     public extract(
@@ -82,81 +70,16 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
             return [];
         }
 
-        if (typeof predicate === "string") {
-            const needle = predicate;
-            predicate = (tag: string) => tag === needle;
-        } else if (predicate instanceof RegExp) {
-            const pattern = predicate;
-            predicate = (tag: string) => pattern.test(tag);
-        }
+        const input = { ...this.#input, content: this.#content };
+        const [remainder, ...extracted] = extractMarkup(input, predicate);
 
-        const remainder: FlowNode[] = [];
-        const extracted: RenderableMarkup[] = [];
-        const siblingsBefore: (EmptyMarkup | StartMarkup)[] = [];
-        const context: MarkupProcessingScope = Object.freeze({
-            node: this.#node,
-            parent: this.#parent,
-            siblingsBefore: this.#siblingsBefore,
-        });
-
-        const pushNext = (node: EmptyMarkup | StartMarkup, content: FlowContent | null) => {
-            const next = new RenderableMarkup(
-                node,
-                content,
-                this.#transform,
-                context,
-                Object.freeze([...siblingsBefore])
-            );
-            extracted.push(next);
-            siblingsBefore.push(node);
-        };
-    
-        let omitNextParaBreak = false;
-
-        for (
-            let cursor: FlowCursor | null = this.#content.peek(0);
-            cursor !== null;
-            cursor = cursor.moveToStartOfNextNode()
-        ) {
-            const { node } = cursor;
-
-            if (node instanceof EmptyMarkup && predicate(node.tag, node.attr)) {
-                pushNext(node, null);
-                omitNextParaBreak = true;
-                continue;
-            }
-
-            if (node instanceof StartMarkup) {
-                const end = cursor.findMarkupEnd();
-                if (end && predicate(node.tag, node.attr)) {
-                    const start = cursor.position + node.size;
-                    const distance = end.position - start;
-                    const content = this.#content.copy(FlowRange.at(start, distance));
-                    pushNext(node, content);
-                    cursor = end;
-                    omitNextParaBreak = true;
-                    continue;
-                }
-            }
-
-            if (node instanceof ParagraphBreak && omitNextParaBreak) {
-                omitNextParaBreak = false;
-                continue;
-            }
-
-            if (node) {
-                remainder.push(node);
-                omitNextParaBreak = false;
-            }
-        }
-
-        this.#content = FlowContent.fromData(remainder);
-        return extracted;        
+        this.#content = remainder;
+        return extracted.map(input => new RenderableMarkup(input));        
     }    
 
-    public async render(input = this.#content): Promise<ReactNode> {
-        if (input) {
-            const transformed = await this.#transform(input);
+    public async render(content = this.#content): Promise<ReactNode> {
+        if (content) {
+            const transformed = await processNestedMarkup(this.#input, content);
             return <FlowContentView content={transformed}/>;
         } else {
             return null;

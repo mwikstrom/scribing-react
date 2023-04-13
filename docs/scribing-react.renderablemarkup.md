@@ -16,7 +16,7 @@ export declare class RenderableMarkup implements Omit<MarkupProcessingScope, "no
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(node, content, transform, parent, siblingsBefore)](./scribing-react.renderablemarkup._constructor_.md) |  | Constructs a new instance of the <code>RenderableMarkup</code> class |
+|  [(constructor)(input)](./scribing-react.renderablemarkup._constructor_.md) |  | Constructs a new instance of the <code>RenderableMarkup</code> class |
 
 ## Properties
 
@@ -34,5 +34,5 @@ export declare class RenderableMarkup implements Omit<MarkupProcessingScope, "no
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [extract(predicate)](./scribing-react.renderablemarkup.extract.md) |  |  |
-|  [render(input)](./scribing-react.renderablemarkup.render.md) |  |  |
+|  [render(content)](./scribing-react.renderablemarkup.render.md) |  |  |
 

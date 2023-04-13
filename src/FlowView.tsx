@@ -153,10 +153,7 @@ const processMarkup = (
 };
 
 const makeCoreHandler = (handler: (event: RenderMarkupEvent) => void): MarkupHandler<ReactNode> => async input => {
-    const { node, parent, siblingsBefore, content } = input;
-    const scope: MarkupProcessingScope = { node, parent, siblingsBefore };
-    const transform = (unprocessed: FlowContent) => processMarkup(unprocessed, handler, scope);
-    const markup = new RenderableMarkup(node, content, transform, parent, siblingsBefore);
+    const markup = new RenderableMarkup(input);
     const event = new RenderMarkupEvent(markup);
     handler(event);
     await event._complete();
