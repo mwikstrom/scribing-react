@@ -21,6 +21,7 @@ import { FlowTheme } from 'scribing';
 import { HTMLAttributes } from 'react';
 import { ImageSource } from 'scribing';
 import { Interaction } from 'scribing';
+import { MarkupProcessingScope } from 'scribing';
 import { ParagraphStyle } from 'scribing';
 import { ParagraphStyleProps } from 'scribing';
 import { ParagraphVariant } from 'scribing';
@@ -710,19 +711,12 @@ export class LoadAssetEvent extends DeferrableEvent {
     set url(value: string);
 }
 
-// @public (undocumented)
-export interface MarkupContext {
-    // (undocumented)
-    readonly node: StartMarkup | EmptyMarkup;
-    // (undocumented)
-    readonly parent: MarkupContext | null;
-    // (undocumented)
-    readonly siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
-}
+// @public @deprecated (undocumented)
+export type MarkupContext = MarkupProcessingScope;
 
 // @public (undocumented)
-export class RenderableMarkup implements Omit<MarkupContext, "node"> {
-    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupContext | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
+export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
+    constructor(node: StartMarkup | EmptyMarkup, content: FlowContent | null, transform: (content: FlowContent) => Promise<FlowContent>, parent: MarkupProcessingScope | null, siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]);
     // (undocumented)
     get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
@@ -733,7 +727,7 @@ export class RenderableMarkup implements Omit<MarkupContext, "node"> {
     // (undocumented)
     get isEmpty(): boolean;
     // (undocumented)
-    get parent(): MarkupContext | null;
+    get parent(): MarkupProcessingScope | null;
     // (undocumented)
     render(input?: FlowContent | null): Promise<ReactNode>;
     // (undocumented)

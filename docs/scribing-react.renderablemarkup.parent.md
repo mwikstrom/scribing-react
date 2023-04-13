@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-get parent(): MarkupContext | null;
+get parent(): MarkupProcessingScope | null;
 ```

@@ -2,20 +2,15 @@
 
 [Home](./index.md) &gt; [scribing-react](./scribing-react.md) &gt; [MarkupContext](./scribing-react.markupcontext.md)
 
-## MarkupContext interface
+## MarkupContext type
 
+> Warning: This API is now obsolete.
+> 
+> Use `MarkupProcessingScope` instead
+> 
 
 <b>Signature:</b>
 
 ```typescript
-export interface MarkupContext 
+export declare type MarkupContext = MarkupProcessingScope;
 ```
-
-## Properties
-
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [node](./scribing-react.markupcontext.node.md) | StartMarkup \| EmptyMarkup |  |
-|  [parent](./scribing-react.markupcontext.parent.md) | [MarkupContext](./scribing-react.markupcontext.md) \| null |  |
-|  [siblingsBefore](./scribing-react.markupcontext.siblingsbefore.md) | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
-

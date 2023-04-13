@@ -2,17 +2,11 @@ import clsx from "clsx";
 import React, { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { createUseStyles } from "react-jss";
 import {
-    AsyncFlowNodeVisitor,
-    EmptyMarkup,
-    FlowBox,
     FlowContent,
-    FlowCursor,
-    FlowNode,
-    FlowRange,
     FlowSelection,
     FlowTheme,
-    ParagraphBreak,
-    StartMarkup,
+    MarkupHandler,
+    MarkupProcessingScope,
 } from "scribing";
 import { FormatMarkupAttributeEvent } from "./FormatMarkupAttributeEvent";
 import { AssetLoaderScope } from "./internal/AssetLoaderScope";
@@ -25,11 +19,11 @@ import { LinkResolverScope } from "./internal/LinkResolverScope";
 import { setMarkupReplacement } from "./internal/MarkupView";
 import { makeJssId } from "./internal/utils/make-jss-id";
 import { LoadAssetEvent } from "./LoadAssetEvent";
-import { MarkupContext } from "./MarkupContext";
 import { RenderableMarkup } from "./RenderableMarkup";
 import { RenderMarkupEvent } from "./RenderMarkupEvent";
 import { ResolveLinkEvent } from "./ResolveLinkEvent";
 import { useIsInsideSharedListCounterScope } from "./SharedListCounterScope";
+import { processMarkup as processMarkupCore } from "scribing";
 
 /**
  * Component props for {@link FlowView}
@@ -149,121 +143,24 @@ const useStyles = createUseStyles({
     generateId: makeJssId("FlowView"),
 });
 
-type ParagraphMode = "empty" | "not-empty" | "omit";
-
-const processMarkup = async (
-    input: FlowContent,
+const processMarkup = (
+    content: FlowContent,
     handler: (event: RenderMarkupEvent) => void,
-    parent: MarkupContext | null,
+    parent: MarkupProcessingScope | null,
 ): Promise<FlowContent> => {
-    const output: FlowNode[] = [];
-    await renderMarkup(input, handler, parent, output, "empty");
-    return FlowContent.fromData(output);
+    const coreHandler = makeCoreHandler(handler);
+    return processMarkupCore(content, coreHandler, setMarkupReplacement, parent);
 };
 
-const renderMarkup = async (
-    input: FlowContent,
-    handler: (event: RenderMarkupEvent) => void,
-    parent: MarkupContext | null,
-    output: FlowNode[],
-    mode: ParagraphMode,
-): Promise<ParagraphMode> => {
-    let siblingsBefore: readonly (StartMarkup | EmptyMarkup)[] = Object.freeze([]);
-    for (
-        let cursor: FlowCursor | null = input.peek(0);
-        cursor != null;
-        cursor = cursor.moveToStartOfNextNode()
-    ) {
-        const { node } = cursor;
-        if (node instanceof StartMarkup) {
-            const end = cursor.findMarkupEnd();
-            if (end === null) {
-                output.push(node);
-            } else {
-                const start = cursor.position + node.size;
-                const distance = end.position - start;
-                const content = input.copy(FlowRange.at(start, distance));
-                mode = await renderMarkupNode(output, mode, handler, node, parent, siblingsBefore, content);
-                siblingsBefore = Object.freeze([...siblingsBefore, node]);
-                cursor = end;
-            }
-        } else if (node instanceof EmptyMarkup) {
-            mode = await renderMarkupNode(output, mode, handler, node, parent, siblingsBefore);
-            siblingsBefore = Object.freeze([...siblingsBefore, node]);
-        } else if (node instanceof ParagraphBreak) {
-            if (mode !== "omit") {
-                output.push(node);
-            }
-            mode = "empty";
-        } else if (node instanceof FlowBox) {
-            const content = await processMarkup(node.content, handler, parent);
-            output.push(node.set("content", content));
-            mode = "not-empty";
-        } else if (node !== null) {
-            output.push(await new MarkupProcessor(handler, parent).visitNode(node));
-            mode = "not-empty";
-        }
-    }
-    return mode;
-};
-
-class MarkupProcessor extends AsyncFlowNodeVisitor {
-    readonly #handler: (event: RenderMarkupEvent) => void;
-    readonly #parent: MarkupContext | null;
-
-    constructor(
-        handler: (event: RenderMarkupEvent) => void,
-        parent: MarkupContext | null,
-    ) {
-        super();
-        this.#handler = handler;
-        this.#parent = parent;
-    }
-
-    override visitFlowContent(content: FlowContent): Promise<FlowContent> {
-        return processMarkup(content, this.#handler, this.#parent);
-    }
-}
-
-const renderMarkupNode = async (
-    output: FlowNode[],
-    mode: ParagraphMode,
-    handler: (event: RenderMarkupEvent) => void,
-    node: StartMarkup | EmptyMarkup,
-    parent: MarkupContext | null,
-    siblingsBefore: readonly (StartMarkup | EmptyMarkup)[],
-    content: FlowContent | null = null,
-): Promise<ParagraphMode> => {
-    const nestedContext: MarkupContext = Object.freeze({
-        parent,
-        node,
-        siblingsBefore,
-    });
-    const transform = (input: FlowContent) => processMarkup(input, handler, nestedContext);
+const makeCoreHandler = (handler: (event: RenderMarkupEvent) => void): MarkupHandler<ReactNode> => async input => {
+    const { node, parent, siblingsBefore, content } = input;
+    const scope: MarkupProcessingScope = { node, parent, siblingsBefore };
+    const transform = (unprocessed: FlowContent) => processMarkup(unprocessed, handler, scope);
     const markup = new RenderableMarkup(node, content, transform, parent, siblingsBefore);
     const event = new RenderMarkupEvent(markup);
     handler(event);
     await event._complete();
-    let { result } = event;
-    
-    if (result === undefined) {
-        result = content;
-    }
-    
-    if (result instanceof FlowContent) {
-        mode = await renderMarkup(result, handler, nestedContext, output, mode);
-    } else if (result !== null) {
-        // Register replacement React node. The flow markup node must be given a replacement tag name
-        // so that it is not equal to the flow node being replaced. Prior to 1.1.3 we kept the old tag
-        // name causing the replacement flow node to be considered equal to the replaced node which in
-        // turn kicked in the "keep unchanged"-logic when replacing flow box content in `renderMarkup`
-        // above (line 189: `output.push(node.set("content", content));`)
-        const placeholder = new EmptyMarkup(node).set("tag", `REPLACEMENT_${node.tag}`);
-        setMarkupReplacement(placeholder, result);
-        output.push(placeholder);
-        return "not-empty";
-    }
-    return mode === "empty" ? "omit" : mode;
+    return event.result;
 };
 
 const makeError = (input: unknown): Error => input instanceof Error ? input : new Error(String(input));

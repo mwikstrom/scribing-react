@@ -9,25 +9,25 @@ import {
     ParagraphBreak,
     Script,
     StartMarkup,
+    MarkupProcessingScope,
 } from "scribing";
 import { FlowContentView } from "./internal/FlowContentView";
-import { MarkupContext } from "./MarkupContext";
 
 /**
  * @public
  */
-export class RenderableMarkup implements Omit<MarkupContext, "node"> {
+export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     readonly #node: StartMarkup | EmptyMarkup;
     #content: FlowContent | null;
     readonly #transform: (content: FlowContent) => Promise<FlowContent>;
-    readonly #parent: MarkupContext | null;
+    readonly #parent: MarkupProcessingScope | null;
     readonly #siblingsBefore: readonly (StartMarkup | EmptyMarkup)[];
 
     constructor(
         node: StartMarkup | EmptyMarkup,
         content: FlowContent | null,
         transform: (content: FlowContent) => Promise<FlowContent>,
-        parent: MarkupContext | null,
+        parent: MarkupProcessingScope | null,
         siblingsBefore: readonly (StartMarkup | EmptyMarkup)[]
     ) {
         this.#node = node;
@@ -67,7 +67,7 @@ export class RenderableMarkup implements Omit<MarkupContext, "node"> {
         this.#content = value;
     }
 
-    public get parent(): MarkupContext | null {
+    public get parent(): MarkupProcessingScope | null {
         return this.#parent;
     }
 
@@ -93,7 +93,7 @@ export class RenderableMarkup implements Omit<MarkupContext, "node"> {
         const remainder: FlowNode[] = [];
         const extracted: RenderableMarkup[] = [];
         const siblingsBefore: (EmptyMarkup | StartMarkup)[] = [];
-        const context: MarkupContext = Object.freeze({
+        const context: MarkupProcessingScope = Object.freeze({
             node: this.#node,
             parent: this.#parent,
             siblingsBefore: this.#siblingsBefore,

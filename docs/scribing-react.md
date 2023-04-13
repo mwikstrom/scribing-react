@@ -67,7 +67,6 @@ React components for collaborative rich text editing
 |  [InteractionLoggerScopeProps](./scribing-react.interactionloggerscopeprops.md) |  |
 |  [LinkArgs](./scribing-react.linkargs.md) |  |
 |  [LinkOpener](./scribing-react.linkopener.md) |  |
-|  [MarkupContext](./scribing-react.markupcontext.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
 |  [ScribingImageZoomProps](./scribing-react.scribingimagezoomprops.md) |  |
@@ -102,5 +101,6 @@ React components for collaborative rich text editing
 |  [ConnectionStatus](./scribing-react.connectionstatus.md) |  |
 |  [InteractionLogger](./scribing-react.interactionlogger.md) |  |
 |  [LinkAction](./scribing-react.linkaction.md) |  |
+|  [MarkupContext](./scribing-react.markupcontext.md) |  |
 |  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
 

@@ -16,7 +16,6 @@ export * from "./LoadAssetEvent";
 export * from "./ResolveLinkEvent";
 export * from "./StoreAssetEvent";
 export * from "./InitEditorEvent";
-export * from "./MarkupContext";
 export * from "./RenderableMarkup";
 export * from "./RenderMarkupEvent";
 export * from "./FormatMarkupAttributeEvent";
@@ -59,3 +58,7 @@ export * from "./ApplicationErrorRenderScope";
 
 // Shared list counter scope
 export * from "./SharedListCounterScope";
+
+// Deprecated
+export * from "./deprecated";
+
