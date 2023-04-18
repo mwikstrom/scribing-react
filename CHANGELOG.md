@@ -1,3 +1,7 @@
+## 1.8.1 - 2023-04-18
+
+- Upgrade to `scribing` version `1.3.0`
+
 ## 1.8.0 - 2023-04-11
 
 - Support attributes in text to markup conversion
