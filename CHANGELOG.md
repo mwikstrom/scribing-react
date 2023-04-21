@@ -1,3 +1,7 @@
+## 1.9.1 - 2023-04-21
+
+- Use `isEmptyFlowContent` from core lib
+
 ## 1.9.0 - 2023-04-21
 
 - New feature: Expose `node` in `RenderableMarkup`

@@ -3,13 +3,13 @@ import { ReactNode } from "react";
 import { 
     EmptyMarkup,
     FlowContent,
-    ParagraphBreak,
     Script,
     StartMarkup,
     MarkupProcessingScope,
     extractMarkup,
     MarkupHandlerInput,
     processNestedMarkup,
+    isEmptyFlowContent,
 } from "scribing";
 import { FlowContentView } from "./internal/FlowContentView";
 
@@ -38,17 +38,7 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     }
 
     public get isEmpty(): boolean {
-        if (!this.#content) {
-            return true;
-        }
-        const { nodes } = this.#content;
-        if (nodes.length < 1) {
-            return true;
-        } else if (nodes.length > 1) {
-            return false;
-        } else {
-            return nodes[0] instanceof ParagraphBreak;
-        }
+        return isEmptyFlowContent(this.#content);
     }
 
     public get content(): FlowContent {
