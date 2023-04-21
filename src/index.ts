@@ -42,6 +42,7 @@ export * from "./FlowEditorController";
 export * from "./DataIcon";
 export * from "./FlowView";
 export * from "./FlowEditor";
+export * from "./NestedFlowView";
 
 // Client hook
 export * from "./FlowEditorClient";

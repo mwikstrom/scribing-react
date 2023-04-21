@@ -25,6 +25,10 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
         this.#content = input.content;
     }
 
+    public get node(): StartMarkup | EmptyMarkup {
+        return this.#input.node;
+    }
+
     public get tag(): string {
         return this.#input.node.tag;
     }

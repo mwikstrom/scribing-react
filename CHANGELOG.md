@@ -1,3 +1,8 @@
+## 1.9.0 - 2023-04-21
+
+- New feature: Expose `node` in `RenderableMarkup`
+- New feature: `<NestedFlowView>`
+
 ## 1.8.1 - 2023-04-18
 
 - Upgrade to `scribing` version `1.3.0`

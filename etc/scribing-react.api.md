@@ -716,6 +716,15 @@ export class LoadAssetEvent extends DeferrableEvent {
 export type MarkupContext = MarkupProcessingScope;
 
 // @public (undocumented)
+export const NestedFlowView: (props: NestedFlowViewProps) => JSX.Element | null;
+
+// @public (undocumented)
+export interface NestedFlowViewProps {
+    // (undocumented)
+    children?: FlowContent | null;
+}
+
+// @public (undocumented)
 export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     constructor(input: MarkupHandlerInput<ReactNode>);
     // (undocumented)
@@ -727,6 +736,8 @@ export class RenderableMarkup implements Omit<MarkupProcessingScope, "node"> {
     extract(predicate: string | RegExp | ((tag: string, attr: ReadonlyMap<string, string | Script>) => boolean)): RenderableMarkup[];
     // (undocumented)
     get isEmpty(): boolean;
+    // (undocumented)
+    get node(): StartMarkup | EmptyMarkup;
     // (undocumented)
     get parent(): MarkupProcessingScope | null;
     // (undocumented)

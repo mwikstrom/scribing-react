@@ -67,6 +67,7 @@ React components for collaborative rich text editing
 |  [InteractionLoggerScopeProps](./scribing-react.interactionloggerscopeprops.md) |  |
 |  [LinkArgs](./scribing-react.linkargs.md) |  |
 |  [LinkOpener](./scribing-react.linkopener.md) |  |
+|  [NestedFlowViewProps](./scribing-react.nestedflowviewprops.md) |  |
 |  [ScribingButtonProps](./scribing-react.scribingbuttonprops.md) |  |
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
 |  [ScribingImageZoomProps](./scribing-react.scribingimagezoomprops.md) |  |
@@ -87,6 +88,7 @@ React components for collaborative rich text editing
 |  [FlowPaletteScope](./scribing-react.flowpalettescope.md) |  |
 |  [FlowTypographyScope](./scribing-react.flowtypographyscope.md) |  |
 |  [FlowView](./scribing-react.flowview.md) | Flow content view component |
+|  [NestedFlowView](./scribing-react.nestedflowview.md) |  |
 |  [ScribingComponentOverride](./scribing-react.scribingcomponentoverride.md) |  |
 |  [SharedListCounterScope](./scribing-react.sharedlistcounterscope.md) | Nested <code>&lt;FlowView&gt;</code> components use a shared counter for list items on level 1 |
 |  [useIsInsideSharedListCounterScope](./scribing-react.useisinsidesharedlistcounterscope.md) |  |

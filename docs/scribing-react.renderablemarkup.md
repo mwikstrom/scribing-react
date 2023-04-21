@@ -25,6 +25,7 @@ export declare class RenderableMarkup implements Omit<MarkupProcessingScope, "no
 |  [attr](./scribing-react.renderablemarkup.attr.md) |  | ReadonlyMap&lt;string, string \| Script&gt; |  |
 |  [content](./scribing-react.renderablemarkup.content.md) |  | FlowContent |  |
 |  [isEmpty](./scribing-react.renderablemarkup.isempty.md) |  | boolean |  |
+|  [node](./scribing-react.renderablemarkup.node.md) |  | StartMarkup \| EmptyMarkup |  |
 |  [parent](./scribing-react.renderablemarkup.parent.md) |  | MarkupProcessingScope \| null |  |
 |  [siblingsBefore](./scribing-react.renderablemarkup.siblingsbefore.md) |  | readonly (StartMarkup \| EmptyMarkup)\[\] |  |
 |  [tag](./scribing-react.renderablemarkup.tag.md) |  | string |  |
