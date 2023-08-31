@@ -100,6 +100,28 @@ CustomEmptyTagEditor.args = {
     ])),
 };
 
+export const CustomTagEditorInABox = Template.bind({});
+CustomTagEditorInABox.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "There should be a custom tag editor in a box here:",
+        { break: "para" },
+        {
+            box: [
+                "before",
+                { break: "para" },
+                { empty_markup: "CustomTag" },
+                { break: "para" },
+                "after",
+                { break: "para" },
+            ],
+            style: { variant: "outlined" },
+        },
+        { break: "para" },
+        "The end",
+        { break: "para" },
+    ])),
+};
+
 export const CustomElementEditor = Template.bind({});
 CustomElementEditor.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
