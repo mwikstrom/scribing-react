@@ -452,8 +452,6 @@ export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme"
     nativeSelection?: boolean;
     // (undocumented)
     onControllerChange?: (controller: FlowEditorController | null) => void;
-    // Warning: (ae-forgotten-export) The symbol "RenderMarkupTagEvent" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     onRenderMarkupTag?: (event: RenderMarkupTagEvent) => void;
     // (undocumented)
@@ -762,6 +760,29 @@ export class RenderMarkupEvent extends DeferrableEvent {
     set result(value: FlowContent | ReactNode);
     // (undocumented)
     get scope(): readonly (StartMarkup | EmptyMarkup)[];
+}
+
+// @public (undocumented)
+export type RenderMarkupTagDisplay = "inline" | "block";
+
+// @public (undocumented)
+export class RenderMarkupTagEvent {
+    constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr: (this: void, key: string, value: string | Script | null) => boolean);
+    // (undocumented)
+    get attr(): ReadonlyMap<string, string | Script>;
+    // (undocumented)
+    get changeAttr(): (this: void, key: string, value: string | Script | null) => boolean;
+    // (undocumented)
+    get content(): ReactNode;
+    set content(value: ReactNode);
+    // (undocumented)
+    get display(): RenderMarkupTagDisplay;
+    set display(value: RenderMarkupTagDisplay);
+    // (undocumented)
+    get style(): React.CSSProperties | undefined;
+    set style(value: React.CSSProperties | undefined);
+    // (undocumented)
+    get tag(): string;
 }
 
 // @public (undocumented)

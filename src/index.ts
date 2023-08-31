@@ -19,6 +19,7 @@ export * from "./InitEditorEvent";
 export * from "./RenderableMarkup";
 export * from "./RenderMarkupEvent";
 export * from "./FormatMarkupAttributeEvent";
+export * from "./RenderMarkupTagEvent";
 
 // Palette
 export * from "./FlowPalette";

@@ -18,6 +18,7 @@ React components for collaborative rich text editing
 |  [LoadAssetEvent](./scribing-react.loadassetevent.md) |  |
 |  [RenderableMarkup](./scribing-react.renderablemarkup.md) |  |
 |  [RenderMarkupEvent](./scribing-react.rendermarkupevent.md) |  |
+|  [RenderMarkupTagEvent](./scribing-react.rendermarkuptagevent.md) |  |
 |  [ResolveLinkEvent](./scribing-react.resolvelinkevent.md) |  |
 |  [StateChangeEvent](./scribing-react.statechangeevent.md) |  |
 |  [StoreAssetEvent](./scribing-react.storeassetevent.md) |  |
@@ -104,5 +105,6 @@ React components for collaborative rich text editing
 |  [InteractionLogger](./scribing-react.interactionlogger.md) |  |
 |  [LinkAction](./scribing-react.linkaction.md) |  |
 |  [MarkupContext](./scribing-react.markupcontext.md) |  |
+|  [RenderMarkupTagDisplay](./scribing-react.rendermarkuptagdisplay.md) |  |
 |  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
 

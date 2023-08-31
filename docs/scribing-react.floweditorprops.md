@@ -21,7 +21,7 @@ export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme"
 |  [className?](./scribing-react.floweditorprops.classname.md) | string | <i>(Optional)</i> |
 |  [defaultState?](./scribing-react.floweditorprops.defaultstate.md) | [FlowEditorState](./scribing-react.floweditorstate.md) | <i>(Optional)</i> |
 |  [onControllerChange?](./scribing-react.floweditorprops.oncontrollerchange.md) | (controller: [FlowEditorController](./scribing-react.floweditorcontroller.md) \| null) =&gt; void | <i>(Optional)</i> |
-|  [onRenderMarkupTag?](./scribing-react.floweditorprops.onrendermarkuptag.md) | (event: RenderMarkupTagEvent) =&gt; void | <i>(Optional)</i> |
+|  [onRenderMarkupTag?](./scribing-react.floweditorprops.onrendermarkuptag.md) | (event: [RenderMarkupTagEvent](./scribing-react.rendermarkuptagevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onStateChange?](./scribing-react.floweditorprops.onstatechange.md) | (event: [StateChangeEvent](./scribing-react.statechangeevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [onStoreAsset?](./scribing-react.floweditorprops.onstoreasset.md) | (event: [StoreAssetEvent](./scribing-react.storeassetevent.md)<!-- -->) =&gt; void | <i>(Optional)</i> |
 |  [state?](./scribing-react.floweditorprops.state.md) | [FlowEditorState](./scribing-react.floweditorstate.md) | <i>(Optional)</i> |

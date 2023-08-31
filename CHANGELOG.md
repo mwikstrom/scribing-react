@@ -1,3 +1,7 @@
+## 1.10.1 - 2023-08-31
+
+- Fix missing export
+
 ## 1.10.0 - 2023-08-31
 
 - Markup tag replacements
