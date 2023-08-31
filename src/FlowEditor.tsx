@@ -16,7 +16,7 @@ import { handleKeyEvent } from "./internal/key-handlers";
 import { FlowEditorController } from "./FlowEditorController";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
-import { isInsideBreakOut, isSelectionInside } from "./internal/utils/is-selection-inside";
+import { isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
 import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition, setFocusPosition } from "./internal/utils/set-caret-position";
@@ -33,6 +33,7 @@ import { applyTextConversion } from "./internal/text-conversion";
 import { EditingHostScope } from "./internal/EditingHostScope";
 import { RenderMarkupTagEvent } from "./RenderMarkupTagEvent";
 import { MarkupTagRenderScope } from "./internal/MarkupTagRenderScope";
+import { isInsideBreakOut } from "./internal/utils/break-out";
 
 /**
  * Component props for {@link FlowEditor}

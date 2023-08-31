@@ -1,3 +1,5 @@
+import { isInsideBreakOut } from "./break-out";
+
 export function isSelectionInside(
     rootElement: HTMLElement,
     selection: Selection | null,
@@ -20,16 +22,6 @@ export function isSelectionInside(
     return isNodeInside(rootElement, focusNode, requireEditable);
 }
 
-export function registerBreakOutNode(node: HTMLElement | null): void {
-    if (node) {
-        BreakOutNodes.add(node);
-    }
-}
-
-export function isBreakOutNode(node: Node | null): boolean {
-    return !!node && BreakOutNodes.has(node);
-}
-
 function isNodeInside(root: HTMLElement, node: Node | null, requireEditable: boolean | undefined): boolean {
     if (!node) {
         return false;
@@ -48,20 +40,6 @@ function isNodeInside(root: HTMLElement, node: Node | null, requireEditable: boo
     }
 
     return true;
-}
-
-const BreakOutNodes = new WeakSet<Node>();
-
-export function isInsideBreakOut(root: HTMLElement | null, node: Node | EventTarget | null): boolean {
-    if (!node || node === root || !(node instanceof Node)) {
-        return false;
-    }
-
-    if (BreakOutNodes.has(node)) {
-        return true;
-    }
-
-    return isInsideBreakOut(root, node.parentElement);
 }
 
 function isEditable(node: Node | null): boolean {

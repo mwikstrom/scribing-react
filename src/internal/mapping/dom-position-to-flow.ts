@@ -11,7 +11,7 @@ import {
     getNormalizedTextNodeOffset, 
     isMappedFlowNode 
 } from "./flow-node";
-import { isBreakOutNode } from "../utils/is-selection-inside";
+import { isBreakOutNode } from "../utils/break-out";
 
 /** @internal */
 export type FlowPath = [number, ...NestedFlowPosition[]];

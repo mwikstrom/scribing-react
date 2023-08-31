@@ -5,7 +5,7 @@ import { useMarkupStyles } from "./MarkupStyles";
 import { ScriptEvalScope } from "./hooks/use-script-eval-props";
 import { useMarkupTagRenderHandler } from "./MarkupTagRenderScope";
 import { RenderMarkupTagEvent } from "../RenderMarkupTagEvent";
-import { registerBreakOutNode } from "./utils/is-selection-inside";
+import { registerBreakOutNode } from "./utils/break-out";
 
 export interface MarkupTagContentProps {
     tag: string;
