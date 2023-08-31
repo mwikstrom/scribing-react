@@ -4,12 +4,18 @@ import { Script } from "scribing";
 /**
  * @public
  */
+export type RenderMarkupTagDisplay = "inline" | "block";
+
+/**
+ * @public
+ */
 export class RenderMarkupTagEvent {
     readonly #tag: string;
     readonly #attr: ReadonlyMap<string, string | Script>;
     readonly #changeAttr: (this: void, key: string, value: string | Script | null) => boolean;
     #content: ReactNode;
-    #block: boolean;
+    #style: React.CSSProperties | undefined;
+    #display: RenderMarkupTagDisplay;
 
     constructor (
         tag: string,
@@ -19,7 +25,7 @@ export class RenderMarkupTagEvent {
         this.#tag = tag;
         this.#attr = attr;
         this.#changeAttr = changeAttr;
-        this.#block = false;
+        this.#display = "inline";
     }
 
     public get tag(): string {
@@ -42,11 +48,19 @@ export class RenderMarkupTagEvent {
         this.#content = value;
     }
 
-    public get block(): boolean {
-        return this.#block;
+    public get display(): RenderMarkupTagDisplay {
+        return this.#display;
     }
 
-    public set block(value: boolean) {
-        this.#block = value;
+    public set display(value: RenderMarkupTagDisplay) {
+        this.#display = value;
+    }
+
+    public get style(): React.CSSProperties | undefined {
+        return this.#style;
+    }
+
+    public set style(value: React.CSSProperties | undefined) {
+        this.#style = value;
     }
 }

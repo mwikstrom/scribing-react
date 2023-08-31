@@ -52,17 +52,7 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
     }, [givenStyle, theme]);
 
     const evalScope: ScriptEvalScope = { textStyle: style };
-
-    const css = useMemo(() => {
-        const { 
-            fontSize: styledFontSize, 
-            verticalAlign
-        } = getTextCssProperties(style, theme.getAmbientParagraphStyle());
-        const MAX_FONT_SIZE = "0.75rem";
-        const fontSize = styledFontSize ? `calc(min(${styledFontSize}, ${MAX_FONT_SIZE}))` : MAX_FONT_SIZE;
-        return { fontSize, verticalAlign };
-    }, [style, theme]);
-    
+   
     const onChangeAttr = useCallback((key: string, value: string | Script | null): boolean => {
         try {
             if (!rootElemRef.current || !controller) {
@@ -99,19 +89,37 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         }
     }, [controller]);
 
-    const { content: customContent, block } = useMemo(() => {
+    const renderEvent = useMemo<RenderMarkupTagEvent | undefined>(() => {
         if (attr) {
             const event = new RenderMarkupTagEvent(tag, attr, onChangeAttr);
             handler(event);
             return event;
-        } else {
-            return { content: undefined, block: false };
         }
     }, [handler, tag, attr, onChangeAttr]);
 
+    const customContent = renderEvent?.content;
+    const customStyle = renderEvent?.style;
+    const hasCustomContent = customContent !== undefined;
+    const renderAsBlock = renderEvent?.display === "block";
+
+    const css = useMemo(() => {
+        if (hasCustomContent) {
+            return customStyle;
+        } else {
+            const { 
+                fontSize: styledFontSize, 
+                verticalAlign
+            } = getTextCssProperties(style, theme.getAmbientParagraphStyle());
+            const MAX_FONT_SIZE = "0.75rem";
+            const fontSize = styledFontSize ? `calc(min(${styledFontSize}, ${MAX_FONT_SIZE}))` : MAX_FONT_SIZE;
+            return { fontSize, verticalAlign };
+        }
+    }, [style, theme, customStyle, hasCustomContent]);
+
     const className = clsx(
         classes.root,
-        block && classes.block,
+        hasCustomContent ? classes.customContent : classes.defaultContent,
+        renderAsBlock && classes.block,
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
         node instanceof StartMarkup && classes.startTag,
         node instanceof EndMarkup && classes.endTag,
@@ -123,10 +131,10 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         outerRef(dom);
         setRootElem(dom);
         rootElemRef.current = dom;
-        if (customContent) {
+        if (hasCustomContent) {
             registerBreakOutNode(dom);
         }
-    }, [outerRef, customContent]);
+    }, [outerRef, hasCustomContent]);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
@@ -169,9 +177,9 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
             style={css}
             contentEditable={false}
             spellCheck={false}
-            onClick={customContent === undefined ? onClick : undefined}
-            onDoubleClick={customContent === undefined ? onDoubleClick : undefined}
-            children={customContent !== undefined ? customContent : (
+            onClick={hasCustomContent ? undefined : onClick}
+            onDoubleClick={hasCustomContent ? undefined : onDoubleClick}
+            children={hasCustomContent? customContent : (
                 <>
                     {tag}
                     {attr && Array.from(attr).map(([key, value]) => (

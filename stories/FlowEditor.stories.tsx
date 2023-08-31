@@ -68,7 +68,7 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
     const onRenderMarkupTag = useCallback((event: RenderMarkupTagEvent) => {
         if (event.tag === "CustomTag") {
             event.content = <CustomTagEditor attr={event.attr} setAttr={event.changeAttr} />;
-            event.block = true;
+            event.display = "block";
         }
     }, []);
     return (

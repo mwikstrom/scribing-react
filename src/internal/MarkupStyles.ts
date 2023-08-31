@@ -3,22 +3,29 @@ import { createUseFlowStyles } from "./JssTheming";
 export const useMarkupStyles = createUseFlowStyles("Markup", ({palette, typography}) => ({
     root: {
         display: "inline-block",
-        whiteSpace: "pre",
-        fontFamily: typography.monospace,
-        fontWeight: "normal",
-        color: palette.text,
-        border: `1px solid ${palette.subtle}`,
-        padding: "0.2rem 0.4rem",
-        marginLeft: "0.1rem",
-        marginRight: "0.2rem",
         cursor: "default",
-        borderBottomWidth: 2,
         textIndent: 0,
+        color: palette.text,
+        fontWeight: "normal",
+        border: `1px solid ${palette.subtle}`,
+        borderBottomWidth: 2,
         "&$block": {
             display: "block",
         },
     },
     block: {},
+    defaultContent: {
+        whiteSpace: "pre",
+        fontFamily: typography.monospace,
+        padding: "0.2rem 0.4rem",
+        marginLeft: "0.1rem",
+        marginRight: "0.2rem",
+    },
+    customContent: {
+        fontFamily: typography.ui,
+        fontSize: "1rem",
+        cursor: "initial",
+    },
     broken: {
         color: palette.error,
         borderColor: palette.error,

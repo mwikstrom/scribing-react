@@ -9,7 +9,7 @@ export interface CustomTagEditorProps {
 export const CustomTagEditor = (props: CustomTagEditorProps): JSX.Element => {
     const { attr, setAttr } = props;
     return (
-        <>
+        <div style={{ padding: 10 }}>
             {["foo", "bar"].map(key => (
                 <CustomAttrEditor
                     key={key}
@@ -19,7 +19,7 @@ export const CustomTagEditor = (props: CustomTagEditorProps): JSX.Element => {
                 />
             ))}
             <button onClick={() => alert("hello world!")}>Say hello</button>
-        </>
+        </div>
     );
 };
 
