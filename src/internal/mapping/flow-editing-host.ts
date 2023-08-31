@@ -9,4 +9,13 @@ export const setupEditingHostMapping = (
 /** @internal */
 export const isMappedEditingHost = (node: Node): boolean => MAP.has(node);
 
+/** @internal */
+export const findMappedEditingHost = (node: HTMLElement | null): HTMLElement | null => {
+    if (!node || isMappedEditingHost(node)) {
+        return node;
+    } else {
+        return findMappedEditingHost(node.parentElement);
+    }
+};
+
 const MAP = new WeakMap<Node, FlowEditorState>();

@@ -17,13 +17,13 @@ import { useEditMode } from "./EditModeScope";
 import { ScriptEvalScope } from "./hooks/use-script-eval-props";
 import { useMarkupStyles } from "./MarkupStyles";
 import { mapDomPositionToFlow } from "./mapping/dom-position-to-flow";
-import { useEditingHost } from "./EditingHostScope";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { createFlowSelection } from "./mapping/dom-selection-to-flow";
 import { RenderMarkupTagEvent } from "../RenderMarkupTagEvent";
 import { useMarkupTagRenderHandler } from "./MarkupTagRenderScope";
 import { MarkupAttributeValue } from "./MarkupAttributeValue";
 import { registerBreakOutNode } from "./utils/break-out";
+import { findMappedEditingHost } from "./mapping/flow-editing-host";
 
 export interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EmptyMarkup | EndMarkup>, "ref"> {
     outerRef: RefCallback<HTMLElement>;
@@ -39,7 +39,6 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
     const handler = useMarkupTagRenderHandler();
-    const editingHost = useEditingHost();
     const controller = useFlowEditorController();
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
     const rootElemRef = useRef<HTMLElement | null>(null);
@@ -66,7 +65,13 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
     
     const onChangeAttr = useCallback((key: string, value: string | Script | null): boolean => {
         try {
-            if (!rootElemRef.current || !editingHost || !controller) {
+            if (!rootElemRef.current || !controller) {
+                return false;
+            }
+
+            const editingHost = findMappedEditingHost(rootElemRef.current);
+
+            if (!editingHost) {
                 return false;
             }
 
@@ -92,7 +97,7 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
             console.error("Failed set markup attribute", error);
             return false;
         }
-    }, [editingHost, controller]);
+    }, [controller]);
 
     const { content: customContent, block } = useMemo(() => {
         if (attr) {
