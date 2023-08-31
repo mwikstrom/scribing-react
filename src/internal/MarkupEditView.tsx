@@ -16,11 +16,14 @@ import { useFlowCaretContext } from "./FlowCaretScope";
 import { useEditMode } from "./EditModeScope";
 import { ScriptEvalScope } from "./hooks/use-script-eval-props";
 import { useMarkupStyles } from "./MarkupStyles";
-import { MarkupTagContent } from "./MarkupTagContent";
 import { mapDomPositionToFlow } from "./mapping/dom-position-to-flow";
 import { useEditingHost } from "./EditingHostScope";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { createFlowSelection } from "./mapping/dom-selection-to-flow";
+import { RenderMarkupTagEvent } from "../RenderMarkupTagEvent";
+import { useMarkupTagRenderHandler } from "./MarkupTagRenderScope";
+import { MarkupAttributeValue } from "./MarkupAttributeValue";
+import { registerBreakOutNode } from "./utils/break-out";
 
 export interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EmptyMarkup | EndMarkup>, "ref"> {
     outerRef: RefCallback<HTMLElement>;
@@ -31,6 +34,16 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
     const { style: givenStyle, tag } = node;
     const attr = node instanceof EndMarkup ? null : node.attr;
     const theme = useParagraphTheme();
+    const classes = useMarkupStyles();
+    const selected = selection === true;
+    const editMode = useEditMode();
+    const { native: nativeSelection } = useFlowCaretContext();
+    const handler = useMarkupTagRenderHandler();
+    const editingHost = useEditingHost();
+    const controller = useFlowEditorController();
+    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const rootElemRef = useRef<HTMLElement | null>(null);
+
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
         if (givenStyle.link) {
@@ -38,6 +51,9 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         }
         return ambient.merge(givenStyle);
     }, [givenStyle, theme]);
+
+    const evalScope: ScriptEvalScope = { textStyle: style };
+
     const css = useMemo(() => {
         const { 
             fontSize: styledFontSize, 
@@ -47,62 +63,7 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         const fontSize = styledFontSize ? `calc(min(${styledFontSize}, ${MAX_FONT_SIZE}))` : MAX_FONT_SIZE;
         return { fontSize, verticalAlign };
     }, [style, theme]);
-    const classes = useMarkupStyles();
-    const selected = selection === true;
-    const editMode = useEditMode();
-    const { native: nativeSelection } = useFlowCaretContext();
-    const [block, setBlock] = useState(false);
-    const className = clsx(
-        classes.root,
-        block && classes.block,
-        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
-        node instanceof StartMarkup && classes.startTag,
-        node instanceof EndMarkup && classes.endTag,
-        node instanceof EmptyMarkup && classes.emptyTag,
-        (node instanceof StartMarkup || node instanceof EndMarkup) && !opposingTag && classes.broken,
-    );
-    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const rootElemRef = useRef<HTMLElement | null>(null);
-    const ref = useCallback((dom: HTMLElement | null) => {
-        outerRef(dom);
-        setRootElem(dom);
-        rootElemRef.current = dom;
-    }, [outerRef]);
-    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
-        const domSelection = document.getSelection();
-        if (domSelection && rootElem && !e.ctrlKey && editMode) {
-            const { parentElement } = rootElem;
-            if (parentElement) {
-                let childOffset = 0;
-                for (let prev = rootElem.previousSibling; prev; prev = prev.previousSibling) {
-                    ++childOffset;
-                }
-                const { left, width } = rootElem.getBoundingClientRect();
-                if (e.clientX >= left + width / 2) {
-                    ++childOffset;
-                }
-                if (e.shiftKey) {
-                    domSelection.extend(parentElement, childOffset);
-                } else {
-                    domSelection.setBaseAndExtent(parentElement, childOffset, parentElement, childOffset);
-                }
-                e.stopPropagation();
-            }
-        }
-    }, [rootElem, editMode]);
-    const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
-        const domSelection = document.getSelection();
-        if (domSelection && rootElem) {
-            if (domSelection.rangeCount === 0) {
-                domSelection.addRange(document.createRange());
-            }
-            domSelection.getRangeAt(0).selectNode(rootElem);
-            e.stopPropagation();
-        }
-    }, [rootElem]);
-    const evalScope: ScriptEvalScope = { textStyle: style };
-    const editingHost = useEditingHost();
-    const controller = useFlowEditorController();
+    
     const onChangeAttr = useCallback((key: string, value: string | Script | null): boolean => {
         try {
             if (!rootElemRef.current || !editingHost || !controller) {
@@ -132,7 +93,70 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
             return false;
         }
     }, [editingHost, controller]);
-    const onMakeBlock = useCallback(() => setBlock(true), [setBlock]);
+
+    const { content: customContent, block } = useMemo(() => {
+        if (attr) {
+            const event = new RenderMarkupTagEvent(tag, attr, onChangeAttr);
+            handler(event);
+            return event;
+        } else {
+            return { content: undefined, block: false };
+        }
+    }, [handler, tag, attr, onChangeAttr]);
+
+    const className = clsx(
+        classes.root,
+        block && classes.block,
+        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
+        node instanceof StartMarkup && classes.startTag,
+        node instanceof EndMarkup && classes.endTag,
+        node instanceof EmptyMarkup && classes.emptyTag,
+        (node instanceof StartMarkup || node instanceof EndMarkup) && !opposingTag && classes.broken,
+    );
+
+    const ref = useCallback((dom: HTMLElement | null) => {
+        outerRef(dom);
+        setRootElem(dom);
+        rootElemRef.current = dom;
+        if (customContent) {
+            registerBreakOutNode(dom);
+        }
+    }, [outerRef, customContent]);
+
+    const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
+        const domSelection = document.getSelection();
+        if (domSelection && rootElem && !e.ctrlKey && editMode) {
+            const { parentElement } = rootElem;
+            if (parentElement) {
+                let childOffset = 0;
+                for (let prev = rootElem.previousSibling; prev; prev = prev.previousSibling) {
+                    ++childOffset;
+                }
+                const { left, width } = rootElem.getBoundingClientRect();
+                if (e.clientX >= left + width / 2) {
+                    ++childOffset;
+                }
+                if (e.shiftKey) {
+                    domSelection.extend(parentElement, childOffset);
+                } else {
+                    domSelection.setBaseAndExtent(parentElement, childOffset, parentElement, childOffset);
+                }
+                e.stopPropagation();
+            }
+        }
+    }, [rootElem, editMode]);
+
+    const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
+        const domSelection = document.getSelection();
+        if (domSelection && rootElem) {
+            if (domSelection.rangeCount === 0) {
+                domSelection.addRange(document.createRange());
+            }
+            domSelection.getRangeAt(0).selectNode(rootElem);
+            e.stopPropagation();
+        }
+    }, [rootElem]);
+
     return (
         <span
             ref={ref}
@@ -140,17 +164,20 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
             style={css}
             contentEditable={false}
             spellCheck={false}
-            onClick={onClick}
-            onDoubleClick={onDoubleClick}
-            children={
-                <MarkupTagContent
-                    tag={tag}
-                    attr={attr}
-                    evalScope={evalScope}
-                    onChangeAttr={onChangeAttr}
-                    onMakeBlock={onMakeBlock}
-                />
-            }
+            onClick={customContent === undefined ? onClick : undefined}
+            onDoubleClick={customContent === undefined ? onDoubleClick : undefined}
+            children={customContent !== undefined ? customContent : (
+                <>
+                    {tag}
+                    {attr && Array.from(attr).map(([key, value]) => (
+                        <span key={key}>
+                            {` ${key}`}
+                            <span className={classes.syntax}>=</span>
+                            <MarkupAttributeValue tag={tag} name={key} value={value} evalScope={evalScope}/>
+                        </span>
+                    ))}
+                </>
+            )}
         />
     );
 };

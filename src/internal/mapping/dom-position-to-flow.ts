@@ -11,7 +11,6 @@ import {
     getNormalizedTextNodeOffset, 
     isMappedFlowNode 
 } from "./flow-node";
-import { isBreakOutNode } from "../utils/break-out";
 
 /** @internal */
 export type FlowPath = [number, ...NestedFlowPosition[]];
@@ -24,11 +23,6 @@ export const mapDomPositionToFlow = (
 ): FlowPath | null => {
     // A null node can't be mapped
     if (node === null) {
-        return null;
-    }
-
-    // A break-out node cannot be mapped
-    if (isBreakOutNode(node)) {
         return null;
     }
 
