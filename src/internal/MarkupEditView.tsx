@@ -5,9 +5,10 @@ import React, {
     useState, 
     MouseEvent, 
     FC, 
-    RefCallback
+    RefCallback,
+    useRef
 } from "react";
-import { EmptyMarkup, EndMarkup, StartMarkup } from "scribing";
+import { EmptyMarkup, EndMarkup, Script, StartMarkup } from "scribing";
 import { FlowNodeComponentProps } from "./FlowNodeComponent";
 import { getTextCssProperties } from "./utils/text-style-to-css";
 import { useParagraphTheme } from "./ParagraphThemeScope";
@@ -16,6 +17,10 @@ import { useEditMode } from "./EditModeScope";
 import { ScriptEvalScope } from "./hooks/use-script-eval-props";
 import { useMarkupStyles } from "./MarkupStyles";
 import { MarkupTagContent } from "./MarkupTagContent";
+import { mapDomPositionToFlow } from "./mapping/dom-position-to-flow";
+import { useEditingHost } from "./EditingHostScope";
+import { useFlowEditorController } from "./FlowEditorControllerScope";
+import { createFlowSelection } from "./mapping/dom-selection-to-flow";
 
 export interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EmptyMarkup | EndMarkup>, "ref"> {
     outerRef: RefCallback<HTMLElement>;
@@ -24,7 +29,7 @@ export interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup
 export const MarkupEditView: FC<MarkupViewProps> = props => {
     const { node, opposingTag, selection, outerRef } = props;
     const { style: givenStyle, tag } = node;
-    const attr = node instanceof EndMarkup ? [] : Array.from(node.attr);
+    const attr = node instanceof EndMarkup ? null : node.attr;
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -46,8 +51,10 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
     const selected = selection === true;
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
+    const [block, setBlock] = useState(false);
     const className = clsx(
         classes.root,
+        block && classes.block,
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
         node instanceof StartMarkup && classes.startTag,
         node instanceof EndMarkup && classes.endTag,
@@ -55,9 +62,11 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         (node instanceof StartMarkup || node instanceof EndMarkup) && !opposingTag && classes.broken,
     );
     const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
+    const rootElemRef = useRef<HTMLElement | null>(null);
     const ref = useCallback((dom: HTMLElement | null) => {
         outerRef(dom);
         setRootElem(dom);
+        rootElemRef.current = dom;
     }, [outerRef]);
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
@@ -92,6 +101,38 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         }
     }, [rootElem]);
     const evalScope: ScriptEvalScope = { textStyle: style };
+    const editingHost = useEditingHost();
+    const controller = useFlowEditorController();
+    const onChangeAttr = useCallback((key: string, value: string | Script | null): boolean => {
+        try {
+            if (!rootElemRef.current || !editingHost || !controller) {
+                return false;
+            }
+
+            const flowPath = mapDomPositionToFlow(rootElemRef.current, 0, editingHost);
+
+            if (!flowPath) {
+                return false;
+            }
+
+            const flowSelection = createFlowSelection(flowPath, 1);
+            
+            const change = value === null 
+                ? flowSelection.unsetMarkupAttr(controller.state.content, key)
+                : flowSelection.setMarkupAttr(controller.state.content, key, value);
+
+            if (change === null) {
+                return false;
+            }
+            
+            controller._apply(change);
+            return true;
+        } catch (error) {
+            console.error("Failed set markup attribute", error);
+            return false;
+        }
+    }, [editingHost, controller]);
+    const onMakeBlock = useCallback(() => setBlock(true), [setBlock]);
     return (
         <span
             ref={ref}
@@ -101,7 +142,15 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
             spellCheck={false}
             onClick={onClick}
             onDoubleClick={onDoubleClick}
-            children={<MarkupTagContent tag={tag} attr={attr} evalScope={evalScope} />}
+            children={
+                <MarkupTagContent
+                    tag={tag}
+                    attr={attr}
+                    evalScope={evalScope}
+                    onChangeAttr={onChangeAttr}
+                    onMakeBlock={onMakeBlock}
+                />
+            }
         />
     );
 };

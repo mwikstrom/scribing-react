@@ -14,7 +14,11 @@ export const useMarkupStyles = createUseFlowStyles("Markup", ({palette, typograp
         cursor: "default",
         borderBottomWidth: 2,
         textIndent: 0,
+        "&$block": {
+            display: "block",
+        },
     },
+    block: {},
     broken: {
         color: palette.error,
         borderColor: palette.error,

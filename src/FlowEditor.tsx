@@ -16,7 +16,7 @@ import { handleKeyEvent } from "./internal/key-handlers";
 import { FlowEditorController } from "./FlowEditorController";
 import { getVirtualSelectionElement } from "./internal/utils/get-virtual-caret-element";
 import { getLineHeight } from "./internal/utils/get-line-height";
-import { isSelectionInside } from "./internal/utils/is-selection-inside";
+import { isInsideBreakOut, isSelectionInside } from "./internal/utils/is-selection-inside";
 import { getDomPositionFromPoint } from "./internal/utils/get-dom-position-from-point";
 import { fixCaretPosition } from "./internal/utils/fix-caret-position";
 import { setCaretPosition, setFocusPosition } from "./internal/utils/set-caret-position";
@@ -30,6 +30,9 @@ import { StoreAssetEvent } from "./StoreAssetEvent";
 import { StateChangeEvent } from "./StateChangeEvent";
 import { FlowEditorState } from "./FlowEditorState";
 import { applyTextConversion } from "./internal/text-conversion";
+import { EditingHostScope } from "./internal/EditingHostScope";
+import { RenderMarkupTagEvent } from "./RenderMarkupTagEvent";
+import { MarkupTagRenderScope } from "./internal/MarkupTagRenderScope";
 
 /**
  * Component props for {@link FlowEditor}
@@ -53,6 +56,8 @@ export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme"
     onStoreAsset?: (event: StoreAssetEvent) => void;
 
     onControllerChange?: (controller: FlowEditorController | null) => void;
+
+    onRenderMarkupTag?: (event: RenderMarkupTagEvent) => void;
 }
 
 /**
@@ -71,6 +76,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         onStateChange: onStateChangeProp,
         onStoreAsset,
         onControllerChange,
+        onRenderMarkupTag,
         ...viewProps
     } = props;
 
@@ -153,7 +159,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [activeElement, editingHost, documentHasFocus, state.preview]);
 
     // Should we use custom selection styling?
-    const customSelection = !nativeSelection && !!editMode;
+    const customSelection = !nativeSelection && !!editMode && !isInsideBreakOut(editingHost, activeElement);
 
     // Apply auto focus
     useEffect(() => {
@@ -244,7 +250,11 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useNativeEventHandler(
         editingHost,
         "keydown",
-        (event: KeyboardEvent) => handleKeyEvent(event, controller),
+        (event: KeyboardEvent) => {
+            if (!isInsideBreakOut(editingHost, event.target)) {
+                handleKeyEvent(event, controller);
+            }
+        },
         [controller]
     );
 
@@ -261,6 +271,10 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         const { inputType } = event;
 
         if (inputType === "insertCompositionText" || inputType === "deleteCompositionText") {
+            return;
+        }
+
+        if (isInsideBreakOut(editingHost, event.target)) {
             return;
         }
 
@@ -414,33 +428,37 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         <FlowEditorControllerScope controller={controller}>
             <EditModeScope mode={editMode}>
                 <FormattingMarksScope show={!state.preview && state.formattingMarks}>
-                    <FlowCaretScope
-                        style={isActiveDropTarget ? TextStyle.empty : state.caret}
-                        selection={state.selection}
-                        native={!customSelection}
-                        isDropTarget={isActiveDropTarget}
-                        children={(
-                            <div 
-                                ref={setEditingHost}
-                                className={clsx(
-                                    classes.root,
-                                    customSelection && classes.customSelection,
-                                    className
-                                )}
-                                style={style}
-                                contentEditable={editMode !== false}
-                                suppressContentEditableWarning={true}
+                    <EditingHostScope host={editingHost}>
+                        <MarkupTagRenderScope handler={onRenderMarkupTag}>
+                            <FlowCaretScope
+                                style={isActiveDropTarget ? TextStyle.empty : state.caret}
+                                selection={state.selection}
+                                native={!customSelection}
+                                isDropTarget={isActiveDropTarget}
                                 children={(
-                                    <FlowView
-                                        {...viewProps}
-                                        content={state.content}
-                                        theme={state.theme}
-                                        selection={state.selection}
+                                    <div 
+                                        ref={setEditingHost}
+                                        className={clsx(
+                                            classes.root,
+                                            customSelection && classes.customSelection,
+                                            className
+                                        )}
+                                        style={style}
+                                        contentEditable={editMode !== false}
+                                        suppressContentEditableWarning={true}
+                                        children={(
+                                            <FlowView
+                                                {...viewProps}
+                                                content={state.content}
+                                                theme={state.theme}
+                                                selection={state.selection}
+                                            />
+                                        )}
                                     />
                                 )}
                             />
-                        )}
-                    />
+                        </MarkupTagRenderScope>
+                    </EditingHostScope>
                 </FormattingMarksScope>
             </EditModeScope>
         </FlowEditorControllerScope>

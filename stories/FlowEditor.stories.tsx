@@ -16,6 +16,8 @@ import {
 import { JsonObject, JsonValue } from "paratype";
 import { FlowEditorState } from "../src/FlowEditorState";
 import { FormatMarkupAttributeEvent } from "../src";
+import { RenderMarkupTagEvent } from "../src/RenderMarkupTagEvent";
+import { CustomTagEditor } from "./CustomTagEditor";
 
 export default {
     title: "FlowEditor",
@@ -63,6 +65,12 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
             }, 1000)));
         }
     }, []);
+    const onRenderMarkupTag = useCallback((event: RenderMarkupTagEvent) => {
+        if (event.tag === "CustomTag") {
+            event.content = <CustomTagEditor attr={event.attr} setAttr={event.changeAttr} />;
+            event.block = true;
+        }
+    }, []);
     return (
         <div style={wrapperStyle}>
             <FlowEditor
@@ -70,6 +78,7 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
                 style={editorStyle}
                 onStateChange={onStateChange}
                 onFormatMarkupAttribute={onFormatMarkupAttribute}
+                onRenderMarkupTag={onRenderMarkupTag}
             />
             <pre style={jsonStyle}>{jsonState}</pre>
         </div>
@@ -78,6 +87,32 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
 
 export const Empty = Template.bind({});
 Empty.args = {};
+
+export const CustomEmptyTagEditor = Template.bind({});
+CustomEmptyTagEditor.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "There should be a custom tag editor here:",
+        { break: "para" },
+        { empty_markup: "CustomTag" },
+        { break: "para" },
+        "The end",
+        { break: "para" },
+    ])),
+};
+
+export const CustomElementEditor = Template.bind({});
+CustomElementEditor.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "There should be a custom tag editor here:",
+        { break: "para" },
+        { start_markup: "CustomTag" },
+        "Inside",
+        { end_markup: "CustomTag" },
+        { break: "para" },
+        "The end",
+        { break: "para" },
+    ])),
+};
 
 export const TextOnly = Template.bind({});
 TextOnly.args = {

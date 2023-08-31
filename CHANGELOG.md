@@ -1,3 +1,7 @@
+## 1.10.0 - 2023-08-31
+
+- Markup tag replacements
+
 ## 1.9.1 - 2023-04-21
 
 - Use `isEmptyFlowContent` from core lib
