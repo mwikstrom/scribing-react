@@ -32,6 +32,7 @@ import { RecordConstructor } from 'paratype';
 import { RemoveFlowSelectionOptions } from 'scribing';
 import { Script } from 'scribing';
 import { ScriptFunction } from 'scripthost';
+import { ScriptHost } from 'scripthost';
 import { StartMarkup } from 'scribing';
 import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
@@ -767,7 +768,7 @@ export type RenderMarkupTagDisplay = "inline" | "block";
 
 // @public (undocumented)
 export class RenderMarkupTagEvent {
-    constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr: (this: void, key: string, value: string | Script | null) => boolean);
+    constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr: (this: void, key: string, value: string | Script | null) => boolean, scriptHost: ScriptHost);
     // (undocumented)
     get attr(): ReadonlyMap<string, string | Script>;
     // (undocumented)
@@ -778,6 +779,8 @@ export class RenderMarkupTagEvent {
     // (undocumented)
     get display(): RenderMarkupTagDisplay;
     set display(value: RenderMarkupTagDisplay);
+    // (undocumented)
+    get scriptHost(): ScriptHost;
     // (undocumented)
     get style(): React.CSSProperties | undefined;
     set style(value: React.CSSProperties | undefined);

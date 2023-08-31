@@ -24,6 +24,7 @@ import { useMarkupTagRenderHandler } from "./MarkupTagRenderScope";
 import { MarkupAttributeValue } from "./MarkupAttributeValue";
 import { registerBreakOutNode } from "./utils/break-out";
 import { findMappedEditingHost } from "./mapping/flow-editing-host";
+import { useScriptHost } from "scripthost-react";
 
 export interface MarkupViewProps extends Omit<FlowNodeComponentProps<StartMarkup | EmptyMarkup | EndMarkup>, "ref"> {
     outerRef: RefCallback<HTMLElement>;
@@ -89,13 +90,14 @@ export const MarkupEditView: FC<MarkupViewProps> = props => {
         }
     }, [controller]);
 
+    const scriptHost = useScriptHost();
     const renderEvent = useMemo<RenderMarkupTagEvent | undefined>(() => {
         if (attr) {
-            const event = new RenderMarkupTagEvent(tag, attr, onChangeAttr);
+            const event = new RenderMarkupTagEvent(tag, attr, onChangeAttr, scriptHost);
             handler(event);
             return event;
         }
-    }, [handler, tag, attr, onChangeAttr]);
+    }, [handler, tag, attr, onChangeAttr, scriptHost]);
 
     const customContent = renderEvent?.content;
     const customStyle = renderEvent?.style;

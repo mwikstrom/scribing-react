@@ -15,7 +15,7 @@ export declare class RenderMarkupTagEvent
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(tag, attr, changeAttr)](./scribing-react.rendermarkuptagevent._constructor_.md) |  | Constructs a new instance of the <code>RenderMarkupTagEvent</code> class |
+|  [(constructor)(tag, attr, changeAttr, scriptHost)](./scribing-react.rendermarkuptagevent._constructor_.md) |  | Constructs a new instance of the <code>RenderMarkupTagEvent</code> class |
 
 ## Properties
 
@@ -25,6 +25,7 @@ export declare class RenderMarkupTagEvent
 |  [changeAttr](./scribing-react.rendermarkuptagevent.changeattr.md) |  | (this: void, key: string, value: string \| Script \| null) =&gt; boolean |  |
 |  [content](./scribing-react.rendermarkuptagevent.content.md) |  | ReactNode |  |
 |  [display](./scribing-react.rendermarkuptagevent.display.md) |  | [RenderMarkupTagDisplay](./scribing-react.rendermarkuptagdisplay.md) |  |
+|  [scriptHost](./scribing-react.rendermarkuptagevent.scripthost.md) |  | ScriptHost |  |
 |  [style](./scribing-react.rendermarkuptagevent.style.md) |  | React.CSSProperties \| undefined |  |
 |  [tag](./scribing-react.rendermarkuptagevent.tag.md) |  | string |  |
 

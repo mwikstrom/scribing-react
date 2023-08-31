@@ -9,7 +9,7 @@ Constructs a new instance of the `RenderMarkupTagEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr: (this: void, key: string, value: string | Script | null) => boolean);
+constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr: (this: void, key: string, value: string | Script | null) => boolean, scriptHost: ScriptHost);
 ```
 
 ## Parameters
@@ -19,4 +19,5 @@ constructor(tag: string, attr: ReadonlyMap<string, string | Script>, changeAttr:
 |  tag | string |  |
 |  attr | ReadonlyMap&lt;string, string \| Script&gt; |  |
 |  changeAttr | (this: void, key: string, value: string \| Script \| null) =&gt; boolean |  |
+|  scriptHost | ScriptHost |  |
 

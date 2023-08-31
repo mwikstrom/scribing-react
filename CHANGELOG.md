@@ -1,3 +1,7 @@
+## 1.10.2 - 2023-08-31
+
+- Expose script host when rendering markup tag
+
 ## 1.10.1 - 2023-08-31
 
 - Fix missing export
