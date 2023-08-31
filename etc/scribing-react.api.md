@@ -452,6 +452,10 @@ export interface FlowEditorProps extends Omit<FlowViewProps, "content" | "theme"
     nativeSelection?: boolean;
     // (undocumented)
     onControllerChange?: (controller: FlowEditorController | null) => void;
+    // Warning: (ae-forgotten-export) The symbol "RenderMarkupTagEvent" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    onRenderMarkupTag?: (event: RenderMarkupTagEvent) => void;
     // (undocumented)
     onStateChange?: (event: StateChangeEvent) => void;
     // (undocumented)
