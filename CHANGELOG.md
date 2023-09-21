@@ -1,3 +1,7 @@
+## 1.11.0 - 2023-09-21
+
+- Copy/paste plain text
+
 ## 1.10.2 - 2023-08-31
 
 - Expose script host when rendering markup tag

@@ -1,4 +1,4 @@
-import { FlowContent, FlowImage, FlowNode, TextRun, TextStyle } from "scribing";
+import { FlowContent, FlowImage, FlowNode, InlineNode, TextStyle, deserializeFlowContentFromText } from "scribing";
 import { FlowEditorController } from "../../FlowEditorController";
 import { createImageSource } from "../../create-image-source";
 
@@ -37,9 +37,23 @@ export const getFlowContentFromDataTransfer = (
 };
 
 export const getFlowContentFromPlainText = (data: string, caret: TextStyle): FlowContent => {
-    // TODO: Split plain text into line breaks and paragraph break
-    const normalized = TextRun.normalizeText(data);
-    return createFlowContent(new TextRun({ text: normalized, style: caret }));
+    const content = deserializeFlowContentFromText(data);
+
+    if (caret.isEmpty) {
+        return content;
+    }
+
+    const nodes: FlowNode[] = [];
+
+    for (let i = 0; i < nodes.length; ++i) {
+        if (nodes[i] instanceof InlineNode) {
+            nodes[i] = nodes[i].formatText(caret);
+        } else {
+            break;
+        }
+    }
+
+    return createFlowContent(...nodes);
 };
 
 export const getFlowContentFromImageFileTransfer = async (

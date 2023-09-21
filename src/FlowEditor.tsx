@@ -1,5 +1,12 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { FlowContent, FlowOperation, FlowSelection, FlowTableSelection, TextStyle } from "scribing";
+import {
+    FlowContent,
+    FlowOperation,
+    FlowSelection,
+    FlowTableSelection,
+    TextStyle,
+    serializeFlowContentToText
+} from "scribing";
 import { FlowView, FlowViewProps } from "./FlowView";
 import { useControllable } from "./internal/hooks/use-controlled";
 import { useNativeEventHandler } from "./internal/hooks/use-native-event-handler";
@@ -406,23 +413,30 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     const { active: isActiveDropTarget } = useDropTarget(editingHost, controller);
 
     // Handle copy
-    useNativeEventHandler(editingHost, "copy", (e: ClipboardEvent) => {
-        const data = controller.copyJsonString();
-        e.preventDefault();
-        if (data) {
-            e.clipboardData?.setData(FlowContent.jsonMimeType, data);
+    const copyToClipboard = useCallback((target: DataTransfer) => {
+        const contentArray = controller.copy();
+
+        if (contentArray.length === 1) {
+            const json = JSON.stringify(contentArray[0].toJsonValue());
+            target.setData(FlowContent.jsonMimeType, json);
         }
+
+        const plain = contentArray.map(content => serializeFlowContentToText(content)).join("\n\n");
+        target.setData("text/plain", plain);
     }, [controller]);
+    const handleCopyToClipboard = useCallback((e: ClipboardEvent) => {
+        e.preventDefault();
+        if (e.clipboardData) {
+            copyToClipboard(e.clipboardData);
+        }
+    }, []);
+    useNativeEventHandler(editingHost, "copy", handleCopyToClipboard, []);
 
     // Handle cut
     useNativeEventHandler(editingHost, "cut", (e: ClipboardEvent) => {
-        const data = controller.copyJsonString();
-        e.preventDefault();
-        if (data) {
-            e.clipboardData?.setData(FlowContent.jsonMimeType, data);
-            controller.remove();
-        }
-    }, [controller]);
+        handleCopyToClipboard(e);
+        controller.remove();
+    }, [controller, handleCopyToClipboard]);
 
     return (
         <FlowEditorControllerScope controller={controller}>
