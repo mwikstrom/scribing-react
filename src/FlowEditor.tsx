@@ -425,17 +425,27 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         target.setData("text/plain", plain);
     }, [controller]);
     const handleCopyToClipboard = useCallback((e: ClipboardEvent) => {
+        if (isInsideBreakOut(editingHost, e.target)) {
+            return false;
+        }
+
         e.preventDefault();
+
         if (e.clipboardData) {
             copyToClipboard(e.clipboardData);
         }
-    }, []);
-    useNativeEventHandler(editingHost, "copy", handleCopyToClipboard, []);
+
+        return true;
+    }, [editingHost]);
+    useNativeEventHandler(editingHost, "copy", (e: ClipboardEvent) => {
+        handleCopyToClipboard(e);
+    }, [handleCopyToClipboard]);
 
     // Handle cut
     useNativeEventHandler(editingHost, "cut", (e: ClipboardEvent) => {
-        handleCopyToClipboard(e);
-        controller.remove();
+        if (handleCopyToClipboard(e)) {
+            controller.remove();
+        }
     }, [controller, handleCopyToClipboard]);
 
     return (

@@ -1,3 +1,7 @@
+## 1.11.1 - 2023-09-28
+
+- Don't intercept copy/paste events from break-out scope
+
 ## 1.11.0 - 2023-09-21
 
 - Copy/paste plain text
