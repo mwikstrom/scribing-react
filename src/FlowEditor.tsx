@@ -4,6 +4,7 @@ import {
     FlowOperation,
     FlowSelection,
     FlowTableSelection,
+    NestedFlowSelection,
     TextStyle,
     serializeFlowContentToText
 } from "scribing";
@@ -311,7 +312,9 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useEffect(() => {
         // Table selection cannot be mapped to DOM so we'll ignore DOM selection
         // changes while we're in "table selection mode".
-        if (!editingHost || state.selection instanceof FlowTableSelection) {
+        console.log(state.selection);
+
+        if (!editingHost || isFlowTableSelection(state.selection)) {
             return;
         }
 
@@ -502,3 +505,18 @@ const useStyles = createUseStyles({
 }, {
     generateId: makeJssId("FlowEditor"),
 });
+
+const isFlowTableSelection = (selection: FlowSelection | null): boolean => {
+    if (selection instanceof FlowTableSelection) {
+        return true;
+    } else if (selection instanceof NestedFlowSelection) {
+        let result = false;
+        selection.updateInner(inner => {
+            result = isFlowTableSelection(inner);
+            return inner;
+        });
+        return result;
+    } else {
+        return false;
+    }
+};
