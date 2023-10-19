@@ -312,8 +312,6 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     useEffect(() => {
         // Table selection cannot be mapped to DOM so we'll ignore DOM selection
         // changes while we're in "table selection mode".
-        console.log(state.selection);
-
         if (!editingHost || isFlowTableSelection(state.selection)) {
             return;
         }
@@ -397,7 +395,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         }
 
         // Exit table selection mode if needed
-        if (!e.shiftKey && state.selection instanceof FlowTableSelection) {
+        if (!e.shiftKey && isFlowTableSelection(state.selection)) {
             applyChange(state.set("selection", null), state);
         }
 

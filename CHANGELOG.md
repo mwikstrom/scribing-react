@@ -1,3 +1,7 @@
+## 1.11.3 - 2023-10-19
+
+- Exit nested flow table selection
+
 ## 1.11.2 - 2023-10-19
 
 - Detect (and ignore) nested flow table selection
