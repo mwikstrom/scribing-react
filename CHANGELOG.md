@@ -1,3 +1,7 @@
+## 1.11.4 - 2023-11-18
+
+- Fix: Editing host is null unless editing is enabled
+
 ## 1.11.3 - 2023-10-19
 
 - Exit nested flow table selection

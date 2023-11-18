@@ -135,7 +135,7 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
     }, [onStateChangeProp, setState]);
 
     // Keep track of editing host element
-    const [editingHost, setEditingHostCore] = useState<HTMLElement | null>(null);
+    const [editingHostCore, setEditingHostCore] = useState<HTMLElement | null>(null);
     const setEditingHost = useCallback((elem: HTMLElement | null) => {
         setEditingHostCore(elem);
         if (elem) {
@@ -152,19 +152,22 @@ export const FlowEditor: FC<FlowEditorProps> = props => {
         if (!isEditingSupported() || state.preview) {
             return false;
         } else if (
-            editingHost && 
+            editingHostCore && 
             activeElement && 
             documentHasFocus &&
             (
-                editingHost === activeElement ||
-                editingHost.contains(activeElement)
+                editingHostCore === activeElement ||
+                editingHostCore.contains(activeElement)
             )
         ) {
             return true;
         } else {
             return "inactive";
         }
-    }, [activeElement, editingHost, documentHasFocus, state.preview]);
+    }, [activeElement, editingHostCore, documentHasFocus, state.preview]);
+
+    // Editing host is null unless editing is enabled
+    const editingHost = editMode ? editingHostCore : null;
 
     // Should we use custom selection styling?
     const customSelection = !nativeSelection && !!editMode && !isInsideBreakOut(editingHost, activeElement);
