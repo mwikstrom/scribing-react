@@ -71,6 +71,7 @@ export declare class FlowEditorController
 |  [getTextDirection()](./scribing-react.floweditorcontroller.gettextdirection.md) |  |  |
 |  [getTextStyle()](./scribing-react.floweditorcontroller.gettextstyle.md) |  |  |
 |  [getUpload(id)](./scribing-react.floweditorcontroller.getupload.md) |  |  |
+|  [getUploadPromise(id)](./scribing-react.floweditorcontroller.getuploadpromise.md) |  |  |
 |  [increaseBaselineOffset()](./scribing-react.floweditorcontroller.increasebaselineoffset.md) |  |  |
 |  [incrementListLevel()](./scribing-react.floweditorcontroller.incrementlistlevel.md) |  |  |
 |  [insertBox(style, content)](./scribing-react.floweditorcontroller.insertbox.md) |  |  |

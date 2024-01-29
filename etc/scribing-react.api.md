@@ -163,7 +163,7 @@ export interface FlowEditorClientOptions {
 
 // @public (undocumented)
 export class FlowEditorController {
-    constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
+    constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, [Blob, () => Promise<string | null>]>);
     // @internal (undocumented)
     _apply(change: ApplicableChange): FlowEditorState;
     // (undocumented)
@@ -254,6 +254,8 @@ export class FlowEditorController {
     getTextStyle(): TextStyle;
     // (undocumented)
     getUpload(id: string): Blob | null;
+    // (undocumented)
+    getUploadPromise(id: string): Promise<string | null> | null;
     // (undocumented)
     increaseBaselineOffset(): void;
     // (undocumented)
@@ -520,6 +522,12 @@ export interface FlowEditorStateProps {
 export interface FlowLocale {
     // (undocumented)
     hold_ctrl_key_to_enable_interaction: string;
+    // (undocumented)
+    image_upload_failed: string;
+    // (undocumented)
+    image_upload_in_progress: string;
+    // (undocumented)
+    image_upload_not_available: string;
     // (undocumented)
     script_error: string;
     // (undocumented)

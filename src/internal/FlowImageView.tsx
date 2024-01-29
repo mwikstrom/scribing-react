@@ -12,10 +12,12 @@ import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 import { useImageSource } from "./hooks/use-image-source";
 import { useBlockSize } from "./BlockSize";
-import { mdiResizeBottomRight } from "@mdi/js";
+import { mdiAlert, mdiAlertOctagon, mdiLoading, mdiResizeBottomRight } from "@mdi/js";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { useScribingComponents } from "../ScribingComponents";
+import { useFlowLocale } from "../FlowLocaleScope";
+import Icon from "@mdi/react";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -35,6 +37,8 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const selected = selection === true;
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
+    const locale = useFlowLocale();
+
     const className = clsx(
         classes.root,
         ...getTextStyleClassNames(style, classes),
@@ -61,6 +65,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
     const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
+    const [uploadState, setUploadState] = useState<"not_available" | "in_progress" | "failed">();
 
     const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
         if (imageElem && controller) {
@@ -149,18 +154,101 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     }, [controller, scale], { capture: true });
 
     const blockSize = useBlockSize();
+
     const imageStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         const css: CSSProperties = {
             width: `calc(min(${blockSize}, ${Math.round(width * scale)}px))`,
             aspectRatio: `${width}/${height}`,
         };
+        return css;
+    }, [blockSize, source.width, source.height, scale]);
+
+    const imageClass = clsx(
+        classes.image, 
+        scaledDown && visible && ready && !editMode && ImageZoom && classes.imageScaledDown
+    );
+
+    const bitmapClass = clsx(
+        classes.bitmap,
+        visible && ready && classes.bitmapReady,
+        imageElem && classes.bitmapBound,
+        broken && url && classes.bitmapBroken,
+        !url && classes.bitmapEmpty,
+        uploadState && classes.bitmapUploading,
+    );
+
+    const bitmapStyle = useMemo<CSSProperties>(() => {
+        const css: CSSProperties = {};
         if (ready && !broken) {
             css.backgroundImage = `url(${url})`;
             css.backgroundSize = "cover";
         }
         return css;
-    }, [blockSize, source.width, source.height, scale, url, broken, ready]);
+    }, [url, broken, ready]);
+
+    const resizeOverlay = editMode && selected && controller && controller.isImage() && (
+        <>
+            {!uploadState && (
+                <div className={classes.sizeProps}>
+                    {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
+                    {(scale * 100).toFixed(1)}%
+                </div>
+            )}
+            <svg
+                className={classes.resize}
+                viewBox="0 0 24 24"
+                onMouseDown={onResizeStart}
+                children={(
+                    <>
+                        <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
+                        <path fill="#fff" d={mdiResizeBottomRight}/>    
+                    </>
+                )}
+            />
+        </>
+    );
+
+    const uploadOverlay = uploadState && (
+        <div className={classes.uploadOverlay}>
+            <div className={clsx(classes.uploadBox, classes[`upload_${uploadState}`])}>
+                <Icon
+                    className={classes.uploadIcon}
+                    path={UploadStateIcon[uploadState]}
+                    size={0.75}
+                    spin={uploadState === "in_progress" ? 1 : 0}
+                />
+                {locale[`image_upload_${uploadState}`]}
+            </div>
+        </div>
+    );
+
+    useEffect(() => {
+        if (!source.upload) {
+            setUploadState(undefined);
+        } else {
+            const promise = controller?.getUploadPromise(source.upload);
+            if (!promise) {
+                setUploadState("not_available");
+            } else {
+                let active = true;
+                setUploadState("in_progress");
+                promise.then(
+                    () => {
+                        if (active) {
+                            setUploadState(undefined);
+                        }
+                    },
+                    () => {
+                        if (active) {
+                            setUploadState("failed");
+                        }
+                    },
+                );
+                return () => void (active = false);
+            }
+        }
+    }, [source.upload, controller]);
 
     return (
         <>
@@ -176,31 +264,12 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                         <span
                             ref={setImageElem}
                             style={imageStyle}
-                            className={clsx(
-                                classes.image, 
-                                visible && ready && classes.ready,
-                                imageElem && classes.bound,
-                                broken && url && classes.broken,
-                                !url && classes.empty,
-                                scaledDown && visible && ready && !editMode && ImageZoom && classes.scaledDown,
-                            )}
-                            children={editMode && selected && controller && controller.isImage() && (
+                            className={imageClass}
+                            children={(
                                 <>
-                                    <div className={classes.sizeProps}>
-                                        {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
-                                        {(scale * 100).toFixed(1)}%
-                                    </div>
-                                    <svg
-                                        className={classes.resize}
-                                        viewBox="0 0 24 24"
-                                        onMouseDown={onResizeStart}
-                                        children={(
-                                            <>
-                                                <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
-                                                <path fill="#fff" d={mdiResizeBottomRight}/>    
-                                            </>
-                                        )}
-                                    />
+                                    <div className={bitmapClass} style={bitmapStyle}></div>
+                                    {uploadOverlay}
+                                    {resizeOverlay}
                                 </>
                             )}
                         />
@@ -219,6 +288,12 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     );
 });
 
+const UploadStateIcon = {
+    in_progress: mdiLoading,
+    not_available: mdiAlert,
+    failed: mdiAlertOctagon,
+};
+
 const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
     ...textStyles(palette, typography),
     root: {
@@ -229,6 +304,43 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         outlineWidth: 2,
         outlineOffset: 4,
     },
+    uploadOverlay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    uploadBox: {
+        textIndent: "initial",
+        fontWeight: "normal",
+        backgroundColor: Color(palette.tooltip).fade(0.25).toString(),
+        color: palette.tooltipText,
+        fontFamily: typography.ui,
+        padding: 8,
+        border: `1px solid ${palette.tooltipText}`,
+        borderRadius: 4,
+        fontSize: "0.85rem",
+        "&$upload_not_available": {
+            backgroundColor: Color(palette.warning).fade(0.25).toString(),
+        },
+        "&$upload_failed": {
+            backgroundColor: Color(palette.error).fade(0.25).toString(),
+        },
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    uploadIcon: {
+        paddingRight: 8,
+    },
+    upload_in_progress: {},
+    upload_not_available: {},
+    upload_failed: {},
     selected: {
         outlineColor: palette.selection,
     },
@@ -239,37 +351,53 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
-        backgroundRepeat: "no-repeat",
         position: "relative",
+        "&$imageScaledDown": {
+            cursor: "zoom-in"
+        }
     },
-    scaledDown: {
-        cursor: "zoom-in"
+    imageScaledDown: {},
+    bitmap: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundRepeat: "no-repeat",
+        "&$bitmapBound": {
+            transition: "opacity ease-out 0.1s",
+            opacity: 0,
+            "&$bitmapReady": {
+                opacity: 1,
+                "&$bitmapUploading": {
+                    opacity: 0.5,
+                }
+            }
+        },
+        "&$bitmapEmpty": {
+            background: `repeating-linear-gradient(
+                45deg,
+                ${Color(palette.subtle).fade(0.85)},
+                ${Color(palette.subtle).fade(0.85)} 10px,
+                ${Color(palette.subtle).fade(0.98)} 10px,
+                ${Color(palette.subtle).fade(0.98)} 20px
+            )`,
+        },
+        "&$bitmapBroken": {
+            background: `repeating-linear-gradient(
+                45deg,
+                ${Color(palette.error).fade(0.85)},
+                ${Color(palette.error).fade(0.85)} 10px,
+                ${Color(palette.error).fade(0.98)} 10px,
+                ${Color(palette.error).fade(0.98)} 20px
+            )`,
+        }
     },
-    bound: {
-        transition: "opacity ease-out 0.1s",
-        opacity: 0,
-    },
-    ready: {
-        opacity: 1,
-    },
-    empty: {
-        background: `repeating-linear-gradient(
-            45deg,
-            ${Color(palette.subtle).fade(0.85)},
-            ${Color(palette.subtle).fade(0.85)} 10px,
-            ${Color(palette.subtle).fade(0.98)} 10px,
-            ${Color(palette.subtle).fade(0.98)} 20px
-        )`,
-    },
-    broken: {
-        background: `repeating-linear-gradient(
-            45deg,
-            ${Color(palette.error).fade(0.85)},
-            ${Color(palette.error).fade(0.85)} 10px,
-            ${Color(palette.error).fade(0.98)} 10px,
-            ${Color(palette.error).fade(0.98)} 20px
-        )`,
-    },
+    bitmapBound: {},
+    bitmapReady: {},
+    bitmapUploading: {},
+    bitmapEmpty: {},
+    bitmapBroken: {},
     sizeProps: {
         position: "absolute",
         top: 4,
@@ -282,6 +410,8 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         paddingRight: 8,
         textAlign: "center",
         whiteSpace: "nowrap",
+        textIndent: "initial",
+        fontWeight: "normal",
     },
     resize: {
         position: "absolute",

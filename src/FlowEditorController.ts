@@ -56,14 +56,14 @@ export class FlowEditorController {
     #state!: FlowEditorState;
     #apply!: (change: ApplicableChange) => FlowEditorState;
     #onStoreAsset: FlowEditorProps["onStoreAsset"];
-    readonly #uploads = new Map<string, Blob>();
+    readonly #uploads = new Map<string, [Blob, () => Promise<string | null>]>();
     #fresh: PubSub<FlowEditorController> | undefined;
 
     constructor(
         state: FlowEditorState,
         apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState,
         onStoreAsset: FlowEditorProps["onStoreAsset"],
-        uploads = new Map<string, Blob>(),
+        uploads = new Map<string, [Blob, () => Promise<string | null>]>(),
     ) {
         this._sync(state, apply, onStoreAsset);
         this.#uploads = uploads;
@@ -186,33 +186,62 @@ export class FlowEditorController {
     uploadAsset(blob: Blob): string {
         const id = nanoid();
         const store = this.#onStoreAsset;
-        this.#uploads.set(id, blob);
-
-        if (store) {
-            (async () => {
-                const args = new StoreAssetEvent(blob, id);
-                try {
-                    store(args);
-                    await args._complete();
-                    if (args.url === null) {
-                        console.warn("Asset wasn't stored and will remain transient only.");
-                    }
-                } catch (error) {
-                    console.error("Failed to store asset:", error);
-                } finally {
-                    if (args.url !== null) {
-                        this.#state = this.#apply(new CompleteUpload({ id, url: args.url }));
+        const handler: () => Promise<string | null> = store ? async () => {
+            const args = new StoreAssetEvent(blob, id);
+            store(args);
+            await args._complete();
+            return args.url;
+        } : () => Promise.resolve(null);
+        let promise: Promise<string | null> | undefined;
+        let completed = false;
+        const run = () => {
+            if (!promise) {
+                promise = handler()
+                    .then(
+                        url => {
+                            if (url) {
+                                this.#state = this.#apply(new CompleteUpload({ id, url }));
+                            } else {
+                                console.warn("Asset wasn't stored and will remain transient only.");
+                            }                            
+                            return url;
+                        },
+                        error => {
+                            console.error("Failed to store asset:", error);
+                            throw error;
+                        },
+                    )
+                    .finally(() => {
+                        completed = true;
                         this.#uploads.delete(id);
-                    }
-                }
-            })();
+                    });
+            }
+            return promise;
+        };
+        if (!completed) {
+            this.#uploads.set(id, [blob, run]);
         }
-
         return id;
     }
 
     getUpload(id: string): Blob | null {
-        return this.#uploads.get(id) ?? null;
+        const tuple = this.#uploads.get(id);
+        if (tuple) {
+            const [blob] = tuple;
+            return blob;
+        } else {
+            return null;
+        }
+    }
+
+    getUploadPromise(id: string): Promise<string | null> | null {
+        const tuple = this.#uploads.get(id);
+        if (tuple) {
+            const [, run] = tuple;
+            return run();
+        } else {
+            return null;
+        }
     }
 
     isCaret(): boolean {

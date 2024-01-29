@@ -1,3 +1,7 @@
+## 1.12.0 - 2024-01-29
+
+- Image upload feedback
+
 ## 1.11.4 - 2023-11-18
 
 - Fix: Editing host is null unless editing is enabled

@@ -9,7 +9,7 @@ Constructs a new instance of the `FlowEditorController` class
 <b>Signature:</b>
 
 ```typescript
-constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, Blob>);
+constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, [Blob, () => Promise<string | null>]>);
 ```
 
 ## Parameters
@@ -19,5 +19,5 @@ constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: Fl
 |  state | [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  apply | (change: [ApplicableChange](./scribing-react.applicablechange.md)<!-- -->, before: [FlowEditorState](./scribing-react.floweditorstate.md)<!-- -->) =&gt; [FlowEditorState](./scribing-react.floweditorstate.md) |  |
 |  onStoreAsset | [FlowEditorProps](./scribing-react.floweditorprops.md)<!-- -->\["onStoreAsset"\] |  |
-|  uploads | Map&lt;string, Blob&gt; | <i>(Optional)</i> |
+|  uploads | Map&lt;string, \[Blob, () =&gt; Promise&lt;string \| null&gt;\]&gt; | <i>(Optional)</i> |
 
