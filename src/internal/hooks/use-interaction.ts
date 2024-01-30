@@ -113,9 +113,9 @@ export function useInteraction(
                 domSelection.getRangeAt(0).selectNode(rootElem);
                 e.stopPropagation();
             }    
-        } else if (disabled) {
+        } else if (disabled || (clickable && pending)) {
             e.preventDefault();
-        } else if (clickable && !pending) {
+        } else if (clickable) {
             setError(sourceError);
 
             if (logger) {

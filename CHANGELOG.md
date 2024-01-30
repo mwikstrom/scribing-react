@@ -1,3 +1,7 @@
+## 1.12.1 - 2024-01-30
+
+- Prevent default link interaction while previous interaction is still in progress
+
 ## 1.12.0 - 2024-01-29
 
 - Image upload feedback
