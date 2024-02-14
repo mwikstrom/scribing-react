@@ -1,3 +1,7 @@
+## 1.13.0 - 2024-02-14
+
+- Add overridable `FlowViewSkeleton` component, to be rendered while rendering assets are being loaded
+
 ## 1.12.1 - 2024-01-30
 
 - Prevent default link interaction while previous interaction is still in progress

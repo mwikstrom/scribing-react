@@ -24,6 +24,7 @@ import { RenderMarkupEvent } from "./RenderMarkupEvent";
 import { ResolveLinkEvent } from "./ResolveLinkEvent";
 import { useIsInsideSharedListCounterScope } from "./SharedListCounterScope";
 import { processMarkup as processMarkupCore } from "scribing";
+import { useScribingComponents } from "./ScribingComponents";
 
 /**
  * Component props for {@link FlowView}
@@ -45,11 +46,12 @@ export interface FlowViewProps {
  * @public
  */
 export const FlowView: FC<FlowViewProps> = props => {
+    const { FlowViewSkeleton } = useScribingComponents();
     const {
         content,
         theme,
         selection,
-        skeleton = null,
+        skeleton = FlowViewSkeleton ? <FlowViewSkeleton /> : null,
         onLoadAsset,
         onResolveLink,
         onRenderMarkup,

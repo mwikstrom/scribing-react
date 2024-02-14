@@ -38,6 +38,7 @@ import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
 import { TextStyleProps } from 'scribing';
 import { Type } from 'paratype';
+import { VFC } from 'react';
 
 // @public (undocumented)
 export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
@@ -845,6 +846,8 @@ export const ScribingComponentOverride: FC<Partial<ScribingComponents>>;
 export interface ScribingComponents {
     // (undocumented)
     Button: ScribingComponent<ScribingButtonProps>;
+    // (undocumented)
+    FlowViewSkeleton?: VFC;
     // (undocumented)
     ImageZoom?: ScribingComponent<ScribingImageZoomProps>;
     // (undocumented)

@@ -10,6 +10,7 @@ export interface ScribingComponents {
     Tooltip: ScribingComponent<ScribingTooltipProps>;
     Button: ScribingComponent<ScribingButtonProps>;
     ImageZoom?: ScribingComponent<ScribingImageZoomProps>;
+    FlowViewSkeleton?: () => JSX.Element;
 }
 
 /** @public */
@@ -52,7 +53,8 @@ export const useScribingComponents = (): ScribingComponents => useContext(Scribi
 /** @public */
 export const ScribingComponentOverride: FC<Partial<ScribingComponents>> = props => {
     const { children, ...partial } = props;
-    const components = { ...DefaultScribingComponents, ...partial };
+    const parent = useScribingComponents();
+    const components = { ...parent, ...partial };
     return (
         <ScribingComponentsContext.Provider
             value={components}
