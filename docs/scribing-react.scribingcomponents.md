@@ -16,7 +16,7 @@ export interface ScribingComponents
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [Button](./scribing-react.scribingcomponents.button.md) | [ScribingComponent](./scribing-react.scribingcomponent.md)<!-- -->&lt;[ScribingButtonProps](./scribing-react.scribingbuttonprops.md)<!-- -->&gt; |  |
-|  [FlowViewSkeleton?](./scribing-react.scribingcomponents.flowviewskeleton.md) | VFC | <i>(Optional)</i> |
+|  [FlowViewSkeleton?](./scribing-react.scribingcomponents.flowviewskeleton.md) | () =&gt; JSX.Element | <i>(Optional)</i> |
 |  [ImageZoom?](./scribing-react.scribingcomponents.imagezoom.md) | [ScribingComponent](./scribing-react.scribingcomponent.md)<!-- -->&lt;[ScribingImageZoomProps](./scribing-react.scribingimagezoomprops.md)<!-- -->&gt; | <i>(Optional)</i> |
 |  [Tooltip](./scribing-react.scribingcomponents.tooltip.md) | [ScribingComponent](./scribing-react.scribingcomponent.md)<!-- -->&lt;[ScribingTooltipProps](./scribing-react.scribingtooltipprops.md)<!-- -->&gt; |  |
 

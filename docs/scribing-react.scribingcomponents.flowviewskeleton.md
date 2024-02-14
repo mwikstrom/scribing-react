@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-FlowViewSkeleton?: VFC;
+FlowViewSkeleton?: () => JSX.Element;
 ```
