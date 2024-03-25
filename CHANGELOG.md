@@ -1,3 +1,7 @@
+## 1.13.1 - 2024-03-XX
+
+- Add special key handler for SHIFT+LEFT/RIGHT arrow to enable tables and empty boxes to be selected properly
+
 ## 1.13.0 - 2024-02-14
 
 - Add overridable `FlowViewSkeleton` component, to be rendered while rendering assets are being loaded

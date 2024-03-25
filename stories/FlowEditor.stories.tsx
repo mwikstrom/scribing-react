@@ -11,7 +11,7 @@ import {
     FlowContent,
     FlowSelection,
     FlowTableSelection,
-    FLOW_COLORS
+    FLOW_COLORS,
 } from "scribing";
 import { JsonObject, JsonValue } from "paratype";
 import { FlowEditorState } from "../src/FlowEditorState";
@@ -1179,4 +1179,18 @@ FreezingBug.args = {
             }
         },
     ])).set("theme", DefaultFlowTheme.get("en-US"))
+};
+
+export const ShiftArrowSelectEmptyBox = Template.bind({});
+ShiftArrowSelectEmptyBox.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "Use SHIFT+LEFT/RIGHT to select this empty box:",
+        { break: "para" },
+        "before-->",
+        {
+            box: [{ break: "para" }],
+        },
+        "<---after",
+        { break: "para" },
+    ])).set("formattingMarks", true)
 };

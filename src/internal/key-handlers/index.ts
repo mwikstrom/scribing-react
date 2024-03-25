@@ -9,6 +9,7 @@ import { TabHandler } from "./TabHandler";
 import { ToggleFormattingMarksHandler } from "./ToggleFormattingMarksHandler";
 import { UndoHandler } from "./UndoHandler";
 import { SelectAllHandler } from "./SelectAllHandler";
+import { LeftRightSelectionHandler } from "./LeftRightSelectionHandler";
 
 const ALL_HANDLERS = [
     BackspaceHandler,
@@ -21,6 +22,7 @@ const ALL_HANDLERS = [
     TableSelectionHandler,
     ToggleFormattingMarksHandler,
     UndoHandler,
+    LeftRightSelectionHandler,
 ];
 
 export const handleKeyEvent: KeyHandler = (event, controller) => {
