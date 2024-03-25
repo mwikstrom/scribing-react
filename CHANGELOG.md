@@ -1,4 +1,4 @@
-## 1.13.1 - 2024-03-XX
+## 1.13.1 - 2024-03-25
 
 - Add special key handler for SHIFT+LEFT/RIGHT arrow to enable tables and empty boxes to be selected properly
 
