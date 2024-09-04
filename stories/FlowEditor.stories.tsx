@@ -875,6 +875,97 @@ ImageInAButton.args = {
     }])).set("preview", true),
 };
 
+export const Videos = Template.bind({});
+Videos.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        "In the next paragraph there should be 426x240 video that is centered",
+        { break: "para" },
+        // eslint-disable-next-line max-len
+        { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-sd_426_240_30fps.mp4", width: 426, height: 240 } },
+        { break: "para", style: { alignment: "center"} },
+        "On the next line there should be a big video",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+        { break: "para" },
+        "On the next line there should be a video with placeholder only",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { video: { url: "", placeholder: "/9j/4AAQSkZJRgABAQEASABIAAD/4gIcSUNDX1BST0ZJTEUAAQEAAAIMbGNtcwIQAABtbnRyUkdCIFhZWiAH3AABABkAAwApADlhY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWxjbXMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApkZXNjAAAA/AAAAF5jcHJ0AAABXAAAAAt3dHB0AAABaAAAABRia3B0AAABfAAAABRyWFlaAAABkAAAABRnWFlaAAABpAAAABRiWFlaAAABuAAAABRyVFJDAAABzAAAAEBnVFJDAAABzAAAAEBiVFJDAAABzAAAAEBkZXNjAAAAAAAAAANjMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0ZXh0AAAAAElYAABYWVogAAAAAAAA9tYAAQAAAADTLVhZWiAAAAAAAAADFgAAAzMAAAKkWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeFAAAY2lhZWiAAAAAAAAAkoAAAD4QAALbPY3VydgAAAAAAAAAaAAAAywHJA2MFkghrC/YQPxVRGzQh8SmQMhg7kkYFUXdd7WtwegWJsZp8rGm/fdPD6TD////bAIQAAgMDAwQDBAUFBAYGBgYGCAgHBwgIDQkKCQoJDRMMDgwMDgwTERQRDxEUER4YFRUYHiMdHB0jKiUlKjUyNUVFXAECAwMDBAMEBQUEBgYGBgYICAcHCAgNCQoJCgkNEwwODAwODBMRFBEPERQRHhgVFRgeIx0cHSMqJSUqNTI1RUVc/8AAEQgADAAQAwEiAAIRAQMRAf/EAGQAAQEBAAAAAAAAAAAAAAAAAAgFBxAAAQQCAgMBAAAAAAAAAAAAAQIDBBEABQYHEyFRQQEBAQAAAAAAAAAAAAAAAAAABQYRAAEDAwUAAAAAAAAAAAAAAAEAAxECBAUGEjFRYf/aAAwDAQACEQMRAD8A1fXdrMnWMlQVXjFEg0R9BwqdhdpyjJdQ0seN1GGPivItzEjS2mZa0pDa01f5dZR5dsFTI2rZWwyhKooJKE0SQCbv76wRrD2tDo5I6JUK9qC+fZgV7CImB7C//9k=", width: 300, height: 225 } },
+        { break: "para" },
+        "On the next line there should be an video with empty url and without placeholder",
+        { break: "line" },
+        { video: { url: "", width: 300, height: 225 } },
+        { break: "para" },
+        "On the next line there should be a broken video",
+        { break: "line" },
+        { video: { url: "broken", width: 300, height: 225 } },
+        { break: "para" },
+        "The following video is far enough down in the document so that it's probably not visible until it's " +
+        "been scrolled into view and therefore it should not be loaded initially",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1280_720_30fps.mp4", width: 1280, height: 720 } },
+        { break: "para" },
+    ])),
+};
+
+export const ScaledDownVideo = Template.bind({});
+ScaledDownVideo.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
+        // eslint-disable-next-line max-len
+        { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 }, scale: 0.1 },
+        "Some text",
+        { break: "para" },
+    ])),
+};
+
+export const VideoInABox = Template.bind({});
+VideoInABox.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
+        box: [
+            // eslint-disable-next-line max-len
+            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+            "Some text",
+            { break: "para" },
+        ],
+        style: {
+            variant: "outlined"
+        }
+    }])),
+};
+
+export const VideoInABoxPreview = Template.bind({});
+VideoInABoxPreview.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
+        box: [
+            // eslint-disable-next-line max-len
+            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+            "Some text",
+            { break: "para" },
+        ],
+        style: {
+            variant: "outlined"
+        }
+    }])).set("preview", true),
+};
+
+export const VideoInAButton = Template.bind({});
+VideoInAButton.args = {
+    defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
+        box: [
+            // eslint-disable-next-line max-len
+            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+            "Some text",
+            { break: "para" },
+        ],
+        style: {
+            variant: "outlined",
+            interaction: { script: "throw new Error('FAIL')" },
+        }
+    }])).set("preview", true),
+};
+
 export const Table = Template.bind({});
 Table.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([
