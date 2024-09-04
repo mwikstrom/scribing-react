@@ -3,24 +3,12 @@ import { VideoSource } from "scribing";
 import { useFlowEditorController } from "../FlowEditorControllerScope";
 import { useAssetUrl } from "./use-asset-url";
 import { useBlobUrl } from "./use-blob-url";
-import { useVerifiedVideoUrl, VerifiedVideo } from "./use-verified-video";
-import { useVerifiedImageUrl } from "./use-verified-image";
 
-export function useVideoSource(source: VideoSource): VerifiedVideo {
-    return useVideoSourceUrl(source.url, source.upload);
+export function useVideoSourceUrl(source: VideoSource): string {
+    return useVideoSourceCore(source.url, source.upload);
 }
 
-export function useVideoPosterUrl(source: VideoSource): string | undefined {
-    const { poster = "", placeholder } = source;
-    const { url: posterUrl, ready: posterReady } = useVerifiedImageUrl(poster);
-    if (posterReady) {
-        return posterUrl;
-    } else if (placeholder) {
-        return `data:;base64,${placeholder}`;
-    }
-}
-
-function useVideoSourceUrl(sourceUrl: string, uploadId?: string): VerifiedVideo {
+function useVideoSourceCore(sourceUrl: string, uploadId?: string): string {
     const controller = useFlowEditorController();
     const uploadBlob = useMemo(() => {
         if (uploadId && controller) {
@@ -31,10 +19,11 @@ function useVideoSourceUrl(sourceUrl: string, uploadId?: string): VerifiedVideo 
     }, [controller, uploadId]);
     const uploadUrl = useBlobUrl(uploadBlob);
     const assetUrl = useAssetUrl(sourceUrl);
-    const verifiedUrl = useVerifiedVideoUrl(uploadUrl ?? (typeof assetUrl === "string" ? assetUrl : ""));
-    if (assetUrl instanceof Error) {
-        return Object.freeze({ url: sourceUrl, broken: true, ready: true });
+    if (uploadUrl) {
+        return uploadUrl;
+    } else if (assetUrl instanceof Error) {
+        return "";
     } else {
-        return verifiedUrl;
+        return assetUrl ?? "";
     }
 }

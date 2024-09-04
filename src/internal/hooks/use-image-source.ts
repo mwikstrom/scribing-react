@@ -3,10 +3,10 @@ import { ImageSource } from "scribing";
 import { useFlowEditorController } from "../FlowEditorControllerScope";
 import { useAssetUrl } from "./use-asset-url";
 import { useBlobUrl } from "./use-blob-url";
-import { useVerifiedImageUrl, VerifiedImage } from "./use-verified-image";
+import { useVerifiedImage, VerifiedImage } from "./use-verified-image";
 
 export function useImageSource(source: ImageSource): VerifiedImage {
-    const original = useImageSourceUrl(source.url, source.upload);
+    const original = useImageSourceCore(source.url, source.upload);
     const placeholder = useImageSourcePlaceholder(source.placeholder);
     if (placeholder.url && placeholder.ready && (!original.url || !original.ready)) {
         return placeholder;
@@ -17,10 +17,10 @@ export function useImageSource(source: ImageSource): VerifiedImage {
 
 function useImageSourcePlaceholder(placeholder: string | null | undefined): VerifiedImage {
     const url = placeholder ? `data:;base64,${placeholder}` : "";
-    return useVerifiedImageUrl(url);
+    return useVerifiedImage(url);
 }
 
-function useImageSourceUrl(sourceUrl: string, uploadId?: string): VerifiedImage {
+function useImageSourceCore(sourceUrl: string, uploadId?: string): VerifiedImage {
     const controller = useFlowEditorController();
     const uploadBlob = useMemo(() => {
         if (uploadId && controller) {
@@ -31,7 +31,7 @@ function useImageSourceUrl(sourceUrl: string, uploadId?: string): VerifiedImage 
     }, [controller, uploadId]);
     const uploadUrl = useBlobUrl(uploadBlob);
     const assetUrl = useAssetUrl(sourceUrl);
-    const verifiedUrl = useVerifiedImageUrl(uploadUrl ?? (typeof assetUrl === "string" ? assetUrl : ""));
+    const verifiedUrl = useVerifiedImage(uploadUrl ?? (typeof assetUrl === "string" ? assetUrl : ""));
     if (assetUrl instanceof Error) {
         return Object.freeze({ url: sourceUrl, broken: true, ready: true });
     } else {

@@ -9,21 +9,19 @@ import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
-import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
-import { useVideoPosterUrl, useVideoSource } from "./hooks/use-video-source";
 import { useBlockSize } from "./BlockSize";
 import { mdiAlert, mdiAlertOctagon, mdiLoading, mdiResizeBottomRight } from "@mdi/js";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
-import { useScribingComponents } from "../ScribingComponents";
 import { useFlowLocale } from "../FlowLocaleScope";
 import Icon from "@mdi/react";
+import { useVerifiedImageUrl } from "./hooks/use-verified-image";
+import { useVideoSourceUrl } from "./hooks/use-video-source";
 
 export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     const { node, selection } = props;
     const { style: givenStyle, source, scale: givenScale } = node;
     const controller = useFlowEditorController();
-    const { ImageZoom } = useScribingComponents();
     const theme = useParagraphTheme();
     const style = useMemo(() => {
         let ambient = theme.getAmbientTextStyle();
@@ -39,7 +37,7 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     const { native: nativeSelection } = useFlowCaretContext();
     const locale = useFlowLocale();
 
-    const className = clsx(
+    const rootClassName = clsx(
         classes.root,
         ...getTextStyleClassNames(style, classes),
         selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
@@ -62,37 +60,22 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         }
     }, [rootElem]);
 
-    const { url: videoUrl, ready, broken } = useVideoSource(source);
-    const posterUrl = useVideoPosterUrl(source);
-    const [videoElem, setVideoElem] = useState<HTMLElement | null>(null);
+    const verifiedPosterUrl = useVerifiedImageUrl(source.poster || "");
+    const posterUrl = verifiedPosterUrl || (source.placeholder && `data:;base64,${source.placeholder}`);
+    const videoUrl = useVideoSourceUrl(source);
+    const isVoid = !videoUrl && !posterUrl;
+    const [isBroken, setBroken] = useState(false);
+    const onError = useCallback(() => setBroken(!!videoUrl), [videoUrl]);
+    const [wrapperElem, setWrapperElem] = useState<HTMLElement | null>(null);
     const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
     const [uploadState, setUploadState] = useState<"not_available" | "in_progress" | "failed">();
 
     const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
-        if (videoElem && controller) {
-            setResizeStart({x: e.screenX, y: e.screenY, w: videoElem.clientWidth, h: videoElem.clientHeight});
+        if (wrapperElem && controller) {
+            setResizeStart({x: e.screenX, y: e.screenY, w: wrapperElem.clientWidth, h: wrapperElem.clientHeight});
         }
-    }, [videoElem, controller]);
+    }, [wrapperElem, controller]);
     const [scale, setScale] = useState(givenScale);
-
-    const [showZoomBox, setShowZoomBox] = useState(false);
-    const [scaledDown, setScaledDown] = useState(scale < 1);
-    const visible = useIsScrolledIntoView(videoElem);
-    
-    useEffect(() => {
-        if (videoElem) {
-            const processElem = () => setScaledDown(
-                videoElem.clientWidth < source.width ||
-                videoElem.clientHeight < source.height
-            );
-            const observer = new ResizeObserver(processElem);
-            observer.observe(videoElem);
-            processElem();
-            return () => observer.disconnect();
-        } else {
-            setScaledDown(scale < 1);
-        }
-    }, [videoElem, scale, source]);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
         const domSelection = document.getSelection();
@@ -114,13 +97,12 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
                 }
                 e.stopPropagation();
             }
-        } else if (scaledDown && visible && ready && !editMode) {
-            setShowZoomBox(true);
-            e.stopPropagation();
         }
-    }, [rootElem, editMode, scaledDown, visible, ready]);
+    }, [rootElem, editMode]);    
 
-    const onHideImageZoom = useCallback(() => setShowZoomBox(false), []);
+    useEffect(() => {
+        setBroken(false);
+    }, [videoUrl]);
 
     useEffect(() => {
         setScale(givenScale);
@@ -156,7 +138,7 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
 
     const blockSize = useBlockSize();
 
-    const videoStyle = useMemo<CSSProperties>(() => {
+    const sizeStyle = useMemo<CSSProperties>(() => {
         const { width, height } = source;
         const css: CSSProperties = {
             width: `calc(min(${blockSize}, ${Math.round(width * scale)}px))`,
@@ -165,28 +147,11 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         return css;
     }, [blockSize, source.width, source.height, scale]);
 
-    const videoClass = clsx(
-        classes.video, 
-        scaledDown && visible && ready && !editMode && ImageZoom && classes.videoScaledDown
+    const stateOverlay = (isVoid || isBroken) && (
+        <div className={clsx(classes.stateOverlay, isBroken ? classes.stateBroken : classes.stateVoid)} />
     );
 
-    const bitmapClass = clsx(
-        classes.bitmap,
-        visible && ready && classes.bitmapReady,
-        videoElem && classes.bitmapBound,
-        broken && videoUrl && classes.bitmapBroken,
-        !videoUrl && classes.bitmapEmpty,
-        uploadState && classes.bitmapUploading,
-    );
-
-    const bitmapStyle = useMemo<CSSProperties>(() => {
-        const css: CSSProperties = {};
-        if (ready && !broken) {
-            css.backgroundImage = `url(${videoUrl})`;
-            css.backgroundSize = "cover";
-        }
-        return css;
-    }, [videoUrl, broken, ready]);
+    const videoClassName = clsx(classes.video, stateOverlay && classes.videoHidden);
 
     const resizeOverlay = editMode && selected && controller && controller.isVideo() && (
         <>
@@ -252,57 +217,44 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     }, [source.upload, controller]);
 
     return (
-        <>
-            <span 
-                ref={ref}
-                className={className}
-                style={css}
-                contentEditable={false}
-                onDoubleClick={onDoubleClick}
-                onClick={onClick}
-                children={(
-                    <>
-                        <video
-                            ref={setVideoElem}
-                            style={videoStyle}
-                            src={videoUrl}
-                            poster={posterUrl}
-                            preload={editMode ? "none" : posterUrl ? "metadata" : "auto"}
-                            controls
-                            disablePictureInPicture
-                            controlsList={editMode ? 
-                                "nofullscreen nodownload noremoteplayback" :
-                                "nodownload noremoteplayback"
-                            }
-                        />
-                        {uploadOverlay}
-                        {resizeOverlay}
-                        {/*
-                        <span
-                            ref={setVideoElem}
-                            style={videoStyle}
-                            className={videoClass}
-                            children={(
-                                <>
-                                    <video className={bitmapClass} style={bitmapStyle} src={url} controls />
-                                    {uploadOverlay}
-                                    {resizeOverlay}
-                                </>
-                            )}
-                        />
-                        */}
-                    </>
-                )}
-            />
-            {showZoomBox && ImageZoom && (
-                <ImageZoom
-                    sourceUrl={""}
-                    sourceWidth={source.width}
-                    sourceHeight={source.height}
-                    onClose={onHideImageZoom}
-                />
+        <span 
+            ref={ref}
+            className={rootClassName}
+            style={css}
+            contentEditable={false}
+            onDoubleClick={onDoubleClick}
+            onClick={onClick}
+            children={(
+                <>
+                    <span
+                        ref={setWrapperElem}
+                        style={sizeStyle}
+                        className={classes.wrapper}
+                        children={(
+                            <>
+                                <video
+                                    className={videoClassName}
+                                    style={sizeStyle}
+                                    src={videoUrl}
+                                    onError={onError}
+                                    poster={posterUrl}
+                                    preload={posterUrl ? "metadata" : "auto"}
+                                    controls={videoUrl ? true : undefined}
+                                    disablePictureInPicture
+                                    controlsList={editMode ? 
+                                        "nofullscreen nodownload noremoteplayback" :
+                                        "nodownload noremoteplayback"
+                                    }
+                                />
+                                {stateOverlay}
+                                {uploadOverlay}
+                                {resizeOverlay}
+                            </>
+                        )}
+                    />
+                </>
             )}
-        </>
+        />
     );
 });
 
@@ -365,34 +317,31 @@ const useStyles = createUseFlowStyles("FlowVideo", ({palette, typography}) => ({
     selectedInactive: {
         outlineColor: palette.inactiveSelection,
     },
-    video: {
+    wrapper: {
         display: "inline-block",
         verticalAlign: "text-bottom",
         border: "none",
         position: "relative",
-        "&$videoScaledDown": {
-            cursor: "zoom-in"
+    },
+    video: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        "&$videoHidden": {
+            opacity: 0,
         }
     },
-    videoScaledDown: {},
-    bitmap: {
+    videoHidden: {},
+    stateOverlay: {
         position: "absolute",
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
         backgroundRepeat: "no-repeat",
-        "&$bitmapBound": {
-            transition: "opacity ease-out 0.1s",
-            opacity: 0,
-            "&$bitmapReady": {
-                opacity: 1,
-                "&$bitmapUploading": {
-                    opacity: 0.5,
-                }
-            }
-        },
-        "&$bitmapEmpty": {
+        "&$stateVoid": {
             background: `repeating-linear-gradient(
                 45deg,
                 ${Color(palette.subtle).fade(0.85)},
@@ -401,7 +350,7 @@ const useStyles = createUseFlowStyles("FlowVideo", ({palette, typography}) => ({
                 ${Color(palette.subtle).fade(0.98)} 20px
             )`,
         },
-        "&$bitmapBroken": {
+        "&$stateBroken": {
             background: `repeating-linear-gradient(
                 45deg,
                 ${Color(palette.error).fade(0.85)},
@@ -411,11 +360,8 @@ const useStyles = createUseFlowStyles("FlowVideo", ({palette, typography}) => ({
             )`,
         }
     },
-    bitmapBound: {},
-    bitmapReady: {},
-    bitmapUploading: {},
-    bitmapEmpty: {},
-    bitmapBroken: {},
+    stateVoid: {},
+    stateBroken: {},
     sizeProps: {
         position: "absolute",
         top: 4,

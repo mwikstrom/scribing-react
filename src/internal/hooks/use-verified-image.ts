@@ -7,7 +7,16 @@ export interface VerifiedImage {
     ready: boolean;
 }
 
-export function useVerifiedImageUrl(url: string): VerifiedImage {
+export function useVerifiedImageUrl(url: string): string | undefined {
+    const { url: verified, broken, ready } = useVerifiedImage(url);
+    if (ready && !broken) {
+        return verified;
+    } else {
+        return undefined;
+    }
+}
+
+export function useVerifiedImage(url: string): VerifiedImage {
     const [state, setState] = useState(() => (
         VERIFICATION_CACHE.get(url) ?? 
         (url ? makeInitialState(url) : makeBrokenState(url))
@@ -17,17 +26,16 @@ export function useVerifiedImageUrl(url: string): VerifiedImage {
             return;
         } else if (state.url !== url || state.ready || state.broken) {
             setState(makeInitialState(url));
+        } else if (url) {
+            let active = true;
+            (async () => {
+                const result = await verifyImage(url);
+                if (active) {
+                    setState(result);
+                }
+            })();
+            return () => { active = false; };
         }
-
-        let active = true;
-        (async () => {
-            const result = await verifyImage(url);
-            if (active) {
-                setState(result);
-            }
-        })();
-
-        return () => { active = false; };
     }, [url, state]);
     return state;
 }
