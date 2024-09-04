@@ -72,6 +72,7 @@ export declare class FlowEditorController
 |  [getTextStyle()](./scribing-react.floweditorcontroller.gettextstyle.md) |  |  |
 |  [getUpload(id)](./scribing-react.floweditorcontroller.getupload.md) |  |  |
 |  [getUploadPromise(id)](./scribing-react.floweditorcontroller.getuploadpromise.md) |  |  |
+|  [getVideoSource()](./scribing-react.floweditorcontroller.getvideosource.md) |  |  |
 |  [increaseBaselineOffset()](./scribing-react.floweditorcontroller.increasebaselineoffset.md) |  |  |
 |  [incrementListLevel()](./scribing-react.floweditorcontroller.incrementlistlevel.md) |  |  |
 |  [insertBox(style, content)](./scribing-react.floweditorcontroller.insertbox.md) |  |  |
@@ -111,6 +112,7 @@ export declare class FlowEditorController
 |  [isUnderlined()](./scribing-react.floweditorcontroller.isunderlined.md) |  |  |
 |  [isUniformNodes(predicate)](./scribing-react.floweditorcontroller.isuniformnodes.md) |  |  |
 |  [isUnorderedList()](./scribing-react.floweditorcontroller.isunorderedlist.md) |  |  |
+|  [isVideo()](./scribing-react.floweditorcontroller.isvideo.md) |  |  |
 |  [matchNodes(predicate)](./scribing-react.floweditorcontroller.matchnodes.md) |  |  |
 |  [mergeTableCells()](./scribing-react.floweditorcontroller.mergetablecells.md) |  |  |
 |  [moveCaretBack()](./scribing-react.floweditorcontroller.movecaretback.md) |  |  |
@@ -144,6 +146,8 @@ export declare class FlowEditorController
 |  [setTextAlignment(value)](./scribing-react.floweditorcontroller.settextalignment.md) |  |  |
 |  [setTextColor(value)](./scribing-react.floweditorcontroller.settextcolor.md) |  |  |
 |  [setTextDirection(value)](./scribing-react.floweditorcontroller.settextdirection.md) |  |  |
+|  [setVideoScale(scale)](./scribing-react.floweditorcontroller.setvideoscale.md) |  |  |
+|  [setVideoSource(source)](./scribing-react.floweditorcontroller.setvideosource.md) |  |  |
 |  [splitTableCell()](./scribing-react.floweditorcontroller.splittablecell.md) |  |  |
 |  [toggleBold()](./scribing-react.floweditorcontroller.togglebold.md) |  |  |
 |  [toggleFormattingMarks()](./scribing-react.floweditorcontroller.toggleformattingmarks.md) |  |  |

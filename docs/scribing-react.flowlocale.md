@@ -20,6 +20,9 @@ export interface FlowLocale
 |  [image\_upload\_in\_progress](./scribing-react.flowlocale.image_upload_in_progress.md) | string |  |
 |  [image\_upload\_not\_available](./scribing-react.flowlocale.image_upload_not_available.md) | string |  |
 |  [script\_error](./scribing-react.flowlocale.script_error.md) | string |  |
+|  [video\_upload\_failed](./scribing-react.flowlocale.video_upload_failed.md) | string |  |
+|  [video\_upload\_in\_progress](./scribing-react.flowlocale.video_upload_in_progress.md) | string |  |
+|  [video\_upload\_not\_available](./scribing-react.flowlocale.video_upload_not_available.md) | string |  |
 |  [void\_result](./scribing-react.flowlocale.void_result.md) | string |  |
 |  [void\_script](./scribing-react.flowlocale.void_script.md) | string |  |
 

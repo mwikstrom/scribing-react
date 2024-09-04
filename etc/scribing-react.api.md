@@ -38,6 +38,7 @@ import { TargetOptions } from 'scribing';
 import { TextStyle } from 'scribing';
 import { TextStyleProps } from 'scribing';
 import { Type } from 'paratype';
+import { VideoSource } from 'scribing';
 
 // @public (undocumented)
 export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
@@ -257,6 +258,8 @@ export class FlowEditorController {
     // (undocumented)
     getUploadPromise(id: string): Promise<string | null> | null;
     // (undocumented)
+    getVideoSource(): VideoSource | null;
+    // (undocumented)
     increaseBaselineOffset(): void;
     // (undocumented)
     incrementListLevel(): void;
@@ -335,6 +338,8 @@ export class FlowEditorController {
     // (undocumented)
     isUnorderedList(): boolean | undefined;
     // (undocumented)
+    isVideo(): boolean;
+    // (undocumented)
     matchNodes(predicate: (node: FlowNode) => boolean): {
         found: boolean;
         other: boolean;
@@ -405,6 +410,10 @@ export class FlowEditorController {
     setTextColor(value: FlowColor): void;
     // (undocumented)
     setTextDirection(value: Exclude<ParagraphStyleProps["direction"], undefined>): void;
+    // (undocumented)
+    setVideoScale(scale: number): void;
+    // (undocumented)
+    setVideoSource(source: VideoSource): void;
     // (undocumented)
     splitTableCell(): void;
     // (undocumented)
@@ -530,6 +539,12 @@ export interface FlowLocale {
     image_upload_not_available: string;
     // (undocumented)
     script_error: string;
+    // (undocumented)
+    video_upload_failed: string;
+    // (undocumented)
+    video_upload_in_progress: string;
+    // (undocumented)
+    video_upload_not_available: string;
     // (undocumented)
     void_result: string;
     // (undocumented)
