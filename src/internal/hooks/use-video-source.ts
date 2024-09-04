@@ -4,20 +4,20 @@ import { useFlowEditorController } from "../FlowEditorControllerScope";
 import { useAssetUrl } from "./use-asset-url";
 import { useBlobUrl } from "./use-blob-url";
 import { useVerifiedVideoUrl, VerifiedVideo } from "./use-verified-video";
+import { useVerifiedImageUrl } from "./use-verified-image";
 
 export function useVideoSource(source: VideoSource): VerifiedVideo {
-    const original = useVideoSourceUrl(source.url, source.upload);
-    const placeholder = useVideoSourcePlaceholder(source.placeholder);
-    if (placeholder.url && placeholder.ready && (!original.url || !original.ready)) {
-        return placeholder;
-    } else {
-        return original;
-    }
+    return useVideoSourceUrl(source.url, source.upload);
 }
 
-function useVideoSourcePlaceholder(placeholder: string | null | undefined): VerifiedVideo {
-    const url = placeholder ? `data:;base64,${placeholder}` : "";
-    return useVerifiedVideoUrl(url);
+export function useVideoPosterUrl(source: VideoSource): string | undefined {
+    const { poster = "", placeholder } = source;
+    const { url: posterUrl, ready: posterReady } = useVerifiedImageUrl(poster);
+    if (posterReady) {
+        return posterUrl;
+    } else if (placeholder) {
+        return `data:;base64,${placeholder}`;
+    }
 }
 
 function useVideoSourceUrl(sourceUrl: string, uploadId?: string): VerifiedVideo {

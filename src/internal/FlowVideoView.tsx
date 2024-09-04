@@ -10,7 +10,7 @@ import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
-import { useVideoSource } from "./hooks/use-video-source";
+import { useVideoPosterUrl, useVideoSource } from "./hooks/use-video-source";
 import { useBlockSize } from "./BlockSize";
 import { mdiAlert, mdiAlertOctagon, mdiLoading, mdiResizeBottomRight } from "@mdi/js";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
@@ -62,7 +62,8 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         }
     }, [rootElem]);
 
-    const { url, ready, broken } = useVideoSource(source);
+    const { url: videoUrl, ready, broken } = useVideoSource(source);
+    const posterUrl = useVideoPosterUrl(source);
     const [videoElem, setVideoElem] = useState<HTMLElement | null>(null);
     const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
     const [uploadState, setUploadState] = useState<"not_available" | "in_progress" | "failed">();
@@ -74,7 +75,7 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     }, [videoElem, controller]);
     const [scale, setScale] = useState(givenScale);
 
-    const [showVideoZoom, setShowZoomBox] = useState(false);
+    const [showZoomBox, setShowZoomBox] = useState(false);
     const [scaledDown, setScaledDown] = useState(scale < 1);
     const visible = useIsScrolledIntoView(videoElem);
     
@@ -119,7 +120,7 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         }
     }, [rootElem, editMode, scaledDown, visible, ready]);
 
-    const onHideVideoZoom = useCallback(() => setShowZoomBox(false), []);
+    const onHideImageZoom = useCallback(() => setShowZoomBox(false), []);
 
     useEffect(() => {
         setScale(givenScale);
@@ -173,19 +174,19 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         classes.bitmap,
         visible && ready && classes.bitmapReady,
         videoElem && classes.bitmapBound,
-        broken && url && classes.bitmapBroken,
-        !url && classes.bitmapEmpty,
+        broken && videoUrl && classes.bitmapBroken,
+        !videoUrl && classes.bitmapEmpty,
         uploadState && classes.bitmapUploading,
     );
 
     const bitmapStyle = useMemo<CSSProperties>(() => {
         const css: CSSProperties = {};
         if (ready && !broken) {
-            css.backgroundImage = `url(${url})`;
+            css.backgroundImage = `url(${videoUrl})`;
             css.backgroundSize = "cover";
         }
         return css;
-    }, [url, broken, ready]);
+    }, [videoUrl, broken, ready]);
 
     const resizeOverlay = editMode && selected && controller && controller.isVideo() && (
         <>
@@ -261,27 +262,44 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
                 onClick={onClick}
                 children={(
                     <>
+                        <video
+                            ref={setVideoElem}
+                            style={videoStyle}
+                            src={videoUrl}
+                            poster={posterUrl}
+                            preload={editMode ? "none" : posterUrl ? "metadata" : "auto"}
+                            controls
+                            disablePictureInPicture
+                            controlsList={editMode ? 
+                                "nofullscreen nodownload noremoteplayback" :
+                                "nodownload noremoteplayback"
+                            }
+                        />
+                        {uploadOverlay}
+                        {resizeOverlay}
+                        {/*
                         <span
                             ref={setVideoElem}
                             style={videoStyle}
                             className={videoClass}
                             children={(
                                 <>
-                                    <div className={bitmapClass} style={bitmapStyle}></div>
+                                    <video className={bitmapClass} style={bitmapStyle} src={url} controls />
                                     {uploadOverlay}
                                     {resizeOverlay}
                                 </>
                             )}
                         />
+                        */}
                     </>
                 )}
             />
-            {showVideoZoom && ImageZoom && (
+            {showZoomBox && ImageZoom && (
                 <ImageZoom
-                    sourceUrl={url}
+                    sourceUrl={""}
                     sourceWidth={source.width}
                     sourceHeight={source.height}
-                    onClose={onHideVideoZoom}
+                    onClose={onHideImageZoom}
                 />
             )}
         </>

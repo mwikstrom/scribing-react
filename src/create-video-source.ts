@@ -40,8 +40,8 @@ const createUploadVideoSource = async (blob: Blob, upload: string): Promise<Vide
     try {
         const video = await loadVideo(url);
         const props: VideoSourceProps = {
-            width: video.width,
-            height: video.height,
+            width: video.videoWidth,
+            height: video.videoHeight,
             url: "",
             upload,
         };
@@ -57,7 +57,8 @@ const createUploadVideoSource = async (blob: Blob, upload: string): Promise<Vide
 
 const loadVideo = async (url: string) => new Promise<HTMLVideoElement>((resolve, reject) => {
     const video = document.createElement("video");
-    video.onerror = () => reject(new Error("Failed to load video"));
-    video.onload = () => resolve(video);
-    video.src = url;
+    video.addEventListener("canplay", () => video.currentTime = 0);
+    video.addEventListener("seeked", () => resolve(video));
+    video.addEventListener("error", () => reject(new Error("Failed to load video: " + video.error?.message)));
+    video.src = url;    
 });

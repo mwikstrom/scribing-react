@@ -888,6 +888,11 @@ Videos.args = {
         // eslint-disable-next-line max-len
         { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
         { break: "para" },
+        "On the next line there should be a video with poster only",
+        { break: "line" },
+        // eslint-disable-next-line max-len
+        { video: { url: "", poster: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 300, height: 225 } },
+        { break: "para" },
         "On the next line there should be a video with placeholder only",
         { break: "line" },
         // eslint-disable-next-line max-len
@@ -925,7 +930,7 @@ VideoInABox.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
         box: [
             // eslint-disable-next-line max-len
-            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", poster: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1080 } },
             "Some text",
             { break: "para" },
         ],
@@ -940,7 +945,7 @@ VideoInABoxPreview.args = {
     defaultState: FlowEditorState.empty.set("content", FlowContent.fromJsonValue([{
         box: [
             // eslint-disable-next-line max-len
-            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", width: 1920, height: 1080 } },
+            { video: { url: "https://videos.pexels.com/video-files/20444835/20444835-hd_1920_1080_30fps.mp4", poster: "https://unsplash.com/photos/Kp9z6zcUfGw/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjM1OTQ0MzY2&w=1920", width: 1920, height: 1080 } },
             "Some text",
             { break: "para" },
         ],

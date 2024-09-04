@@ -35,8 +35,9 @@ export function useVerifiedVideoUrl(url: string): VerifiedVideo {
 const verifyVideo = (url: string): Promise<VerifiedVideo> => {
     return new Promise<VerifiedVideo>(resolve => {
         const video = document.createElement("video");
-        video.onload = () => resolve(makeSuccessState(url));
-        video.onerror = () => resolve(makeBrokenState(url));
+        video.addEventListener("canplay", () => video.currentTime = 0);
+        video.addEventListener("seeked", () => resolve(makeSuccessState(url)));
+        video.addEventListener("error", () => resolve(makeBrokenState(url)));
         video.src = url;
     }).then(result => {
         VERIFICATION_CACHE.set(url, result);
