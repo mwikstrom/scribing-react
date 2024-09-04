@@ -1,8 +1,15 @@
 export const createPlaceholder = (source: HTMLImageElement | HTMLVideoElement): string | undefined => {
-    const scale = getPlaceholderScale(source.width, source.height);
+    let { width, height } = source;
+
+    if (isVideoElement(source)) {
+        width = source.videoWidth;
+        height = source.videoHeight;
+    }
+
+    const scale = getPlaceholderScale(width, height);
     const canvas = document.createElement("canvas");
-    canvas.width = source.width * scale;
-    canvas.height = source.height * scale;
+    canvas.width = width * scale;
+    canvas.height = height * scale;
     const context = canvas.getContext("2d");
     if (context) {
         context.drawImage(source, 0, 0, canvas.width, canvas.height);
@@ -24,3 +31,6 @@ const getPlaceholderData = (canvas: HTMLCanvasElement) => {
         return dataUrl.substr(index + needle.length);
     }
 };
+
+const isVideoElement = (source: HTMLElement): source is HTMLVideoElement =>
+    /^video$/i.test(source.tagName);
