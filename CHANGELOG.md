@@ -1,3 +1,7 @@
+## 1.14.0 - 2024-09-04
+
+- Support video in flow content
+
 ## 1.13.1 - 2024-03-25
 
 - Add special key handler for SHIFT+LEFT/RIGHT arrow to enable tables and empty boxes to be selected properly
