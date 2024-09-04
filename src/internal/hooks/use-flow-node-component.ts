@@ -8,6 +8,7 @@ import {
     FlowImage, 
     FlowNode, 
     FlowTable, 
+    FlowVideo, 
     LineBreak, 
     ParagraphBreak, 
     StartMarkup, 
@@ -36,6 +37,7 @@ type FlowNodeComponentKey = (
     "fallbackView" |
     "iconView" |
     "imageView" |
+    "videoView" |
     "tableView" |
     "startMarkupView" |
     "emptyMarkupView" |
@@ -57,6 +59,8 @@ const getFlowNodeComponentKey = (node: FlowNode): FlowNodeComponentKey => {
         return "iconView";
     } else if (node instanceof FlowImage) {
         return "imageView";
+    } else if (node instanceof FlowVideo) {
+        return "videoView";
     } else if (node instanceof FlowTable) {
         return "tableView";
     } else if (node instanceof StartMarkup) {

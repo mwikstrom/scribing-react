@@ -1,14 +1,34 @@
-import { FlowContent, FlowImage, FlowNode, InlineNode, TextStyle, deserializeFlowContentFromText } from "scribing";
+import {
+    FlowContent,
+    FlowImage,
+    FlowNode,
+    FlowVideo,
+    InlineNode,
+    TextStyle,
+    deserializeFlowContentFromText
+} from "scribing";
 import { FlowEditorController } from "../../FlowEditorController";
 import { createImageSource } from "../../create-image-source";
+import { createVideoSource } from "../../create-video-source";
+
+export const isMediaFileTransfer = (data: DataTransfer): boolean =>
+    getMediaFileTransferItems(data, /^(image|video)\//).length > 0;
 
 export const isImageFileTransfer = (data: DataTransfer): boolean => getImageFileTransferItems(data).length > 0;
 
-export const getImageFileTransferItems = (data: DataTransfer): DataTransferItem[] => {
+export const isVideoFileTransfer = (data: DataTransfer): boolean => getVideoFileTransferItems(data).length > 0;
+
+export const getImageFileTransferItems = (data: DataTransfer): DataTransferItem[] =>
+    getMediaFileTransferItems(data, /^image\//);
+
+export const getVideoFileTransferItems = (data: DataTransfer): DataTransferItem[] =>
+    getMediaFileTransferItems(data, /^video\//);
+
+const getMediaFileTransferItems = (data: DataTransfer, pattern: RegExp): DataTransferItem[] => {
     const result: DataTransferItem[] = [];
     for (let i = 0; i < data.items.length; ++i) {
         const item = data.items[i];
-        if (item.kind === "file" && /^image\//.test(item.type)) {
+        if (item.kind === "file" && pattern.test(item.type)) {
             result.push(item);
         }
     }
@@ -22,6 +42,10 @@ export const getFlowContentFromDataTransfer = (
     const jsonFlowContent = data.getData(FlowContent.jsonMimeType);
     if (jsonFlowContent) {
         return FlowContent.fromJsonValue(JSON.parse(jsonFlowContent));
+    }
+
+    if (isVideoFileTransfer(data)) {
+        return getFlowContentFromVideoFileTransfer(data, controller);
     }
 
     if (isImageFileTransfer(data)) {
@@ -67,6 +91,22 @@ export const getFlowContentFromImageFileTransfer = async (
             const uploadId = controller.uploadAsset(file);
             const source = await createImageSource(file, uploadId);
             nodes.push(new FlowImage({ source, style: controller.getCaretStyle(), scale: 1 }));
+        }
+    }
+    return createFlowContent(...nodes);
+};
+
+export const getFlowContentFromVideoFileTransfer = async (
+    data: DataTransfer,
+    controller: FlowEditorController,
+): Promise<FlowContent> => {
+    const nodes: FlowNode[] = [];
+    for (const item of getVideoFileTransferItems(data)) {
+        const file = item.getAsFile();
+        if (file !== null) {
+            const uploadId = controller.uploadAsset(file);
+            const source = await createVideoSource(file, uploadId);
+            nodes.push(new FlowVideo({ source, style: controller.getCaretStyle(), scale: 1 }));
         }
     }
     return createFlowContent(...nodes);

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlowEditorController } from "../../FlowEditorController";
-import { getFlowContentFromDataTransfer, isImageFileTransfer } from "../utils/data-transfer";
+import { getFlowContentFromDataTransfer, isMediaFileTransfer } from "../utils/data-transfer";
 import { fixCaretPosition } from "../utils/fix-caret-position";
 import { getDomPositionFromPoint } from "../utils/get-dom-position-from-point";
 import { setCaretPosition } from "../utils/set-caret-position";
@@ -24,7 +24,7 @@ export function useDropTarget(editingHost: HTMLElement | null, controller: FlowE
         e.preventDefault();
         e.stopPropagation();
         if (dataTransfer) {
-            dataTransfer.dropEffect = isImageFileTransfer(dataTransfer) ? "copy" : "none";
+            dataTransfer.dropEffect = isMediaFileTransfer(dataTransfer) ? "copy" : "none";
         }
     }, [controller]);
 

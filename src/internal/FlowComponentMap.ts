@@ -17,6 +17,7 @@ import {
     StartMarkup,
     EndMarkup,
     EmptyMarkup,
+    FlowVideo,
 } from "scribing";
 import { DynamicTextView } from "./DynamicTextView";
 import { FlowBoxView } from "./FlowBoxView";
@@ -29,6 +30,7 @@ import { ParagraphBreakView } from "./ParagraphBreakView";
 import { StartMarkupView, EndMarkupView, EmptyMarkupView } from "./MarkupView";
 import { TextRunView } from "./TextRunView";
 import { UnknownNodeView } from "./UnknownNodeView";
+import { FlowVideoView } from "./FlowVideoView";
 
 /** @public */
 export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze({
@@ -53,6 +55,7 @@ export const DefaultFlowComponentMap: Readonly<FlowComponentMap> = Object.freeze
     fallbackView: UnknownNodeView,
     iconView: FlowIconView,
     imageView: FlowImageView,
+    videoView: FlowVideoView,
     tableView: FlowTableView,
     startMarkupView: StartMarkupView,
     emptyMarkupView: EmptyMarkupView,
@@ -71,6 +74,7 @@ export interface FlowComponentMap extends Record<ParagraphVariant, ParagraphComp
     fallbackView: FlowNodeComponent;
     iconView: FlowNodeComponent<FlowIcon>;
     imageView: FlowNodeComponent<FlowImage>;
+    videoView: FlowNodeComponent<FlowVideo>;
     tableView: FlowNodeComponent<FlowTable>;
     startMarkupView: FlowNodeComponent<StartMarkup>;
     emptyMarkupView: FlowNodeComponent<EmptyMarkup>;

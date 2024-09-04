@@ -24,6 +24,7 @@ import {
     FlowTableCell, 
     FlowTableCellSelection, 
     FlowTableContent, 
+    FlowVideo, 
     ImageSource, 
     Interaction, 
     OrderedListMarkerKindType, 
@@ -39,7 +40,8 @@ import {
     TextRun, 
     TextStyle, 
     TextStyleProps,
-    UnorderedListMarkerKindType
+    UnorderedListMarkerKindType,
+    VideoSource
 } from "scribing";
 import { FlowEditorProps } from "./FlowEditor";
 import { FlowEditorState } from "./FlowEditorState";
@@ -953,6 +955,34 @@ export class FlowEditorController {
         if (selection) {
             this.#state = this.#apply(selection.setImageScale(content, scale));
         }
+    }
+
+    isVideo(): boolean {
+        return this.isUniformNodes(node => node instanceof FlowVideo);
+    }
+
+    getVideoSource(): VideoSource | null {
+        let video: VideoSource | null | undefined;
+        this.forEachNode(node => {
+            if (node instanceof FlowVideo && video !== null && (video === void(0) || node.source.equals(video))) {
+                video = node.source;
+            } else {
+                video = null;
+            }
+        });
+        return video ?? null;
+    }
+
+    setVideoSource(source: VideoSource): void {
+        const { selection, content } = this.#state;
+        if (selection) {
+            this.#state = this.#apply(selection.setVideoSource(content, source));
+        }
+    }
+
+    setVideoScale(scale: number): void {
+        // It's the same thing as setting image scale
+        this.setImageScale(scale);
     }
 
     isMarkup(): boolean {

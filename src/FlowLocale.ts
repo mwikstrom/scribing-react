@@ -7,6 +7,9 @@ export interface FlowLocale {
     image_upload_in_progress: string,
     image_upload_not_available: string,
     image_upload_failed: string,
+    video_upload_in_progress: string,
+    video_upload_not_available: string,
+    video_upload_failed: string,
 }
 
 /** @public */
@@ -18,4 +21,7 @@ export const DefaultFlowLocale: Readonly<FlowLocale> = Object.freeze({
     image_upload_in_progress: "Uploading image, please wait…",
     image_upload_not_available: "Image upload not available",
     image_upload_failed: "Image upload failed",
+    video_upload_in_progress: "Uploading video, please wait…",
+    video_upload_not_available: "Video upload not available",
+    video_upload_failed: "Video upload failed",
 });
