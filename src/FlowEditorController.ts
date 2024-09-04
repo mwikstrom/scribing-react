@@ -185,14 +185,14 @@ export class FlowEditorController {
         }
     }
 
-    uploadAsset(blob: Blob): string {
+    uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string {
         const id = nanoid();
         const store = this.#onStoreAsset;
-        const handler: () => Promise<string | null> = store ? async () => {
-            const args = new StoreAssetEvent(blob, id);
+        const handler: () => Promise<StoreAssetEvent | null> = store ? async () => {
+            const args = new StoreAssetEvent(blob, id, supplementaryBlobs);
             store(args);
             await args._complete();
-            return args.url;
+            return args;
         } : () => Promise.resolve(null);
         let promise: Promise<string | null> | undefined;
         let completed = false;
@@ -200,9 +200,18 @@ export class FlowEditorController {
             if (!promise) {
                 promise = handler()
                     .then(
-                        url => {
-                            if (url) {
-                                this.#state = this.#apply(new CompleteUpload({ id, url }));
+                        args => {
+                            const url = args?.url || null;
+                            if (args && url) {
+                                const supplementaryUrlMap = new Map<string, string>();
+                                for (const key of args.supplementaryKeys) {
+                                    const supplementaryUrl = args.getSupplementaryUrl(key);
+                                    if (supplementaryUrl) {
+                                        supplementaryUrlMap.set(key, supplementaryUrl);
+                                    }
+                                }
+                                const operation = new CompleteUpload({ id, url, supplementary: supplementaryUrlMap });
+                                this.#state = this.#apply(operation);
                             } else {
                                 console.warn("Asset wasn't stored and will remain transient only.");
                             }                            

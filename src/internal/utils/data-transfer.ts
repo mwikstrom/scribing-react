@@ -9,7 +9,7 @@ import {
 } from "scribing";
 import { FlowEditorController } from "../../FlowEditorController";
 import { createImageSource } from "../../create-image-source";
-import { createVideoSource } from "../../create-video-source";
+import { createVideoPosterBlob, createVideoSource } from "../../create-video-source";
 
 export const isMediaFileTransfer = (data: DataTransfer): boolean =>
     getMediaFileTransferItems(data, /^(image|video)\//).length > 0;
@@ -104,7 +104,8 @@ export const getFlowContentFromVideoFileTransfer = async (
     for (const item of getVideoFileTransferItems(data)) {
         const file = item.getAsFile();
         if (file !== null) {
-            const uploadId = controller.uploadAsset(file);
+            const poster = await createVideoPosterBlob(file);
+            const uploadId = controller.uploadAsset(file, { poster });
             const source = await createVideoSource(file, uploadId);
             nodes.push(new FlowVideo({ source, style: controller.getCaretStyle(), scale: 1 }));
         }

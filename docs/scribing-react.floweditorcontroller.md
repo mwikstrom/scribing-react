@@ -163,5 +163,5 @@ export declare class FlowEditorController
 |  [toggleUnorderedList()](./scribing-react.floweditorcontroller.toggleunorderedlist.md) |  |  |
 |  [undo()](./scribing-react.floweditorcontroller.undo.md) |  |  |
 |  [unsetMarkupAttr(key)](./scribing-react.floweditorcontroller.unsetmarkupattr.md) |  |  |
-|  [uploadAsset(blob)](./scribing-react.floweditorcontroller.uploadasset.md) |  |  |
+|  [uploadAsset(blob, supplementaryBlobs)](./scribing-react.floweditorcontroller.uploadasset.md) |  |  |
 

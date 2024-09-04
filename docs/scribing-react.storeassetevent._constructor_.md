@@ -9,7 +9,7 @@ Constructs a new instance of the `StoreAssetEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(blob: Blob, uploadId: string);
+constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>);
 ```
 
 ## Parameters
@@ -18,4 +18,5 @@ constructor(blob: Blob, uploadId: string);
 |  --- | --- | --- |
 |  blob | Blob |  |
 |  uploadId | string |  |
+|  supplementaryBlobs | Readonly&lt;Record&lt;string, Blob \| null \| undefined&gt;&gt; | <i>(Optional)</i> |
 

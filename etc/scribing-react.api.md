@@ -449,7 +449,7 @@ export class FlowEditorController {
     // (undocumented)
     unsetMarkupAttr(key: string): void;
     // (undocumented)
-    uploadAsset(blob: Blob): string;
+    uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string;
 }
 
 // @public
@@ -908,9 +908,19 @@ export class StateChangeEvent {
 
 // @public (undocumented)
 export class StoreAssetEvent extends DeferrableEvent {
-    constructor(blob: Blob, uploadId: string);
+    constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>);
     // (undocumented)
     get blob(): Blob | null;
+    // (undocumented)
+    getSupplementaryBlob(key: string): Blob | undefined;
+    // (undocumented)
+    getSupplementaryUrl(key: string): string | undefined;
+    // (undocumented)
+    setSupplementaryUrl(key: string, url: string): void;
+    // (undocumented)
+    get supplementaryCount(): number;
+    // (undocumented)
+    get supplementaryKeys(): IterableIterator<string>;
     // (undocumented)
     get uploadId(): string;
     // (undocumented)

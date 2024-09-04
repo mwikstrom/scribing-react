@@ -16,13 +16,23 @@ export declare class StoreAssetEvent extends DeferrableEvent
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(blob, uploadId)](./scribing-react.storeassetevent._constructor_.md) |  | Constructs a new instance of the <code>StoreAssetEvent</code> class |
+|  [(constructor)(blob, uploadId, supplementaryBlobs)](./scribing-react.storeassetevent._constructor_.md) |  | Constructs a new instance of the <code>StoreAssetEvent</code> class |
 
 ## Properties
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [blob](./scribing-react.storeassetevent.blob.md) |  | Blob \| null |  |
+|  [supplementaryCount](./scribing-react.storeassetevent.supplementarycount.md) |  | number |  |
+|  [supplementaryKeys](./scribing-react.storeassetevent.supplementarykeys.md) |  | IterableIterator&lt;string&gt; |  |
 |  [uploadId](./scribing-react.storeassetevent.uploadid.md) |  | string |  |
 |  [url](./scribing-react.storeassetevent.url.md) |  | string \| null |  |
+
+## Methods
+
+|  Method | Modifiers | Description |
+|  --- | --- | --- |
+|  [getSupplementaryBlob(key)](./scribing-react.storeassetevent.getsupplementaryblob.md) |  |  |
+|  [getSupplementaryUrl(key)](./scribing-react.storeassetevent.getsupplementaryurl.md) |  |  |
+|  [setSupplementaryUrl(key, url)](./scribing-react.storeassetevent.setsupplementaryurl.md) |  |  |
 

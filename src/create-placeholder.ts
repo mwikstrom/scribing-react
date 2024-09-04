@@ -1,4 +1,25 @@
 export const createPlaceholder = (source: HTMLImageElement | HTMLVideoElement): string | undefined => {
+    const canvas = createImageCanvas(source, getPlaceholderScale);
+    if (canvas) {
+        return getPlaceholderData(canvas);
+    }
+};
+
+export const createImageBlob = (source: HTMLImageElement | HTMLVideoElement): Promise<Blob | null> => {
+    const canvas = createImageCanvas(source);
+    if (canvas) {
+        return new Promise(resolve => canvas.toBlob(resolve, "image/webp", 0.95));
+    } else {
+        return Promise.resolve(null);
+    }
+};
+
+export type GetImageScale = (sourceWidth: number, sourceHeight: number) => number;
+
+const createImageCanvas = (
+    source: HTMLImageElement | HTMLVideoElement,
+    scale?: GetImageScale | number,
+): HTMLCanvasElement | undefined => {
     let { width, height } = source;
 
     if (isVideoElement(source)) {
@@ -6,14 +27,21 @@ export const createPlaceholder = (source: HTMLImageElement | HTMLVideoElement): 
         height = source.videoHeight;
     }
 
-    const scale = getPlaceholderScale(width, height);
+    if (typeof scale === "function") {
+        scale = scale(width, height);
+    }
+
+    if (typeof scale !== "number") {
+        scale = 1;
+    }
+
     const canvas = document.createElement("canvas");
     canvas.width = width * scale;
     canvas.height = height * scale;
     const context = canvas.getContext("2d");
     if (context) {
         context.drawImage(source, 0, 0, canvas.width, canvas.height);
-        return getPlaceholderData(canvas);
+        return canvas;
     }
 };
 
@@ -24,7 +52,7 @@ const getPlaceholderScale = (width: number, height: number) => Math.min(
 );
 
 const getPlaceholderData = (canvas: HTMLCanvasElement) => {
-    const dataUrl = canvas.toDataURL("video/webp", 0.05);
+    const dataUrl = canvas.toDataURL("image/webp", 0.05);
     const needle = ";base64,";
     const index = dataUrl.indexOf(needle);
     if (index > 0) {

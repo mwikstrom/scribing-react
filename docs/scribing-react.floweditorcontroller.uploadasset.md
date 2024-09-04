@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-uploadAsset(blob: Blob): string;
+uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string;
 ```
 
 ## Parameters
@@ -15,6 +15,7 @@ uploadAsset(blob: Blob): string;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  blob | Blob |  |
+|  supplementaryBlobs | Readonly&lt;Record&lt;string, Blob \| null \| undefined&gt;&gt; | <i>(Optional)</i> |
 
 <b>Returns:</b>
 

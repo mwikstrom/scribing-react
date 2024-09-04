@@ -1,5 +1,5 @@
 import { VideoSource, VideoSourceProps } from "scribing";
-import { createPlaceholder } from "./create-placeholder";
+import { createImageBlob, createPlaceholder } from "./create-placeholder";
 
 /** @public */
 export function createVideoSource(blob: Blob, upload: string): Promise<VideoSource>;
@@ -18,6 +18,17 @@ export function createVideoSource(
         throw new TypeError("An upload operation identifier must be specified");
     } else {
         return createUploadVideoSource(blobOrUrl, upload);
+    }
+}
+
+/** @public */
+export async function createVideoPosterBlob(videoBlob: Blob): Promise<Blob | null> {
+    const videoUrl = URL.createObjectURL(videoBlob);
+    try {
+        const video = await loadVideo(videoUrl);
+        return await createImageBlob(video);
+    } finally {
+        URL.revokeObjectURL(videoUrl);
     }
 }
 

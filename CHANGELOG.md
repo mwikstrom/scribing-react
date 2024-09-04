@@ -1,6 +1,7 @@
 ## 1.14.0 - 2024-09-04
 
 - Support video in flow content
+- Allow supplementary assets in `StoreAssetEvent`
 
 ## 1.13.1 - 2024-03-25
 
