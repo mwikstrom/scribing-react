@@ -34,6 +34,10 @@ export async function createVideoSourceFromUrl(videoUrl: string, posterUrl?: str
         props.placeholder = placeholder;
     }
 
+    if (posterUrl) {
+        props.poster = posterUrl;
+    }
+
     return new VideoSource(props);
 }
 
