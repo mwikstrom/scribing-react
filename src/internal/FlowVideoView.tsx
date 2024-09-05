@@ -10,12 +10,11 @@ import { useEditMode } from "./EditModeScope";
 import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
 import { useBlockSize } from "./BlockSize";
-import { mdiResizeBottomRight } from "@mdi/js";
-import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { useVerifiedImageUrl } from "./hooks/use-verified-image";
 import { useVideoSourceUrl } from "./hooks/use-video-source";
 import { UploadOverlay } from "./UploadOverlay";
+import { ResizeOverlay } from "./ResizeOverlay";
 
 export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     const { node, selection } = props;
@@ -65,13 +64,6 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     const [isBroken, setBroken] = useState(false);
     const onError = useCallback(() => setBroken(!!videoUrl), [videoUrl]);
     const [wrapperElem, setWrapperElem] = useState<HTMLElement | null>(null);
-    const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
-
-    const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
-        if (wrapperElem && controller) {
-            setResizeStart({x: e.screenX, y: e.screenY, w: wrapperElem.clientWidth, h: wrapperElem.clientHeight});
-        }
-    }, [wrapperElem, controller]);
     const [scale, setScale] = useState(givenScale);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
@@ -101,38 +93,6 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         setBroken(false);
     }, [videoUrl]);
 
-    useEffect(() => {
-        setScale(givenScale);
-        setResizeStart(null);
-    }, [givenScale]);
-
-    useNativeEventHandler(resizeStart ? window : null, "mousemove", (e: MouseEvent) => {
-        if (resizeStart) {
-            const desiredWidth = resizeStart.w + e.screenX - resizeStart.x;
-            const desiredHeight = resizeStart.h + e.screenY - resizeStart.y;
-            setScale(
-                Math.max(
-                    Math.max(0.001, 24 / Math.min(source.width, source.height)), 
-                    Math.min(
-                        100, 
-                        Math.min(
-                            desiredWidth / source.width,
-                            desiredHeight / source.height
-                        )
-                    )
-                )
-            );
-        }
-        e.preventDefault();
-    }, [source.width, source.height], { capture: true });    
-
-    useNativeEventHandler(resizeStart ? window : null, "mouseup", () => {
-        setResizeStart(null);
-        if (controller) {
-            controller.setVideoScale(scale);
-        }
-    }, [controller, scale], { capture: true });
-
     const blockSize = useBlockSize();
 
     const sizeStyle = useMemo<CSSProperties>(() => {
@@ -149,28 +109,6 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
     );
 
     const videoClassName = clsx(classes.video, stateOverlay && classes.videoHidden);
-
-    const resizeOverlay = editMode && selected && controller && controller.isVideo() && (
-        <>
-            {!source.upload && (
-                <div className={classes.sizeProps}>
-                    {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
-                    {(scale * 100).toFixed(1)}%
-                </div>
-            )}
-            <svg
-                className={classes.resize}
-                viewBox="0 0 24 24"
-                onMouseDown={onResizeStart}
-                children={(
-                    <>
-                        <path fill="#00000030" d="M 4 24 L 24 4 L 24 24 Z"/>
-                        <path fill="#fff" d={mdiResizeBottomRight}/>    
-                    </>
-                )}
-            />
-        </>
-    );
 
     return (
         <span 
@@ -204,7 +142,13 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
                                 />
                                 {stateOverlay}
                                 <UploadOverlay uploadId={source.upload} controller={controller} type="video" />
-                                {resizeOverlay}
+                                <ResizeOverlay
+                                    source={source}
+                                    scale={scale}
+                                    selected={selected}
+                                    element={wrapperElem}
+                                    setScale={setScale}
+                                />
                             </>
                         )}
                     />
@@ -275,27 +219,4 @@ const useStyles = createUseFlowStyles("FlowVideo", ({palette, typography}) => ({
     },
     stateVoid: {},
     stateBroken: {},
-    sizeProps: {
-        position: "absolute",
-        top: 4,
-        left: 4,
-        backgroundColor: Color(palette.tooltip).fade(0.25).toString(),
-        color: palette.tooltipText,
-        fontFamily: typography.ui,
-        fontSize: 10,
-        paddingLeft: 8,
-        paddingRight: 8,
-        textAlign: "center",
-        whiteSpace: "nowrap",
-        textIndent: "initial",
-        fontWeight: "normal",
-    },
-    resize: {
-        position: "absolute",
-        bottom: 0,
-        right: 0,
-        cursor: "nw-resize",
-        width: 24,
-        height: 24,
-    },
 }));
