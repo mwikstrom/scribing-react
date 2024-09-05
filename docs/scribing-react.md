@@ -30,6 +30,9 @@ React components for collaborative rich text editing
 |  [ApplicationErrorRenderScope(props)](./scribing-react.applicationerrorrenderscope.md) |  |
 |  [createImageSource(blob, upload)](./scribing-react.createimagesource.md) |  |
 |  [createImageSource(existingUrl)](./scribing-react.createimagesource_1.md) |  |
+|  [createVideoPosterFromBlob(videoBlob)](./scribing-react.createvideoposterfromblob.md) |  |
+|  [createVideoSourceForUpload(blob, upload)](./scribing-react.createvideosourceforupload.md) |  |
+|  [createVideoSourceFromUrl(videoUrl, posterUrl)](./scribing-react.createvideosourcefromurl.md) |  |
 |  [formatMessage(message, vars, options)](./scribing-react.formatmessage.md) |  |
 |  [InteractionLoggerScope(props)](./scribing-react.interactionloggerscope.md) |  |
 |  [useApplicationErrorRenderer()](./scribing-react.useapplicationerrorrenderer.md) |  |

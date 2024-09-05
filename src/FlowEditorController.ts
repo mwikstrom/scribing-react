@@ -49,6 +49,7 @@ import { StoreAssetEvent, StoreAssetProgress, StoreAssetProgressListener } from 
 import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
 import { PubSub } from "./internal/utils/PubSub";
 import { StateChangeEvent } from "./StateChangeEvent";
+import { createVideoPosterFromBlob, createVideoSourceForUpload } from "./create-video-source";
 
 /** @public */
 export type ApplicableChange = FlowOperation | FlowEditorState | StateChangeEvent | null;
@@ -183,6 +184,12 @@ export class FlowEditorController {
         else {
             return null;
         }
+    }
+
+    async uploadVideoSource(blob: Blob): Promise<VideoSource> {
+        const poster = await createVideoPosterFromBlob(blob);
+        const uploadId = this.uploadAsset(blob, { poster });
+        return await createVideoSourceForUpload(blob, uploadId);
     }
 
     uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string {

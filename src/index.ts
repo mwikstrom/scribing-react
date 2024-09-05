@@ -5,6 +5,7 @@
 
 // Utils
 export * from "./create-image-source";
+export * from "./create-video-source";
 
 // State
 export * from "./FlowEditorState";

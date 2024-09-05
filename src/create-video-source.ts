@@ -1,28 +1,9 @@
 import { VideoSource, VideoSourceProps } from "scribing";
 import { createImageBlob, createPlaceholder } from "./create-placeholder";
+import { loadImage } from "./loadImage";
 
 /** @public */
-export function createVideoSource(blob: Blob, upload: string): Promise<VideoSource>;
-
-/** @public */
-export function createVideoSource(existingUrl: string): Promise<VideoSource>;
-
-/** @public */
-export function createVideoSource(
-    blobOrUrl: Blob | string,
-    upload?: string
-): Promise<VideoSource> {
-    if (typeof blobOrUrl === "string") {
-        return createVideoSourceFromUrl(blobOrUrl);
-    } else if (typeof upload !== "string") {
-        throw new TypeError("An upload operation identifier must be specified");
-    } else {
-        return createUploadVideoSource(blobOrUrl, upload);
-    }
-}
-
-/** @public */
-export async function createVideoPosterBlob(videoBlob: Blob): Promise<Blob | null> {
+export async function createVideoPosterFromBlob(videoBlob: Blob): Promise<Blob | null> {
     const videoUrl = URL.createObjectURL(videoBlob);
     try {
         const video = await loadVideo(videoUrl);
@@ -32,21 +13,32 @@ export async function createVideoPosterBlob(videoBlob: Blob): Promise<Blob | nul
     }
 }
 
-const createVideoSourceFromUrl = async (url: string): Promise<VideoSource> => {
-    const video = await loadVideo(url);
-    const placeholder = createPlaceholder(video);
+/** @public */
+export async function createVideoSourceFromUrl(videoUrl: string, posterUrl?: string | null): Promise<VideoSource> {
+    const video = await loadVideo(videoUrl);
+    let placeholder: string | undefined;
     const props: VideoSourceProps = {
-        width: video.width,
-        height: video.height,
-        url,
+        width: video.videoWidth,
+        height: video.videoHeight,
+        url: videoUrl,
     };
+
+    if (posterUrl) {
+        const posterImage = await loadImage(posterUrl);
+        placeholder = createPlaceholder(posterImage);
+    } else {
+        placeholder = createPlaceholder(video);
+    }
+
     if (placeholder) {
         props.placeholder = placeholder;
     }
-    return new VideoSource(props);
-};
 
-const createUploadVideoSource = async (blob: Blob, upload: string): Promise<VideoSource> => {
+    return new VideoSource(props);
+}
+
+/** @public */
+export async function createVideoSourceForUpload(blob: Blob, upload: string): Promise<VideoSource> {
     const url = URL.createObjectURL(blob);
     try {
         const video = await loadVideo(url);
@@ -64,7 +56,7 @@ const createUploadVideoSource = async (blob: Blob, upload: string): Promise<Vide
     } finally {
         URL.revokeObjectURL(url);
     }
-};
+}
 
 const loadVideo = async (url: string) => new Promise<HTMLVideoElement>((resolve, reject) => {
     const video = document.createElement("video");

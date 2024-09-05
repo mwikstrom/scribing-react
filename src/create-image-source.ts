@@ -1,5 +1,6 @@
 import { ImageSource, ImageSourceProps } from "scribing";
 import { createPlaceholder } from "./create-placeholder";
+import { loadImage } from "./loadImage";
 
 /** @public */
 export function createImageSource(blob: Blob, upload: string): Promise<ImageSource>;
@@ -54,10 +55,3 @@ const createUploadImageSource = async (blob: Blob, upload: string): Promise<Imag
         URL.revokeObjectURL(url);
     }
 };
-
-const loadImage = async (url: string) => new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image();
-    image.onerror = () => reject(new Error("Failed to load image"));
-    image.onload = () => resolve(image);
-    image.src = url;
-});

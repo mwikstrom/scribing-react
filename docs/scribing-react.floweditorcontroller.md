@@ -165,4 +165,5 @@ export declare class FlowEditorController
 |  [undo()](./scribing-react.floweditorcontroller.undo.md) |  |  |
 |  [unsetMarkupAttr(key)](./scribing-react.floweditorcontroller.unsetmarkupattr.md) |  |  |
 |  [uploadAsset(blob, supplementaryBlobs)](./scribing-react.floweditorcontroller.uploadasset.md) |  |  |
+|  [uploadVideoSource(blob)](./scribing-react.floweditorcontroller.uploadvideosource.md) |  |  |
 

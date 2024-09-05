@@ -75,6 +75,15 @@ export function createImageSource(blob: Blob, upload: string): Promise<ImageSour
 export function createImageSource(existingUrl: string): Promise<ImageSource>;
 
 // @public (undocumented)
+export function createVideoPosterFromBlob(videoBlob: Blob): Promise<Blob | null>;
+
+// @public (undocumented)
+export function createVideoSourceForUpload(blob: Blob, upload: string): Promise<VideoSource>;
+
+// @public (undocumented)
+export function createVideoSourceFromUrl(videoUrl: string, posterUrl?: string | null): Promise<VideoSource>;
+
+// @public (undocumented)
 export const DataIcon: FC<DataIconProps>;
 
 // @public (undocumented)
@@ -453,6 +462,8 @@ export class FlowEditorController {
     unsetMarkupAttr(key: string): void;
     // (undocumented)
     uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string;
+    // (undocumented)
+    uploadVideoSource(blob: Blob): Promise<VideoSource>;
 }
 
 // @public
