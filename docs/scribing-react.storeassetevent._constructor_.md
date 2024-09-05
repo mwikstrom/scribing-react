@@ -9,7 +9,7 @@ Constructs a new instance of the `StoreAssetEvent` class
 <b>Signature:</b>
 
 ```typescript
-constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>);
+constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>, progressListener?: StoreAssetProgressListener);
 ```
 
 ## Parameters
@@ -19,4 +19,5 @@ constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<s
 |  blob | Blob |  |
 |  uploadId | string |  |
 |  supplementaryBlobs | Readonly&lt;Record&lt;string, Blob \| null \| undefined&gt;&gt; | <i>(Optional)</i> |
+|  progressListener | [StoreAssetProgressListener](./scribing-react.storeassetprogresslistener.md) | <i>(Optional)</i> |
 

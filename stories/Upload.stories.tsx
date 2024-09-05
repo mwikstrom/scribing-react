@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FlowEditor, FlowEditorProps } from "../src/FlowEditor";
 import { FlowContent } from "scribing";
 import { FlowEditorState } from "../src/FlowEditorState";
+import { StoreAssetEvent } from "../src/StoreAssetEvent";
 
 export default {
     title: "Upload",
@@ -78,38 +79,59 @@ export const AbandonedVideo = story({
 });
 
 export const TransientFast = story({
-    onStoreAsset: e => e.defer(async () => void (e.url = null)),
+    onStoreAsset: e => e.defer(async () => {
+        await run(e, 500);
+        e.url = null;
+    })
 });
 
 export const TransientSlow = story({
     onStoreAsset: e => e.defer(async () => {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await run(e, 5000);
         e.url = null; 
     })
 });
 
 export const FailFast = story({
     onStoreAsset: e => e.defer(async () => {
+        await run(e, 500);
         throw new Error("This is an intentional error");
     }),
 });
 
 export const FailSlow = story({
     onStoreAsset: e => e.defer(async () => {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await run(e, 5000);
         throw new Error("This is an intentional error");
     })
 });
 
 export const SuccessFast = story({
     onStoreAsset: e => e.defer(async () => {
+        await run(e, 500);
         e.url = e.blob && URL.createObjectURL(e.blob);
     }),
 });
 
 export const SuccessSlow = story({
     onStoreAsset: e => e.defer(async () => {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await run(e, 5000);
         e.url = e.blob && URL.createObjectURL(e.blob);
     }),
 });
+
+const run = (e: StoreAssetEvent, duration: number): Promise<void> => {
+    return new Promise(resolve => {
+        const startTime = performance.now();
+        const intervalId = setInterval(() => {
+            const elapsed = performance.now() - startTime;
+            if (elapsed >= duration) {
+                clearInterval(intervalId);
+                resolve();
+            } else {
+                const message = `${(elapsed / duration * 100).toFixed(0)}%`;
+                e.reportProgress({ message });
+            }
+        }, Math.min(100, duration));
+    });
+};

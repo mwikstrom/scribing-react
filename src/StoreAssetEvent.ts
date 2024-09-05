@@ -8,12 +8,19 @@ export class StoreAssetEvent extends DeferrableEvent {
     readonly #uploadId: string;
     readonly #supplementaryBlobs = new Map<string, Blob>();
     readonly #supplementaryUrls = new Map<string, string>();
+    readonly #progressListener?: StoreAssetProgressListener;
     #url: string | null = null;
     
-    constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>) {
+    constructor(
+        blob: Blob,
+        uploadId: string,
+        supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>,
+        progressListener?: StoreAssetProgressListener,
+    ) {
         super();
         this.#blob = blob;
         this.#uploadId = uploadId;
+        this.#progressListener = progressListener;
 
         if (supplementaryBlobs) {
             for (const [key, value] of Object.entries(supplementaryBlobs)) {
@@ -50,4 +57,19 @@ export class StoreAssetEvent extends DeferrableEvent {
     setSupplementaryUrl(key: string, url: string): void {
         this.#supplementaryUrls.set(key, url);
     }
+
+    reportProgress(progress: StoreAssetProgress): void {
+        const listener = this.#progressListener;
+        if (listener) {
+            listener(progress);
+        }
+    }
+}
+
+/** @public */
+export type StoreAssetProgressListener = (progress: StoreAssetProgress) => void;
+
+/** @public */
+export interface StoreAssetProgress {
+    message: string;
 }

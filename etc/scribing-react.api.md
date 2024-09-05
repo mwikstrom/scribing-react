@@ -164,7 +164,8 @@ export interface FlowEditorClientOptions {
 
 // @public (undocumented)
 export class FlowEditorController {
-    constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, [Blob, () => Promise<string | null>]>);
+    // Warning: (ae-forgotten-export) The symbol "PubSub" needs to be exported by the entry point index.d.ts
+    constructor(state: FlowEditorState, apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState, onStoreAsset: FlowEditorProps["onStoreAsset"], uploads?: Map<string, [Blob, () => Promise<string | null>, PubSub<StoreAssetProgress>]>);
     // @internal (undocumented)
     _apply(change: ApplicableChange): FlowEditorState;
     // (undocumented)
@@ -350,6 +351,8 @@ export class FlowEditorController {
     moveCaretBack(): boolean;
     // @internal (undocumented)
     _observe(callback: (fresh: FlowEditorController) => void): () => void;
+    // (undocumented)
+    observeUpload(id: string, listener: StoreAssetProgressListener): () => void;
     // (undocumented)
     redo(): void;
     // (undocumented)
@@ -908,13 +911,15 @@ export class StateChangeEvent {
 
 // @public (undocumented)
 export class StoreAssetEvent extends DeferrableEvent {
-    constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>);
+    constructor(blob: Blob, uploadId: string, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>, progressListener?: StoreAssetProgressListener);
     // (undocumented)
     get blob(): Blob | null;
     // (undocumented)
     getSupplementaryBlob(key: string): Blob | undefined;
     // (undocumented)
     getSupplementaryUrl(key: string): string | undefined;
+    // (undocumented)
+    reportProgress(progress: StoreAssetProgress): void;
     // (undocumented)
     setSupplementaryUrl(key: string, url: string): void;
     // (undocumented)
@@ -927,6 +932,15 @@ export class StoreAssetEvent extends DeferrableEvent {
     get url(): string | null;
     set url(value: string | null);
 }
+
+// @public (undocumented)
+export interface StoreAssetProgress {
+    // (undocumented)
+    message: string;
+}
+
+// @public (undocumented)
+export type StoreAssetProgressListener = (progress: StoreAssetProgress) => void;
 
 // @public (undocumented)
 export function useApplicationErrorRenderer(): ApplicationErrorRenderScopeProps["renderErrorInfo"] | null;

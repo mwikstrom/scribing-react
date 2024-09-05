@@ -12,12 +12,11 @@ import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 import { useImageSource } from "./hooks/use-image-source";
 import { useBlockSize } from "./BlockSize";
-import { mdiAlert, mdiAlertOctagon, mdiLoading, mdiResizeBottomRight } from "@mdi/js";
+import { mdiResizeBottomRight } from "@mdi/js";
 import { useNativeEventHandler } from "./hooks/use-native-event-handler";
 import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { useScribingComponents } from "../ScribingComponents";
-import { useFlowLocale } from "../FlowLocaleScope";
-import Icon from "@mdi/react";
+import { UploadOverlay } from "./UploadOverlay";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
@@ -37,7 +36,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const selected = selection === true;
     const editMode = useEditMode();
     const { native: nativeSelection } = useFlowCaretContext();
-    const locale = useFlowLocale();
 
     const className = clsx(
         classes.root,
@@ -65,7 +63,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
     const [resizeStart, setResizeStart] = useState<{x:number,y:number,w:number,h:number}|null>(null);
-    const [uploadState, setUploadState] = useState<"not_available" | "in_progress" | "failed">();
 
     const onResizeStart = useCallback((e: React.MouseEvent<unknown>) => {
         if (imageElem && controller) {
@@ -175,7 +172,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         imageElem && classes.bitmapBound,
         broken && url && classes.bitmapBroken,
         !url && classes.bitmapEmpty,
-        uploadState && classes.bitmapUploading,
+        source.upload && classes.bitmapUploading,
     );
 
     const bitmapStyle = useMemo<CSSProperties>(() => {
@@ -189,7 +186,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
 
     const resizeOverlay = editMode && selected && controller && controller.isImage() && (
         <>
-            {!uploadState && (
+            {!source.upload && (
                 <div className={classes.sizeProps}>
                     {Math.round(source.width * scale)} x {Math.round(source.height * scale)}<br/>
                     {(scale * 100).toFixed(1)}%
@@ -209,47 +206,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
         </>
     );
 
-    const uploadOverlay = uploadState && (
-        <div className={classes.uploadOverlay}>
-            <div className={clsx(classes.uploadBox, classes[`upload_${uploadState}`])}>
-                <Icon
-                    className={classes.uploadIcon}
-                    path={UploadStateIcon[uploadState]}
-                    size={0.75}
-                    spin={uploadState === "in_progress" ? 1 : 0}
-                />
-                {locale[`image_upload_${uploadState}`]}
-            </div>
-        </div>
-    );
-
-    useEffect(() => {
-        if (!source.upload) {
-            setUploadState(undefined);
-        } else {
-            const promise = controller?.getUploadPromise(source.upload);
-            if (!promise) {
-                setUploadState("not_available");
-            } else {
-                let active = true;
-                setUploadState("in_progress");
-                promise.then(
-                    () => {
-                        if (active) {
-                            setUploadState(undefined);
-                        }
-                    },
-                    () => {
-                        if (active) {
-                            setUploadState("failed");
-                        }
-                    },
-                );
-                return () => void (active = false);
-            }
-        }
-    }, [source.upload, controller]);
-
     return (
         <>
             <span 
@@ -268,7 +224,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
                             children={(
                                 <>
                                     <div className={bitmapClass} style={bitmapStyle}></div>
-                                    {uploadOverlay}
+                                    <UploadOverlay uploadId={source.upload} controller={controller} type="image" />
                                     {resizeOverlay}
                                 </>
                             )}
@@ -288,12 +244,6 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     );
 });
 
-const UploadStateIcon = {
-    in_progress: mdiLoading,
-    not_available: mdiAlert,
-    failed: mdiAlertOctagon,
-};
-
 const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
     ...textStyles(palette, typography),
     root: {
@@ -304,43 +254,6 @@ const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
         outlineWidth: 2,
         outlineOffset: 4,
     },
-    uploadOverlay: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    uploadBox: {
-        textIndent: "initial",
-        fontWeight: "normal",
-        backgroundColor: Color(palette.tooltip).fade(0.25).toString(),
-        color: palette.tooltipText,
-        fontFamily: typography.ui,
-        padding: 8,
-        border: `1px solid ${palette.tooltipText}`,
-        borderRadius: 4,
-        fontSize: "0.85rem",
-        "&$upload_not_available": {
-            backgroundColor: Color(palette.warning).fade(0.25).toString(),
-        },
-        "&$upload_failed": {
-            backgroundColor: Color(palette.error).fade(0.25).toString(),
-        },
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center"
-    },
-    uploadIcon: {
-        paddingRight: 8,
-    },
-    upload_in_progress: {},
-    upload_not_available: {},
-    upload_failed: {},
     selected: {
         outlineColor: palette.selection,
     },

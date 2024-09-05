@@ -73,6 +73,7 @@ React components for collaborative rich text editing
 |  [ScribingComponents](./scribing-react.scribingcomponents.md) |  |
 |  [ScribingImageZoomProps](./scribing-react.scribingimagezoomprops.md) |  |
 |  [ScribingTooltipProps](./scribing-react.scribingtooltipprops.md) |  |
+|  [StoreAssetProgress](./scribing-react.storeassetprogress.md) |  |
 
 ## Variables
 
@@ -107,4 +108,5 @@ React components for collaborative rich text editing
 |  [MarkupContext](./scribing-react.markupcontext.md) |  |
 |  [RenderMarkupTagDisplay](./scribing-react.rendermarkuptagdisplay.md) |  |
 |  [ScribingComponent](./scribing-react.scribingcomponent.md) |  |
+|  [StoreAssetProgressListener](./scribing-react.storeassetprogresslistener.md) |  |
 

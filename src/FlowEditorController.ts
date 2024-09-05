@@ -45,7 +45,7 @@ import {
 } from "scribing";
 import { FlowEditorProps } from "./FlowEditor";
 import { FlowEditorState } from "./FlowEditorState";
-import { StoreAssetEvent } from "./StoreAssetEvent";
+import { StoreAssetEvent, StoreAssetProgress, StoreAssetProgressListener } from "./StoreAssetEvent";
 import { getEndOfFlow } from "./internal/utils/get-end-of-flow";
 import { PubSub } from "./internal/utils/PubSub";
 import { StateChangeEvent } from "./StateChangeEvent";
@@ -58,14 +58,14 @@ export class FlowEditorController {
     #state!: FlowEditorState;
     #apply!: (change: ApplicableChange) => FlowEditorState;
     #onStoreAsset: FlowEditorProps["onStoreAsset"];
-    readonly #uploads = new Map<string, [Blob, () => Promise<string | null>]>();
+    readonly #uploads = new Map<string, [Blob, () => Promise<string | null>, PubSub<StoreAssetProgress>]>();
     #fresh: PubSub<FlowEditorController> | undefined;
 
     constructor(
         state: FlowEditorState,
         apply: (change: ApplicableChange, before: FlowEditorState) => FlowEditorState,
         onStoreAsset: FlowEditorProps["onStoreAsset"],
-        uploads = new Map<string, [Blob, () => Promise<string | null>]>(),
+        uploads = new Map<string, [Blob, () => Promise<string | null>, PubSub<StoreAssetProgress>]>(),
     ) {
         this._sync(state, apply, onStoreAsset);
         this.#uploads = uploads;
@@ -188,8 +188,9 @@ export class FlowEditorController {
     uploadAsset(blob: Blob, supplementaryBlobs?: Readonly<Record<string, Blob | null | undefined>>): string {
         const id = nanoid();
         const store = this.#onStoreAsset;
+        const pubsub = new PubSub<StoreAssetProgress>();
         const handler: () => Promise<StoreAssetEvent | null> = store ? async () => {
-            const args = new StoreAssetEvent(blob, id, supplementaryBlobs);
+            const args = new StoreAssetEvent(blob, id, supplementaryBlobs, progress => pubsub.pub(progress));
             store(args);
             await args._complete();
             return args;
@@ -230,7 +231,7 @@ export class FlowEditorController {
             return promise;
         };
         if (!completed) {
-            this.#uploads.set(id, [blob, run]);
+            this.#uploads.set(id, [blob, run, pubsub]);
         }
         return id;
     }
@@ -252,6 +253,16 @@ export class FlowEditorController {
             return run();
         } else {
             return null;
+        }
+    }
+
+    observeUpload(id: string, listener: StoreAssetProgressListener): () => void {
+        const tuple = this.#uploads.get(id);
+        if (tuple) {
+            const [,,pubsub] = tuple;
+            return pubsub.sub(listener);
+        } else {
+            return () => void 0;
         }
     }
 

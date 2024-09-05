@@ -116,6 +116,7 @@ export declare class FlowEditorController
 |  [matchNodes(predicate)](./scribing-react.floweditorcontroller.matchnodes.md) |  |  |
 |  [mergeTableCells()](./scribing-react.floweditorcontroller.mergetablecells.md) |  |  |
 |  [moveCaretBack()](./scribing-react.floweditorcontroller.movecaretback.md) |  |  |
+|  [observeUpload(id, listener)](./scribing-react.floweditorcontroller.observeupload.md) |  |  |
 |  [redo()](./scribing-react.floweditorcontroller.redo.md) |  |  |
 |  [remove(whenCollapsed)](./scribing-react.floweditorcontroller.remove.md) |  |  |
 |  [removeBackward()](./scribing-react.floweditorcontroller.removebackward.md) |  |  |

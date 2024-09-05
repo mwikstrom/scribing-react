@@ -16,7 +16,7 @@ export declare class StoreAssetEvent extends DeferrableEvent
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(blob, uploadId, supplementaryBlobs)](./scribing-react.storeassetevent._constructor_.md) |  | Constructs a new instance of the <code>StoreAssetEvent</code> class |
+|  [(constructor)(blob, uploadId, supplementaryBlobs, progressListener)](./scribing-react.storeassetevent._constructor_.md) |  | Constructs a new instance of the <code>StoreAssetEvent</code> class |
 
 ## Properties
 
@@ -34,5 +34,6 @@ export declare class StoreAssetEvent extends DeferrableEvent
 |  --- | --- | --- |
 |  [getSupplementaryBlob(key)](./scribing-react.storeassetevent.getsupplementaryblob.md) |  |  |
 |  [getSupplementaryUrl(key)](./scribing-react.storeassetevent.getsupplementaryurl.md) |  |  |
+|  [reportProgress(progress)](./scribing-react.storeassetevent.reportprogress.md) |  |  |
 |  [setSupplementaryUrl(key, url)](./scribing-react.storeassetevent.setsupplementaryurl.md) |  |  |
 
