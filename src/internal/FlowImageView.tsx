@@ -3,66 +3,22 @@ import React, { useCallback, useMemo, useState, MouseEvent, CSSProperties, useEf
 import { FlowImage } from "scribing";
 import { flowNode } from "./FlowNodeComponent";
 import { createUseFlowStyles } from "./JssTheming";
-import { getTextStyleClassNames, textStyles } from "./utils/text-style-to-classes";
-import { getTextCssProperties } from "./utils/text-style-to-css";
-import { useParagraphTheme } from "./ParagraphThemeScope";
 import { useEditMode } from "./EditModeScope";
-import { useFlowCaretContext } from "./FlowCaretScope";
 import Color from "color";
 import { useIsScrolledIntoView } from "./hooks/use-is-scrolled-into-view";
 import { useImageSource } from "./hooks/use-image-source";
-import { useBlockSize } from "./BlockSize";
-import { useFlowEditorController } from "./FlowEditorControllerScope";
 import { useScribingComponents } from "../ScribingComponents";
-import { UploadOverlay } from "./UploadOverlay";
-import { ResizeOverlay } from "./ResizeOverlay";
+import { FlowMediaView } from "./FlowMediaView";
 
 export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     const { node, selection } = props;
-    const { style: givenStyle, source, scale: givenScale } = node;
-    const controller = useFlowEditorController();
+    const { source, scale: givenScale } = node;
     const { ImageZoom } = useScribingComponents();
-    const theme = useParagraphTheme();
-    const style = useMemo(() => {
-        let ambient = theme.getAmbientTextStyle();
-        if (givenStyle.link) {
-            ambient = ambient.merge(theme.getLinkStyle());
-        }
-        return ambient.merge(givenStyle);
-    }, [givenStyle, theme]);
-    const css = useMemo(() => getTextCssProperties(style, theme.getAmbientParagraphStyle()), [style, theme]);
     const classes = useStyles();
-    const selected = selection === true;
     const editMode = useEditMode();
-    const { native: nativeSelection } = useFlowCaretContext();
-
-    const className = clsx(
-        classes.root,
-        ...getTextStyleClassNames(style, classes),
-        selected && !nativeSelection && (editMode === "inactive" ? classes.selectedInactive : classes.selected),
-    );
-
-    const [rootElem, setRootElem] = useState<HTMLElement | null>(null);
-    const ref = useCallback((dom: HTMLElement | null) => {
-        outerRef(dom);
-        setRootElem(dom);
-    }, [outerRef]);
-    
-    const onDoubleClick = useCallback((e: MouseEvent<HTMLElement>) => {        
-        const domSelection = document.getSelection();
-        if (domSelection && rootElem) {
-            if (domSelection.rangeCount === 0) {
-                domSelection.addRange(document.createRange());
-            }
-            domSelection.getRangeAt(0).selectNode(rootElem);
-            e.stopPropagation();
-        }
-    }, [rootElem]);
-
+    const [scale, setScale] = useState(givenScale);
     const { url, ready, broken } = useImageSource(source);
     const [imageElem, setImageElem] = useState<HTMLElement | null>(null);
-    const [scale, setScale] = useState(givenScale);
-
     const [showImageZoom, setShowZoomBox] = useState(false);
     const [scaledDown, setScaledDown] = useState(scale < 1);
     const visible = useIsScrolledIntoView(imageElem);
@@ -83,43 +39,13 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     }, [imageElem, scale, source]);
 
     const onClick = useCallback((e: MouseEvent<HTMLElement>) => {        
-        const domSelection = document.getSelection();
-        if (domSelection && rootElem && !e.ctrlKey && editMode) {
-            const { parentElement } = rootElem;
-            if (parentElement) {
-                let childOffset = 0;
-                for (let prev = rootElem.previousSibling; prev; prev = prev.previousSibling) {
-                    ++childOffset;
-                }
-                const { left, width } = rootElem.getBoundingClientRect();
-                if (e.clientX >= left + width / 2) {
-                    ++childOffset;
-                }
-                if (e.shiftKey) {
-                    domSelection.extend(parentElement, childOffset);
-                } else {
-                    domSelection.setBaseAndExtent(parentElement, childOffset, parentElement, childOffset);
-                }
-                e.stopPropagation();
-            }
-        } else if (scaledDown && visible && ready && !editMode) {
+        if (scaledDown && visible && ready && !editMode) {
             setShowZoomBox(true);
             e.stopPropagation();
         }
-    }, [rootElem, editMode, scaledDown, visible, ready]);
+    }, [editMode, scaledDown, visible, ready]);
 
     const onHideImageZoom = useCallback(() => setShowZoomBox(false), []);
-
-    const blockSize = useBlockSize();
-
-    const imageStyle = useMemo<CSSProperties>(() => {
-        const { width, height } = source;
-        const css: CSSProperties = {
-            width: `calc(min(${blockSize}, ${Math.round(width * scale)}px))`,
-            aspectRatio: `${width}/${height}`,
-        };
-        return css;
-    }, [blockSize, source.width, source.height, scale]);
 
     const imageClass = clsx(
         classes.image, 
@@ -146,35 +72,16 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
 
     return (
         <>
-            <span 
-                ref={ref}
-                className={className}
-                style={css}
-                contentEditable={false}
-                onDoubleClick={onDoubleClick}
+            <FlowMediaView
+                node={node}
+                selection={selection}
+                outerRef={outerRef}
+                scale={scale}
+                setScale={setScale}
+                children={<div className={bitmapClass} style={bitmapStyle}></div>}
+                wrapperClassName={imageClass}
+                wrapperRef={setImageElem}
                 onClick={onClick}
-                children={(
-                    <>
-                        <span
-                            ref={setImageElem}
-                            style={imageStyle}
-                            className={imageClass}
-                            children={(
-                                <>
-                                    <div className={bitmapClass} style={bitmapStyle}></div>
-                                    <UploadOverlay uploadId={source.upload} controller={controller} type="image" />
-                                    <ResizeOverlay
-                                        source={source}
-                                        scale={scale}
-                                        selected={selected}
-                                        element={imageElem}
-                                        setScale={setScale}
-                                    />
-                                </>
-                            )}
-                        />
-                    </>
-                )}
             />
             {showImageZoom && ImageZoom && (
                 <ImageZoom
@@ -188,22 +95,7 @@ export const FlowImageView = flowNode<FlowImage>((props, outerRef) => {
     );
 });
 
-const useStyles = createUseFlowStyles("FlowImage", ({palette, typography}) => ({
-    ...textStyles(palette, typography),
-    root: {
-        display: "inline",
-        position: "relative",
-        outlineColor: "transparent",
-        outlineStyle: "solid",
-        outlineWidth: 2,
-        outlineOffset: 4,
-    },
-    selected: {
-        outlineColor: palette.selection,
-    },
-    selectedInactive: {
-        outlineColor: palette.inactiveSelection,
-    },
+const useStyles = createUseFlowStyles("FlowImage", ({palette}) => ({
     image: {
         display: "inline-block",
         verticalAlign: "text-bottom",

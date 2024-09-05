@@ -15,7 +15,12 @@ import {
 } from "scribing";
 import { JsonObject, JsonValue } from "paratype";
 import { FlowEditorState } from "../src/FlowEditorState";
-import { FormatMarkupAttributeEvent } from "../src";
+import {
+    FormatMarkupAttributeEvent,
+    ScribingComponent,
+    ScribingComponentOverride,
+    ScribingImageZoomProps
+} from "../src";
 import { RenderMarkupTagEvent } from "../src/RenderMarkupTagEvent";
 import { CustomTagEditor } from "./CustomTagEditor";
 
@@ -73,15 +78,37 @@ const Template: ComponentStory<typeof FlowEditor> = args => {
     }, []);
     return (
         <div style={wrapperStyle}>
-            <FlowEditor
-                {...args}
-                style={editorStyle}
-                onStateChange={onStateChange}
-                onFormatMarkupAttribute={onFormatMarkupAttribute}
-                onRenderMarkupTag={onRenderMarkupTag}
-            />
+            <ScribingComponentOverride ImageZoom={MyImageZoom}>
+                <FlowEditor
+                    {...args}
+                    style={editorStyle}
+                    onStateChange={onStateChange}
+                    onFormatMarkupAttribute={onFormatMarkupAttribute}
+                    onRenderMarkupTag={onRenderMarkupTag}
+                />
+            </ScribingComponentOverride>
             <pre style={jsonStyle}>{jsonState}</pre>
         </div>
+    );
+};
+
+const MyImageZoom: ScribingComponent<ScribingImageZoomProps> = props => {
+    const { onClose } = props;
+    return (
+        <div
+            onClick={onClose}
+            children="IMAGE ZOOM IS ACTIVE. CLICK SOMEWHERE TO CLOSE!"
+            style={{
+                position: "absolute",
+                inset: 0,
+                background: "#FFFFFFBB",
+                color: "#000",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "3em"
+            }}
+        />
     );
 };
 
