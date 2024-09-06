@@ -66,7 +66,6 @@ export const UploadOverlay = (props: UploadOverlayProps) : JSX.Element | null =>
                 <Icon
                     className={classes.icon}
                     path={UploadStateIcon[uploadState]}
-                    size={0.75}
                     spin={uploadState === "in_progress" ? 1 : 0}
                 />
                 <div className={classes.text}>
@@ -123,6 +122,7 @@ const useStyles = createUseFlowStyles("UploadOverlay", ({palette, typography}) =
     icon: {
         paddingTop: 2,
         paddingRight: 8,
+        width: 24,
     },
     state_in_progress: {},
     state_not_available: {},
