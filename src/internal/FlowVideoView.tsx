@@ -28,6 +28,13 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
         <div className={clsx(classes.stateOverlay, isBroken ? classes.stateBroken : classes.stateVoid)} />
     );
 
+    const onCanPlay = useCallback((e: React.SyntheticEvent<HTMLVideoElement>) => {
+        if (!verifiedPosterUrl) {
+            // seeking will hide the current poster placeholder
+            e.currentTarget.currentTime = 0;
+        }
+    }, [verifiedPosterUrl]);
+
     useEffect(() => {
         setBroken(false);
     }, [videoUrl]);
@@ -39,6 +46,7 @@ export const FlowVideoView = flowNode<FlowVideo>((props, outerRef) => {
                 style={sizeStyle}
                 src={videoUrl}
                 onError={onError}
+                onCanPlay={onCanPlay}
                 poster={posterUrl}
                 preload={posterUrl ? "metadata" : "auto"}
                 controls={videoUrl ? true : undefined}
