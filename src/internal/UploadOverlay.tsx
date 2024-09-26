@@ -106,10 +106,10 @@ const useStyles = createUseFlowStyles("UploadOverlay", ({palette, typography}) =
         border: `1px solid ${palette.tooltipText}`,
         borderRadius: 4,
         fontSize: "0.75rem",
-        "&$upload_not_available": {
+        "&$state_not_available": {
             backgroundColor: Color(palette.warning).fade(0.25).toString(),
         },
-        "&$upload_failed": {
+        "&$state_failed": {
             backgroundColor: Color(palette.error).fade(0.25).toString(),
         },
         display: "flex",

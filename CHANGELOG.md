@@ -1,3 +1,7 @@
+## 1.14.1 - 2024-09-26
+
+- Fix upload overlay state class key references
+
 ## 1.14.0 - 2024-09-09
 
 - Support video in flow content
